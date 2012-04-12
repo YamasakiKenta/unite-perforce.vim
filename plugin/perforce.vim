@@ -18,14 +18,30 @@
 "$PFCLIENTNAME " # クライアントの名前
 
 "com
+" ********************************************************************************
+"
+" @param[in]	取得するディレクト		...
+" @note		g:ClientMove_diffcmd		Diffツール	
+" @note		g:ClientMove_recursive_flg	フォルダを再帰的に検索するか
+" ********************************************************************************
 command! -nargs=* ClientMove call <SID>clientMove(<q-args>)
 function! s:clientMove(...) "{{{
+	" Diffツールの取得
+	let cmd = get(g:, 'ClientMove_diffcmd', 'WinMergeU')
+
+	" 再帰検索するか ( 初期設定 : しない ) 
+	let recursive_flg = get(g:, 'ClientMove_recursive_flg', '1')
+
+
 	" ファイルの取得 "{{{
 	let dirs = [get(a:,'2','c:\tmp')]
 	let paths = []
 	for dir in dirs
 		let path = okazu#get_pathSrash(dir)
-		let paths += split(glob(path.'/**'),'\n')
+		if recursive_flg == 1
+			let paths += split(glob(path.'/**'),'\n')
+		else
+			let paths += split(glob(path.'/*'),'\n')
 	endfor
 	"}}}
 	" ファイルの選別 "{{{
@@ -101,7 +117,7 @@ function! s:clientMove(...) "{{{
 	endif
 
 	if flg 
-		echo '...END...'
+		echo "...END...\n"
 		return
 	endif 
 
@@ -112,13 +128,13 @@ function! s:clientMove(...) "{{{
 		let file1 = path
 		let file2 = pfpaths[i]
 		call system('p4 edit '.okazu#Get_kk(file2))
-		"call system('WinMergeU '.okazu#Get_kk(file1).' '.okazu#Get_kk(file2))
 		call system(cmd.' '.okazu#Get_kk(file1).' '.okazu#Get_kk(file2))
 		let i+= 1 " # 更新
 	endfor
 	" }}}
 endfunction "}}}
-com! -nargs=* MatomeDiffs call perforce#matomeDiffs(<args>)
+
+command! -nargs=* MatomeDiffs call perforce#matomeDiffs(<args>)
 "
 "init
 " 変数の定義 "{{{
