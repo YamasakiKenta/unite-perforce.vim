@@ -18,3 +18,6 @@ map ;pa<CR> :<C-u>Unite p4_annotate<CR>|"
 
 map ;pl<CR> :<C-u>call perforce#unite_args('p4_filelog')<CR>|"
 map ;pd<CR> :<C-u>call perforce#unite_args('p4_diff')<CR>|"
+
+"todo
+"[ ] <Plug>‚É‚·‚é
