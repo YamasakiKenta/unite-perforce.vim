@@ -38,8 +38,17 @@ function! perforce#unite_args(source) "{{{
 	" @param[in]	source	コマンド
 	"********************************************************************
 
-	"exe 'Unite '.a:source.':'.perforce#Get_dd(expand("%:t"))
-	exe 'Unite '.a:source.':'.okazu#get_pathSrash(expand("%"))
+	if 0
+		exe 'Unite '.a:source.':'.perforce#Get_dd(expand("%:t"))
+	else
+		" スペース対策
+		" [ ] p4_diffなどに修正が必要
+		let tmp = a:source.':'.okazu#get_pathSrash(expand("%"))
+		let tmp = substitute(tmp, ' ','\\ ', 'g')
+		let tmp = 'Unite '.tmp
+		echo tmp
+		exe tmp
+	endif
 
 endfunction "}}}
 function! perforce#event_save_file(file,strs,func) "{{{
@@ -310,4 +319,77 @@ function! perforce#LogFile(str) "{{{
 		endif
 	endif
 
+endfunction "}}}
+" diff
+function! perforce#getLineNumFromDiff(str,lnum,snum) "{{{
+	" ********************************************************************************
+	" 行番号を更新する
+	" @param[in]	str		番号の更新を決める文字列
+	" @param[in]	lnum	現在の番号
+	" @param[in]	snum	初期値
+	"
+	" @retval       lnum	行番号
+	" @retval       snum	初期値
+	" ********************************************************************************
+	let str = a:str
+	let num = { 'lnum' : a:lnum , 'snum' : a:snum }
+
+	let find = '[acd]'
+	if str =~ '^\d\+'.find.'\d\+'
+		let tmp = split(substitute(copy(str),find,',',''),',')
+		let tmpnum = tmp[1] - 1
+		let num.lnum = tmpnum
+		let num.snum = tmpnum
+	elseif str =~ '^\d\+,\d\+'.find.'\d\+'
+		let tmp = split(substitute(copy(str),find,',',''),',')
+		let tmpnum = tmp[2] - 1
+		let num.lnum = tmpnum
+		let num.snum = tmpnum
+		" 最初の表示では、更新しない
+	elseif str =~ '^[<>]' " # 番号の更新 
+		let num.lnum = a:lnum + 1
+	elseif str =~ '---'
+		" 番号の初期化
+		let num.lnum = a:snum
+	endif
+	return num
+endfunction "}}}
+function! perforce#getPathFromDiff(out,path) "{{{
+	let path = a:path
+	if a:out =~ '^===='
+		let path = substitute(a:out,'^====.*#.\{-} - \(.*\) ====','\1','')
+	endif 
+	return path
+endfunction "}}}
+function! perforce#get_diff_path(outs) "{{{
+	" ********************************************************************************
+	" 差分の出力を、Uniteのjump_list化けする
+	" @param[in]	outs		差分のデータ
+	" ********************************************************************************
+	let outs = a:outs
+	let candidates = []
+	let num = { 'lnum' : 1 , 'snum' : 1 }
+	let path = ''
+	for out in outs
+		let num = perforce#getLineNumFromDiff(out, num.lnum, num.snum)
+		let lnum = num.lnum
+		let path = perforce#getPathFromDiff(out,path)
+		let candidates += [{
+					\ 'word' : lnum.' : '.out,
+					\ 'kind' : 'jump_list',
+					\ 'action__line' : lnum,
+					\ 'action__path' : path,
+					\ }]
+	endfor
+	return candidates
+endfunction "}}}
+" スペース対応
+" ********************************************************************************
+" スペース対応
+" @param[in]	strs		'\ 'が入った文字列
+" @retval       strs		'\ 'を削除した文字列
+" ********************************************************************************
+function!  perforce#get_trans_enspace(strs) "{{{
+	let strs = a:strs
+	return str
 endfunction "}}}

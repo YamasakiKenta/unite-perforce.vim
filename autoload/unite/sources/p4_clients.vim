@@ -3,18 +3,25 @@ function! unite#sources#p4_clients#define()
 endfunction
 
 function! s:get_pfclients(str) "{{{
+	" ********************************************************************************
+	" クライアントを表示する
+	" @param[in]	str		表示の制御
+	" ********************************************************************************
 
 	"ポートのクライアントを表示する
 	let datas = []
 	for port in g:pf_ports
-		let datas += map(perforce#cmds('-p '.port.' clients '.a:str),"[port , v:val]")
+		let datas += map(perforce#cmds('-p '.port.' clients '.a:str), "{
+					\ 'port' : port,
+					\ 'client' : v:val,
+					\ }")
 	endfor
 
 	let candidates = map(datas, "{
-				\ 'word' : v:val[0].':'.perforce#get_ClientName_from_client(v:val[1]),
+				\ 'word' : '-p '.v:val.port.' -c '.perforce#get_ClientName_from_client(v:val.client),
 				\ 'kind' : 'k_p4_clients',
-				\ 'action__clname' : perforce#get_ClientName_from_client(v:val[1]),
-				\ 'action__port' : v:val[0],
+				\ 'action__clname' : perforce#get_ClientName_from_client(v:val.client),
+				\ 'action__port' : v:val.port,
 				\ }")
 	return candidates
 endfunction "}}}
