@@ -19,54 +19,91 @@
 
 "com
 " ********************************************************************************
+" 指定したfolder をMergeします
+" @param[in]	取得するDir		...
 "
-" @param[in]	取得するディレクト		...
-" @note		g:ClientMove_diffcmd		Diffツール	
-" @note		g:ClientMove_recursive_flg	フォルダを再帰的に検索するか
+" @var	g:ClientMove_diffcmd
+" 	Diff Tool
+"
+" @var	g:ClientMove_recursive_flg
+" 	Folder を再帰的に検索するか
+"
+" @var	g:ClientMove_defoult_root
+" 	引数がない場合の取得するDir
 " ********************************************************************************
 command! -nargs=* ClientMove call <SID>clientMove(<q-args>)
 function! s:clientMove(...) "{{{
 	" Diffツールの取得
 	let cmd = get(g:, 'ClientMove_diffcmd', 'WinMergeU')
 
-	" 再帰検索するか ( 初期設定 : しない ) 
-	let recursive_flg = get(g:, 'ClientMove_recursive_flg', '1')
+	" 再帰検索するか 
+	let recursive_flg = g:ClientMove_recursive_flg
 
+	" init4
+	let dirs = [get(a:,'2',g:ClientMove_defoult_root)]
+	let tmps = []
 
 	" ファイルの取得 "{{{
-	let dirs = [get(a:,'2','c:\tmp')]
-	let paths = []
+	let datas = []
 	for dir in dirs
+
+		" 
 		let path = okazu#get_pathSrash(dir)
 		if recursive_flg == 1
-			let paths += split(glob(path.'/**'),'\n')
+			let tmps = split(glob(path.'/**'),'\n')
 		else
-			let paths += split(glob(path.'/*'),'\n')
+			let tmps = split(glob(path.'/*'),'\n')
+		endif
+
+		" データの登録
+		for tmp in tmps 
+			call add( datas, {
+						\ 'path' : tmp,
+						\ 'dir' : dir,
+						\ })
+		endfor
 	endfor
 	"}}}
+
 	" ファイルの選別 "{{{
-	" init "{{{
-	let pfpaths = [] " # 比較対象ファイル ( P4のファイル ) 
 	let i = 0
-	"}}}
-	for path in copy(paths) 
-		let flg = 0 " # 比較しない : TRUE
-		" ディレクトリなら、比較しない "{{{
+
+	" todo  辞書を登録する
+	let pfpaths = [] " # 比較対象ファイル ( P4のファイル ) 
+
+	for data in copy(datas)
+
+		echo data
+		let path = data.path
+		let dir  = data.dir
+
+		" 比較しない場合は、TRUEを設定する
+		let flg = 0
 		if isdirectory(path) 
+			" ディレクトリなら、比較しない "{{{
 			let flg = 1
-		else 
 			"}}}
-			"p4 になければ、比較しない "{{{
-			" ファイルの取得 "{{{
-			let file = fnamemodify(path,":t") " # ファイル名のみにする
-			let tmp_pfpaths = perforce#cmds('have '.perforce#Get_dd(file))             " # 複数ヒットした場合全部処理を行う
-			let tmp_pfpaths = map(tmp_pfpaths, "perforce#get_path_from_have(v:val)")      " # Localでのpathの取得
+		else 
+			" ファイル名の取得 "{{{
+			"
+			" 最後に\\を追加する
+			let dir = substitute(dir, '\', '\\\\', 'g')
+			let dir = substitute(dir, '\\\?$', '\\\\', '') 
+
+			" ルートを削る
+			let file = substitute( path, dir, '', '')
+
+			" perforce から取得する
+			let tmp_pfpaths = perforce#cmds('have '.perforce#Get_dd(file))           " # 複数ヒットした場合全部処理を行う
+			let tmp_pfpaths = map(tmp_pfpaths, "perforce#get_path_from_have(v:val)") " # Localでのpathの取得
 			let tmp_pfpath = tmp_pfpaths[0]
 			"}}}
+			"
 			if tmp_pfpath =~ 'file(s) not on client.'
+				"p4 になければ、比較しない "{{{
 				let flg = 1
-			else 
 				"}}}
+			else 
 				"差分がなければ、比較しない "{{{
 				" 一つ目 "{{{
 				if okazu#is_different(path,tmp_pfpath) 
@@ -79,31 +116,39 @@ function! s:clientMove(...) "{{{
 					let flg = 1
 				endif
 				"}}}
+				"
 				" 二つ目以降 "{{{
 				for tmp_pfpath in tmp_pfpaths[1:]
 					" 複数見つかった場合は、ファイル名をコピーする
 					if okazu#is_different(path,tmp_pfpath) 
 						call add(pfpaths,tmp_pfpath) " # 比較するファイルの登録
-						call insert(paths,path,i) " # 二回目以降
-						echo tmp_pfpath| " # 比較するファイルの表示
-						let i+= 1
+
+						call insert(datas, {
+									\ 'path' : data.path,
+									\ 'dir'  : data.dir,
+									\ }, i) " # 二回目以降 比較するファイルを登録する
+						echo tmp_pfpath|" # 比較するファイルの表示
+						let i += 1
 					endif
 				endfor  
 				"}}}
 			endif " # p4になければ、比較しない
 		endif " # ディレクトリなら、比較しない
 		"}}}
+		"
 		" リスト削除処理 "{{{
 		" 二つ目以降は、追加処理のため削除処理を行う必要はない
 		if flg 
 			" 検索リストから削除する
-			unlet paths[i]
+			unlet datas[i]
 		else
 			let i += 1
 		endif
 		"}}}
+		"
 	endfor "}}}
-	"確認 "{{{
+
+	"マージ確認 "{{{
 
 	let str = input("Merge ? [yes/no/force]")
 	echo '' 
@@ -122,9 +167,11 @@ function! s:clientMove(...) "{{{
 	endif 
 
 	"}}}
+	"
 	"比較する "{{{
 	let i = 0
-	for path in paths
+	for data in datas 
+		let path = data.path
 		let file1 = path
 		let file2 = pfpaths[i]
 		call system('p4 edit '.okazu#Get_kk(file2))
@@ -132,6 +179,7 @@ function! s:clientMove(...) "{{{
 		let i+= 1 " # 更新
 	endfor
 	" }}}
+	"
 endfunction "}}}
 
 command! -nargs=* MatomeDiffs call perforce#matomeDiffs(<args>)

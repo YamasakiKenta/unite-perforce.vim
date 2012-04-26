@@ -1,4 +1,3 @@
-
 let $PFTMP = expand("~")."/vim/tmpfile"
 "set
 function! perforce#set_PFCLIENTNAME(str) "{{{
@@ -63,17 +62,6 @@ function! perforce#event_save_file(file,strs,func) "{{{
 		exe 'autocmd BufWritePost <buffer> nested call '.a:func
 	aug END
 
-
-endfunction "}}}
-function! perforce#pfLogFile(str) "{{{
-	" ********************************************************************************
-	" 結果の出力を行う
-	" @param[in]	str		表示する文字
-	" ********************************************************************************
-	"
-	if g:pf_is_out_flg
-		call okazu#LogFile('p4log',a:str)
-	endif
 
 endfunction "}}}
 function! perforce#get_ClientName_from_client(str) "{{{
@@ -160,7 +148,7 @@ function! perforce#pfDiff_from_fname(fname) "{{{
 
 	let paths = perforce#get_paths_from_fname(file)
 
-	call perforce#pfLogFile(paths)
+	call perforce#LogFile(paths)
 	for path in paths 
 		call perforce#pfDiff(path)
 	endfor
@@ -198,7 +186,7 @@ function! perforce#pfNewChange() "{{{
 	if str != ""
 		" チェンジリストの作成 ( new )
 		let outs = perforce#pfChange(str) 
-		call perforce#pfLogFile(outs)
+		call perforce#LogFile(outs)
 	endif
 endfunction "}}}
 function! perforce#get_client_data_from_info() "{{{
@@ -273,7 +261,7 @@ function! perforce#matomeDiffs(chnum) "{{{
 		let outs += [l:file."\t\t".adds[i]."\t".deleteds[i]."\t".changeds[i]]
 		let i += 1
 	endfor
-	call perforce#pfLogFile(outs)
+	call perforce#LogFile(outs)
 	"}}}
 endfunction "}}}
 function! perforce#cmds(cmd) "{{{
@@ -304,4 +292,20 @@ function! perforce#cmds(cmd) "{{{
 		endif
 	endif
 	return split(system('p4 '.a:cmd),'\n')
+endfunction "}}}
+function! perforce#LogFile(str) "{{{
+	" ********************************************************************************
+	" 結果の出力を行う
+	" @param[in]	str		表示する文字
+	" @var
+	" ********************************************************************************
+	"
+	if g:pf_is_out_flg 
+		if g:pf_is_echo_flg
+			echo a:str
+		else
+			call okazu#LogFile('p4log',a:str)
+		endif
+	endif
+
 endfunction "}}}

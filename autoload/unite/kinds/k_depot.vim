@@ -37,7 +37,7 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 				\		let outs += perforce#cmds('".a:cmd." '.okazu#Get_kk(l:candidate.action__".
 				\			get(kind,a:kind,"file").")) \n
 				\ 	endfor \n
-				\ 	call perforce#pfLogFile(outs) \n
+				\ 	call perforce#LogFile(outs) \n
 				\ endfunction "
 	"}}}
 	unlet action
@@ -121,7 +121,7 @@ function! s:do_move(oris,file) "{{{
 	endfor
 
 	" # ログファイルの出力
-	call perforce#pfLogFile(outs)
+	call perforce#LogFile(outs)
 
 endfunction "}}}
 function! s:kind.action_table.a_p4_move.func(candidates) "{{{
@@ -146,7 +146,7 @@ function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 			let outs = []
 			let outs += perforce#cmds('edit '.path)
 			let outs += perforce#cmds('move '.path.' '.dir.'/'.new)
-			call perforce#pfLogFile(outs)
+			call perforce#LogFile(outs)
 		endif
 		"}}}
 	else 
@@ -226,5 +226,5 @@ let s:kind.action_table.a_p4_sync = {
 function! s:kind.action_table.a_p4_sync.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
 	let outs = perforce#cmds('sync '.join(depots))
-	call perforce#pfLogFile(outs)
+	call perforce#LogFile(outs)
 endfunction "}}}

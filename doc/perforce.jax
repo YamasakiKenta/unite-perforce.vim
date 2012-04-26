@@ -6,37 +6,114 @@ Author : YamasakiKenta
 
 目次						*unite-perforce-contents*
 
-コマンド	|unite-perforce-commands|
-更新履歴	|unite-perforce-changelog|
-設定例		|unite-perforce-setting|
+概要			|unite-perforce-introduction|
+使い方			|unite-perforce-usage|
+Install			|unite-perforce-install|
+Interface		|unite-perforce-interface|
+  Commands		  |unite-perforce-commands|
+  変数			  |unite-perforce-variables|
+  関数			  |unite-perforce-function|
+  KeyMapping	  |unite-perforce-key-mappings|
+更新履歴		|unite-perforce-changelog|
 
 ==============================================================================
-コマンド					*unite-perforce-commands*
+概要						*unite-perforce-introduction*
 
-g:pf_user_changes_only
-ユーザーネームでチェンジリストをフィルタする
-
-g:pf_client_changes_only
-クライアントネームでチェンジリストをフィルタする
-
-g:pf_is_submit_flg
-サブミットするかどうかの設定
-
-g:pf_ports = ['1668',...]
-ポートの設定
-
-g:pf_is_out_flg
-結果出力を行う
+*unite-perforce* は、perforceをuniteで使用できます。
 
 ==============================================================================
-設定例 						*unite-perforce-setting*
+使い方						*unite-perforce-usage*
 
-let g:pf_client_changes_only = 1 " # 1 - クライアントでフィルタ
-let g:pf_user_changes_only = 1   " # 1 - ユーザーでフィルタ
-let g:pf_is_submit_flg = 1       " # サブミットするかどうか
-let g:pf_ports = ['1668']        " # ポートの設定
-let g:pf_is_out_flg = 1          " # 結果出力を行う
-let g:pf_use_defoult_client = 1  " # 1 - p4のデフォルトクライアントを使用する
+	
+==============================================================================
+Install						*unite-perforce-install*
+
+
+==============================================================================
+Interface					*unite-perforce-interface*
+------------------------------------------------------------------------------
+Commands					*unite-perforce-commands*
+
+------------------------------------------------------------------------------
+変数						*unite-perforce-variables*
+
+g:pf_user_changes_only				*g:pf_user_changes_only*
+		user name で changelist を filter する
+
+		初期値は、TRUE である
+
+g:pf_client_changes_only			*g:pf_client_changes_only*
+		client name で changelist を filter する
+
+		初期値は、TRUE である
+
+g:pf_is_submit_flg				*g:pf_is_submit_flg*
+		submit するかどうかの設定
+
+		初期値は、TRUE である
+
+g:pf_ports]					*g:pf_ports*
+		port の設定
+>
+	    	g:pf_ports = ['1818',...]
+<
+g:pf_is_out_flg					*g:pf_is_out_flg*
+		結果出力を行う
+
+		初期値は、TRUE である
+
+g:pf_is_echo_flg				*g:pf_is_echo_flg*
+		結果出力をechoで行う
+
+		初期値は、TRUE である
+
+g:pf_is_vimdiff_flg				*g:pf_is_vimdiff_flg*
+	" 	vimdiffで比較する
+
+		初期値は、TRUE である
+
+g:pf_diff_tool					*g:pf_diff_tool*
+		DiffToolを指定する
+
+		初期値は、WinMergeU である
+
+$PFTMP						*$PFTMP*
+		比較する時の一時 file の名前
+
+g:ClientMove_recursive_flg			*g:ClientMove_recursive_flg*
+		|ClientMove|で再帰検索をするか
+	
+		初期値は、FALSE である
+
+
+
+------------------------------------------------------------------------------
+関数						*unite-perforce-function*
+
+g:PerforceDiff					*g:PerforceDiff*
+		Diff tool 関数
+
+------------------------------------------------------------------------------
+Key Mapping 					*unite-perforce-mappings*
+
+<Plug>(unite_p4_commit)				*<Plug>(unite_p4_commit)*
+	perforce の unite sourceを表示する
+
+<Plug>(p4_diff_tool)				*<Plug>(p4_diff_tool)*
+	file を client との差分を指定したDiff Tool
+
+<Plug>(p4_echo_client_data)			*<Plug>(p4_echo_client_data)*
+	現在の Client Name  , Client Path の表示を行います
+
+<Plug>(p4_print_info)				*<Plug>(p4_print_info)*
+	Client 情報を表示する
+
+<Plug>(p4_edit)					*<Plug>(p4_edit)*
+	編集状態にする
+
+<Plug>(p4_revert)				*<Plug>(p4_revert)*
+	編集状態の解除
+
 
 ==============================================================================
 更新履歴					*unite-perforce-changelog*

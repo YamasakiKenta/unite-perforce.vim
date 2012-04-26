@@ -50,7 +50,7 @@ function! s:kind.action_table.a_p4_change_info.func(candidates) "{{{
 		let chnum = l:candidate.action__chnum
 		let outs += split(system('P4 change -o '.chnum),'\n')
 	endfor
-	call perforce#pfLogFile(outs)
+	call perforce#LogFile(outs)
 endfunction "}}}
 
 let s:kind.action_table.a_p4_change_delete = {
@@ -63,7 +63,7 @@ function! s:kind.action_table.a_p4_change_delete.func(candidates) "{{{
 		let num = l:candidate.action__chnum
 		let out = system('p4 change -d '.num)
 		let outs = split(out,'\n')
-		call perforce#pfLogFile(outs)
+		call perforce#LogFile(outs)
 		let i += len(outs)
 	endfor
 endfunction "}}}
@@ -86,7 +86,7 @@ function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 		"
 		let chnums = map(copy(a:candidates), "v:val.action__chnum")
 		let outs = perforce#cmds('submit -c '.join(chnums))
-		call perforce#pfLogFile(outs)
+		call perforce#LogFile(outs)
 	endif 
 
 endfunction "}}}
@@ -137,7 +137,7 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidates) "{{{
 	let g:reopen_depots = [] 
 
 	" ÉçÉOÇÃèoóÕ
-	call perforce#pfLogFile(outs)
+	call perforce#LogFile(outs)
 endfunction "}}}
 
 let s:kind.action_table.a_p4_change_rename = {
@@ -147,5 +147,5 @@ function! s:kind.action_table.a_p4_change_rename.func(candidates) "{{{
 	let num = a:candidates.action__chnum
 	let str = input('ChangeList Comment (change): ')
 	let outs = perforce#pfChange(str,num)
-	call perforce#pfLogFile(outs)
+	call perforce#LogFile(outs)
 endfunction "}}}
