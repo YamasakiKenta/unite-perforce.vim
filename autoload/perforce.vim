@@ -68,7 +68,9 @@ function! perforce#get_ClientName_from_client(str) "{{{
 	return substitute(copy(a:str),'Client \(\S\+\).*','\1','g')
 endfunction "}}}
 function! perforce#get_path_from_have(str) "{{{
-	return substitute(a:str,'\(.\{-}\)#\d\+ - \(\S*\)','\2','') 
+	let rtn = substitute(a:str,'\(.\{-}\)#\d\+ - \(\S*\)','\2','') 
+	let rtn = substitute(rtn, '\\', '/', 'g')
+	return rtn
 endfunction "}}}
 function! perforce#get_depot_from_have(str) "{{{
 	return substitute(a:str,'\(.\{-}\)#\d\+ - \(.*\)','\1','') 
