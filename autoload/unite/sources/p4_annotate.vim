@@ -7,6 +7,8 @@ let s:source = {
 			\ 'description' : '各行にリビジョン番号を表示',
 			\ 'hooks' : {},
 			\ }
+
+" [ ] - 引数にする
 let s:source.hooks.on_init = function('okazu#GetFileNameForUnite')
 function! s:getRevisionNumFromAnnotate(str) "{{{
 	let rtn = substitute(a:str,'^\(\d\+\).*','\1','')

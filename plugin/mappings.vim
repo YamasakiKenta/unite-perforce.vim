@@ -18,15 +18,17 @@ nmap ;pi<CR> <Plug>(p4_print_info)
 nmap ;pe<CR> <Plug>(p4_edit)
 nmap ;pr<CR> <Plug>(p4_revert)
 
-nmap ;ff<CR> :<C-u>call perforce#pfFind()<CR>|"
-nmap ;pl<CR> :<C-u>call perforce#unite_args('p4_filelog')<CR>|"
-nmap ;pd<CR> :<C-u>call perforce#unite_args('p4_diff')<CR>|"
+nnoremap ;ff<CR> :<C-u>call perforce#pfFind()<CR>|"
+nnoremap ;pl<CR> :<C-u>call perforce#unite_args('p4_filelog')<CR>|"
+nnoremap ;pd<CR> :<C-u>call perforce#unite_args('p4_diff')<CR>|"
 
-nmap ;pt<CR> :<C-u>Unite p4_clients<CR>|"
-nmap ;pc<CR> :<C-u>Unite p4_changes_pending<CR>|"
-nmap ;ps<CR> :<C-u>Unite p4_changes_submitted<CR>|"
-nmap ;po<CR> :<C-u>Unite p4_opened<CR>|"
-nmap ;pj<CR> :<C-u>Unite p4_jobs<CR>|"
-nmap ;ph<CR> :<C-u>Unite p4_have<CR>|"
-nmap ;pa<CR> :<C-u>Unite p4_annotate<CR>|"
+nnoremap ;pp<CR> :<C-u>Unite p4_settings<CR>|"
+
+nnoremap ;pt<CR> :<C-u>Unite p4_clients<CR>|"
+nnoremap ;pc<CR> :<C-u>Unite p4_changes_pending<CR>|"
+nnoremap ;ps<CR> :<C-u>Unite p4_changes_submitted<CR>|"
+nnoremap ;po<CR> :<C-u>Unite p4_opened<CR>|"
+nnoremap ;pj<CR> :<C-u>Unite p4_jobs<CR>|"
+nnoremap ;ph<CR> :<C-u>Unite p4_have<CR>|"
+nnoremap ;pa<CR> :<C-u>Unite p4_annotate<CR>|"
 

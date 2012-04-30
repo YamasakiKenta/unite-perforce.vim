@@ -1,4 +1,5 @@
-let $PFTMP = expand("~")."/vim/tmpfile"
+let $PFTMP = expand("~").'/vim/perforce_tmpfile'
+let $PFDATA = expand("~").'/vim/perforce_data'
 "set
 function! perforce#set_PFCLIENTNAME(str) "{{{
 	let $PFCLIENTNAME = a:str
@@ -14,7 +15,7 @@ function! perforce#set_PFUSER(str) "{{{
 endfunction "}}}
 "get
 function! perforce#get_PFUSER_for_pfcmd(...) "{{{
-	return g:pf_user_changes_only && g:pfuser !=# "" ? ' -u '.g:pfuser.' ' : ''
+	return g:pf_setting.bool.user_changes_only.value && g:pfuser !=# "" ? ' -u '.g:pfuser.' ' : ''
 endfunction "}}}
 function! perforce#get_PFCLIENTNAME() "{{{
 	return $PFCLIENTNAME
@@ -22,7 +23,7 @@ endfunction "}}}
 "[ ] 使用している場所の変更o
 "コマンドで制御する
 function! perforce#get_PFCLIENTNAME_for_pfcmd(...) "{{{
-	return g:pf_client_changes_only && $PFCLIENTNAME !=# "" ? ' -c '.$PFCLIENTNAME.' ' : ''
+	return g:pf_setting.bool.client_changes_only.value && $PFCLIENTNAME !=# "" ? ' -c '.$PFCLIENTNAME.' ' : ''
 endfunction "}}}
 "global
 function! perforce#Get_dd(str) "{{{
@@ -118,7 +119,6 @@ function! perforce#pfDiff(path) "{{{
 
 	" ファイルの比較
 	let path = a:path
-	let tmpfile = $PFTMP
 
 	" 最新 REV のファイルの取得 "{{{
 	let outs = perforce#cmds('print -q '.okazu#Get_kk(path))
@@ -130,11 +130,11 @@ function! perforce#pfDiff(path) "{{{
 	endif
 
 	"tmpファイルの書き出し
-	call writefile(outs,tmpfile)
+	call writefile(outs,$PFTMP)
 	"}}}
 
 	" 改行が一致しないので保存し直す "{{{
-	exe 'sp' tmpfile
+	exe 'sp' $PFTMP
 	set ff=dos
 	wq
 	"}}}
@@ -145,7 +145,7 @@ function! perforce#pfDiff(path) "{{{
 	endif
 
 	" 実際に比較 
-	call perforce#pf_diff_tool(tmpfile,path)
+	call perforce#pf_diff_tool($PFTMP,path)
 
 endfunction "}}}
 function! perforce#pfDiff_from_fname(fname) "{{{
@@ -175,20 +175,20 @@ function! perforce#pfChange(str,...) "{{{
 	"チェンジ番号のセット ( 引数があるか )
 	let chnum     = get(a:,'1','')
 
-	"一時保存するファイルパス名
-	let tmpfile = $PFTMP
-
 	"ChangeListの設定データを一時保存する
-	let tmp     = system('p4 change -o '.chnum)                          
+	let tmp = system('p4 change -o '.chnum)                          
 
 	"コメントの編集
-	let tmp     = substitute(tmp,'\nDescription:\zs.*>','\t'.a:str,'') 
+	let tmp = substitute(tmp,'\nDescription:\zs\_.*\ze\nFiles:','\t'.a:str,'') 
+
+	" 新規作成の場合は、ファイルを含まない
+	if chnum == "" | let tmp = substitute(tmp,'\nFile:\zs\_.*>','','') | endif
 
 	"一時ファイルの書き出し
-	call writefile(split(tmp,'\n'),tmpfile)                            
+	call writefile(split(tmp,'\n'),$PFTMP)
 
 	"チェンジリストの作成
-	return okazu#Get_cmds('more '.okazu#Get_kk(tmpfile).' | p4 change -i') 
+	return okazu#Get_cmds('more '.okazu#Get_kk($PFTMP).' | p4 change -i') 
 
 endfunction "}}}
 function! perforce#pfNewChange() "{{{
@@ -278,7 +278,7 @@ endfunction "}}}
 function! perforce#cmds(cmd) "{{{
 	" todo
 	" [ ] clientNameをperforceに依存しないようにする
-	
+
 	if 0 
 		if  g:pf_use_defoult_client == 1 " # 常に更新する
 			call perforce#get_client_data_from_info() " # クライアントデータを更新する
@@ -311,8 +311,8 @@ function! perforce#LogFile(str) "{{{
 	" @var
 	" ********************************************************************************
 	"
-	if g:pf_is_out_flg 
-		if g:pf_is_echo_flg
+	if g:pf_setting.bool.is_out_flg.value 
+		if g:pf_setting.bool.is_out_echo_flg.value
 			echo a:str
 		else
 			call okazu#LogFile('p4log',a:str)
@@ -391,5 +391,141 @@ endfunction "}}}
 " ********************************************************************************
 function!  perforce#get_trans_enspace(strs) "{{{
 	let strs = a:strs
-	return str
+	return strs
+endfunction "}}}
+
+" ********************************************************************************
+" 設定変数の初期化
+" ********************************************************************************
+function! perforce#init() "{{{
+
+	if exists('g:pf_setting')
+		return
+	else
+		" init
+		let g:pf_setting = { 
+					\ 'bool' : {},
+					\ 'str' : {},
+					\ }
+
+		if 0 
+			"bool
+			let g:pf_setting.bool.user_changes_only.value        = 1
+			let g:pf_setting.bool.client_changes_only.value      = 1
+			let g:pf_setting.bool.is_submit_flg.value            = 1
+			let g:pf_setting.bool.is_out_flg.value               = 1
+			let g:pf_setting.bool.is_out_echo_flg.value              = 1
+			let g:pf_setting.bool.is_vimdiff_flg.value           = 0
+			let g:pf_setting.bool.ClientMove_recursive_flg.value = 0
+
+			"str
+			let g:pf_setting.str.diff_tool.value               = 'WinMergeU '
+			let g:pf_setting.str.ClientMove_defoult_root.value = 'c:\tmp'
+			let g:pf_setting.str.ports.value                   = []
+		endif
+
+		" [] ファイルデータを読み込む
+
+		let g:pf_setting.bool.user_changes_only = {
+					\ 'value' : 1,
+					\ 'description' : '名前でフィルタ',
+					\ }
+		let g:pf_setting.bool.client_changes_only = {
+					\ 'value' : 1,
+					\ 'description' : 'クライアントでフィルタ',
+					\ }
+		let g:pf_setting.bool.is_submit_flg = {
+					\ 'value' : 1,
+					\ 'description' : 'サブミットを許可',
+					\ }
+		let g:pf_setting.bool.is_out_flg = {
+					\ 'value' : 1,
+					\ 'description' : '実行結果を出力する',
+					\ }
+		let g:pf_setting.bool.is_out_echo_flg = {
+					\ 'value' : 0,
+					\ 'description' : 'echo で実行結果を出力する',
+					\ }
+		let g:pf_setting.bool.is_vimdiff_flg = {
+					\ 'value' : 0,
+					\ 'description' : 'vimdiff を使用する',
+					\ }
+		let g:pf_setting.bool.ClientMove_recursive_flg = {
+					\ 'value' : 0,
+					\ 'description' : 'ClientMoveで再帰検索をするか',
+					\ }
+
+		" str
+		let g:pf_setting.str.diff_tool = {
+					\ 'value' : 'WinMergeU',
+					\ 'description' : 'Diff で使用するツール',
+					\ }
+		let g:pf_setting.str.ClientMove_defoult_root = {
+					\ 'value' : 'c:\tmp',
+					\ 'description' : 'ClientMoveの初期フォルダ',
+					\ }
+		let g:pf_setting.str.ports = {
+					\ 'value' : [],
+					\ 'description' : 'perforce port',
+					\ }
+
+		" 設定を読み込む
+		call perforce#load($PFDATA)
+
+	endif
+endfunction "}}}
+
+" ********************************************************************************
+" 設定ファイルの読み込み
+" param[in]		file		設定ファイル名
+" ********************************************************************************
+function! perforce#load(file) "{{{
+
+	" ファイルが見つからない場合は終了
+	if filereadable(a:file) == 0
+		echo 'Error - not fine '.a:file
+		return
+	endif
+
+	" ファイルを読み込む
+	let datas = readfile(a:file)
+
+	" データを設定する
+	for data in datas
+		let tmp = split(data)
+		let valname = tmp[0]
+		exe 'let value = '.tmp[1]
+
+		" 型を取得する
+		let type = type(value)
+		if type == 0
+			let typestr = 'bool'
+		else
+			let typestr = 'str'
+		endif
+
+		let g:pf_setting[typestr][valname].value = value
+
+		" 型が変わるため、初期化が必要
+		unlet value
+	endfor
+
+endfunction "}}}
+
+" ********************************************************************************
+" 設定ファイルを保存する
+" param[in]		file		設定ファイル名
+" ********************************************************************************
+function! perforce#save(file) "{{{
+
+	let datas = []
+	for type in keys(g:pf_setting)
+		for val in keys(g:pf_setting[type])
+			let datas += [val."\t".string(g:pf_setting[type][val].value)."\r"]
+		endfor
+	endfor
+
+	" 書き込む
+	call writefile(datas, a:file)
+
 endfunction "}}}

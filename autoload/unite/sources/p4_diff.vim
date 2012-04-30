@@ -6,7 +6,7 @@ let s:source = {
 			\ 'name' : 'p4_diff',
 			\ 'description' : 'ファイルの差分表示',
 			\ }
-function! s:source."gather_candidates(args, context) "{{{
+function! s:source.gather_candidates(args, context) "{{{
 
 	" 引数がない場合は、空白を設定する
 	let args = len(a:args) ? a:args : ['']

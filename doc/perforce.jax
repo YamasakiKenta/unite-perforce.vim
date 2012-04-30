@@ -37,17 +37,17 @@ Commands					*unite-perforce-commands*
 ------------------------------------------------------------------------------
 変数						*unite-perforce-variables*
 
-g:pf_user_changes_only				*g:pf_user_changes_only*
+g:pf_setting.bool.user_changes_only.value			*g:pf_setting.bool.user_changes_only.value*
 		user name で changelist を filter する
 
 		初期値は、TRUE である
 
-g:pf_client_changes_only			*g:pf_client_changes_only*
+g:pf_setting.bool.client_changes_only.value			*g:pf_setting.bool.client_changes_only.value*
 		client name で changelist を filter する
 
 		初期値は、TRUE である
 
-g:pf_is_submit_flg				*g:pf_is_submit_flg*
+g:pf_setting.bool.is_submit_flg.value				*g:pf_setting.bool.is_submit_flg.value*
 		submit するかどうかの設定
 
 		初期値は、TRUE である
@@ -57,17 +57,17 @@ g:pf_ports]					*g:pf_ports*
 >
 	    	g:pf_ports = ['1818',...]
 <
-g:pf_is_out_flg					*g:pf_is_out_flg*
+g:pf_setting.bool.is_out_flg.value					*g:pf_setting.bool.is_out_flg.value*
 		結果出力を行う
 
 		初期値は、TRUE である
 
-g:pf_is_echo_flg				*g:pf_is_echo_flg*
+g:pf_setting.bool.is_out_echo_flg.value				*g:pf_setting.bool.is_out_echo_flg.value*
 		結果出力をechoで行う
 
 		初期値は、TRUE である
 
-g:pf_is_vimdiff_flg				*g:pf_is_vimdiff_flg*
+g:pf_setting.bool.is_vimdiff_flg.value				*g:pf_setting.bool.is_vimdiff_flg.value*
 	" 	vimdiffで比較する
 
 		初期値は、TRUE である
@@ -80,7 +80,7 @@ g:pf_diff_tool					*g:pf_diff_tool*
 $PFTMP						*$PFTMP*
 		比較する時の一時 file の名前
 
-g:ClientMove_recursive_flg			*g:ClientMove_recursive_flg*
+g:pf_setting.bool.ClientMove_recursive_flg.value			*g:pf_setting.bool.ClientMove_recursive_flg.value*
 		|ClientMove|で再帰検索をするか
 	
 		初期値は、FALSE である
