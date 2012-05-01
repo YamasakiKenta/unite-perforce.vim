@@ -52,7 +52,7 @@ g:pf_setting.bool.is_submit_flg.value				*g:pf_setting.bool.is_submit_flg.value*
 
 		‰Šú’l‚ÍATRUE ‚Å‚ ‚é
 
-g:pf_ports]					*g:pf_ports*
+g:pf_ports					*g:pf_ports*
 		port ‚ÌÝ’è
 >
 	    	g:pf_ports = ['1818',...]

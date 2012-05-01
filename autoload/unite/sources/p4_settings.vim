@@ -13,7 +13,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	for type in keys(g:pf_setting)
 		let rtns += map( keys(g:pf_setting[type]), "{
 					\ 'word' : <SID>get_word_from_pf_setting(type, v:val),
-					\ 'kind' : <SID>get_kind_from_pf_setting(g:pf_setting[type][v:val].value),
+					\ 'kind' : <SID>get_kind_from_pf_setting(g:pf_setting[type][v:val].value.common),
 					\ 'action__valname' : v:val,
 					\ }")
 	endfor
@@ -29,7 +29,7 @@ endfunction "}}}
 " @retval		word		unite word
 " ********************************************************************************
 function! s:get_word_from_pf_setting(typestr, val) "{{{
-	let str = string(g:pf_setting[a:typestr][a:val].value)
+	let str = string(g:pf_setting[a:typestr][a:val].value.common)
 	return printf('%-5s : %-30s : %-30s = %s', a:typestr, a:val, g:pf_setting[a:typestr][a:val].description, str)
 endfunction "}}}
 

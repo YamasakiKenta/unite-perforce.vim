@@ -25,7 +25,7 @@
 " @var	g:ClientMove_diffcmd
 " 	Diff Tool
 "
-" @var	g:pf_setting.bool.ClientMove_recursive_flg.value
+" @var	g:pf_setting.bool.ClientMove_recursive_flg.value.common
 " 	Folder ‚ğÄ‹A“I‚ÉŒŸõ‚·‚é‚©
 "
 " @var	g:ClientMove_defoult_root
@@ -42,7 +42,7 @@ function! s:get_files_for_clientMove(dirs) "{{{
 " ********************************************************************************
 
 	" Ä‹AŒŸõ
-	let recursive_flg = g:pf_setting.bool.ClientMove_recursive_flg.value
+	let recursive_flg = g:pf_setting.bool.ClientMove_recursive_flg.value.common
 
 	let datas = []
 	let paths  = []

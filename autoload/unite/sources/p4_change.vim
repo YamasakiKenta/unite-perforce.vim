@@ -43,7 +43,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 
 	" 表示するクライアント名の取得
-	let outs = g:pf_setting.bool.client_changes_only.value ? 
+	let outs = g:pf_setting.bool.client_changes_only.value.common ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
 				\ perforce#cmds('clients'.perforce#get_PFUSER_for_pfcmd())
 
@@ -107,7 +107,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 
 	" 表示するクライアント名の取得
-	let outs = g:pf_setting.bool.client_changes_only.value ? 
+	let outs = g:pf_setting.bool.client_changes_only.value.common ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
 				\ perforce#cmds('clients'.perforce#get_PFUSER_for_pfcmd())
 

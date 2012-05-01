@@ -3,7 +3,7 @@ function! unite#kinds#k_p4_settings#define()
 endfunction
 
 " èIóπä÷êî
-function! s:out() "{{{
+function! s:common_out() "{{{
 	call unite#force_redraw()
 	call perforce#save($PFDATA)
 endfunction "}}}
@@ -22,11 +22,11 @@ let s:kind.action_table.a_toggle = {
 function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
-		let g:pf_setting.bool[name].value = 1 - g:pf_setting.bool[name].value
+		let g:pf_setting.bool[name].value.common = 1 - g:pf_setting.bool[name].value.common
 	endfor
 
 	" ï\é¶ÇÃçXêV
-	call <SID>out()
+	call <SID>common_out()
 endfunction "}}}
 
 let s:kind.action_table.a_set_enable = {
@@ -37,9 +37,9 @@ let s:kind.action_table.a_set_enable = {
 function! s:kind.action_table.a_set_enable.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
-		let g:pf_setting.bool[name].value = 1
+		let g:pf_setting.bool[name].value.common = 1
 	endfor
-	call <SID>out()
+	call <SID>common_out()
 endfunction "}}}
 
 let s:kind.action_table.a_set_disable = {
@@ -50,9 +50,9 @@ let s:kind.action_table.a_set_disable = {
 function! s:kind.action_table.a_set_disable.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
-		let g:pf_setting.bool[name].value = 0
+		let g:pf_setting.bool[name].value.common = 0
 	endfor
-	call <SID>out()
+	call <SID>common_out()
 endfunction "}}}
 
 let s:k_p4_settings_bool = s:kind
@@ -70,11 +70,11 @@ let s:kind.action_table.a_set_str = {
 			\ }
 function! s:kind.action_table.a_set_str.func(candidate) "{{{
 	let name = a:candidate.action__valname
-	let tmp = input('new '.name.' > ',g:pf_setting.str[name].value)
+	let tmp = input('new '.name.' > ',g:pf_setting.str[name].value.common)
 	if tmp != ""
-		let g:pf_setting.str[name].value = tmp
+		let g:pf_setting.str[name].value.common = tmp
 	endif
-	call <SID>out()
+	call <SID>common_out()
 endfunction "}}}
 
 let s:k_p4_settings_str = s:kind
@@ -87,16 +87,17 @@ let s:kind = {
 			\ }
 
 let s:kind.action_table.a_set_strs = {
-			\ 'description' : 'ñºëOÇÃìoò^',
+			\ 'description' : 'ñºëOÇÃìoò^ ( ÉäÉXÉg ) ',
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_set_strs.func(candidate) "{{{
 	let name = a:candidate.action__valname
-	let tmp = input('new '.name.'(list) > ',g:pf_setting.str[name].value)
+	let tmp = input('new '.name.'(list) > ',string(g:pf_setting.str[name].value.common))
 	if tmp != ""
-		let g:pf_setting.str[name].value = split(tmp)
+		let g:pf_setting.str[name].value.common = split(tmp)
+		exe 'let g:pf_setting.str[name].value.common = '.tmp
 	endif
-	call <SID>out()
+	call <SID>common_out()
 endfunction "}}}
 
 let s:k_p4_settings_strs = s:kind
