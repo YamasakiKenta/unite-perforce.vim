@@ -1,11 +1,11 @@
 function! unite#kinds#k_p4_settings#define()
-	return [s:k_p4_settings_bool, s:k_p4_settings_str, s:k_p4_settings_strs]
+	return [s:k_p4_settings_bool, s:k_p4_settings_strs, s:k_p4_select]
 endfunction
 
 " 終了関数
 function! s:common_out() "{{{
-	call unite#force_redraw()
 	call perforce#save($PFDATA)
+	call unite#force_redraw()
 endfunction "}}}
 
 let s:kind = { 
@@ -13,16 +13,17 @@ let s:kind = {
 			\ 'default_action' : 'a_toggle',
 			\ 'action_table' : {},
 			\ }
-
+" {{{
 let s:kind.action_table.a_toggle = {
 			\ 'is_selectable' : 1,
-			\ 'description' : '現在の設定を反転させる',
+			\ 'description' : '設定の切替',
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
-		let g:pf_setting.bool[name].value.common = 1 - g:pf_setting.bool[name].value.common
+		let kind = candidate.action__kind
+		let g:pf_setting[name][kind] = 1 - g:pf_setting[name][kind]
 	endfor
 
 	" 表示の更新
@@ -37,7 +38,8 @@ let s:kind.action_table.a_set_enable = {
 function! s:kind.action_table.a_set_enable.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
-		let g:pf_setting.bool[name].value.common = 1
+		let kind = candidate.action__kind
+		let g:pf_setting.name][kind] = 1
 	endfor
 	call <SID>common_out()
 endfunction "}}}
@@ -50,41 +52,66 @@ let s:kind.action_table.a_set_disable = {
 function! s:kind.action_table.a_set_disable.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
-		let g:pf_setting.bool[name].value.common = 0
+		let kind = candidate.action__kind
+		let g:pf_setting.name][kin] = 0
 	endfor
 	call <SID>common_out()
 endfunction "}}}
 
 let s:k_p4_settings_bool = s:kind
 unlet s:kind
-
-let s:kind = { 
-			\ 'name' : 'k_p4_settings_str',
-			\ 'default_action' : 'a_set_str',
-			\ 'action_table' : {},
-			\ }
-
-let s:kind.action_table.a_set_str = {
-			\ 'description' : '名前の登録',
-			\ 'is_quit' : 0,
-			\ }
-function! s:kind.action_table.a_set_str.func(candidate) "{{{
-	let name = a:candidate.action__valname
-	let tmp = input('new '.name.' > ',g:pf_setting.str[name].value.common)
-	if tmp != ""
-		let g:pf_setting.str[name].value.common = tmp
-	endif
-	call <SID>common_out()
-endfunction "}}}
-
-let s:k_p4_settings_str = s:kind
-unlet s:kind
+"}}}
 
 let s:kind = { 
 			\ 'name' : 'k_p4_settings_strs',
-			\ 'default_action' : 'a_set_strs',
+			\ 'default_action' : 'a_toggles',
 			\ 'action_table' : {},
 			\ }
+"{{{
+let s:kind.action_table.a_toggle = {
+			\ 'is_selectable' : 1,
+			\ 'description' : '設定の切替',
+			\ 'is_quit' : 0,
+			\ }
+function! s:kind.action_table.a_toggle.func(candidates) "{{{
+
+	for candidate in a:candidates
+		let name = candidate.action__valname
+		let kind = candidate.action__kind
+
+		" 文字の表示
+		let len  = len(g:pf_setting[name][kind]) - 1
+		let max  = float2nr(pow(2, len))
+
+		let val = g:pf_setting[name][kind][0] * 2 
+
+		" 判定できない場合
+		if val < 1 || val >= max 
+			let val = 1
+		endif
+
+		let g:pf_setting[name][kind][0] = val
+
+	endfor
+	call <SID>common_out()
+
+
+endfunction "}}}
+
+let s:kind.action_table.a_toggles = {
+			\ 'description' : '複数選択',
+			\ 'is_quit' : 0,
+			\ }
+function! s:kind.action_table.a_toggles.func(candidate) "{{{
+
+	" todo : unite source で複数選択をする
+	let name = a:candidate.action__valname
+	let kind = a:candidate.action__kind
+
+	call unite#start_temporary([['p4_select', {'name' : name, 'kind' : kind}]])
+
+	call <SID>common_out()
+endfunction "}}}
 
 let s:kind.action_table.a_set_strs = {
 			\ 'description' : '名前の登録 ( リスト ) ',
@@ -92,13 +119,47 @@ let s:kind.action_table.a_set_strs = {
 			\ }
 function! s:kind.action_table.a_set_strs.func(candidate) "{{{
 	let name = a:candidate.action__valname
-	let tmp = input('new '.name.'(list) > ',string(g:pf_setting.str[name].value.common))
+	let kind = a:candidate.action__kind
+	let tmp = input("",string(g:pf_setting[name][kind]))
+
 	if tmp != ""
-		let g:pf_setting.str[name].value.common = split(tmp)
-		exe 'let g:pf_setting.str[name].value.common = '.tmp
+		exe 'let g:pf_setting[name][kind] = '.tmp
 	endif
+
 	call <SID>common_out()
 endfunction "}}}
 
 let s:k_p4_settings_strs = s:kind
 unlet s:kind
+"}}}
+
+let s:kind = { 
+			\ 'name' : 'k_p4_select',
+			\ 'default_action' : 'a_toggle',
+			\ 'action_table' : {},
+			\ }
+"{{{
+let s:kind.action_table.a_toggle = {
+			\ 'is_selectable' : 1,
+			\ 'description' : '設定の切替',
+			\ }
+function! s:kind.action_table.a_toggle.func(candidates) "{{{
+	let val = 0
+	for candidate in a:candidates
+		let val += candidate.action__bitnum
+	endfor
+
+	let name = a:candidates[0].action__name
+	let kind = a:candidates[0].action__kind
+	let g:pf_setting[name][kind][0] = val
+	
+	call <SID>common_out()
+
+	" 開きなおす
+	call unite#start([['p4_settings', kind]])
+endfunction "}}}
+
+let s:k_p4_select = s:kind
+unlet s:kind
+"}}}
+

@@ -1,15 +1,14 @@
+" ********************************************************************************
+" DIFFツールの登録
+" @param[in]	file	過去のファイル
+" @param[in]	file2	現在のファイル
+" @var g:pf_setting.is_vimdiff_flg.common
+" 	TRUE 	vimdiffで比較する
+" @var g:pf_diff_tool
+" 	DiffTool名
+" ********************************************************************************
 function! g:PerforceDiff(file,file2) "{{{
-	" ********************************************************************************
-	" DIFFツールの登録
-	" @param[in]	file	過去のファイル
-	" @param[in]	file2	現在のファイル
-	" @var g:pf_setting.bool.is_vimdiff_flg.value.common
-	" 	TRUE 	vimdiffで比較する
-	" @var g:pf_diff_tool
-	" 	DiffTool名
-	"
-	" ********************************************************************************
-	if g:pf_setting.bool.is_vimdiff_flg.value.common
+	if g:pf_setting.is_vimdiff_flg.common
 		" タブで新しいファイルを開く
 		exe 'tabe' a:file2
 		exe 'vs' a:file
@@ -20,7 +19,7 @@ function! g:PerforceDiff(file,file2) "{{{
 		" キーマップの登録
 		call okazu#Map_diff()
 	else
-		call system(g:pf_setting.str.diff_tool.value.common.' '.okazu#Get_kk(a:file).' '.okazu#Get_kk(a:file2))
+		call system(perforce#get_pf_settings('diff_tool','common').' '.okazu#Get_kk(a:file).' '.okazu#Get_kk(a:file2))
 	endif
 
 endfunction "}}}

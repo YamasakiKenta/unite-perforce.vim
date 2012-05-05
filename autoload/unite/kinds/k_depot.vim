@@ -84,7 +84,6 @@ endfunction "}}}
 
 let s:kind.action_table.a_open = {
 			\ 'description' : '開く',
-			\ 'is_quit' : 0, 
 			\ }
 function! s:kind.action_table.a_open.func(candidate) "{{{
 	let path = <SID>find_filepath_from_depot(a:candidate) 
@@ -194,7 +193,6 @@ endfunction "}}}
 let s:kind.action_table.a_p4_reopen = {
 			\ 'is_selectable' : 1 ,
 			\ 'description' : 'チェンジリストの変更' ,
-			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind.action_table.a_p4_reopen.func(candidates) "{{{
 	let g:reopen_depots= [] " # 初期化

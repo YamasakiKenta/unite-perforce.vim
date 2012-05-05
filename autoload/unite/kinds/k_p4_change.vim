@@ -105,8 +105,8 @@ let s:kind.action_table.a_p4_change_submit = {
 			\ }
 function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 
-	if g:pf_setting.bool.is_submit_flg.value.common == 0
-		echo ' g:pf_setting.bool.is_submit_flg.value.common is not TRUE'
+	if g:pf_setting.is_submit_flg.common == 0
+		echo ' g:pf_setting.is_submit_flg.common is not TRUE'
 		return 
 	else
 
