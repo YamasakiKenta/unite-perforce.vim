@@ -12,8 +12,25 @@ let s:kind.action_table.a_pf_settings = {
 			\ }
 function! s:kind.action_table.a_pf_settings.func(candidate) "{{{
 
-	let source = a:candidate.source
-
 	" İ’è‰æ–Ê‚ğ•\¦‚·‚é
-	call unite#start_temporary([['p4_settings', source]])
+	call unite#start_temporary([['p4_settings', a:candidate.source]])
+endfunction "}}}
+
+let s:kind.action_table.a_add_fix = {
+			\ 'is_selectable' : 1 ,
+			\ 'description' : 'quickfix‚É’Ç‰Á',
+			\ }
+function! s:kind.action_table.a_add_fix.func(candidates) "{{{
+
+	" ‰Šú‰»
+	cexpr ''	
+
+	for candidate in a:candidates
+		let depot = candidate.action__depot
+		let path = perforce#get_path_from_depot(depot)
+
+		" ’Ç‰Á‚·‚é
+		caddexpr path.':1:1'
+	endfor
+
 endfunction "}}}

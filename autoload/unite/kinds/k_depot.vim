@@ -53,7 +53,7 @@ let s:kind = { 'name' : 'k_depot',
 			\ 'action_table' : {},
 			\ 'parents' : ['k_p4'],
 			\ }
-"call unite#define_kind(s:kind)
+call unite#define_kind(s:kind)
 
 function! s:find_filepath_from_depot(candidate) "{{{
 	" ********************************************************************************
@@ -198,8 +198,6 @@ function! s:kind.action_table.a_p4_reopen.func(candidates) "{{{
 
 	" 変更先を決める
 	call unite#start_temporary(['p4_changes_pending_reopen'])
-	"Unite p4_changes_pending -default-action=a_p4_change_reopen
-	"call unite#start([['p4_changes_pending']]) " # defaultアクションの設定方法がわからない
 endfunction "}}}
 
 let s:kind.action_table.a_p4_filelog = { 
