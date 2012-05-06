@@ -1,18 +1,20 @@
 "vim : set fdm = marker :
 function! unite#kinds#k_p4_change#define()
-	return [ s:k_p4_change, s:k_p4_change_reopen ]
+	return [ s:kind_k_p4_change, s:kind_k_p4_change_reopen ]
 endfunction
 
 " ********************************************************************************
-let s:kind = { 'name' : 'k_p4_change_reopen',
+" kind - k_p4_change_reopen
+" ********************************************************************************
+let s:kind = {
+			\ 'name' : 'k_p4_change_reopen',
 			\ 'default_action' : 'a_p4_change_reopen',
 			\ 'action_table' : {},
+			\ 'parents' : ['k_p4'],
 			\ }
 
-" --------------------------------------------------------------------------------
-
 let s:kind.action_table.a_p4_change_reopen = {
-			\ 'description' : 'チェンジリストの変更' ,
+			\ 'description' : 'チェンジリストの変更 ( reopen )' ,
 			\ 'is_quit' : 0,
 			\ } 
 function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
@@ -43,14 +45,35 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 
 endfunction "}}}
 
-let s:k_p4_change_reopen = s:kind
+let s:kind_k_p4_change_reopen = s:kind
 unlet s:kind
+
+" ********************************************************************************
+" kind - k_p4_change
 " ********************************************************************************
 let s:kind = { 'name' : 'k_p4_change',
 			\ 'default_action' : 'a_p4_change_opened',
 			\ 'action_table' : {},
+			\ 'parents' : ['k_p4'],
 			\ }
-" --------------------------------------------------------------------------------
+
+" 共通
+let s:kind.action_table.delete = {
+			\ 'is_selectable' : 1,
+			\ 'description' : 'チェンジリストの削除' ,
+			\ 'is_quit' : 0,
+			\ }
+function! s:kind.action_table.delete.func(candidates) "{{{
+	let i = 1
+	for l:candidate in a:candidates
+		let num = l:candidate.action__chnum
+		let out = system('p4 change -d '.num)
+		let outs = split(out,'\n')
+		call perforce#LogFile(outs)
+		let i += len(outs)
+	endfor
+endfunction "}}}
+
 "複数選択可能
 let s:kind.action_table.a_p4_change_opened = { 
 			\ 'is_selectable' : 1, 
@@ -82,22 +105,6 @@ function! s:kind.action_table.a_p4_change_info.func(candidates) "{{{
 	call perforce#LogFile(outs)
 endfunction "}}}
 
-let s:kind.action_table.a_p4_change_delete = {
-			\ 'is_selectable' : 1,
-			\ 'description' : 'チェンジリストの削除' ,
-			\ 'is_quit' : 0,
-			\ }
-function! s:kind.action_table.a_p4_change_delete.func(candidates) "{{{
-	let i = 1
-	for l:candidate in a:candidates
-		let num = l:candidate.action__chnum
-		let out = system('p4 change -d '.num)
-		let outs = split(out,'\n')
-		call perforce#LogFile(outs)
-		let i += len(outs)
-	endfor
-endfunction "}}}
-
 let s:kind.action_table.a_p4_change_submit = {
 			\ 'is_selectable' : 1,
 			\ 'description' : 'サブミット' ,
@@ -105,8 +112,8 @@ let s:kind.action_table.a_p4_change_submit = {
 			\ }
 function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 
-	if g:pf_setting.is_submit_flg.common == 0
-		echo ' g:pf_setting.is_submit_flg.common is not TRUE'
+	if g:pf_settings.is_submit_flg.common == 0
+		echo ' g:pf_settings.is_submit_flg.common is not TRUE'
 		return 
 	else
 
@@ -175,10 +182,16 @@ let s:kind.action_table.a_p4_change_rename = {
 			\  'description' : '名前の変更' ,
 			\ 'is_quit' : 0,
 			\ }
+function! s:get_chname_from_change(str) "{{{
+	let str = a:str
+	let str = substitute(str, '.\{-}''', '', '')
+	let str = substitute(str, '''$', '', '')
+	return str
+endfunction "}}}
 function! s:kind.action_table.a_p4_change_rename.func(candidate) "{{{
 	let chnum = a:candidate.action__chnum
-	"let chname = input('ChangeList Comment (change): '.a:candidate.action__chname, a:candidate.action__chname)
-	let chname = input('ChangeList Comment (change): ')
+	let chname = <SID>get_chname_from_change(a:candidate.word)
+	let chname = input(chname.'-> ', chname)
 
 	" 入力がない場合は、実行しない
 	if chname =~ ""
@@ -187,7 +200,7 @@ function! s:kind.action_table.a_p4_change_rename.func(candidate) "{{{
 	endif
 endfunction "}}}
 
-let s:k_p4_change = s:kind
+let s:kind_k_p4_change = s:kind
 unlet s:kind
 
 " ********************************************************************************

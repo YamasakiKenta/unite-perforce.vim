@@ -2,10 +2,13 @@ function! unite#kinds#k_p4_jobs#define()
 	return s:kind
 endfunction
 
+" ********************************************************************************
+" kind - k_p4_jobs
+" ********************************************************************************
 let s:kind = { 
 			\ 'name' : 'k_p4_jobs',
 			\ 'action_table' : {},
-			\ 'parents' : [],
+			\ 'parents' : ['k_p4'],
 			\ }
 
 let s:kind.action_table.a_p4_fixes = { 

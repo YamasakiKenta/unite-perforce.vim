@@ -1,8 +1,6 @@
 " ********************************************************************************
 " depotで操作できるもの
-" 
 " ********************************************************************************
-"
 "
 function! unite#kinds#k_depot#define()
 	return s:kind
@@ -53,11 +51,10 @@ call <SID>setPfcmd('k_depot','revert','元に戻す ( 強制 )')
 let s:kind = { 'name' : 'k_depot',
 			\ 'default_action' : 'a_open',
 			\ 'action_table' : {},
-			\ 'parents' : [],
+			\ 'parents' : ['k_p4'],
 			\ }
-call unite#define_kind(s:kind)
+"call unite#define_kind(s:kind)
 
-" ファイルを開く
 function! s:find_filepath_from_depot(candidate) "{{{
 	" ********************************************************************************
 	" 編集するファイル名を取得する 
@@ -110,7 +107,6 @@ function! s:kind.action_table.a_p4_files.func(candidates) "{{{
 	call okazu#LogFile('p4_files')
 	call append(0,outs)
 endfunction "}}}
-
 
 let s:kind.action_table.a_p4_move = {
 			\ 'is_selectable' : 1 ,

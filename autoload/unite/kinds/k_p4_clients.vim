@@ -2,10 +2,14 @@ function! unite#kinds#k_p4_clients#define()
 	return s:kind
 endfunction
 
+" ********************************************************************************
+" kind - k_p4_clients
+" ********************************************************************************
 let s:kind = {
 			\ 'name' : 'k_p4_clients',
 			\ 'default_action' : 'a_p4_client_set',
 			\ 'action_table' : {},
+			\ 'parents' : ['k_p4'],
 			\}
 call unite#define_kind(s:kind)
 

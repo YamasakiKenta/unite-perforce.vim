@@ -10,19 +10,6 @@ function! s:get_ClientName_from_changes(str) "{{{
 	let str = substitute(a:str,'\*pending\*','','') " # pendingが含まれていたら削除
 	return substitute(str, '.*change \d* on \d\d\d\d\/\d\d\/\d\d\ by .\{-}@\(.\{-}\) ''.*','\1','')
 endfunction "}}}
-function! s:get_pfchanges(outs) "{{{
-	let outs = a:outs
-	let candidates = map( outs, "{
-				\ 'word' : v:val,
-				\ 'kind' : 'k_p4_change',
-				\ 'action__chnum' : perforce#get_ChangeNum_from_changes(v:val),
-				\ 'action__chname' : '',
-				\ 'action__clname' : <SID>get_ClientName_from_changes(v:val),
-				\ 'action__port' : $PFPORT,
-				\ }")
-
-	return candidates
-endfunction "}}}
 
 " ********************************************************************************
 " source - p4_changes_pending
@@ -43,7 +30,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 
 	" 表示するクライアント名の取得
-	let outs = g:pf_setting.client_changes_only.common ? 
+	let outs = g:pf_settings.client_changes_only.common ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
 				\ perforce#cmds('clients'.perforce#get_PFUSER_for_pfcmd())
 
@@ -60,7 +47,7 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	"let outs = perforce#cmds('changes '.perforce#get_PFUSER_for_pfcmd().perforce#get_PFCLIENTNAME_for_pfcmd().' -s pending')
 	let outs = perforce#cmds('changes -s pending')
-	let rtn += <SID>get_pfchanges(outs)
+	let rtn += <SID>get_pfchanges(outs, 'k_p4_change')
 	return rtn
 endfunction "}}}
 function! s:source.change_candidates(args, context) "{{{
@@ -105,9 +92,9 @@ function! s:source.gather_candidates(args, context) "{{{
 	" @param[in]	args				depot
 	" @param[in]	action__path		チェンジリストの変更で使用	
 	" ********************************************************************************
-
+	"
 	" 表示するクライアント名の取得
-	let outs = g:pf_setting.client_changes_only.common ? 
+	let outs = g:pf_settings.client_changes_only.common ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
 				\ perforce#cmds('clients'.perforce#get_PFUSER_for_pfcmd())
 
@@ -124,7 +111,7 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	"let outs = perforce#cmds('changes '.perforce#get_PFUSER_for_pfcmd().perforce#get_PFCLIENTNAME_for_pfcmd().' -s pending')
 	let outs = perforce#cmds('changes -s pending')
-	let rtn += <SID>get_pfchanges(outs)
+	let rtn += <SID>get_pfchanges(outs, 'k_p4_change_reopen')
 	return rtn
 endfunction "}}}
 function! s:source.change_candidates(args, context) "{{{
@@ -165,8 +152,26 @@ function! s:source.gather_candidates(args, context) "{{{
 	"let outs = perforce#cmds('changes '.perforce#get_PFUSER_for_pfcmd().perforce#get_PFCLIENTNAME_for_pfcmd().' -s submitted')
 	"let outs = perforce#cmds('changes '.perforce#get_PFUSER_for_pfcmd().' -s submitted')
 	let outs = perforce#cmds('changes -s submitted')
-	return <SID>get_pfchanges(outs)
+	return <SID>get_pfchanges(outs, 'k_p4_change')
 endfunction "}}}
 
 let s:source_p4_changes_submitted = s:source
 unlet s:source 
+
+" ********************************************************************************
+" subroutine
+" ********************************************************************************
+function! s:get_pfchanges(outs,kind) "{{{
+	let outs = a:outs
+	let candidates = map( outs, "{
+				\ 'word' : v:val,
+				\ 'kind' : a:kind,
+				\ 'action__chnum' : perforce#get_ChangeNum_from_changes(v:val),
+				\ 'action__chname' : '',
+				\ 'action__clname' : <SID>get_ClientName_from_changes(v:val),
+				\ 'action__port' : $PFPORT,
+				\ }")
+
+	return candidates
+endfunction "}}}
+

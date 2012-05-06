@@ -2,13 +2,13 @@
 " DIFFツールの登録
 " @param[in]	file	過去のファイル
 " @param[in]	file2	現在のファイル
-" @var g:pf_setting.is_vimdiff_flg.common
+" @var g:pf_settings.is_vimdiff_flg.common
 " 	TRUE 	vimdiffで比較する
 " @var g:pf_diff_tool
 " 	DiffTool名
 " ********************************************************************************
 function! g:PerforceDiff(file,file2) "{{{
-	if g:pf_setting.is_vimdiff_flg.common
+	if g:pf_settings.is_vimdiff_flg.common
 		" タブで新しいファイルを開く
 		exe 'tabe' a:file2
 		exe 'vs' a:file

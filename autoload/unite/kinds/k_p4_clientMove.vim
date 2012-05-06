@@ -2,10 +2,13 @@ function! unite#kinds#k_p4_clientMove#define()
 	return s:kind
 endfunction
 
-"p4 k_clientMove
+"********************************************************************************
+"kind k_clientMove
+"********************************************************************************
 let s:kind = { 'name' : 'k_p4_clientMove',
 			\ 'default_action' : 'a_merge',
 			\ 'action_table' : {},
+			\ 'parents' : ['k_p4'],
 			\ }
 call unite#define_kind(s:kind)
 

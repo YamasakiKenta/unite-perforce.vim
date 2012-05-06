@@ -2,12 +2,15 @@ function! unite#sources#p4_settings#define()
 	return [s:source_p4_select, s:source_p4_settings]
 endfunction
 
+" ********************************************************************************
+" source - p4_settings
+" ********************************************************************************
 let s:source = {
 			\ 'name' : 'p4_settings',
 			\ 'description' : 'unite-perforce.vim ÇÃê›íË',
 			\ 'is_quit' : 0,
-			\ 'hooks' : {},
 			\ 'syntax' : 'uniteSource__p4_settings',
+			\ 'hooks' : {},
 			\ }
 function! s:source.hooks.on_syntax(args, context) "{{{
 	syntax match uniteSource__p4_settings_choose /<.*>/ containedin=uniteSource__p4_settings contained
@@ -22,9 +25,9 @@ function! s:source.gather_candidates(args, context) "{{{
 		let kind = 'common'
 	endif
 
-	return map( keys(g:pf_setting), "{
-				\ 'word' : <SID>get_word_from_pf_setting(v:val, 'common'),
-				\ 'kind' : <SID>get_kind_from_pf_setting(g:pf_setting[v:val].common),
+	return map( keys(g:pf_settings), "{
+				\ 'word' : <SID>get_word_from_pf_setting(v:val, kind),
+				\ 'kind' : <SID>get_kind_from_pf_setting(g:pf_settings[v:val][kind]),
 				\ 'action__valname' : v:val,
 				\ 'action__kind' : kind,
 				\ }")
@@ -32,7 +35,7 @@ function! s:source.gather_candidates(args, context) "{{{
 endfunction "}}}
 
 " ********************************************************************************
-" source - source_p4_settings
+" source - p4_select
 " ********************************************************************************
 let s:source_p4_settings = s:source
 unlet s:source 
@@ -51,7 +54,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	endif
 
 	" à¯êîÇéÊìæÇ∑ÇÈ
-	let words = g:pf_setting[name][kind][1:]
+	let words = g:pf_settings[name][kind][1:]
 
 	let val = 1
 	let rtns = []
@@ -123,7 +126,13 @@ endfunction "}}}
 " @retval		word		unite word
 " ********************************************************************************
 function! s:get_word_from_pf_setting(val, kind) "{{{
-	let val = g:pf_setting[a:val][a:kind]
+
+	" ñ¢íËã`Ç»ÇÁã§í ê›íËÇë„ì¸Ç∑ÇÈ
+	if exists('g:pf_settings[a:val][a:kind]') == 0
+		let g:pf_settings[a:val][a:kind] = g:pf_settings[a:val].common
+	endif
+
+	let val = g:pf_settings[a:val][a:kind]
 	let type = type(val)
 
 	if type == 0
@@ -131,7 +140,7 @@ function! s:get_word_from_pf_setting(val, kind) "{{{
 	else
 		let str = <SID>get_word_from_strs(val)
 	endif
-	return printf('%-50s - %s', g:pf_setting[a:val].description, str)
+	return printf('%-50s - %s', g:pf_settings[a:val].description, str)
 endfunction "}}}
 
 " ********************************************************************************
@@ -149,5 +158,4 @@ function! s:get_kind_from_pf_setting(val) "{{{
 	endif
 	return kind
 endfunction "}}}
-
 

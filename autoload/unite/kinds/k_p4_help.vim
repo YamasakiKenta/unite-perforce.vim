@@ -2,6 +2,9 @@ function! unite#kinds#k_p4_help#define()
 	return s:kind
 endfunction
 
+" ********************************************************************************
+" kind - k_p4_help
+" ********************************************************************************
 let s:kind = { 
 			\ 'name' : 'k_p4_help',
 			\ 'default_action' : 'a_help',

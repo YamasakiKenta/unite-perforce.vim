@@ -17,7 +17,7 @@
 " @var	g:ClientMove_diffcmd
 " 	Diff Tool
 "
-" @var	g:pf_setting.ClientMove_recursive_flg.common
+" @var	g:pf_settings.ClientMove_recursive_flg.common
 " 	Folder を再帰的に検索するか
 "
 " @var	g:ClientMove_defoult_root
@@ -34,7 +34,7 @@ command! -nargs=* ClientMove call <SID>clientMove(<q-args>)
 function! s:get_files_for_clientMove(dirs) "{{{	
 
 	" 再帰検索
-	let recursive_flg = g:pf_setting.ClientMove_recursive_flg.common
+	let recursive_flg = g:pf_settings.ClientMove_recursive_flg.common
 
 	let datas = []
 	let paths  = []
@@ -138,6 +138,9 @@ function! s:clientMove(...) "{{{
 	else
 		let dirs = [tmp]
 	endif
+
+	" root の表示
+	echo ' Root : '.string(dirs)
 
 	let datas = <SID>get_files_for_clientMove(dirs)
 

@@ -2,10 +2,14 @@ function! unite#kinds#k_p4_filelog#define()
 	return s:kind
 endfunction
 
+" ********************************************************************************
+" kind - k_p4_filelog
+" ********************************************************************************
 let s:kind = {
 			\ 'name' : 'k_p4_filelog',
 			\ 'default_action' : 'a_p4_print',
 			\ 'action_table' : {},
+			\ 'parents' : ['k_p4'],
 			\ }
 
 let s:kind.action_table.a_p4_print = {

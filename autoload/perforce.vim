@@ -15,7 +15,7 @@ function! perforce#set_PFUSER(str) "{{{
 endfunction "}}}
 "get
 function! perforce#get_PFUSER_for_pfcmd(...) "{{{
-	return g:pf_setting.user_changes_only.common && g:pfuser !=# "" ? ' -u '.g:pfuser.' ' : ''
+	return g:pf_settings.user_changes_only.common && g:pfuser !=# "" ? ' -u '.g:pfuser.' ' : ''
 endfunction "}}}
 function! perforce#get_PFCLIENTNAME() "{{{
 	return $PFCLIENTNAME
@@ -23,7 +23,7 @@ endfunction "}}}
 "[ ] 使用している場所の変更o
 "コマンドで制御する
 function! perforce#get_PFCLIENTNAME_for_pfcmd(...) "{{{
-	return g:pf_setting.client_changes_only.common && $PFCLIENTNAME !=# "" ? ' -c '.$PFCLIENTNAME.' ' : ''
+	return g:pf_settings.client_changes_only.common && $PFCLIENTNAME !=# "" ? ' -c '.$PFCLIENTNAME.' ' : ''
 endfunction "}}}
 "global
 function! perforce#Get_dd(str) "{{{
@@ -179,7 +179,7 @@ function! perforce#pfChange(str,...) "{{{
 	let tmp = system('p4 change -o '.chnum)                          
 
 	"コメントの編集
-	let tmp = substitute(tmp,'\nDescription:\zs\_.*\ze\nFiles:','\t'.a:str.'\n','') 
+	let tmp = substitute(tmp,'\nDescription:\zs\_.*\ze\(\nFiles:\)\?','\t'.a:str.'\n','') 
 
 	" 新規作成の場合は、ファイルを含まない
 	if chnum == "" | let tmp = substitute(tmp,'\nFiles:\zs\_.*','','') | endif
@@ -311,8 +311,8 @@ function! perforce#LogFile(str) "{{{
 	" @var
 	" ********************************************************************************
 	"
-	if g:pf_setting.is_out_flg.common 
-		if g:pf_setting.is_out_echo_flg.common
+	if g:pf_settings.is_out_flg.common 
+		if g:pf_settings.is_out_echo_flg.common
 			echo a:str
 		else
 			call okazu#LogFile('p4log',a:str)
@@ -400,71 +400,75 @@ endfunction "}}}
 " ********************************************************************************
 function! perforce#init() "{{{
 
-	if exists('g:pf_setting')
+	if exists('g:pf_settings')
 		return
 	else
 		" init
-		let g:pf_setting = {}
+		let g:pf_settings = {}
 
 		" [] ファイルデータを読み込む
 
-		let g:pf_setting.user_changes_only = {
+		let g:pf_settings.user_changes_only = {
 					\ 'common' : 1 ,
 					\ 'description' : '名前でフィルタ',
 					\ }
 
-		let g:pf_setting.client_changes_only = {
+		let g:pf_settings.client_changes_only = {
 					\ 'common' : 1 ,
 					\ 'description' : 'クライアントでフィルタ',
 					\ }
 
-		let g:pf_setting.is_out_flg = {
+		let g:pf_settings.is_out_flg = {
 					\ 'common' : 1 ,
 					\ 'description' : '実行結果を出力する',
 					\ }
 
-		let g:pf_setting.is_out_echo_flg = {
+		let g:pf_settings.is_out_echo_flg = {
 					\ 'common' : 1 ,
 					\ 'description' : 'echo で実行結果を出力する',
 					\ }
 
-		let g:pf_setting.is_submit_flg = {
+		let g:pf_settings.is_submit_flg = {
 					\ 'common' : 1 ,
 					\ 'description' : 'サブミットを許可',
 					\ }
 
-		let g:pf_setting.is_vimdiff_flg = {
+		let g:pf_settings.is_vimdiff_flg = {
 					\ 'common' : 0 ,
 					\ 'description' : 'vimdiff を使用する',
 					\ }
 
-		let g:pf_setting.ClientMove_recursive_flg = {
+		let g:pf_settings.ClientMove_recursive_flg = {
 					\ 'common' : 0 ,
 					\ 'description' : 'ClientMoveで再帰検索をするか',
 					\ }
 
-		let g:pf_setting.diff_tool = {
+		let g:pf_settings.diff_tool = {
 					\ 'common' : [ 1, 'WinMergeU', ],
 					\ 'description' : 'Diff で使用するツール',
 					\ }
 
-		let g:pf_setting.ClientMove_defoult_root = {
+		let g:pf_settings.ClientMove_defoult_root = {
 					\ 'common' : [ 1, 'c:\tmp', 'c:\p4tmp', ],
 					\ 'description' : 'ClientMoveの初期フォルダ',
 					\ }
 
-		let g:pf_setting.ports = {
+		let g:pf_settings.ports = {
 					\ 'common' : [ 1, 'localhost:1818', ] ,
 					\ 'description' : 'perforce port',
 					\ }
 
-		let g:pf_setting.is_quit = {
+		let g:pf_settings.is_quit = {
 					\ 'common' : 0,
 					\ 'description' : '実行後、閉じる',
 					\ }
 
+		let g:pf_settings.show_max = {
+					\ 'common' : 100,
+					\ 'description' : '表示するファイル数',
+					\ }
 		" 設定を読み込む
-		"call perforce#load($PFDATA)
+		call perforce#load($PFDATA)
 
 	endif
 endfunction "}}}
@@ -487,7 +491,7 @@ function! perforce#load(file) "{{{
 	" データを設定する
 	for data in datas
 		let tmp = split(data,"\t")
-		exe 'let g:pf_setting["'.join(tmp[0:-2],'"]["').'"] = '.tmp[-1]
+		exe 'let g:pf_settings["'.join(tmp[0:-2],'"]["').'"] = '.tmp[-1]
 
 		" 型が変わるため、初期化が必要
 	endfor
@@ -503,10 +507,10 @@ function! perforce#save(file) "{{{
 	let datas = []
 
 	let tmp  = ''
-	for type in keys(g:pf_setting)
-		for val in keys(g:pf_setting[type])
+	for type in keys(g:pf_settings)
+		for val in keys(g:pf_settings[type])
 			if val != 'description'
-				let datas += [type."\t".val."\t".string(g:pf_setting[type][val])."\r"]
+				let datas += [type."\t".val."\t".string(g:pf_settings[type][val])."\r"]
 			endif
 		endfor
 	endfor
@@ -518,12 +522,12 @@ endfunction "}}}
 
 " ********************************************************************************
 " 設定データを取得する
-" @param[in]	type		pf_setting の設定の種類
+" @param[in]	type		pf_settings の設定の種類
 " @param[in]	kind		common など, source の種類
 " @retval		rtn 		取得データ
 " ********************************************************************************
 function! perforce#get_pf_settings(type, kind) "{{{
-	let val = g:pf_setting[a:type][a:kind]
+	let val = g:pf_settings[a:type][a:kind]
 	let valtype = type(val)
 
 	if valtype == 3
