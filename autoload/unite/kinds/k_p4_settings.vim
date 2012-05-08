@@ -71,7 +71,7 @@ unlet s:kind
 " ********************************************************************************
 let s:kind = { 
 			\ 'name' : 'k_p4_settings_strs',
-			\ 'default_action' : 'a_toggles',
+			\ 'default_action' : 'a_toggle',
 			\ 'action_table' : {},
 			\ 'parents' : ['k_p4'],
 			\ }

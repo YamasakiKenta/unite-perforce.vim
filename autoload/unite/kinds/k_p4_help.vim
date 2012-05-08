@@ -17,7 +17,7 @@ let s:kind.action_table.a_help = {
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind.action_table.a_help.func(candidates) "{{{
-	call okazu#LogFile('p4log')
+	call okazu#LogFile('p4log', 0)
 	let outs = []
 	for candidate in a:candidates
 		let str = candidate.action__cmd

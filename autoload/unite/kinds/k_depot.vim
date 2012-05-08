@@ -104,7 +104,7 @@ let s:kind.action_table.a_p4_files = {
 function! s:kind.action_table.a_p4_files.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
 	let outs = perforce#cmds('files '.join(depots))
-	call okazu#LogFile('p4_files')
+	call okazu#LogFile('p4_files', 0)
 	call append(0,outs)
 endfunction "}}}
 
@@ -164,14 +164,26 @@ function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 
 endfunction "}}}
 
+let s:kind.action_table.delete = { 
+			\ 'description' : 'ç∑ï™',
+			\ 'is_quit' : 0,
+			\ }
+function! s:kind.action_table.delete.func(candidate) "{{{
+
+	let wnum = winnr()
+	let depot = a:candidate.action__depot
+
+	call okazu#LogFile('diff', 1, perforce#cmds('diff '.depot))
+	exe wnum."wincmd w"
+endfunction "}}}
+
 let s:kind.action_table.a_p4_diff = { 
 			\ 'is_selectable' : 1, 
 			\ 'description' : 'ç∑ï™',
-			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind.action_table.a_p4_diff.func(candidates) "{{{
 	let args = map(copy(a:candidates),"v:val.action__depot")
-	call unite#start([insert(args,'p4_diff')]) 
+	call unite#start_temporary([insert(args,'p4_diff')]) 
 endfunction "}}}
 
 let s:kind.action_table.a_p4_diff_tool = {

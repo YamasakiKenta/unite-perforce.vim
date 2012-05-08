@@ -278,6 +278,9 @@ endfunction "}}}
 function! perforce#cmds(cmd) "{{{
 	" todo
 	" [ ] clientNameをperforceに依存しないようにする
+	" fileter
+	"  - client 
+	"  - user
 
 	if 0 
 		if  g:pf_use_defoult_client == 1 " # 常に更新する
@@ -302,6 +305,7 @@ function! perforce#cmds(cmd) "{{{
 		if bit#and(filet ,g:G_PF_CHANGE)
 		endif
 	endif
+
 	return split(system('p4 '.a:cmd),'\n')
 endfunction "}}}
 function! perforce#LogFile(str) "{{{
@@ -315,7 +319,7 @@ function! perforce#LogFile(str) "{{{
 		if g:pf_settings.is_out_echo_flg.common
 			echo a:str
 		else
-			call okazu#LogFile('p4log',a:str)
+			call okazu#LogFile('p4log', 0, a:str)
 		endif
 	endif
 
@@ -524,41 +528,34 @@ endfunction "}}}
 " 設定データを取得する
 " @param[in]	type		pf_settings の設定の種類
 " @param[in]	kind		common など, source の種類
-" @retval		rtn 		取得データ
+" @retval		rtns 		取得データ
 " ********************************************************************************
 function! perforce#get_pf_settings(type, kind) "{{{
-	let val = g:pf_settings[a:type][a:kind]
+	let val     = g:pf_settings[a:type][a:kind]
 	let valtype = type(val)
 
 	if valtype == 3
 		" リストの場合は、引数で取得する
-		let rtn = <SID>get_pf_settings_from_lists(val)
+		let rtns = <SID>get_pf_settings_from_lists(val)
 	else
-		let rtn = val
+		let rtns = val
 	endif
 
-	return rtn
+	return rtns
 endfunction "}}}
 
 " ********************************************************************************
 " BIT 演算によって、データを取得する
 " @param[in]	datas	{ bit, 文字列, ... } 
-" @retval   	rtns 	取得したデータが複数ある場合は、リストを返す
+" @retval   	rtns 	リストを返す
 " ********************************************************************************
 function! s:get_pf_settings_from_lists(datas) "{{{
 
-	" 有効なリストの取得
+	" 有効なリストの取得 ( 一つ目は、フラグが入っているためスキップする )
 	let nums = bit#get_nums_form_bit(a:datas[0]*2)
 
-	" リストの場合はリストを返す
-	if type(nums) == 3
-		" 有効な文言のみ取得する
-		let rtns = map(copy(nums), 'a:datas[v:val]')
-	else
-		let rtns = a:datas[nums]
-	endif
-
-	return rtns
+	" 有効な引数のみ返す
+	return map(copy(nums), 'a:datas[v:val]')
 
 endfunction "}}}
 

@@ -19,7 +19,7 @@ function! g:PerforceDiff(file,file2) "{{{
 		" キーマップの登録
 		call okazu#Map_diff()
 	else
-		call system(perforce#get_pf_settings('diff_tool','common').' '.okazu#Get_kk(a:file).' '.okazu#Get_kk(a:file2))
+		call system(perforce#get_pf_settings('diff_tool','common')[0].' '.okazu#Get_kk(a:file).' '.okazu#Get_kk(a:file2))
 	endif
 
 endfunction "}}}

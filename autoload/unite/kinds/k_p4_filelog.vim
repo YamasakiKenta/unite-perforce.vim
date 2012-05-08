@@ -21,7 +21,7 @@ function! s:kind.action_table.a_p4_print.func(candidates) "{{{
 		let revnum  = candidate.action__revnum
 
 		" Vim だと、# を入れたらパスが表示される為、離脱文字が必要 
-		call okazu#LogFile(fnamemodify(name,':t').'\#'.revnum) 
+		call okazu#LogFile(fnamemodify(name,':t').'\#'.revnum, 0) 
 		let @b = name
 		let strs = perforce#cmds('print -q '.okazu#Get_kk(name."#".revnum))
 
