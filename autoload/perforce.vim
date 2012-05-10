@@ -471,8 +471,9 @@ function! perforce#init() "{{{
 					\ 'common' : 100,
 					\ 'description' : '表示するファイル数',
 					\ }
+
 		" 設定を読み込む
-		"call perforce#load($PFDATA)
+		call perforce#load($PFDATA)
 
 	endif
 endfunction "}}}

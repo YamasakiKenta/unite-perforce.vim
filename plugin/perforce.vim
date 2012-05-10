@@ -85,6 +85,9 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 		" \ -> /
 		let file = okazu#get_pathSrash(file)
 
+		" 名前がかぶるのを防ぐ
+		"let file = '/'.file.'/'
+
 		" perforce から取得する
 		let tmp_pfpaths = perforce#cmds('have '.perforce#Get_dd(file))
 
@@ -107,7 +110,7 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 				continue
 			endif
 
-			echo tmp_pfpath
+			echo path.' - '. tmp_pfpath
 
 			" 比較するファイルの登録
 			call add(merges, {
@@ -124,15 +127,14 @@ endfunction "}}}
 " ********************************************************************************
 " perforce 上のファイルとマージする 
 " @param[in]	...				root directorys 
-" @retval		g:merges		unite 用の一時ファイル
+" @retval		merges		unite 用の一時ファイル
 " ********************************************************************************
 function! s:clientMove(...) "{{{
 	" Diffツールの取得
 	let defoult_cmd = perforce#get_pf_settings('diff_tool', 'common')[0]
 
-	" 検索するファイルの取得 
-	" 引数がある場合は、引数を使用する
-	if a:0 > 0
+	" 引数があり文字がある場合は、引数を使用する
+	if a:0 > 0 && a:1 != ''
 		let dirs = a:000
 	else
 		let dirs = perforce#get_pf_settings('ClientMove_defoult_root', 'common')
@@ -142,6 +144,7 @@ function! s:clientMove(...) "{{{
 	echo ' Root : '.string(dirs)
 
 	let datas = <SID>get_files_for_clientMove(dirs)
+	
 
 	" 比較するファイルの取得
 	let merges = <SID>get_merge_files_for_clientMove(datas)
@@ -157,8 +160,7 @@ function! s:clientMove(...) "{{{
 		" マージ処理
 		let cmd = defoult_cmd
 	elseif str =~ 'u'
-		let g:merges = merges
-		call unite#start(['p4_clientMove'])
+		call unite#start([insert(merges, 'p4_clientMove')])
 		return
 	else
 		" 終了
