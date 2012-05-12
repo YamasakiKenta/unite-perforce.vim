@@ -27,7 +27,7 @@ function! perforce#get_PFCLIENTNAME_for_pfcmd(...) "{{{
 endfunction "}}}
 "global
 function! perforce#Get_dd(str) "{{{
-	return len(a:str) ? '//...'.okazu#Get_kk(a:str).'...' : ''
+	return len(a:str) ? '//...'.perforce#Get_kk(a:str).'...' : ''
 endfunction "}}}
 function! perforce#pf_diff_tool(file,file2) "{{{
 	call g:PerforceDiff(a:file,a:file2)
@@ -44,7 +44,7 @@ function! perforce#unite_args(source) "{{{
 	else
 		" スペース対策
 		" [ ] p4_diffなどに修正が必要
-		let tmp = a:source.':'.okazu#get_pathSrash(expand("%"))
+		let tmp = a:source.':'.perforce#get_pathSrash(expand("%"))
 		let tmp = substitute(tmp, ' ','\\ ', 'g')
 		let tmp = 'Unite '.tmp
 		echo tmp
@@ -94,15 +94,15 @@ function! perforce#get_paths_from_fname(str) "{{{
 	return perforce#get_paths_from_haves(outs)                  " # ヒットした場合
 endfunction "}}}
 function! perforce#get_path_from_depot(str) "{{{
-	"let out = system('p4 have '.okazu#Get_kk(a:str))
-	let outs = perforce#cmds('have '.okazu#Get_kk(a:str))
+	"let out = system('p4 have '.perforce#Get_kk(a:str))
+	let outs = perforce#cmds('have '.perforce#Get_kk(a:str))
 	let path = perforce#get_path_from_have(outs[0])
 	return path
 endfunction "}}}
 function! perforce#get_ClientPathFromName(str) "{{{
 	let str = system('p4 clients | grep '.a:str) " # ref 直接データをもらう方法はないかな
 	let path = substitute(str,'.* \d\d\d\d/\d\d/\d\d root \(.\{-}\) ''.*','\1','g')
-	let path = okazu#get_pathSrash(path)
+	let path = perforce#get_pathSrash(path)
 	return path
 endfunction "}}}
 function! perforce#pfFind() "{{{
@@ -121,7 +121,7 @@ function! perforce#pfDiff(path) "{{{
 	let path = a:path
 
 	" 最新 REV のファイルの取得 "{{{
-	let outs = perforce#cmds('print -q '.okazu#Get_kk(path))
+	let outs = perforce#cmds('print -q '.perforce#Get_kk(path))
 
 	" エラーが発生したらファイルを検索して、すべてと比較 ( 再帰 )
 	if outs[0] =~ "is not under client's root "
@@ -188,7 +188,7 @@ function! perforce#pfChange(str,...) "{{{
 	call writefile(split(tmp,'\n'),$PFTMP)
 
 	"チェンジリストの作成
-	return okazu#Get_cmds('more '.okazu#Get_kk($PFTMP).' | p4 change -i') 
+	return perforce#Get_cmds('more '.perforce#Get_kk($PFTMP).' | p4 change -i') 
 
 endfunction "}}}
 function! perforce#pfNewChange() "{{{
@@ -213,7 +213,7 @@ function! perforce#get_client_data_from_info() "{{{
 	for data in perforce#cmds('info') 
 		if data =~ 'Client root: '
 			let clpath = substitute(data, 'Client root: ','','')
-			let clpath = okazu#get_pathSrash(clpath)
+			let clpath = perforce#get_pathSrash(clpath)
 		elseif data =~ 'Client name: '
 			let clname  = substitute(data, 'Client name: ','','')
 		elseif data =~ 'User name: '
@@ -319,7 +319,7 @@ function! perforce#LogFile(str) "{{{
 		if g:pf_settings.is_out_echo_flg.common
 			echo a:str
 		else
-			call okazu#LogFile('p4log', 0, a:str)
+			call perforce#LogFile1('p4log', 0, a:str)
 		endif
 	endif
 
@@ -383,6 +383,7 @@ function! perforce#get_diff_path(outs) "{{{
 					\ 'kind' : 'jump_list',
 					\ 'action__line' : lnum,
 					\ 'action__path' : path,
+					\ 'action__text' : substitute(out,'^[<>] ','',''),
 					\ }]
 	endfor
 	return candidates
@@ -560,3 +561,112 @@ function! s:get_pf_settings_from_lists(datas) "{{{
 
 endfunction "}}}
 
+"okazu# からの移植
+function! perforce#GetFileNameForUnite(args, context) "{{{
+	" ファイル名の取得
+	let a:context.source__path = expand('%:p')
+	let a:context.source__linenr = line('.')
+	call unite#print_message('[line] Target: ' . a:context.source__path)
+endfunction "}}}
+function! perforce#Get_kk(str) "{{{
+	"return substitute(a:str,'^\"?\(.*\)\"?','"\1"','')
+	return len(a:str) ? '"'.a:str.'"' : ''
+endfunction "}}}
+function! perforce#LogFile1(name, deleteFlg, ...) "{{{
+	" ********************************************************************************
+	" 新しいファイルを開いて書き込み禁止にする 
+	" @param[in]	name		書き込み用tmpFileName
+	" @param[in]	deleteFlg	初期化する
+	" @param[in]	[...]		書き込むデータ
+	" ********************************************************************************
+	
+	let @t = expand("%:p") " # mapで呼び出し用
+	let name = a:name
+
+	" 開いているか調べる
+	let bnum = bufwinnr(name) 
+
+	if bnum == -1
+		" 画面内になければ新規作成
+		exe 'sp ~/'.name
+		%delete _          " # ファイル消去
+		setl buftype=nofile " # 保存禁止
+		setl fdm=manual
+		call perforce#MyQuit()
+	else
+		" 表示しているなら切り替える
+		exe bnum . 'wincmd w'
+	endif
+
+	" 初期化する
+	if a:deleteFlg == 1
+		%delete _
+	endif
+
+	" 書き込みデータがあるなら書き込む
+	if exists("a:1") 
+		call append(0,a:1)
+	endif
+	cal cursor(1,1) " # 一行目に移動する
+
+endfunction "}}}
+function! perforce#Map_diff() "{{{
+	map <buffer> <up> [c
+	map <buffer> <down> ]c
+	map <buffer> <left> dp:<C-u>diffupdate<CR>
+	map <buffer> <right> dn:<C-u>diffupdate<CR>
+	map <buffer> <tab> <C-w><C-w>
+endfunction "}}}
+function! perforce#event_save_file(tmpfile,strs,func) "{{{
+	" ********************************************************************************
+	" ファイルを保存したときに、関数を実行します
+	" @param[in]	tmpfile		保存するファイル名 ( 分割するファイル名 ) 
+	" @param[in]	strs		初期の文章
+	" @param[in]	func		実行する関数名
+	" ********************************************************************************
+
+
+	"画面設定
+	exe 'vnew' a:tmpfile
+    setlocal noswapfile bufhidden=hide buftype=acwrite
+
+	"文の書き込み
+	%delete _
+	call append(0,a:strs)
+
+	"一行目に移動
+	cal cursor(1,1) 
+
+	aug perforce_event_save_file "{{{
+		au!
+		exe 'autocmd BufWriteCmd <buffer> nested call '.a:func
+	aug END "}}}
+
+endfunction "}}}
+function! perforce#get_pathEn(path) "{{{
+	return substitute(a:path,'/','\','g') " # / マークに統一
+endfunction "}}}
+function! perforce#get_pathSrash(path) "{{{
+	return substitute(a:path,'\','/','g') " # / マークに統一
+endfunction "}}}
+function! perforce#is_different(path,path2) "{{{
+	" ********************************************************************************
+	" 差分を調べる
+	" @param[in]	path				比較ファイル1
+	" @param[in]	path2				比較ファイル2
+	" @retval		flg			TRUE	差分あり
+	" 							FALSE	差分なし
+	" ********************************************************************************
+	let flg = 1
+	let outs = perforce#Get_cmds('fc '.perforce#Get_kk(a:path).' '.perforce#Get_kk(a:path2))
+	if outs[1] =~ '^FC: 相違点は検出されませんでした'
+		let flg = 0
+	endif
+	return flg
+endfunction "}}}
+function! perforce#MyQuit() "{{{
+	map <buffer> q :q<CR>
+endfunction "}}}
+function! perforce#Get_cmds(cmd) "{{{
+	return split(system(a:cmd),'\n')
+endfunction "}}}

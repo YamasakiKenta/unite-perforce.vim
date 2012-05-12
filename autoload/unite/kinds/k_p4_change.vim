@@ -35,7 +35,7 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 	let chnum = <SID>make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#cmds('reopen -c '.chnum.' '.okazu#Get_kk(join(g:reopen_depots,'" "')))
+	let outs = perforce#cmds('reopen -c '.chnum.' '.perforce#Get_kk(join(g:reopen_depots,'" "')))
 
 	" 追加するファイル名を初期化する
 	let g:reopen_depots = [] 
@@ -168,7 +168,7 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 	let chnum = <SID>make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#cmds('reopen -c '.chnum.' '.okazu#Get_kk(join(g:reopen_depots,'" "')))
+	let outs = perforce#cmds('reopen -c '.chnum.' '.perforce#Get_kk(join(g:reopen_depots,'" "')))
 
 	" 追加するファイル名を初期化する
 	let g:reopen_depots = [] 

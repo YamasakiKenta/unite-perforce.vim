@@ -20,7 +20,7 @@ let s:source = {
 			\ 'is_quit' : 0,
 			\ 'hooks' : {},
 			\ }
-let s:source.hooks.on_init = function('okazu#GetFileNameForUnite')
+let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
 function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" チェンジリストの表示
@@ -84,7 +84,7 @@ let s:source = {
 			\ 'description' : 'チェンジリストの移動',
 			\ 'hooks' : {},
 			\ }
-let s:source.hooks.on_init = function('okazu#GetFileNameForUnite')
+let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
 function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" チェンジリストの表示

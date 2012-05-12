@@ -17,9 +17,9 @@ function! g:PerforceDiff(file,file2) "{{{
 		windo diffthis
 
 		" キーマップの登録
-		call okazu#Map_diff()
+		call perforce#Map_diff()
 	else
-		call system(perforce#get_pf_settings('diff_tool','common')[0].' '.okazu#Get_kk(a:file).' '.okazu#Get_kk(a:file2))
+		call system(perforce#get_pf_settings('diff_tool','common')[0].' '.perforce#Get_kk(a:file).' '.perforce#Get_kk(a:file2))
 	endif
 
 endfunction "}}}

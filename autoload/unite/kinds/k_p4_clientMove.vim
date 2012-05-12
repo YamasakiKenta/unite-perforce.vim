@@ -25,8 +25,8 @@ function! s:kind.action_table.a_merge.func(candidates) "{{{
 		let file1 = candidate.action__file1
 		let file2 = candidate.action__file2
 
-		call system('p4 edit '.okazu#Get_kk(file2))
-		call system(defoult_cmd.' '.okazu#Get_kk(file1).' '.okazu#Get_kk(file2))
+		call system('p4 edit '.perforce#Get_kk(file2))
+		call system(defoult_cmd.' '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2))
 	endfor
 
 endfunction "}}}
@@ -42,8 +42,8 @@ function! s:kind.action_table.a_copy.func(candidates) "{{{
 		let file1 = candidate.action__file1
 		let file2 = candidate.action__file2
 
-		call system('p4 edit '.okazu#Get_kk(file2))
-		call system('copy '.okazu#Get_kk(file1).' '.okazu#Get_kk(file2))
+		call system('p4 edit '.perforce#Get_kk(file2))
+		call system('copy '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2))
 	endfor
 
 endfunction "}}}

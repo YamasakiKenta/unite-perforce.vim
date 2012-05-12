@@ -32,7 +32,7 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 				\ function! action.func(candidates) \n
 				\ 	let outs = [] \n
 				\ 	for l:candidate in a:candidates \n
-				\		let outs += perforce#cmds('".a:cmd." '.okazu#Get_kk(l:candidate.action__".
+				\		let outs += perforce#cmds('".a:cmd." '.perforce#Get_kk(l:candidate.action__".
 				\			get(kind,a:kind,"file").")) \n
 				\ 	endfor \n
 				\ 	call perforce#LogFile(outs) \n
@@ -104,7 +104,7 @@ let s:kind.action_table.a_p4_files = {
 function! s:kind.action_table.a_p4_files.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
 	let outs = perforce#cmds('files '.join(depots))
-	call okazu#LogFile('p4_files', 0)
+	call perforce#LogFile1('p4_files', 0)
 	call append(0,outs)
 endfunction "}}}
 
@@ -156,7 +156,7 @@ function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 		"}}}
 		"
 		" èâä˙ÇÃñºëOÇÃèëÇ´èoÇµ
-		call okazu#event_save_file(g:pfmove_tmpfile,names,'perforce#do_move(g:pfmove_oris, g:pfmove_tmpfile)')
+		call perforce#event_save_file(g:pfmove_tmpfile,names,'perforce#do_move(g:pfmove_oris, g:pfmove_tmpfile)')
 
 		"}}}
 	endif 
@@ -169,12 +169,12 @@ let s:kind.action_table.delete = {
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.delete.func(candidate) "{{{
-
-	let wnum = winnr()
+	"let wnum = winnr()
 	let depot = a:candidate.action__depot
 
-	call okazu#LogFile('diff', 1, perforce#cmds('diff '.depot))
-	exe wnum."wincmd w"
+	call perforce#LogFile1('diff', 1, perforce#cmds('diff '.depot))
+
+	wincmd p
 endfunction "}}}
 
 let s:kind.action_table.a_p4_diff = { 

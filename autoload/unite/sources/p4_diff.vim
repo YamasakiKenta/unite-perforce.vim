@@ -14,7 +14,7 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	let outs = []
 	for arg in args
-		let outs += perforce#cmds('diff '.okazu#Get_kk(arg))
+		let outs += perforce#cmds('diff '.perforce#Get_kk(arg))
 	endfor
 
 	return perforce#get_diff_path(outs) 

@@ -39,7 +39,7 @@ function! s:get_files_for_clientMove(dirs) "{{{
 	let datas = []
 	let paths  = []
 	for dir in a:dirs
-		let dir = okazu#get_pathSrash(dir)
+		let dir = perforce#get_pathSrash(dir)
 
 		if recursive_flg == 1
 			let paths = split(glob(dir.'/**'),'\n')
@@ -50,7 +50,7 @@ function! s:get_files_for_clientMove(dirs) "{{{
 		" ÉfÅ[É^ÇÃìoò^
 		for path in paths 
 			call add( datas, {
-						\ 'path' : okazu#get_pathSrash(path),
+						\ 'path' : perforce#get_pathSrash(path),
 						\ 'dir'  : dir,
 						\ })
 		endfor
@@ -83,7 +83,7 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 		let file = substitute( path, dir, '', '')
 
 		" \ -> /
-		let file = okazu#get_pathSrash(file)
+		let file = perforce#get_pathSrash(file)
 
 		" ñºëOÇ™Ç©Ç‘ÇÈÇÃÇñhÇÆ
 		"let file = '/'.file.'/'
@@ -102,11 +102,11 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 		for tmp_pfpath in tmp_pfpaths
 
 			" / -> \
-			let path = okazu#get_pathEn(path)
-			let tmp_pfpath = okazu#get_pathEn(tmp_pfpath)
+			let path = perforce#get_pathEn(path)
+			let tmp_pfpath = perforce#get_pathEn(tmp_pfpath)
 
 			"ç∑ï™Ç™Ç»ÇØÇÍÇŒÅAî‰ärÇµÇ»Ç¢ 
-			if okazu#is_different(path,tmp_pfpath) == 0
+			if perforce#is_different(path,tmp_pfpath) == 0
 				continue
 			endif
 
@@ -172,9 +172,9 @@ function! s:clientMove(...) "{{{
 	for merge in merges 
 		let file1 = merge.file1
 		let file2 = merge.file2
-		call system('p4 edit '.okazu#Get_kk(file2))
-		call system(cmd.' '.okazu#Get_kk(file1).' '.okazu#Get_kk(file2))
-		echo cmd.' '.okazu#Get_kk(file1).' '.okazu#Get_kk(file2)
+		call system('p4 edit '.perforce#Get_kk(file2))
+		call system(cmd.' '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2))
+		echo cmd.' '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2)
 	endfor
 	"
 endfunction "}}}

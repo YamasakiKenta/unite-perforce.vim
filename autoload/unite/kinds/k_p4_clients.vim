@@ -57,7 +57,7 @@ function! s:kind.action_table.a_p4_client_info.func(candidates) "{{{
 		let port   = l:candidate.action__port
 
 		" 各クライアントごとに表示する
-		call okazu#LogFile(clname, 0)
+		call perforce#LogFile(clname, 0)
 		let outs = perforce#cmds('-P '.port.' client -o '.clname)
 		call append(0,outs)
 	endfor
