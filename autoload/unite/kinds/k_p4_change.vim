@@ -15,7 +15,6 @@ let s:kind = {
 
 let s:kind.action_table.a_p4_change_reopen = {
 			\ 'description' : 'チェンジリストの変更 ( reopen )' ,
-			\ 'is_quit' : 0,
 			\ } 
 function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 	" ********************************************************************************

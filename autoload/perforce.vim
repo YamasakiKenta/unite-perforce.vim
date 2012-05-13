@@ -1,4 +1,5 @@
 let $PFTMP = expand("~").'/vim/perforce_tmpfile'
+let $PFHAVE = expand("~").'/vim/perforce_have'
 let $PFDATA = expand("~").'/vim/perforce_data'
 "set
 function! perforce#set_PFCLIENTNAME(str) "{{{
@@ -19,6 +20,9 @@ function! perforce#get_PFUSER_for_pfcmd(...) "{{{
 endfunction "}}}
 function! perforce#get_PFCLIENTNAME() "{{{
 	return $PFCLIENTNAME
+endfunction "}}}
+function! perforce#get_PFCLIENTPATH() "{{{
+	return $PFCLIENTPATH
 endfunction "}}}
 "[ ] 使用している場所の変更o
 "コマンドで制御する
@@ -469,7 +473,7 @@ function! perforce#init() "{{{
 					\ }
 
 		let g:pf_settings.show_max = {
-					\ 'common' : 100,
+					\ 'common' : [ 100, ] , 
 					\ 'description' : '表示するファイル数',
 					\ }
 
@@ -533,7 +537,8 @@ endfunction "}}}
 " @retval		rtns 		取得データ
 " ********************************************************************************
 function! perforce#get_pf_settings(type, kind) "{{{
-	let val     = g:pf_settings[a:type][a:kind]
+	" 設定がない場合は、共通を呼び出す
+	let val     = get(g:pf_settings[a:type],a:kind,g:pf_settings[a:type].common)
 	let valtype = type(val)
 
 	if valtype == 3

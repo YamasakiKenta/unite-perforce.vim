@@ -232,3 +232,55 @@ function! s:kind.action_table.a_p4_sync.func(candidates) "{{{
 	let outs = perforce#cmds('sync '.join(depots))
 	call perforce#LogFile(outs)
 endfunction "}}}
+
+let s:kind.action_table.a_p4_dir_copy = {
+	\ 'description' : 'dirでコピーする',
+	\ 'is_selectable' : 1,
+	\ 'is_quit' : 0 ,
+	\ }
+function! s:kind.action_table.a_p4_dir_copy.func(candidates) "{{{
+	for candidate in a:candidates
+		let path = perforce#get_path_from_depot(candidate.action__depot)
+		call <SID>copyFileDir(path)
+	endfor
+endfunction "}}}
+function! s:copyFileDir(file) "{{{
+
+	let defaultRoot  = perforce#get_PFCLIENTPATH()
+	let defaultFile2 = perforce#get_pf_settings('ClientMove_defoult_root', 'common')[0]
+
+	let file1 = substitute(a:file, '/','\','g')
+
+	" 空白と引数がない場合は、defaultを設定する
+	let root2 = defaultFile2
+	let root2 = substitute(root2, '/', '\','g')
+
+	" 末尾の \ を削除する
+	let root2 = substitute(root2,'\\$','','')
+
+	" 空白と引数がない場合は、defaultを設定する
+	let root1  = defaultRoot
+	let root1  = substitute(root1, '/', '\','g')
+
+	" 置換するため、スペースはエスケープする
+	let root1 = escape(root1,'\')
+
+	" ルートの削除
+	let path1 = substitute(file1, root1,'','')
+
+	" コピー先
+	let file2 = root2.''.path1
+
+	"--------------------------------------------------------------------------------
+	" 実行する
+	"--------------------------------------------------------------------------------
+	" フォルダの作成
+	call system('mkdir "'.fnamemodify(file2,':h').'"')
+
+	" コピーする
+	call system('copy "'.file1.'" "'.file2.'"')
+
+	echo 'copy "'.file1.'" "'.file2.'"'
+
+endfunction
+"}}}
