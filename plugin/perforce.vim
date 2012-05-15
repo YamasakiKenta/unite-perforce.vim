@@ -85,11 +85,9 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 		" \ -> /
 		let file = perforce#get_pathSrash(file)
 
-		" 名前がかぶるのを防ぐ
-		"let file = '/'.file.'/'
-
 		" perforce から取得する
-		let tmp_pfpaths = perforce#cmds('have '.perforce#Get_dd(file))
+		" 名前がかぶるのを防ぐ
+		let tmp_pfpaths = perforce#cmds('have '.('/...'.file)
 
 		" ローカル名に変更
 		let tmp_pfpaths = map(tmp_pfpaths, "perforce#get_path_from_have(v:val)")
@@ -102,7 +100,7 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 		for tmp_pfpath in tmp_pfpaths
 
 			" / -> \
-			let path = perforce#get_pathEn(path)
+			let path       = perforce#get_pathEn(path)
 			let tmp_pfpath = perforce#get_pathEn(tmp_pfpath)
 
 			"差分がなければ、比較しない 
@@ -190,8 +188,3 @@ if !exists("s:perforce_vim")
 	let g:pf_use_defoult_client = 0
 endif 
 "}}}
-
-function! s:pfinit() "{{{
-	call perforce#get_client_data_from_info()
-endfunction "}}}
-call <SID>pfinit()

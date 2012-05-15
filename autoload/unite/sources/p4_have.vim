@@ -3,6 +3,8 @@ function! unite#sources#p4_have#define()
 	return s:source
 endfunction
 
+let g:cache = { 'default' : []}
+
 "p4 have 
 let s:source = {
 			\ 'name' : 'p4_have',
@@ -48,7 +50,7 @@ let s:source = {
 function! s:source.hooks.on_init(args, context)
 	let a:context.source__test = 1
 endfunction
-function! s:source.gather_candidates(args, context) "{{{
+function! s:source.gather_candidates(args, context) 
 	"********************************************************************************
 	"@param[in]	args		perforceÇ©ÇÁåüçıÇ∑ÇÈÉtÉ@ÉCÉãñº
 	"********************************************************************************
@@ -56,6 +58,7 @@ function! s:source.gather_candidates(args, context) "{{{
 		let datas = split(system('p4 have '.join(a:args)),'\n')
 	else
 		let datas = readfile($PFHAVE)
+		let datas = <SID>get_datas($PFHAVE)
 	endif
 
 	let a:context.source__p4have = {
@@ -63,6 +66,7 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ 'len' : len(datas),
 				\ }
 
+	let rtns = g:cache.default
 	if 0
 		return  [{
 					\ 'word' : 'v:val',
@@ -70,8 +74,14 @@ function! s:source.gather_candidates(args, context) "{{{
 					\ 'action__depot' : 'v:val',
 					\ }]
 	endif
-	return []
-endfunction "}}}
+	return rtns
+endfunction 
+function! s:get_datas(path)
+	if !has_key(g:cache, a:path)
+		let g:cache[a:path] = readfile(a:path)
+	endif
+	return g:cache[a:path]
+endfunction
 function! s:source.async_gather_candidates(args, context)
 
 	let time = reltime()
@@ -96,6 +106,7 @@ function! s:source.async_gather_candidates(args, context)
 	call unite#print_message(printf("%s  / %s - complete",nowlen, len))
 	endif
 
+	let g:cache.default += rtns
 
 	return rtns
 endfunction
