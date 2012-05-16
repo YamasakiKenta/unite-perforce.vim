@@ -11,7 +11,7 @@ function! s:get_pfclients(str) "{{{
 	"ポートのクライアントを表示する
 	let datas = []
 	for port in g:pf_settings.ports.common
-		let datas += map(perforce#cmds('-p '.port.' clients '.a:str), "{
+		let datas += map(perforce#pfcmds('-p '.port.' clients '.a:str), "{
 					\ 'port' : port,
 					\ 'client' : v:val,
 					\ }")

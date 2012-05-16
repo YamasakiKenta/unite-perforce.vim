@@ -87,7 +87,7 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 
 		" perforce から取得する
 		" 名前がかぶるのを防ぐ
-		let tmp_pfpaths = perforce#cmds('have '.('/...'.file))
+		let tmp_pfpaths = perforce#pfcmds('have '.('/...'.file))
 
 		" ローカル名に変更
 		let tmp_pfpaths = map(tmp_pfpaths, "perforce#get_path_from_have(v:val)")
@@ -178,13 +178,8 @@ function! s:clientMove(...) "{{{
 endfunction "}}}
 
 
-"init
-" 変数の定義 "{{{
-if !exists("s:perforce_vim") 
-	let s:perforce_vim = 1 " # 初期読込完了
-	let g:pfuser = ''
-endif 
-"}}}
-"
-" Command
+" ================================================================================
+" command
+" ================================================================================
 command! -nargs=* MatomeDiffs call perforce#matomeDiffs(<args>)
+command! GetClientName call perforce#get_client_data_from_info()

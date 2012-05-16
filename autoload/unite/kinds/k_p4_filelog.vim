@@ -17,16 +17,24 @@ let s:kind.action_table.a_p4_print = {
 			\ }
 function! s:kind.action_table.a_p4_print.func(candidates) "{{{
 	for l:candidate in deepcopy(a:candidates)
-		let name    = candidate.action__depot
-		let revnum  = candidate.action__revnum
+		let name    = candidate.action__path
+		
+		let filetype_old = &filetype
 
-		" Vim だと、# を入れたらパスが表示される為、離脱文字が必要 
-		call perforce#LogFile1(fnamemodify(name,':t').'\#'.revnum, 0) 
-		let @b = name
-		let strs = perforce#cmds('print -q '.perforce#Get_kk(name."#".revnum))
+		if exists('candidate.action__revnum')
+			let revnum  = candidate.action__revnum
+			" Vim だと、# を入れたらパスが表示される為、離脱文字が必要 
+			call perforce#LogFile1(fnamemodify(name,':t').'\#'.revnum, 0) 
+			let strs = perforce#pfcmds('print -q '.perforce#Get_kk(name."#".revnum))
+		elseif exists('candidate.action__chnum')
+			let chnum = candidate.action__chnum.low
+			call perforce#LogFile1(fnamemodify(name,':t').'\@'.chnum, 0) 
+			let strs = perforce#pfcmds('print -q '.perforce#Get_kk(name."@".chnum))
+		endif
 
 		" データの出力
 		call append(0,strs) 
+		exe 'setf' filetype_old
 
 	endfor
 endfunction "}}}

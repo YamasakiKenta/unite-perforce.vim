@@ -9,6 +9,7 @@ endfunction
 let s:source = {
 			\ 'name' : 'p4_opened',
 			\ 'description' : '編集しているファイルの表示 ( チェンジリスト番号 )',
+			\ 'is_quit' : 0,
 			\ }
 function! s:get_DepotPath_from_opened(str) "{{{
 	return substitute(a:str,'#.*','','')   " # リビジョン番号の削除
@@ -23,7 +24,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" depot名の取得
 	let outs = []
 	for cmd in cmds
-		let outs += perforce#cmds(cmd)
+		let outs += perforce#pfcmds(cmd)
 	endfor
 
 	" 追加ファイルだと問題が発生する

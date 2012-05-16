@@ -18,6 +18,9 @@ endfunction "}}}
 function! perforce#get_PFUSER_for_pfcmd(...) "{{{
 	return g:pf_settings.user_changes_only.common && g:pfuser !=# "" ? ' -u '.g:pfuser.' ' : ''
 endfunction "}}}
+function! perforce#get_PFUSER() "{{{
+	return g:pfuser
+endfunction "}}}
 function! perforce#get_PFCLIENTNAME() "{{{
 	return $PFCLIENTNAME
 endfunction "}}}
@@ -94,12 +97,12 @@ function! perforce#get_paths_from_haves(strs) "{{{
 endfunction "}}}
 function! perforce#get_paths_from_fname(str) "{{{
 	" ファイルを検索
-	let outs = perforce#cmds('have '.perforce#Get_dd(a:str)) " # ファイル名の取得
+	let outs = perforce#pfcmds('have '.perforce#Get_dd(a:str)) " # ファイル名の取得
 	return perforce#get_paths_from_haves(outs)                  " # ヒットした場合
 endfunction "}}}
 function! perforce#get_path_from_depot(str) "{{{
 	"let out = system('p4 have '.perforce#Get_kk(a:str))
-	let outs = perforce#cmds('have '.perforce#Get_kk(a:str))
+	let outs = perforce#pfcmds('have '.perforce#Get_kk(a:str))
 	let path = perforce#get_path_from_have(outs[0])
 	return path
 endfunction "}}}
@@ -125,7 +128,7 @@ function! perforce#pfDiff(path) "{{{
 	let path = a:path
 
 	" 最新 REV のファイルの取得 "{{{
-	let outs = perforce#cmds('print -q '.perforce#Get_kk(path))
+	let outs = perforce#pfcmds('print -q '.perforce#Get_kk(path))
 
 	" エラーが発生したらファイルを検索して、すべてと比較 ( 再帰 )
 	if outs[0] =~ "is not under client's root "
@@ -214,7 +217,9 @@ function! perforce#get_client_data_from_info() "{{{
 	let clname = ""
 	let clpath = ""
 	let user = ""
-	for data in perforce#cmds('info') 
+
+	let datas = split(system('p4 info'),'\n')
+	for data in  datas
 		if data =~ 'Client root: '
 			let clpath = substitute(data, 'Client root: ','','')
 			let clpath = perforce#get_pathSrash(clpath)
@@ -226,6 +231,10 @@ function! perforce#get_client_data_from_info() "{{{
 			break " # 取得に失敗したら終了
 		endif
 	endfor 
+
+	echo datas 
+	echo clpath clname user
+	call input("")
 
 	" 設定する
 	call perforce#set_PFCLIENTNAME(clname)
@@ -279,36 +288,36 @@ function! perforce#matomeDiffs(chnum) "{{{
 	call perforce#LogFile(outs)
 	"}}}
 endfunction "}}}
-function! perforce#cmds(cmd) "{{{
-	" todo
-	" [ ] clientNameをperforceに依存しないようにする
-	" fileter
-	"  - client 
-	"  - user
+function! perforce#pfcmds(cmd,...) "{{{
 
-	if 0 
-			" call perforce#get_client_data_from_info() " # クライアントデータを更新する
+	" common をコマンドに変更する
+	let gcmds = []
+	let gcmd2s = []
 
-		let filter = get(g:pf_filter, 'cmd', 0) " # フィルタの取得
+	if perforce#get_pf_settings('user_changes_only', 'common')[0] == 1
+		call add(gcmds, '-u '.perforce#get_PFUSER())
+	endif 
 
-		" 初期設定
-		let client = ''
-		let changes = ''
-		let user = ''
-		let port = ''
+	if perforce#get_pf_settings('client_changes_only', 'common')[0] == 1
+		call add(gcmds, '-c '.perforce#get_PFCLIENTNAME())
+	endif 
 
-		if bit#and(filet ,g:G_PF_CLIENT)
-			let client = '-c
-		endif
-		if bit#and(filet ,g:G_PF_PORT)
-		endif
-		if bit#and(filet ,g:G_PF_USER)
-		endif
-		if bit#and(filet ,g:G_PF_CHANGE)
-		endif
+	if perforce#get_pf_settings('show_max_flg', 'common')[0] == 1
+		call add(gcmd2s, '-m '.perforce#get_pf_settings('show_max', 'common')[0])
+	endif 
+
+	if perforce#get_pf_settings('show_max_flg', 'common')[0] == 1
+		call add(gcmd2s, '-m '.perforce#get_pf_settings('show_max', 'common')[0])
+	endif 
+
+	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmd2s)
+
+	if perforce#get_pf_settings('show_cmd_flg', 'common')[0] == 1
+		echo cmd
+		call input("")
 	endif
 
-	return split(system('p4 '.a:cmd),'\n')
+	return split(system(cmd),'\n')
 endfunction "}}}
 function! perforce#LogFile(str) "{{{
 	" ********************************************************************************
@@ -417,7 +426,7 @@ function! perforce#init() "{{{
 
 		let g:pf_settings.user_changes_only = {
 					\ 'common' : 1 ,
-					\ 'description' : '名前でフィルタ',
+					\ 'description' : 'ユーザー名でフィルタ',
 					\ }
 
 		let g:pf_settings.client_changes_only = {
@@ -475,8 +484,21 @@ function! perforce#init() "{{{
 					\ 'description' : '表示するファイル数',
 					\ }
 
+		let g:pf_settings.show_max_flg = {
+					\ 'common' : 0,
+					\ 'description' : 'ファイル数の制限をする',
+					\ }
+
+		let g:pf_settings.show_cmd_flg = {
+					\ 'common' : 1,
+					\ 'description' : 'コマンドを表示する',
+					\ }
+
 		" 設定を読み込む
 		call perforce#load($PFDATA)
+
+		" クライアントデータの読み込み
+		call perforce#get_client_data_from_info()
 
 	endif
 endfunction "}}}

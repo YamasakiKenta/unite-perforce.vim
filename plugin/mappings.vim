@@ -5,11 +5,11 @@ nnoremap <Plug>(p4_diff_tool)
 nnoremap <Plug>(p4_echo_client_data)
 			\ :<C-u>echo $PFCLIENTNAME . " - " . $PFCLIENTPATH<CR>|"
 nnoremap <Plug>(p4_print_info)
-			\ :<C-u>call perforce#LogFile(perforce#cmds('info'))<CR>|"
+			\ :<C-u>call perforce#LogFile(perforce#pfcmds('info'))<CR>|"
 nnoremap <Plug>(p4_edit)
-			\ :<C-u>call perforce#LogFile(perforce#cmds('edit "<C-r>=expand("%:p")<CR>"'))<CR>|"
+			\ :<C-u>call perforce#LogFile(perforce#pfcmds('edit "<C-r>=expand("%:p")<CR>"'))<CR>|"
 nnoremap <Plug>(p4_revert)
-			\ :<C-u>call perforce#LogFile(perforce#cmds('revert -a "<C-r>=expand("%:p")<CR>"'))<CR>|"
+			\ :<C-u>call perforce#LogFile(perforce#pfcmds('revert -a "<C-r>=expand("%:p")<CR>"'))<CR>|"
 
 nmap ;up<CR> <Plug>(unite_p4_commit)
 nmap ;wd<CR> <Plug>(p4_diff_tool)
