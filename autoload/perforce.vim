@@ -287,11 +287,9 @@ function! perforce#cmds(cmd) "{{{
 	"  - user
 
 	if 0 
-		if  g:pf_use_defoult_client == 1 " # 常に更新する
-			call perforce#get_client_data_from_info() " # クライアントデータを更新する
-		endif
+			" call perforce#get_client_data_from_info() " # クライアントデータを更新する
 
-		let filter = get(g:pf_filter, 'cmd', 0)" # フィルタの取得
+		let filter = get(g:pf_filter, 'cmd', 0) " # フィルタの取得
 
 		" 初期設定
 		let client = ''

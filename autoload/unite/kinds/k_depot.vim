@@ -295,9 +295,11 @@ endfunction "}}}
 function! s:copyFileDepot(depotfile) "{{{
 
 	" / -> \
-	let depotfile1 = substitute(a:depotfile, '/','\','g')
+	let depotfile1 = a:depotfile
 	let localfile1 = perforce#get_path_from_depot(depotfile1)
-	call input(localfile1)
+
+	let depotfile1 = substitute(depotfile1, '/','\','g')
+	let localfile1 = substitute(localfile1, '/','\','g')
 
 	" ‹ó”’‚Æˆø”‚ª‚È‚¢ê‡‚ÍAdefault‚ğİ’è‚·‚é
 	let root2 = perforce#get_pf_settings('ClientMove_defoult_root', 'common')[0]

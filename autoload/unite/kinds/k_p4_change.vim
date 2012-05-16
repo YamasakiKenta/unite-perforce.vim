@@ -107,7 +107,6 @@ endfunction "}}}
 let s:kind.action_table.a_p4_change_submit = {
 			\ 'is_selectable' : 1,
 			\ 'description' : 'サブミット' ,
-			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 

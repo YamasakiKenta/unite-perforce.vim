@@ -77,33 +77,6 @@ let s:source_p4_have_async = s:source
 "================================================================================
 " subrutine
 "================================================================================
-function! s:get_candidates_from_pfhave(datas) "{{{
-	return <SID>get_datas_from_p4_have(join(a:args)).candidates
-	let candidates = map( a:datas, "{
-				\ 'word' : perforce#get_depot_from_have(v:val),
-				\ 'kind' : 'k_depot',
-				\ 'action__depot' : perforce#get_depot_from_have(v:val),
-				\ }")
-	return candidates
-endfunction "}}}
-function! s:get_datas_from_p4_have(str) "{{{
-
-	" 空白の場合は、スペースを使用する
-	let str = a:str
-	if str == ''
-		let str = ' '
-	endif 
-
-	if !has_key(g:cache, str)
-		let datas = split(system('p4 have '.str),'\n')
-		let g:cache[str] = {
-					\ 'lines' : [],
-					\ 'candidates' : <SID>get_candidates_from_pfhave(datas),
-					\ }
-	endif
-
-	return g:cache[str]
-endfunction "}}}
 function! s:get_datas(str) "{{{
 
 	if !has_key(g:cache, a:str)
@@ -115,4 +88,34 @@ function! s:get_datas(str) "{{{
 	endif
 
 	return g:cache[a:str]
+endfunction "}}}
+function! s:get_datas_from_p4_have(str) "{{{
+
+	" 空白の場合は、スペースを使用する
+	let str = a:str
+	if str == ''
+		let str = ' '
+	endif 
+
+	if !has_key(g:cache, str)
+		echo 'loading...'
+		let datas = split(system('p4 have '.str),'\n')
+		let g:cache[str] = {
+					\ 'lines' : [],
+					\ 'candidates' : <SID>get_candidates_from_pfhave(datas),
+					\ }
+		echo 'finish !!'
+	else
+		echo 'cache load!'
+	endif
+
+	return g:cache[str]
+endfunction "}}}
+function! s:get_candidates_from_pfhave(datas) "{{{
+	let candidates = map( a:datas, "{
+				\ 'word' : perforce#get_depot_from_have(v:val),
+				\ 'kind' : 'k_depot',
+				\ 'action__depot' : perforce#get_depot_from_have(v:val),
+				\ }")
+	return candidates
 endfunction "}}}
