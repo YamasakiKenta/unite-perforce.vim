@@ -2,16 +2,15 @@ function! unite#sources#p4_clients#define()
 	return [s:source_p4_clients , s:source_p4_all_clients]
 endfunction
 
-function! s:get_pfclients(str) "{{{
+function! s:get_pfclients() "{{{
 	" ********************************************************************************
 	" クライアントを表示する
-	" @param[in]	str		表示の制御
 	" ********************************************************************************
 
 	"ポートのクライアントを表示する
 	let datas = []
 	for port in g:pf_settings.ports.common
-		let datas += map(perforce#pfcmds('-p '.port.' clients '.a:str), "{
+		let datas += map(perforce#pfcmds('-p '.port.' clients '), "{
 					\ 'port' : port,
 					\ 'client' : v:val,
 					\ }")
@@ -32,18 +31,8 @@ let s:source = {
 			\ 'description' : 'クライアントの表示',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
-	return <SID>get_pfclients(perforce#get_PFUSER_for_pfcmd()) 
+	return <SID>get_pfclients()
 endfunction "}}}
 let s:source_p4_clients = s:source
 unlet s:source
 
-let s:source = {
-			\ 'name' : 'p4_all_clients',
-			\ 'default_action' : 'a_p4_client_info',
-			\ 'description' : '全てのクライアントの表示',
-			\ }
-function! s:source.gather_candidates(args, context) "{{{
-	return <SID>get_pfclients(" ")
-endfunction "}}}
-let s:source_p4_all_clients = s:source
-unlet s:source

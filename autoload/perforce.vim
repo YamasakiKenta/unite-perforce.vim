@@ -15,9 +15,6 @@ function! perforce#set_PFUSER(str) "{{{
 	let g:pfuser = a:str
 endfunction "}}}
 "get
-function! perforce#get_PFUSER_for_pfcmd(...) "{{{
-	return g:pf_settings.user_changes_only.common && g:pfuser !=# "" ? ' -u '.g:pfuser.' ' : ''
-endfunction "}}}
 function! perforce#get_PFUSER() "{{{
 	return g:pfuser
 endfunction "}}}
@@ -26,11 +23,6 @@ function! perforce#get_PFCLIENTNAME() "{{{
 endfunction "}}}
 function! perforce#get_PFCLIENTPATH() "{{{
 	return $PFCLIENTPATH
-endfunction "}}}
-"[ ] 使用している場所の変更o
-"コマンドで制御する
-function! perforce#get_PFCLIENTNAME_for_pfcmd(...) "{{{
-	return g:pf_settings.client_changes_only.common && $PFCLIENTNAME !=# "" ? ' -c '.$PFCLIENTNAME.' ' : ''
 endfunction "}}}
 "global
 function! perforce#Get_dd(str) "{{{
@@ -97,12 +89,12 @@ function! perforce#get_paths_from_haves(strs) "{{{
 endfunction "}}}
 function! perforce#get_paths_from_fname(str) "{{{
 	" ファイルを検索
-	let outs = perforce#pfcmds('have '.perforce#Get_dd(a:str)) " # ファイル名の取得
+	let outs = perforce#pfcmds('have',perforce#Get_dd(a:str)) " # ファイル名の取得
 	return perforce#get_paths_from_haves(outs)                  " # ヒットした場合
 endfunction "}}}
 function! perforce#get_path_from_depot(str) "{{{
 	"let out = system('p4 have '.perforce#Get_kk(a:str))
-	let outs = perforce#pfcmds('have '.perforce#Get_kk(a:str))
+	let outs = perforce#pfcmds('have',perforce#Get_kk(a:str))
 	let path = perforce#get_path_from_have(outs[0])
 	return path
 endfunction "}}}
@@ -128,7 +120,7 @@ function! perforce#pfDiff(path) "{{{
 	let path = a:path
 
 	" 最新 REV のファイルの取得 "{{{
-	let outs = perforce#pfcmds('print -q '.perforce#Get_kk(path))
+	let outs = perforce#pfcmds('print',' -q '.perforce#Get_kk(path))
 
 	" エラーが発生したらファイルを検索して、すべてと比較 ( 再帰 )
 	if outs[0] =~ "is not under client's root "
@@ -294,6 +286,8 @@ function! perforce#pfcmds(cmd,...) "{{{
 	let gcmds = []
 	let gcmd2s = []
 
+
+
 	if perforce#get_pf_settings('user_changes_only', 'common')[0] == 1
 		call add(gcmds, '-u '.perforce#get_PFUSER())
 	endif 
@@ -310,7 +304,7 @@ function! perforce#pfcmds(cmd,...) "{{{
 		call add(gcmd2s, '-m '.perforce#get_pf_settings('show_max', 'common')[0])
 	endif 
 
-	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmd2s)
+	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmd2s).' '.join(a:000)
 
 	if perforce#get_pf_settings('show_cmd_flg', 'common')[0] == 1
 		echo cmd

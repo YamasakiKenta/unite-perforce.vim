@@ -32,19 +32,22 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 				\ function! action.func(candidates) \n
 				\ 	let outs = [] \n
 				\ 	for l:candidate in a:candidates \n
-				\		let outs += perforce#pfcmds('".a:cmd." ' .perforce#Get_kk(l:candidate.action__". get(kind,a:kind,"path") .") ) \n
+				\		let outs += perforce#pfcmds('".a:cmd."', perforce#Get_kk(l:candidate.action__". get(kind,a:kind,"path") .") ) \n
 				\ 	endfor \n
 				\ 	call perforce#LogFile(outs) \n
 				\ endfunction "
 	"}}}
 	unlet action
 endfunction "}}}
-call <SID>setPfcmd('file','add','追加')
-call <SID>setPfcmd('file','edit','編集')
-call <SID>setPfcmd('k_depot','edit','編集')
-call <SID>setPfcmd('k_depot','delete','削除')
-call <SID>setPfcmd('k_depot','revert -a','元に戻す')
-call <SID>setPfcmd('k_depot','revert','元に戻す ( 強制 )')
+
+call <SID>setPfcmd('jump_list' , 'add'       , '追加'               ) 
+call <SID>setPfcmd('jump_list' , 'edit'      , '編集'               ) 
+call <SID>setPfcmd(' file'     , 'add'       , '追加'               ) 
+call <SID>setPfcmd(' file'     , 'edit'      , '編集'               ) 
+call <SID>setPfcmd('k_depot'   , 'edit'      , '編集'               ) 
+call <SID>setPfcmd('k_depot'   , 'delete'    , '削除'               ) 
+call <SID>setPfcmd('k_depot'   , 'revert -a' , '元に戻す'           ) 
+call <SID>setPfcmd('k_depot'   , 'revert'    , '元に戻す [ 強制 ] ' ) 
 
 "p4 k_depot 
 let s:kind = { 'name' : 'k_depot',
@@ -102,7 +105,7 @@ let s:kind.action_table.a_p4_files = {
 			\ }
 function! s:kind.action_table.a_p4_files.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
-	let outs = perforce#pfcmds('files '.join(depots))
+	let outs = perforce#pfcmds('files',join(depots))
 	call perforce#LogFile1('p4_files', 0)
 	call append(0,outs)
 endfunction "}}}
@@ -132,8 +135,8 @@ function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 		let new          = input(file.' -> ')
 		if new != ''
 			let outs = []
-			let outs += perforce#pfcmds('edit '.path)
-			let outs += perforce#pfcmds('move '.path.' '.dir.'/'.new)
+			let outs += perforce#pfcmds('edit',path)
+			let outs += perforce#pfcmds('move',path.' '.dir.'/'.new)
 			call perforce#LogFile(outs)
 		endif
 		"}}}
@@ -171,7 +174,7 @@ function! s:kind.action_table.delete.func(candidate) "{{{
 	"let wnum = winnr()
 	let depot = a:candidate.action__depot
 
-	call perforce#LogFile1('diff', 1, perforce#pfcmds('diff '.depot))
+	call perforce#LogFile1('diff', 1, perforce#pfcmds('diff',depot))
 
 	wincmd p
 endfunction "}}}
@@ -228,7 +231,7 @@ let s:kind.action_table.a_p4_sync = {
 			\ }
 function! s:kind.action_table.a_p4_sync.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
-	let outs = perforce#pfcmds('sync '.join(depots))
+	let outs = perforce#pfcmds('sync',join(depots))
 	call perforce#LogFile(outs)
 endfunction "}}}
 

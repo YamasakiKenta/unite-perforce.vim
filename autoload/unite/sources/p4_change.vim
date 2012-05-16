@@ -32,7 +32,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" 表示するクライアント名の取得
 	let outs = g:pf_settings.client_changes_only.common ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
-				\ perforce#pfcmds('clients'.perforce#get_PFUSER_for_pfcmd())
+				\ perforce#pfcmds('clients')
 
 	" defaultの表示
 	let rtn = []
@@ -45,7 +45,6 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ 'action__chname' : '',
 				\ }")
 
-	"let outs = perforce#pfcmds('changes '.perforce#get_PFUSER_for_pfcmd().perforce#get_PFCLIENTNAME_for_pfcmd().' -s pending')
 	let outs = perforce#pfcmds('changes -s pending')
 	let rtn += <SID>get_pfchanges(outs, 'k_p4_change')
 	return rtn
@@ -85,6 +84,7 @@ let s:source = {
 			\ 'hooks' : {},
 			\ }
 let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
+"[ ] 上の gather_candidates とまとめる
 function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" チェンジリストの表示
@@ -96,7 +96,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" 表示するクライアント名の取得
 	let outs = g:pf_settings.client_changes_only.common ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
-				\ perforce#pfcmds('clients'.perforce#get_PFUSER_for_pfcmd())
+				\ perforce#pfcmds('clients')
 
 	" defaultの表示
 	let rtn = []
@@ -109,7 +109,6 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ 'action__chname' : '',
 				\ }")
 
-	"let outs = perforce#pfcmds('changes '.perforce#get_PFUSER_for_pfcmd().perforce#get_PFCLIENTNAME_for_pfcmd().' -s pending')
 	let outs = perforce#pfcmds('changes -s pending')
 	let rtn += <SID>get_pfchanges(outs, 'k_p4_change_reopen')
 	return rtn
