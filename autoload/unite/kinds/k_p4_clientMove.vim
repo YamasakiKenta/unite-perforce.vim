@@ -26,7 +26,11 @@ function! s:kind.action_table.a_merge.func(candidates) "{{{
 		let file2 = candidate.action__file2
 
 		call system('p4 edit '.perforce#Get_kk(file2))
-		call system(defoult_cmd.' '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2))
+		if defoult_cmd =~ 'kdiff3'
+			call system(defoult_cmd.' '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2),' -o ',perforce#Get_kk(file2))
+		else
+			call system(defoult_cmd.' '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2))
+		endif
 	endfor
 
 endfunction "}}}

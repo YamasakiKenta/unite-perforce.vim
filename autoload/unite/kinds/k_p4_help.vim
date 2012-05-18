@@ -21,7 +21,7 @@ function! s:kind.action_table.a_help.func(candidates) "{{{
 	let outs = []
 	for candidate in a:candidates
 		let str = candidate.action__cmd
-		let outs += perforce#pfcmds('help '.str)
+		let outs += perforce#pfcmds('help ','',str)
 	endfor
 	call append(0, outs)
 endfunction "}}}

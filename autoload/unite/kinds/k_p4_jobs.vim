@@ -18,5 +18,5 @@ let s:kind.action_table.a_p4_fixes = {
 			\ }
 function! s:kind.action_table.a_p4_fixes.func(candidates) "{{{
 	let jobs = map(copy(a:candidates),"v:val.action__job")
-	let outs = perforce#pfcmds('fixes '.perforce#get_PFUSER().' '.'-j '.join(jobs,'-j '))
+	let outs = perforce#pfcmds('fixes','',perforce#get_PFUSER().' '.'-j '.join(jobs,'-j '))
 endfunction "}}}

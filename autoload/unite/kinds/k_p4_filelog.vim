@@ -21,16 +21,18 @@ function! s:kind.action_table.a_p4_print.func(candidates) "{{{
 		
 		let filetype_old = &filetype
 
+		" 表示するバージョンを取得する
 		if exists('candidate.action__revnum')
-			let revnum  = candidate.action__revnum
-			" Vim だと、# を入れたらパスが表示される為、離脱文字が必要 
-			call perforce#LogFile1(fnamemodify(name,':t').'\#'.revnum, 0) 
-			let strs = perforce#pfcmds('print -q '.perforce#Get_kk(name."#".revnum))
+			let file_numstr = '\#'.candidate.action__revnum
+			let numstr      =  '#'.candidate.action__revnum
 		elseif exists('candidate.action__chnum')
-			let chnum = candidate.action__chnum.low
-			call perforce#LogFile1(fnamemodify(name,':t').'\@'.chnum, 0) 
-			let strs = perforce#pfcmds('print -q '.perforce#Get_kk(name."@".chnum))
+			let file_numstr =  '@'.candidate.action__chnum
+			let numstr      =  '@'.candidate.action__chnum
 		endif
+
+		" ファイルを出力する
+		call perforce#LogFile1(fnamemodify(name,':t').file_numstr, 0) 
+		let strs = perforce#pfcmds('print','','-q '.perforce#Get_kk(name.''.numstr))
 
 		" データの出力
 		call append(0,strs) 

@@ -87,7 +87,9 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 
 		" perforce から取得する
 		" 名前がかぶるのを防ぐ
-		let tmp_pfpaths = perforce#pfcmds('have '.('/...'.file))
+		let tmp_pfpaths = perforce#pfcmds('have','',('//...'.file))
+
+		echo tmp_pfpaths
 
 		" ローカル名に変更
 		let tmp_pfpaths = map(tmp_pfpaths, "perforce#get_path_from_have(v:val)")
@@ -143,7 +145,6 @@ function! s:clientMove(...) "{{{
 
 	let datas = <SID>get_files_for_clientMove(dirs)
 	
-
 	" 比較するファイルの取得
 	let merges = <SID>get_merge_files_for_clientMove(datas)
 
@@ -176,7 +177,6 @@ function! s:clientMove(...) "{{{
 	endfor
 	"
 endfunction "}}}
-
 
 " ================================================================================
 " command

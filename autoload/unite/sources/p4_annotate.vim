@@ -20,7 +20,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let candidates = []
 	for path in paths 
 
-		let outs = perforce#pfcmds('annotate '.perforce#Get_kk(path))
+		let outs = perforce#pfcmds('annotate','',perforce#Get_kk(path))
 
 		let candidates += map( outs, "{
 					\ 'word' : v:val,
@@ -52,7 +52,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let candidates = []
 	for path in paths 
 
-		let outs = perforce#pfcmds('annotate -ai '.perforce#Get_kk(path))
+		let outs = perforce#pfcmds('annotate','','-ai '.perforce#Get_kk(path))
 
 		let candidates += map( outs, "{
 					\ 'word' : v:val,

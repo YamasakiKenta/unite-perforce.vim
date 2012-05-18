@@ -89,12 +89,12 @@ function! perforce#get_paths_from_haves(strs) "{{{
 endfunction "}}}
 function! perforce#get_paths_from_fname(str) "{{{
 	" ファイルを検索
-	let outs = perforce#pfcmds('have',perforce#Get_dd(a:str)) " # ファイル名の取得
-	return perforce#get_paths_from_haves(outs)                  " # ヒットした場合
+	let outs = perforce#pfcmds('have','',perforce#Get_dd(a:str)) " # ファイル名の取得
+	return perforce#get_paths_from_haves(outs)                   " # ヒットした場合
 endfunction "}}}
 function! perforce#get_path_from_depot(str) "{{{
 	"let out = system('p4 have '.perforce#Get_kk(a:str))
-	let outs = perforce#pfcmds('have',perforce#Get_kk(a:str))
+	let outs = perforce#pfcmds('have','',perforce#Get_kk(a:str))
 	let path = perforce#get_path_from_have(outs[0])
 	return path
 endfunction "}}}
@@ -120,7 +120,7 @@ function! perforce#pfDiff(path) "{{{
 	let path = a:path
 
 	" 最新 REV のファイルの取得 "{{{
-	let outs = perforce#pfcmds('print',' -q '.perforce#Get_kk(path))
+	let outs = perforce#pfcmds('print','',' -q '.perforce#Get_kk(path))
 
 	" エラーが発生したらファイルを検索して、すべてと比較 ( 再帰 )
 	if outs[0] =~ "is not under client's root "
@@ -224,10 +224,6 @@ function! perforce#get_client_data_from_info() "{{{
 		endif
 	endfor 
 
-	echo datas 
-	echo clpath clname user
-	call input("")
-
 	" 設定する
 	call perforce#set_PFCLIENTNAME(clname)
 	call perforce#set_PFCLIENTPATH(clpath)
@@ -280,29 +276,32 @@ function! perforce#matomeDiffs(chnum) "{{{
 	call perforce#LogFile(outs)
 	"}}}
 endfunction "}}}
-function! perforce#pfcmds(cmd,...) "{{{
+function! perforce#pfcmds(cmd,head,...) "{{{
 
 	" common をコマンドに変更する
-	let gcmds = []
+	let gcmds  = []
 	let gcmd2s = []
 
+	let gcmds += [a:head]
+
+	if a:cmd  =~ 'client' || a:cmd =~ 'changes'	
+
+		if perforce#get_pf_settings('user_changes_only', 'common')[0] == 1
+			call add(gcmd2s, '-u '.perforce#get_PFUSER())
+		endif 
 
 
-	if perforce#get_pf_settings('user_changes_only', 'common')[0] == 1
-		call add(gcmds, '-u '.perforce#get_PFUSER())
-	endif 
+		if perforce#get_pf_settings('show_max_flg', 'common')[0] == 1
+			call add(gcmd2s, '-m '.perforce#get_pf_settings('show_max', 'common')[0])
+		endif 
 
-	if perforce#get_pf_settings('client_changes_only', 'common')[0] == 1
-		call add(gcmds, '-c '.perforce#get_PFCLIENTNAME())
-	endif 
+	endif
 
-	if perforce#get_pf_settings('show_max_flg', 'common')[0] == 1
-		call add(gcmd2s, '-m '.perforce#get_pf_settings('show_max', 'common')[0])
-	endif 
-
-	if perforce#get_pf_settings('show_max_flg', 'common')[0] == 1
-		call add(gcmd2s, '-m '.perforce#get_pf_settings('show_max', 'common')[0])
-	endif 
+	if a:cmd  =~ 'changes'
+		if perforce#get_pf_settings('client_changes_only', 'common')[0] == 1
+			call add(gcmd2s, '-c '.perforce#get_PFCLIENTNAME())
+		endif 
+	endif
 
 	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmd2s).' '.join(a:000)
 
@@ -415,8 +414,6 @@ function! perforce#init() "{{{
 	else
 		" init
 		let g:pf_settings = {}
-
-		" [] ファイルデータを読み込む
 
 		let g:pf_settings.user_changes_only = {
 					\ 'common' : 1 ,

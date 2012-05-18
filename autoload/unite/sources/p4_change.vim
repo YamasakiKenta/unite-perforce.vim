@@ -32,7 +32,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" 表示するクライアント名の取得
 	let outs = g:pf_settings.client_changes_only.common ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
-				\ perforce#pfcmds('clients')
+				\ perforce#pfcmds('clients','')
 
 	" defaultの表示
 	let rtn = []
@@ -45,7 +45,7 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ 'action__chname' : '',
 				\ }")
 
-	let outs = perforce#pfcmds('changes -s pending')
+	let outs = perforce#pfcmds('changes','','-s pending')
 	let rtn += <SID>get_pfchanges(outs, 'k_p4_change')
 	return rtn
 endfunction "}}}
@@ -96,7 +96,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" 表示するクライアント名の取得
 	let outs = g:pf_settings.client_changes_only.common ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
-				\ perforce#pfcmds('clients')
+				\ perforce#pfcmds('clients','')
 
 	" defaultの表示
 	let rtn = []
@@ -109,7 +109,7 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ 'action__chname' : '',
 				\ }")
 
-	let outs = perforce#pfcmds('changes -s pending')
+	let outs = perforce#pfcmds('changes','','-s pending')
 	let rtn += <SID>get_pfchanges(outs, 'k_p4_change_reopen')
 	return rtn
 endfunction "}}}
@@ -148,9 +148,7 @@ let s:source = {
 			\ 'is_quit' : 0,
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
-	"let outs = perforce#pfcmds('changes '.perforce#get_PFUSER_for_pfcmd().perforce#get_PFCLIENTNAME_for_pfcmd().' -s submitted')
-	"let outs = perforce#pfcmds('changes '.perforce#get_PFUSER_for_pfcmd().' -s submitted')
-	let outs = perforce#pfcmds('changes -s submitted')
+	let outs = perforce#pfcmds('changes','','-s submitted')
 	return <SID>get_pfchanges(outs, 'k_p4_change')
 endfunction "}}}
 
