@@ -41,12 +41,13 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ 'kind' : 'k_p4_change',
 				\ 'action__chnum' : 'default',
 				\ 'action__clname' : perforce#get_ClientName_from_client(v:val),
-				\ 'action__path' : a:context.source__path,
+				\ 'action__depots' : a:context.source__depots,
 				\ 'action__chname' : '',
 				\ }")
 
 	let outs = perforce#pfcmds('changes','','-s pending')
-	let rtn += <SID>get_pfchanges(outs, 'k_p4_change')
+
+	let rtn += <SID>get_pfchanges(a:context, outs, 'k_p4_change')
 	return rtn
 endfunction "}}}
 function! s:source.change_candidates(args, context) "{{{
@@ -65,6 +66,7 @@ function! s:source.change_candidates(args, context) "{{{
 					\ 'action__chnum' : 'new',
 					\ 'action__chname' : newfile,
 					\ 'action__clnum' : perforce#get_PFCLIENTNAME(),
+					\ 'action__depot' : a:context.source__depots,
 					\ }]
 	else
 		return []
@@ -105,12 +107,12 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ 'kind' : 'k_p4_change_reopen',
 				\ 'action__chnum' : 'default',
 				\ 'action__clname' : perforce#get_ClientName_from_client(v:val),
-				\ 'action__path' : a:context.source__path,
+				\ 'action__depots' : a:context.source__depots,
 				\ 'action__chname' : '',
 				\ }")
 
 	let outs = perforce#pfcmds('changes','','-s pending')
-	let rtn += <SID>get_pfchanges(outs, 'k_p4_change_reopen')
+	let rtn += <SID>get_pfchanges(a:context, outs, 'k_p4_change_reopen')
 	return rtn
 endfunction "}}}
 function! s:source.change_candidates(args, context) "{{{
@@ -129,6 +131,7 @@ function! s:source.change_candidates(args, context) "{{{
 					\ 'action__chnum' : 'new',
 					\ 'action__chname' : newfile,
 					\ 'action__clnum' : perforce#get_PFCLIENTNAME(),
+					\ 'action__depots' : a:context.source__depots,
 					\ }]
 	else
 		return []
@@ -149,26 +152,33 @@ let s:source = {
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
 	let outs = perforce#pfcmds('changes','','-s submitted')
-	return <SID>get_pfchanges(outs, 'k_p4_change')
+	return <SID>get_pfchanges(a:context, outs, 'k_p4_change')
 endfunction "}}}
-
 let s:source_p4_changes_submitted = s:source
 unlet s:source 
 
+" ================================================================================
+" subroutine
+" ================================================================================
+
 " ********************************************************************************
 " subroutine
+" @param(in)	context	
+" @param(in)	outs
+" @param(in)	kind	
 " ********************************************************************************
-function! s:get_pfchanges(outs,kind) "{{{
+function! s:get_pfchanges(context,outs,kind) "{{{
 	let outs = a:outs
 	let candidates = map( outs, "{
 				\ 'word' : v:val,
 				\ 'kind' : a:kind,
+				\ 'action__port' : $PFPORT,
 				\ 'action__chnum' : perforce#get_ChangeNum_from_changes(v:val),
 				\ 'action__chname' : '',
 				\ 'action__clname' : <SID>get_ClientName_from_changes(v:val),
-				\ 'action__port' : $PFPORT,
+				\ 'action__depots' : a:context.source__depots,
 				\ }")
+
 
 	return candidates
 endfunction "}}}
-

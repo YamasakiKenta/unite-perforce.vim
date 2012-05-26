@@ -582,6 +582,7 @@ function! perforce#GetFileNameForUnite(args, context) "{{{
 	" ファイル名の取得
 	let a:context.source__path = expand('%:p')
 	let a:context.source__linenr = line('.')
+	let a:context.source__depots = perforce#get_depots(a:args, a:context.source__path)
 	call unite#print_message('[line] Target: ' . a:context.source__path)
 endfunction "}}}
 function! perforce#Get_kk(str) "{{{
@@ -685,4 +686,18 @@ function! perforce#MyQuit() "{{{
 endfunction "}}}
 function! perforce#Get_cmds(cmd) "{{{
 	return split(system(a:cmd),'\n')
+endfunction "}}}
+
+" ********************************************************************************
+" depots を取得する
+" @param[in]	args	ファイル名
+" @param[in]	context
+" ********************************************************************************
+function! perforce#get_depots(args, path) "{{{
+	if len(a:args) > 0
+		let depots = a:args
+	else
+		let depots = [a:path]
+	endif
+	return depots
 endfunction "}}}

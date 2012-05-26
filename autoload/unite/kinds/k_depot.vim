@@ -206,13 +206,14 @@ let s:kind.action_table.a_p4_reopen = {
 			\ 'description' : 'チェンジリストの変更' ,
 			\ }
 function! s:kind.action_table.a_p4_reopen.func(candidates) "{{{
-	let g:reopen_depots= [] " # 初期化
+	let reopen_depots= [] " # 初期化
 	for l:candidate in a:candidates
-		call add(g:reopen_depots, l:candidate.action__depot) " # 保存
+		call add(reopen_depots, l:candidate.action__depot) " # 保存
 	endfor
 
 	" 変更先を決める
-	call unite#start_temporary(['p4_changes_pending_reopen'])
+	" [ ] defoult_action
+	call unite#start_temporary([insert(reopen_depots,'p4_changes_pending_reopen')])
 endfunction "}}}
 
 let s:kind.action_table.a_p4_filelog = { 

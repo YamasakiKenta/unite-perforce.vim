@@ -21,23 +21,15 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 	" チェンジリストの変更
 	" action から実行した場合は、選択したファイルを変更する。
 	" source から実行した場合は、開いたファイルを変更する。
-	"
-	" @param[in]	g:reopen_depots		選択したファイル
 	" ********************************************************************************
 
-	" 選択したファイルがない場合は、現在のファイルを使用する
-	if !len(g:reopen_depots)
-		let g:reopen_depots = a:candidate.action__path
-	endif
+	let reopen_depots = a:candidate.action__depots
 
 	"チェンジリストの番号の取得
 	let chnum = <SID>make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#Get_kk(join(g:reopen_depots,'" "')))
-
-	" 追加するファイル名を初期化する
-	let g:reopen_depots = [] 
+	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#Get_kk(join(reopen_depots,'" "')))
 
 	" ログの出力
 	call perforce#LogFile(outs)
@@ -153,23 +145,15 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 	" チェンジリストの変更
 	" action から実行した場合は、選択したファイルを変更する。
 	" source から実行した場合は、開いたファイルを変更する。
-	"
-	" @param[in]	g:reopen_depots		選択したファイル
 	" ********************************************************************************
 
-	" 選択したファイルがない場合は、現在のファイルを使用する
-	if !len(g:reopen_depots)
-		let g:reopen_depots = a:candidate.action__path
-	endif
+	let reopen_depots = a:candidate.action__depots
 
 	"チェンジリストの番号の取得
 	let chnum = <SID>make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#Get_kk(join(g:reopen_depots,'" "')))
-
-	" 追加するファイル名を初期化する
-	let g:reopen_depots = [] 
+	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#Get_kk(join(reopen_depots,'" "')))
 
 	" ログの出力
 	call perforce#LogFile(outs)

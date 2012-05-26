@@ -31,4 +31,4 @@ nnoremap ;po<CR> :<C-u>Unite p4_opened<CR>|"
 nnoremap ;pj<CR> :<C-u>Unite p4_jobs<CR>|"
 nnoremap ;ph<CR> :<C-u>Unite p4_have<CR>|"
 nnoremap ;pa<CR> :<C-u>Unite p4_annotate<CR>|"
-
+nnoremap ;pC<CR> :<C-u>Unite p4_changes_pending_reopen<CR>|"
