@@ -24,6 +24,7 @@ function! g:PerforceDiff(file,file2) "{{{
 		if cmd =~ 'kdiff3'
 			call system(cmd.' '.perforce#Get_kk(a:file).' '.perforce#Get_kk(a:file2).' -o '.perforce#Get_kk(a:file2))
 		else
+			" WinmergeU
 			call system(cmd.' '.perforce#Get_kk(a:file).' '.perforce#Get_kk(a:file2))
 		endif
 	endif

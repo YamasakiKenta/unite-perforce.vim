@@ -14,9 +14,6 @@
 " w’è‚µ‚½folder ‚ğMerge‚µ‚Ü‚·
 " @param[in]	æ“¾‚·‚éDir		...
 "
-" @var	g:ClientMove_diffcmd
-" 	Diff Tool
-"
 " @var	g:pf_settings.ClientMove_recursive_flg.common
 " 	Folder ‚ğÄ‹A“I‚ÉŒŸõ‚·‚é‚©
 "

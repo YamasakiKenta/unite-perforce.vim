@@ -33,13 +33,12 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ }")
 
 endfunction "}}}
+let s:source_p4_settings = s:source
+unlet s:source 
 
 " ********************************************************************************
 " source - p4_select
 " ********************************************************************************
-let s:source_p4_settings = s:source
-unlet s:source 
-
 let s:source = {
 			\ 'name' : 'p4_select',
 			\ 'description' : 'ï°êîëIë',

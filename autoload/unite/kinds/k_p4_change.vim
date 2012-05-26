@@ -201,8 +201,6 @@ function! s:make_new_changes(candidate) "{{{
 
 		"チェンジリストの新規作成の結果から番号を取得する
 		let chnum = perforce#get_ChangeNum_from_changes(outs[0])
-	else
-		let chnum = chnum
 	endif
 
 	return chnum

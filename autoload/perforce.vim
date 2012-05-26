@@ -1,6 +1,124 @@
-let $PFTMP = expand("~").'/vim/perforce_tmpfile'
-let $PFHAVE = expand("~").'/vim/perforce_have'
-let $PFDATA = expand("~").'/vim/perforce_data'
+if exists('$VIMTEMP')
+	let $PFTMP  = $VIMTEMP.'/perforce_tmpfile'
+	let $PFHAVE = $VIMTEMP.'/perforce_have'
+	let $PFDATA = $VIMTEMP.'/perforce_data'
+else
+	let $PFTMP  = expand("~").'/vim/perforce_tmpfile'
+	let $PFHAVE = expand("~").'/vim/perforce_have'
+	let $PFDATA = expand("~").'/vim/perforce_data'
+endif
+" ================================================================================
+"okazu# からの移植
+" ================================================================================
+function! perforce#GetFileNameForUnite(args, context) "{{{
+	" ファイル名の取得
+	let a:context.source__path = expand('%:p')
+	let a:context.source__linenr = line('.')
+	let a:context.source__depots = perforce#get_depots(a:args, a:context.source__path)
+	call unite#print_message('[line] Target: ' . a:context.source__path)
+endfunction "}}}
+function! perforce#Get_kk(str) "{{{
+	"return substitute(a:str,'^\"?\(.*\)\"?','"\1"','')
+	return len(a:str) ? '"'.a:str.'"' : ''
+endfunction "}}}
+function! perforce#LogFile1(name, deleteFlg, ...) "{{{
+	" ********************************************************************************
+	" 新しいファイルを開いて書き込み禁止にする 
+	" @param[in]	name		書き込み用tmpFileName
+	" @param[in]	deleteFlg	初期化する
+	" @param[in]	[...]		書き込むデータ
+	" ********************************************************************************
+	
+	let @t = expand("%:p") " # mapで呼び出し用
+	let name = a:name
+
+	" 開いているか調べる
+	let bnum = bufwinnr(name) 
+
+	if bnum == -1
+		" 画面内になければ新規作成
+		exe 'sp ~/'.name
+		%delete _          " # ファイル消去
+		setl buftype=nofile " # 保存禁止
+		setl fdm=manual
+		call perforce#MyQuit()
+	else
+		" 表示しているなら切り替える
+		exe bnum . 'wincmd w'
+	endif
+
+	" 初期化する
+	if a:deleteFlg == 1
+		%delete _
+	endif
+
+	" 書き込みデータがあるなら書き込む
+	if exists("a:1") 
+		call append(0,a:1)
+	endif
+	cal cursor(1,1) " # 一行目に移動する
+
+endfunction "}}}
+function! perforce#Map_diff() "{{{
+	map <buffer> <up> [c
+	map <buffer> <down> ]c
+	map <buffer> <left> dp:<C-u>diffupdate<CR>
+	map <buffer> <right> dn:<C-u>diffupdate<CR>
+	map <buffer> <tab> <C-w><C-w>
+endfunction "}}}
+function! perforce#event_save_file(tmpfile,strs,func) "{{{
+	" ********************************************************************************
+	" ファイルを保存したときに、関数を実行します
+	" @param[in]	tmpfile		保存するファイル名 ( 分割するファイル名 ) 
+	" @param[in]	strs		初期の文章
+	" @param[in]	func		実行する関数名
+	" ********************************************************************************
+
+
+	"画面設定
+	exe 'vnew' a:tmpfile
+    setlocal noswapfile bufhidden=hide buftype=acwrite
+
+	"文の書き込み
+	%delete _
+	call append(0,a:strs)
+
+	"一行目に移動
+	cal cursor(1,1) 
+
+	aug perforce_event_save_file "{{{
+		au!
+		exe 'autocmd BufWriteCmd <buffer> nested call '.a:func
+	aug END "}}}
+
+endfunction "}}}
+function! perforce#get_pathEn(path) "{{{
+	return substitute(a:path,'/','\','g') " # / マークに統一
+endfunction "}}}
+function! perforce#get_pathSrash(path) "{{{
+	return substitute(a:path,'\','/','g') " # / マークに統一
+endfunction "}}}
+function! perforce#is_different(path,path2) "{{{
+	" ********************************************************************************
+	" 差分を調べる
+	" @param[in]	path				比較ファイル1
+	" @param[in]	path2				比較ファイル2
+	" @retval		flg			TRUE	差分あり
+	" 							FALSE	差分なし
+	" ********************************************************************************
+	let flg = 1
+	let outs = perforce#Get_cmds('fc '.perforce#Get_kk(a:path).' '.perforce#Get_kk(a:path2))
+	if outs[1] =~ '^FC: 相違点は検出されませんでした'
+		let flg = 0
+	endif
+	return flg
+endfunction "}}}
+function! perforce#MyQuit() "{{{
+	map <buffer> q :q<CR>
+endfunction "}}}
+function! perforce#Get_cmds(cmd) "{{{
+	return split(system(a:cmd),'\n')
+endfunction "}}}
 "set
 function! perforce#set_PFCLIENTNAME(str) "{{{
 	let $PFCLIENTNAME = a:str
@@ -319,8 +437,8 @@ function! perforce#LogFile(str) "{{{
 	" @var
 	" ********************************************************************************
 	"
-	if g:pf_settings.is_out_flg.common 
-		if g:pf_settings.is_out_echo_flg.common
+	if perforce#get_pf_settings('is_out_flg', 'common')[0]
+		if perforce#get_pf_settings('is_out_echo_flg', 'common')[0]
 			echo a:str
 		else
 			call perforce#LogFile1('p4log', 0, a:str)
@@ -562,6 +680,97 @@ function! perforce#get_pf_settings(type, kind) "{{{
 	return rtns
 endfunction "}}}
 
+" = p4_change.vim = "{{{
+" ********************************************************************************
+" depots を取得する
+" @param[in]	args	ファイル名
+" @param[in]	context
+" ********************************************************************************
+function! perforce#get_depots(args, path) "{{{
+	if len(a:args) > 0
+		let depots = a:args
+	else
+		let depots = [a:path]
+	endif
+	return depots
+endfunction "}}}
+
+" ********************************************************************************
+" チェンジリストの表示 表示設定関数
+" チェンジリストの変更の場合、開いたいるファイルを変更するか、actionで指定したファイル
+" @param[in]	args				depot
+" ********************************************************************************
+function! perforce#p4_change_gather_candidates(args, context) "{{{
+	"
+	" 表示するクライアント名の取得
+	let outs = g:pf_settings.client_changes_only.common ? 
+				\ [perforce#get_PFCLIENTNAME()] : 
+				\ perforce#pfcmds('clients','')
+
+	" defaultの表示
+	let rtn = []
+	let rtn += map( outs, "{
+				\ 'word' : 'default by '.perforce#get_ClientName_from_client(v:val),
+				\ 'kind' : 'k_p4_change',
+				\ 'action__chname' : '',
+				\ 'action__chnum' : 'default',
+				\ 'action__depots' : a:context.source__depots,
+				\ }")
+
+	let outs = perforce#pfcmds('changes','','-s pending')
+	let rtn += perforce#get_pfchanges(a:context, outs, 'k_p4_change')
+	return rtn
+endfunction "}}}
+
+" ********************************************************************************
+" p4 change ソースの 変化関数
+" @param[in]	
+" @retval       
+" ********************************************************************************
+function! perforce#p4_change_change_candidates(args, context) "{{{
+	" Unite で入力された文字
+	let newfile = a:context.input
+
+	" 入力がない場合は、表示しない
+	if newfile != ""
+		return [{
+					\ 'word' : '[new] '.newfile,
+					\ 'kind' : 'k_p4_change_reopen',
+					\ 'action__chname' : newfile,
+					\ 'action__chnum' : 'new',
+					\ 'action__depots' : a:context.source__depots,
+					\ }]
+	else
+		return []
+	endif
+
+endfunction "}}}
+
+" ********************************************************************************
+" p4_changes Untie 用の 返り値を返す
+" @param(in)	context	
+" @param(in)	outs
+" @param(in)	kind	
+" ********************************************************************************
+function! perforce#get_pfchanges(context,outs,kind) "{{{
+	let outs = a:outs
+	let candidates = map( outs, "{
+				\ 'word' : v:val,
+				\ 'kind' : a:kind,
+				\ 'action__chname' : '',
+				\ 'action__chnum' : perforce#get_ChangeNum_from_changes(v:val),
+				\ 'action__depots' : a:context.source__depots,
+				\ }")
+
+
+	return candidates
+endfunction "}}}
+"}}}
+
+" ================================================================================
+" subroutine
+" ================================================================================
+"
 " ********************************************************************************
 " BIT 演算によって、データを取得する
 " @param[in]	datas	{ bit, 文字列, ... } 
@@ -577,127 +786,11 @@ function! s:get_pf_settings_from_lists(datas) "{{{
 
 endfunction "}}}
 
-"okazu# からの移植
-function! perforce#GetFileNameForUnite(args, context) "{{{
-	" ファイル名の取得
-	let a:context.source__path = expand('%:p')
-	let a:context.source__linenr = line('.')
-	let a:context.source__depots = perforce#get_depots(a:args, a:context.source__path)
-	call unite#print_message('[line] Target: ' . a:context.source__path)
+" 使用しなくなった関数
+if 0 
+function! s:get_ClientName_from_changes(str) "{{{
+	"-   Change 107 on 2012/01/21 by admin@admin_admin-PC_2014 *pending* 'client Change test '                                                                            
+	let str = substitute(a:str,'\*pending\*','','') " # pendingが含まれていたら削除
+	return substitute(str, '.*change \d* on \d\d\d\d\/\d\d\/\d\d\ by .\{-}@\(.\{-}\) ''.*','\1','')
 endfunction "}}}
-function! perforce#Get_kk(str) "{{{
-	"return substitute(a:str,'^\"?\(.*\)\"?','"\1"','')
-	return len(a:str) ? '"'.a:str.'"' : ''
-endfunction "}}}
-function! perforce#LogFile1(name, deleteFlg, ...) "{{{
-	" ********************************************************************************
-	" 新しいファイルを開いて書き込み禁止にする 
-	" @param[in]	name		書き込み用tmpFileName
-	" @param[in]	deleteFlg	初期化する
-	" @param[in]	[...]		書き込むデータ
-	" ********************************************************************************
-	
-	let @t = expand("%:p") " # mapで呼び出し用
-	let name = a:name
-
-	" 開いているか調べる
-	let bnum = bufwinnr(name) 
-
-	if bnum == -1
-		" 画面内になければ新規作成
-		exe 'sp ~/'.name
-		%delete _          " # ファイル消去
-		setl buftype=nofile " # 保存禁止
-		setl fdm=manual
-		call perforce#MyQuit()
-	else
-		" 表示しているなら切り替える
-		exe bnum . 'wincmd w'
-	endif
-
-	" 初期化する
-	if a:deleteFlg == 1
-		%delete _
-	endif
-
-	" 書き込みデータがあるなら書き込む
-	if exists("a:1") 
-		call append(0,a:1)
-	endif
-	cal cursor(1,1) " # 一行目に移動する
-
-endfunction "}}}
-function! perforce#Map_diff() "{{{
-	map <buffer> <up> [c
-	map <buffer> <down> ]c
-	map <buffer> <left> dp:<C-u>diffupdate<CR>
-	map <buffer> <right> dn:<C-u>diffupdate<CR>
-	map <buffer> <tab> <C-w><C-w>
-endfunction "}}}
-function! perforce#event_save_file(tmpfile,strs,func) "{{{
-	" ********************************************************************************
-	" ファイルを保存したときに、関数を実行します
-	" @param[in]	tmpfile		保存するファイル名 ( 分割するファイル名 ) 
-	" @param[in]	strs		初期の文章
-	" @param[in]	func		実行する関数名
-	" ********************************************************************************
-
-
-	"画面設定
-	exe 'vnew' a:tmpfile
-    setlocal noswapfile bufhidden=hide buftype=acwrite
-
-	"文の書き込み
-	%delete _
-	call append(0,a:strs)
-
-	"一行目に移動
-	cal cursor(1,1) 
-
-	aug perforce_event_save_file "{{{
-		au!
-		exe 'autocmd BufWriteCmd <buffer> nested call '.a:func
-	aug END "}}}
-
-endfunction "}}}
-function! perforce#get_pathEn(path) "{{{
-	return substitute(a:path,'/','\','g') " # / マークに統一
-endfunction "}}}
-function! perforce#get_pathSrash(path) "{{{
-	return substitute(a:path,'\','/','g') " # / マークに統一
-endfunction "}}}
-function! perforce#is_different(path,path2) "{{{
-	" ********************************************************************************
-	" 差分を調べる
-	" @param[in]	path				比較ファイル1
-	" @param[in]	path2				比較ファイル2
-	" @retval		flg			TRUE	差分あり
-	" 							FALSE	差分なし
-	" ********************************************************************************
-	let flg = 1
-	let outs = perforce#Get_cmds('fc '.perforce#Get_kk(a:path).' '.perforce#Get_kk(a:path2))
-	if outs[1] =~ '^FC: 相違点は検出されませんでした'
-		let flg = 0
-	endif
-	return flg
-endfunction "}}}
-function! perforce#MyQuit() "{{{
-	map <buffer> q :q<CR>
-endfunction "}}}
-function! perforce#Get_cmds(cmd) "{{{
-	return split(system(a:cmd),'\n')
-endfunction "}}}
-
-" ********************************************************************************
-" depots を取得する
-" @param[in]	args	ファイル名
-" @param[in]	context
-" ********************************************************************************
-function! perforce#get_depots(args, path) "{{{
-	if len(a:args) > 0
-		let depots = a:args
-	else
-		let depots = [a:path]
-	endif
-	return depots
-endfunction "}}}
+endif
