@@ -10,22 +10,15 @@ let s:source = {
 let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
 function! s:source.gather_candidates(args, context) "{{{
 
-	" 引数がある場合は、引数のファイルをしていする
-	if len(a:args) > 0
-		let paths = map( a:args, '"//...".v:val."..."')
-	else
-		let paths = [a:context.source__path]
-	endif
+	let depots = a:context.source__depots
 
 	let candidates = []
-	for path in paths 
-
-		let outs = perforce#pfcmds('annotate','',perforce#Get_kk(path))
-
+	for depot in depots 
+		let outs = perforce#pfcmds('annotate','',perforce#Get_kk(depot))
 		let candidates += map( outs, "{
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog',
-					\ 'action__path' : path,
+					\ 'action__depot' : depot,
 					\ 'action__revnum' : <SID>getRevisionNumFromAnnotate(v:val),
 					\ }")
 	endfor
@@ -42,22 +35,17 @@ let s:source = {
 let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
 function! s:source.gather_candidates(args, context) "{{{
 
-	" 引数がある場合は、引数のファイルをしていする
-	if len(a:args) > 0
-		let paths = map( a:args, '"//...".v:val."..."')
-	else
-		let paths = [a:context.source__path]
-	endif
+	let depots = a:context.source__depots
 
 	let candidates = []
-	for path in paths 
+	for depot in depots 
 
-		let outs = perforce#pfcmds('annotate','','-ai '.perforce#Get_kk(path))
+		let outs = perforce#pfcmds('annotate','','-ai '.perforce#Get_kk(depot))
 
 		let candidates += map( outs, "{
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog',
-					\ 'action__path' : path,
+					\ 'action__depot' : depot,
 					\ 'action__chnum' : <SID>get_chnum_from_annotate(v:val),
 					\ }")
 	endfor

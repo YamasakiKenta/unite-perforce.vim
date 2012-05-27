@@ -17,7 +17,8 @@ let s:kind.action_table.a_p4_print = {
 			\ }
 function! s:kind.action_table.a_p4_print.func(candidates) "{{{
 	for l:candidate in deepcopy(a:candidates)
-		let name    = candidate.action__path
+
+		let name = perforce#get_path_from_depot(candidate.action__depot)
 		
 		let filetype_old = &filetype
 
