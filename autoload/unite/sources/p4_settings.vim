@@ -14,7 +14,11 @@ let s:source = {
 			\ }
 function! s:source.hooks.on_syntax(args, context) "{{{
 	syntax match uniteSource__p4_settings_choose /<.*>/ containedin=uniteSource__p4_settings contained
+	syntax match uniteSource__p4_settings_group /".*"/ containedin=uniteSource__p4_settings contained
+
 	highlight default link uniteSource__p4_settings_choose Type 
+	highlight default link uniteSource__p4_settings_group Underlined  
+
 endfunction "}}}
 function! s:source.gather_candidates(args, context) "{{{
 
@@ -25,9 +29,10 @@ function! s:source.gather_candidates(args, context) "{{{
 		let kind = 'common'
 	endif
 
-	return map( keys(g:pf_settings), "{
+	let orders = copy(perforce#get_pf_settings_orders())
+	return map( orders, "{
 				\ 'word' : <SID>get_word_from_pf_setting(v:val, kind),
-				\ 'kind' : <SID>get_kind_from_pf_setting(g:pf_settings[v:val][kind]),
+				\ 'kind' : <SID>get_kind_from_pf_setting(perforce#get_pf_settings(v:val,kind)),
 				\ 'action__valname' : v:val,
 				\ 'action__kind' : kind,
 				\ }")
@@ -75,6 +80,9 @@ endfunction "}}}
 let s:source_p4_select = s:source
 unlet s:source 
 
+" --------------------------------------------------------------------------------
+"  subroutine
+" --------------------------------------------------------------------------------
 " ********************************************************************************
 " <TRUE> ,  FALSE 
 " @param[in]	bool	true or false
@@ -96,24 +104,28 @@ endfunction "}}}
 " ********************************************************************************
 function! s:get_word_from_strs(strs) "{{{
 	let select = a:strs[0]
-	let strs   = map(copy(a:strs[1:]), "' '.v:val.' '")
 
 	" 選択状態の変更
 	
-	let lnum = 0
-	while(lnum+1 < len(a:strs))
-		let flg = select % 2 
+	if select < 0
+		let strs   = map(copy(a:strs[1:]), "'<'.v:val.'>'")
+	else
+		let strs   = map(copy(a:strs[1:]), "' '.v:val.' '")
+		let lnum = 0
+		while(lnum+1 < len(a:strs))
+			let flg = select % 2 
 
-		" フラグがあれば、選択状態にする
-		if flg 
-			let strs[lnum] = '<'.a:strs[lnum+1].'>'
-		endif
+			" フラグがあれば、選択状態にする
+			if flg 
+				let strs[lnum] = '<'.a:strs[lnum+1].'>'
+			endif
 
-		" while 用に更新
-		let lnum += 1
-		let select = select / 2
+			" while 用に更新
+			let lnum += 1
+			let select = select / 2
 
-	endwhile
+		endwhile
+	endif
 
 	return join(strs)
 endfunction "}}}
@@ -139,11 +151,18 @@ function! s:get_word_from_pf_setting(val, kind) "{{{
 	else
 		let str = <SID>get_word_from_strs(val)
 	endif
-	return printf('%-50s - %s', g:pf_settings[a:val].description, str)
+
+	if <SID>is_group(perforce#get_pf_settings(a:val,a:kind))
+		let rtn = '"'.g:pf_settings[a:val].description.'"'
+	else
+		let rtn = printf('%-50s (%-30s) - %s', g:pf_settings[a:val].description, a:val, str)
+	endif
+
+	return rtn
 endfunction "}}}
 
 " ********************************************************************************
-" kind
+" kindを調べる
 " @param[in]	val			引数名
 " retval		kind		unite kind
 " ********************************************************************************
@@ -151,10 +170,28 @@ function! s:get_kind_from_pf_setting(val) "{{{
 	let type = type(a:val)
 
 	if type == 0
-		let kind = 'k_p4_settings_bool'
+		if <SID>is_group(a:val)
+			let kind = 'k_null'
+		else
+			let kind = 'k_p4_settings_bool'
+		endif
 	else
 		let kind = 'k_p4_settings_strs'
 	endif
 	return kind
+endfunction "}}}
+
+" ********************************************************************************
+" タイトルか調べる
+" @param[in]	
+" @retval       
+" ********************************************************************************
+function! s:is_group(val) "{{{
+	if type(a:val) == 0 && a:val < 0 
+		let rtn = 1
+	else 
+		let rtn = 0
+	endif
+	return rtn
 endfunction "}}}
 
