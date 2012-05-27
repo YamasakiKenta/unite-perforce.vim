@@ -531,80 +531,33 @@ function! perforce#init() "{{{
 		return
 	else
 		" init
-		let g:pf_settings = {}
+		call <SID>init_pf_settings() 
 
-		let g:pf_settings.user_changes_only = {
-					\ 'common' : 1 ,
-					\ 'description' : 'ユーザー名でフィルタ',
-					\ }
-
-		let g:pf_settings.client_changes_only = {
-					\ 'common' : 1 ,
-					\ 'description' : 'クライアントでフィルタ',
-					\ }
-
-		let g:pf_settings.is_out_flg = {
-					\ 'common' : 1 ,
-					\ 'description' : '実行結果を出力する',
-					\ }
-
-		let g:pf_settings.is_out_echo_flg = {
-					\ 'common' : 1 ,
-					\ 'description' : 'echo で実行結果を出力する',
-					\ }
-
-		let g:pf_settings.is_submit_flg = {
-					\ 'common' : 1 ,
-					\ 'description' : 'サブミットを許可',
-					\ }
-
-		let g:pf_settings.is_vimdiff_flg = {
-					\ 'common' : 0 ,
-					\ 'description' : 'vimdiff を使用する',
-					\ }
-
-		let g:pf_settings.ClientMove_recursive_flg = {
-					\ 'common' : 0 ,
-					\ 'description' : 'ClientMoveで再帰検索をするか',
-					\ }
-
-		let g:pf_settings.diff_tool = {
-					\ 'common' : [ 1, 'WinMergeU', ],
-					\ 'description' : 'Diff で使用するツール',
-					\ }
-
-		let g:pf_settings.ClientMove_defoult_root = {
-					\ 'common' : [ 1, 'c:\tmp', 'c:\p4tmp', ],
-					\ 'description' : 'ClientMoveの初期フォルダ',
-					\ }
-
-		let g:pf_settings.ports = {
-					\ 'common' : [ 1, 'localhost:1818', ] ,
-					\ 'description' : 'perforce port',
-					\ }
-
-		let g:pf_settings.is_quit = {
-					\ 'common' : 0,
-					\ 'description' : '実行後、閉じる',
-					\ }
-
-		let g:pf_settings.show_max = {
-					\ 'common' : [ 100, ] , 
-					\ 'description' : '表示するファイル数',
-					\ }
-
-		let g:pf_settings.show_max_flg = {
-					\ 'common' : 0,
-					\ 'description' : 'ファイル数の制限をする',
-					\ }
-
-		let g:pf_settings.show_cmd_flg = {
-					\ 'common' : 1,
-					\ 'description' : 'コマンドを表示する',
-					\ }
+		" 並び替え用の変数の作成
+		call <SID>set_pf_settings ( 'is_submit_flg'            , 'サブミットを許可'            , 1                         ) 
+		call <SID>set_pf_settings ( 'g_changes_only'           , 'フィルタ'                    , -1                        ) 
+		call <SID>set_pf_settings ( 'user_changes_only'        , 'ユーザー名でフィルタ'        , 1                         ) 
+		call <SID>set_pf_settings ( 'client_changes_only'      , 'クライアントでフィルタ'      , 1                         ) 
+		call <SID>set_pf_settings ( 'filters'                  , '非表示にする単語'            , [-1,'tag','snip']         ) 
+		call <SID>set_pf_settings ( 'g_show'                   , 'ファイル数'                  , -1                        ) 
+		call <SID>set_pf_settings ( 'show_max_flg'             , 'ファイル数の制限'            , 0                         ) 
+		call <SID>set_pf_settings ( 'show_max'                 , 'ファイル数'                  , [1,5,10]                  ) 
+		call <SID>set_pf_settings ( 'g_is_out'                 , '実行結果'                    , -1                        ) 
+		call <SID>set_pf_settings ( 'is_out_flg'               , '実行結果を出力する'          , 1                         ) 
+		call <SID>set_pf_settings ( 'is_out_echo_flg'          , '実行結果を出力する[echo]'    , 1                         ) 
+		call <SID>set_pf_settings ( 'show_cmd_flg'             , 'p4 コマンドを表示する'       , 1                         ) 
+		call <SID>set_pf_settings ( 'g_diff'                   , 'Diff'                        , -1                        ) 
+		call <SID>set_pf_settings ( 'is_vimdiff_flg'           , 'vimdiff を使用する'          , 0                         ) 
+		call <SID>set_pf_settings ( 'diff_tool'                , 'Diff で使用するツール'       , [1,'WinMergeU']           ) 
+		call <SID>set_pf_settings ( 'g_ClientMove'             , 'ClientMove'                  , -1                        ) 
+		call <SID>set_pf_settings ( 'ClientMove_recursive_flg' , 'ClientMoveで再帰検索をするか', 0                         ) 
+		call <SID>set_pf_settings ( 'ClientMove_defoult_root'  , 'ClientMoveの初期フォルダ'    , [1,'c:\tmp','c:\p4tmp']   ) 
+		call <SID>set_pf_settings ( 'g_other'                  , 'その他'                      , -1                        ) 
+		call <SID>set_pf_settings ( 'ports'                    , 'perforce port'               , [1,'localhost:1818']      ) 
 
 		" 設定を読み込む
 		call perforce#load($PFDATA)
+
 
 		" クライアントデータの読み込み
 		call perforce#get_client_data_from_info()
@@ -678,6 +631,9 @@ function! perforce#get_pf_settings(type, kind) "{{{
 	endif
 
 	return rtns
+endfunction "}}}
+function! perforce#get_pf_settings_orders() "{{{
+	return s:pf_settings_orders
 endfunction "}}}
 
 " = p4_change.vim = "{{{
@@ -778,19 +734,40 @@ endfunction "}}}
 " ********************************************************************************
 function! s:get_pf_settings_from_lists(datas) "{{{
 
-	" 有効なリストの取得 ( 一つ目は、フラグが入っているためスキップする )
-	let nums = bit#get_nums_form_bit(a:datas[0]*2)
+	if a:datas[0] < 0
+		" 全部返す
+		let rtns = a:datas[1:]
+	else
+		" 有効なリストの取得 ( 一つ目は、フラグが入っているためスキップする )
+		let nums = bit#get_nums_form_bit(a:datas[0]*2)
 
-	" 有効な引数のみ返す
-	return map(copy(nums), 'a:datas[v:val]')
+		" 有効な引数のみ返す
+		let rtns = map(copy(nums), 'a:datas[v:val]')
+
+	endif
+
+	return rtns
 
 endfunction "}}}
 
-" 使用しなくなった関数
-if 0 
-function! s:get_ClientName_from_changes(str) "{{{
-	"-   Change 107 on 2012/01/21 by admin@admin_admin-PC_2014 *pending* 'client Change test '                                                                            
-	let str = substitute(a:str,'\*pending\*','','') " # pendingが含まれていたら削除
-	return substitute(str, '.*change \d* on \d\d\d\d\/\d\d\/\d\d\ by .\{-}@\(.\{-}\) ''.*','\1','')
+" ********************************************************************************
+" pf_settings を初期化します
+" ********************************************************************************
+function! s:init_pf_settings() "{{{
+	let g:pf_settings = {}
+	let s:pf_settings_orders = []
 endfunction "}}}
-endif
+
+" ********************************************************************************
+" pf_settings を追加します
+" ********************************************************************************
+function! s:set_pf_settings(type, description, kind_val ) "{{{
+	" 表示順に追加
+	let s:pf_settings_orders += [a:type]
+
+	let g:pf_settings[a:type] = {
+				\ 'common' : a:kind_val,
+				\ 'description' : a:description,
+				\ }
+
+endfunction "}}}
