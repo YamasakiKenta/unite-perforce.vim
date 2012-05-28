@@ -29,10 +29,10 @@ function! s:source.gather_candidates(args, context) "{{{
 		let kind = 'common'
 	endif
 
-	let orders = copy(perforce#get_pf_settings_orders())
+	let orders = copy(perforce#get_pf_settings_orders().datas)
 	return map( orders, "{
 				\ 'word' : <SID>get_word_from_pf_setting(v:val, kind),
-				\ 'kind' : <SID>get_kind_from_pf_setting(perforce#get_pf_settings(v:val,kind)),
+				\ 'kind' : <SID>get_kind_from_pf_setting(perforce#get_pf_settings(v:val,kind).datas),
 				\ 'action__valname' : v:val,
 				\ 'action__kind' : kind,
 				\ }")
@@ -152,7 +152,7 @@ function! s:get_word_from_pf_setting(val, kind) "{{{
 		let str = <SID>get_word_from_strs(val)
 	endif
 
-	if <SID>is_group(perforce#get_pf_settings(a:val,a:kind))
+	if <SID>is_group(perforce#get_pf_settings(a:val,a:kind).datas)
 		let rtn = '"'.g:pf_settings[a:val].description.'"'
 	else
 		let rtn = printf('%-50s (%-30s) - %s', g:pf_settings[a:val].description, a:val, str)

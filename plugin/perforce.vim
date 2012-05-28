@@ -128,13 +128,13 @@ endfunction "}}}
 " ********************************************************************************
 function! s:clientMove(...) "{{{
 	" Diffツールの取得
-	let defoult_cmd = perforce#get_pf_settings('diff_tool', 'common')[0]
+	let defoult_cmd = perforce#get_pf_settings('diff_tool', 'common').datas[0]
 
 	" 引数があり文字がある場合は、引数を使用する
 	if a:0 > 0 && a:1 != ''
 		let dirs = a:000
 	else
-		let dirs = perforce#get_pf_settings('ClientMove_defoult_root', 'common')
+		let dirs = perforce#get_pf_settings('ClientMove_defoult_root', 'common').datas
 	endif 
 
 	" root の表示

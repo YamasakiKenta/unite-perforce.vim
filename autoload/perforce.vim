@@ -117,7 +117,7 @@ function! perforce#MyQuit() "{{{
 	map <buffer> q :q<CR>
 endfunction "}}}
 function! perforce#Get_cmds(cmd) "{{{
-	return split(system(a:cmd),'\n')
+	let rtns = split(system(a:cmd),'\n')
 endfunction "}}}
 "set
 function! perforce#set_PFCLIENTNAME(str) "{{{
@@ -404,31 +404,41 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 
 	if a:cmd  =~ 'client' || a:cmd =~ 'changes'	
 
-		if perforce#get_pf_settings('user_changes_only', 'common')[0] == 1
+		if perforce#get_pf_settings('user_changes_only', 'common').datas[0] == 1
 			call add(gcmd2s, '-u '.perforce#get_PFUSER())
 		endif 
 
 
-		if perforce#get_pf_settings('show_max_flg', 'common')[0] == 1
-			call add(gcmd2s, '-m '.perforce#get_pf_settings('show_max', 'common')[0])
+		if perforce#get_pf_settings('show_max_flg', 'common').datas[0] == 1
+			call add(gcmd2s, '-m '.perforce#get_pf_settings('show_max', 'common').datas[0])
 		endif 
 
 	endif
 
 	if a:cmd  =~ 'changes'
-		if perforce#get_pf_settings('client_changes_only', 'common')[0] == 1
+		if perforce#get_pf_settings('client_changes_only', 'common').datas[0] == 1
 			call add(gcmd2s, '-c '.perforce#get_PFCLIENTNAME())
 		endif 
 	endif
 
 	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmd2s).' '.join(a:000)
 
-	if perforce#get_pf_settings('show_cmd_flg', 'common')[0] == 1
+	if perforce#get_pf_settings('show_cmd_flg', 'common').datas[0] == 1
 		echo cmd
 		call input("")
 	endif
 
-	return split(system(cmd),'\n')
+	let rtn = split(system(cmd),'\n')
+
+	" 非表示にするコマンド
+	if perforce#get_pf_settings('filters_flg', 'common').datas
+		let filters = perforce#get_pf_settings('filters', 'common').datas
+		let filter = join(filters, '\|')
+		call input(filter)
+		call filter(rtn, 'v:val !~ filter')
+	endif
+
+	return rtn
 endfunction "}}}
 function! perforce#LogFile(str) "{{{
 	" ********************************************************************************
@@ -437,8 +447,8 @@ function! perforce#LogFile(str) "{{{
 	" @var
 	" ********************************************************************************
 	"
-	if perforce#get_pf_settings('is_out_flg', 'common')[0]
-		if perforce#get_pf_settings('is_out_echo_flg', 'common')[0]
+	if perforce#get_pf_settings('is_out_flg', 'common').datas[0]
+		if perforce#get_pf_settings('is_out_echo_flg', 'common').datas[0]
 			echo a:str
 		else
 			call perforce#LogFile1('p4log', 0, a:str)
@@ -538,7 +548,8 @@ function! perforce#init() "{{{
 		call <SID>set_pf_settings ( 'g_changes_only'           , 'フィルタ'                    , -1                        ) 
 		call <SID>set_pf_settings ( 'user_changes_only'        , 'ユーザー名でフィルタ'        , 1                         ) 
 		call <SID>set_pf_settings ( 'client_changes_only'      , 'クライアントでフィルタ'      , 1                         ) 
-		call <SID>set_pf_settings ( 'filters'                  , '非表示にする単語'            , [-1,'tag','snip']         ) 
+		call <SID>set_pf_settings ( 'filters_flg'              , '除外リストを使用する'        , 1                         )
+		call <SID>set_pf_settings ( 'filters'                  , '除外リスト'                  , [-1,'tag','snip']         ) 
 		call <SID>set_pf_settings ( 'g_show'                   , 'ファイル数'                  , -1                        ) 
 		call <SID>set_pf_settings ( 'show_max_flg'             , 'ファイル数の制限'            , 0                         ) 
 		call <SID>set_pf_settings ( 'show_max'                 , 'ファイル数'                  , [1,5,10]                  ) 
@@ -620,15 +631,24 @@ endfunction "}}}
 " ********************************************************************************
 function! perforce#get_pf_settings(type, kind) "{{{
 	" 設定がない場合は、共通を呼び出す
-	let val     = get(g:pf_settings[a:type],a:kind,g:pf_settings[a:type].common)
+	if exists('g:pf_settings[a:type][a:kind]')
+		let kind = a:kind
+	else
+		let kind = 'common'
+	endif
+
+	let val     = g:pf_settings[a:type][kind]
 	let valtype = type(val)
 
+	let rtns = {}
 	if valtype == 3
 		" リストの場合は、引数で取得する
-		let rtns = <SID>get_pf_settings_from_lists(val)
+		let rtns.datas = <SID>get_pf_settings_from_lists(val)
 	else
-		let rtns = val
+		let rtns.datas = val
 	endif
+
+	let rtns.kind = kind
 
 	return rtns
 endfunction "}}}
