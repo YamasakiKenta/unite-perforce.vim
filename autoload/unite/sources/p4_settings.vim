@@ -29,7 +29,7 @@ function! s:source.gather_candidates(args, context) "{{{
 		let kind = 'common'
 	endif
 
-	let orders = copy(perforce#get_pf_settings_orders().datas)
+	let orders = copy(perforce#get_pf_settings_orders())
 	return map( orders, "{
 				\ 'word' : <SID>get_word_from_pf_setting(v:val, kind),
 				\ 'kind' : <SID>get_kind_from_pf_setting(perforce#get_pf_settings(v:val,kind).datas),
@@ -106,13 +106,13 @@ function! s:get_word_from_strs(strs) "{{{
 	let select = a:strs[0]
 
 	" 選択状態の変更
-	
+	"
 	if select < 0
 		let strs   = map(copy(a:strs[1:]), "'<'.v:val.'>'")
 	else
 		let strs   = map(copy(a:strs[1:]), "' '.v:val.' '")
 		let lnum = 0
-		while(lnum+1 < len(a:strs))
+		while(lnum <= len(a:strs))
 			let flg = select % 2 
 
 			" フラグがあれば、選択状態にする
@@ -139,23 +139,26 @@ endfunction "}}}
 function! s:get_word_from_pf_setting(val, kind) "{{{
 
 	" 未定義なら共通設定を代入する
-	if exists('g:pf_settings[a:val][a:kind]') == 0
-		let g:pf_settings[a:val][a:kind] = g:pf_settings[a:val].common
-	endif
+	"if exists('g:pf_settings[a:val][a:kind]') == 0
+		"let g:pf_settings[a:val][a:kind] = g:pf_settings[a:val].common
+	"endif
 
-	let val = g:pf_settings[a:val][a:kind]
-	let type = type(val)
+	"let val = g:pf_settings[a:val][a:kind]
+	let pfdata = perforce#get_pf_settings(a:val, a:kind)
+	let val = pfdata.datas
 
-	if type == 0
+	if type(val) == 0
 		let str = <SID>get_word_from_bool(val)
 	else
 		let str = <SID>get_word_from_strs(val)
 	endif
 
+	let kind = pfdata.kind
+
 	if <SID>is_group(perforce#get_pf_settings(a:val,a:kind).datas)
 		let rtn = '"'.g:pf_settings[a:val].description.'"'
 	else
-		let rtn = printf('%-50s (%-30s) - %s', g:pf_settings[a:val].description, a:val, str)
+		let rtn = printf(' %-50s (%-30s,%-10s) - %s', g:pf_settings[a:val].description, a:val, kind, str)
 	endif
 
 	return rtn
@@ -183,8 +186,8 @@ endfunction "}}}
 
 " ********************************************************************************
 " タイトルか調べる
-" @param[in]	
-" @retval       
+" @retval	rtn		TRUE	タイトル
+" @retval	rtn		FALSE	タイトルではない
 " ********************************************************************************
 function! s:is_group(val) "{{{
 	if type(a:val) == 0 && a:val < 0 

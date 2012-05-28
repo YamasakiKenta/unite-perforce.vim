@@ -637,17 +637,8 @@ function! perforce#get_pf_settings(type, kind) "{{{
 		let kind = 'common'
 	endif
 
-	let val     = g:pf_settings[a:type][kind]
-	let valtype = type(val)
-
 	let rtns = {}
-	if valtype == 3
-		" ƒŠƒXƒg‚Ìê‡‚ÍAˆø”‚Åæ“¾‚·‚é
-		let rtns.datas = <SID>get_pf_settings_from_lists(val)
-	else
-		let rtns.datas = val
-	endif
-
+	let rtns.datas = g:pf_settings[a:type][kind]
 	let rtns.kind = kind
 
 	return rtns
