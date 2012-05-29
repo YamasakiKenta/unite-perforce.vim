@@ -139,13 +139,13 @@ endfunction "}}}
 function! s:get_word_from_pf_setting(val, kind) "{{{
 
 	" –¢’è‹`‚È‚ç‹¤’Êİ’è‚ğ‘ã“ü‚·‚é
-	"if exists('g:pf_settings[a:val][a:kind]') == 0
-		"let g:pf_settings[a:val][a:kind] = g:pf_settings[a:val].common
-	"endif
+	if !exists('g:pf_settings[a:val][a:kind]')
+		let kind = common
+	else
+		let kind = a:kind 
+	endif
 
-	"let val = g:pf_settings[a:val][a:kind]
-	let pfdata = perforce#get_pf_settings(a:val, a:kind)
-	let val = pfdata.datas
+	let val = g:pf_settings[a:val][kind]
 
 	if type(val) == 0
 		let str = <SID>get_word_from_bool(val)
@@ -153,9 +153,7 @@ function! s:get_word_from_pf_setting(val, kind) "{{{
 		let str = <SID>get_word_from_strs(val)
 	endif
 
-	let kind = pfdata.kind
-
-	if <SID>is_group(perforce#get_pf_settings(a:val,a:kind).datas)
+	if <SID>is_group(val)
 		let rtn = '"'.g:pf_settings[a:val].description.'"'
 	else
 		let rtn = printf(' %-50s (%-30s,%-10s) - %s', g:pf_settings[a:val].description, a:val, kind, str)

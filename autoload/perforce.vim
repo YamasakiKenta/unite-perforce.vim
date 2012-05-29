@@ -1,7 +1,7 @@
-if exists('$VIMTEMP')
-	let $PFTMP  = $VIMTEMP.'/perforce_tmpfile'
-	let $PFHAVE = $VIMTEMP.'/perforce_have'
-	let $PFDATA = $VIMTEMP.'/perforce_data'
+if exists('$VIMTMP')
+	let $PFTMP  = expand($VIMTMP.'/perforce_tmpfile')
+	let $PFHAVE = expand($VIMTMP.'/perforce_have')
+	let $PFDATA = expand($VIMTMP.'/perforce_data')
 else
 	let $PFTMP  = expand("~").'/vim/perforce_tmpfile'
 	let $PFHAVE = expand("~").'/vim/perforce_have'
