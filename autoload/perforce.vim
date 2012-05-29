@@ -423,9 +423,11 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 
 	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmd2s).' '.join(a:000)
 
-	if perforce#get_pf_settings('show_cmd_flg', 'common').datas[0] == 1
+	if perforce#get_pf_settings('show_cmd_flg', 'common').datas[0]
 		echo cmd
-		call input("")
+		if perforce#get_pf_settings('show_cmd_stop_flg', 'common').datas[0]
+			call input("")
+		endif
 	endif
 
 	let rtn = split(system(cmd),'\n')
@@ -557,6 +559,7 @@ function! perforce#init() "{{{
 		call <SID>set_pf_settings ( 'is_out_flg'               , '実行結果を出力する'          , 1                         ) 
 		call <SID>set_pf_settings ( 'is_out_echo_flg'          , '実行結果を出力する[echo]'    , 1                         ) 
 		call <SID>set_pf_settings ( 'show_cmd_flg'             , 'p4 コマンドを表示する'       , 1                         ) 
+		call <SID>set_pf_settings ( 'show_cmd_stop_flg'        , 'p4 コマンドを表示する(stop)' , 1                         ) 
 		call <SID>set_pf_settings ( 'g_diff'                   , 'Diff'                        , -1                        ) 
 		call <SID>set_pf_settings ( 'is_vimdiff_flg'           , 'vimdiff を使用する'          , 0                         ) 
 		call <SID>set_pf_settings ( 'diff_tool'                , 'Diff で使用するツール'       , [1,'WinMergeU']           ) 
@@ -637,8 +640,19 @@ function! perforce#get_pf_settings(type, kind) "{{{
 		let kind = 'common'
 	endif
 
+	let val = g:pf_settings[a:type][kind]
+
+
+	let valtype = type(val)
+
 	let rtns = {}
-	let rtns.datas = g:pf_settings[a:type][kind]
+	if valtype == 3
+		" リストの場合は、引数で取得する
+		let rtns.datas = <SID>get_pf_settings_from_lists(val)
+	else
+		let rtns.datas = val
+	endif
+
 	let rtns.kind = kind
 
 	return rtns
