@@ -359,44 +359,32 @@ function! perforce#get_ChangeNum_from_changes(str) "{{{
 	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
 endfunction "}}}
 function! perforce#matomeDiffs(chnum) "{{{
-	" 初期化 {{{
-	let files = []
-	let adds = []
-	let deleteds = []
-	let changeds = []
-	let i = 0
-	while i < 30
-		let adds += [0]
-		let deleteds += [0]
-		let changeds += [0]
-		let i += 1
-	endwhile
-	"}}}
+
+	let datas = []
+
 	" データの取得 {{{
-	let i = -1
 	let find = ' \(\d\+\) chunks \(\|\(\d\+\) / \)\(\d\+\) lines'
 	let outs = split(system('p4 describe -ds '.a:chnum),'\n')
 	for out in outs
 		if out =~ "===="
-			let i += 1
-			let files += [substitute(out,'.*/\(.\{-}\)#.*','\1','')]
+			let datas += [{}]
+			let datas[-1].files = substitute(out,'.*/\(.\{-}\)#.*','\1','')
 		elseif out =~ 'add'.find
-			let adds[i] = substitute(out,'add'.find,'\4','')
+			let datas[-1].adds = substitute(out,'add'.find,'\4','')
 		elseif out =~ 'deleted'.find
-			let deleteds[i] = substitute(out,'deleted'.find,'\4','')
+			let datas[-1].deleteds = substitute(out,'deleted'.find,'\4','')
 		elseif out =~ 'changed'.find
 			let a = substitute(out,'changed'.find,'\3','')
 			let b = substitute(out,'changed'.find,'\4','')
-			let changeds[i] = a > b ? a : b
+			let datas[-1].changeds = a > b ? a : b
 		endif
 	endfor
 	"}}}
+	"
 	"データの出力 {{{
-	let i = 0
 	let outs = []
-	for l:file in files 
-		let outs += [l:file."\t\t".adds[i]."\t".deleteds[i]."\t".changeds[i]]
-		let i += 1
+	for data in datas 
+		let outs += [data["files"]."\t\t".data["adds"]."\t".data["deleteds"]."\t".data["changeds"]]
 	endfor
 	call perforce#LogFile(outs)
 	"}}}
