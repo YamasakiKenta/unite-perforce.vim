@@ -118,6 +118,7 @@ function! perforce#MyQuit() "{{{
 endfunction "}}}
 function! perforce#Get_cmds(cmd) "{{{
 	let rtns = split(system(a:cmd),'\n')
+	return rtns
 endfunction "}}}
 "set
 function! perforce#set_PFCLIENTNAME(str) "{{{
@@ -195,12 +196,12 @@ function! perforce#get_ClientName_from_client(str) "{{{
 	return substitute(copy(a:str),'Client \(\S\+\).*','\1','g')
 endfunction "}}}
 function! perforce#get_path_from_have(str) "{{{
-	let rtn = substitute(a:str,'\(.\{-}\)#\d\+ - \(\S*\)','\2','') 
+	let rtn = matchstr(a:str,'.\{-}#\d\+ - \zs.*')
 	let rtn = substitute(rtn, '\\', '/', 'g')
 	return rtn
 endfunction "}}}
 function! perforce#get_depot_from_have(str) "{{{
-	return substitute(a:str,'\(.\{-}\)#\d\+ - \(.*\)','\1','') 
+	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')
 endfunction "}}}
 function! perforce#get_paths_from_haves(strs) "{{{
 	return map(a:strs,"perforce#get_path_from_have(v:val)")
@@ -211,10 +212,16 @@ function! perforce#get_paths_from_fname(str) "{{{
 	return perforce#get_paths_from_haves(outs)                   " # ヒットした場合
 endfunction "}}}
 function! perforce#get_path_from_depot(str) "{{{
-	"let out = system('p4 have '.perforce#Get_kk(a:str))
 	let outs = perforce#pfcmds('have','',perforce#Get_kk(a:str))
-	let path = perforce#get_path_from_have(outs[0])
+
+	 if perforce#is_p4_have_from_have(join(outs))
+		 let path = perforce#get_path_from_have(outs[0])
+	 else
+		 let path = substitute(a:str, '//depot', perforce#get_PFCLIENTPATH(), '')
+	 endif
+
 	return path
+
 endfunction "}}}
 function! perforce#get_ClientPathFromName(str) "{{{
 	let str = system('p4 clients | grep '.a:str) " # ref 直接データをもらう方法はないかな
@@ -436,7 +443,6 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	if perforce#get_pf_settings('filters_flg', 'common').datas
 		let filters = perforce#get_pf_settings('filters', 'common').datas
 		let filter = join(filters, '\|')
-		call input(filter)
 		call filter(rtn, 'v:val !~ filter')
 	endif
 
@@ -521,6 +527,29 @@ function! perforce#get_diff_path(outs) "{{{
 					\ }]
 	endfor
 	return candidates
+endfunction "}}}
+
+" ********************************************************************************
+" クライアントにファイルがあるか調べる
+" @param[in]	str				ファイル名 , have の返り値
+" @retval       flg		TRUE 	存在する
+" @retval       flg		FLASE 	存在しない
+" ********************************************************************************
+function! perforce#is_p4_have(str) "{{{
+	let str = system('p4 have '.perforce#Get_kk(a:str))
+	let flg = perforce#is_p4_have_from_have(str)
+	return flg
+endfunction "}}}
+function! perforce#is_p4_have_from_have(str) "{{{
+
+	if a:str =~ '- file(s) not on client.'
+		let flg = 0
+	else
+		let flg = 1
+	endif
+
+	return flg
+
 endfunction "}}}
 
 " スペース対応

@@ -70,15 +70,6 @@ function! s:find_filepath_from_depot(candidate) "{{{
 	" ローカルパスを取得して開く
 	let path = perforce#get_path_from_depot(depot)
 
-	" ファイルが見つからなかった場合は、探す
-	if  path =~ "file(s) not on client."
-		" ファイルの検索
-		echo 'FIND...'
-		let file = fnamemodify(depot,':t')
-		exe 'find' $PFCLIENTPATH.'/**/'.file
-		let paths = glob($PFCLIENTPATH.'/**/'.file)
-		let path = paths[0]
-	endif 
 	return path
 endfunction "}}}
 
