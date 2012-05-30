@@ -9,17 +9,31 @@ let s:source = {
 function! s:source.gather_candidates(args, context) "{{{
 
 	" 引数がない場合は、空白を設定する
-	let args = len(a:args) ? a:args : ['']
-	let args = perforce#get_trans_enspace(args)
+	if len(a:args) > 1
+		let files = a:args
+		let all_flg = 0
+	else
+		let files = []
+		let all_flg = 1
+	endif
+	let files = perforce#get_trans_enspace(files)
 
+	let rtns = []
 	let outs = []
-	for arg in args
-		let outs += perforce#pfcmds('diff','',perforce#Get_kk(arg))
+	for file in files
+		if perforce#is_p4_have(file)
+			let outs += perforce#pfcmds('diff','',perforce#Get_kk(file))
+		else
+			let rtns += perforce#get_source_file_from_path(file)
+		endif
 	endfor
 
-	"let outs = map(copy(args), "perforce#pfcmds('diff','',perforce#Get_kk(v:val))")
+	let rtns += perforce#get_source_diff_from_diff(outs) 
 
-	"echo outs
-	"call input("")
-	return perforce#get_source_diff_from_path(outs) 
+	" add したファイルを追加する
+	if all_flg
+		"let file = 
+		
+	endif
+	return rtns
 endfunction "}}}

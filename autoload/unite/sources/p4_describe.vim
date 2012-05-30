@@ -9,5 +9,5 @@ let s:source = {
 function! s:source.gather_candidates(args, context) "{{{
 	let chnums = a:args
 	let outs = perforce#pfcmds('describe','',join(chnums))
-	return perforce#get_source_diff_from_path(outs) 
+	return perforce#get_source_diff_from_diff(outs) 
 endfunction "}}}

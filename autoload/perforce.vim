@@ -28,7 +28,7 @@ function! perforce#LogFile1(name, deleteFlg, ...) "{{{
 	" @param[in]	deleteFlg	初期化する
 	" @param[in]	[...]		書き込むデータ
 	" ********************************************************************************
-	
+
 	let @t = expand("%:p") " # mapで呼び出し用
 	let name = a:name
 
@@ -77,7 +77,7 @@ function! perforce#event_save_file(tmpfile,strs,func) "{{{
 
 	"画面設定
 	exe 'vnew' a:tmpfile
-    setlocal noswapfile bufhidden=hide buftype=acwrite
+	setlocal noswapfile bufhidden=hide buftype=acwrite
 
 	"文の書き込み
 	%delete _
@@ -155,24 +155,25 @@ function! perforce#pf_diff_tool(file,file2) "{{{
 endfunction "}}}
 "static
 function! perforce#unite_args(source) "{{{
-	"********************************************************************
-	" 現在のファイル名を Unite に引数に渡します。
-	" @param[in]	source	コマンド
-	"********************************************************************
+		"********************************************************************
+		" 現在のファイル名を Unite に引数に渡します。
+		" @param[in]	source	コマンド
+		"********************************************************************
 
-	if 0
-		exe 'Unite '.a:source.':'.perforce#Get_dd(expand("%:t"))
-	else
-		" スペース対策
-		" [ ] p4_diffなどに修正が必要
-		let tmp = a:source.':'.perforce#get_pathSrash(expand("%"))
-		let tmp = substitute(tmp, ' ','\\ ', 'g')
-		let tmp = 'Unite '.tmp
-		exe tmp
-	endif
-
+		if 0
+			exe 'Unite '.a:source.':'.perforce#Get_dd(expand("%:t"))
+		else
+			" スペース対策
+			" [ ] p4_diffなどに修正が必要
+			let tmp = a:source.':'.perforce#get_pathSrash(expand("%"))
+			let tmp = substitute(tmp, ' ','\\ ', 'g')
+			let tmp = 'Unite '.tmp
+			echo tmp
+			exe tmp
+		endif
 
 endfunction "}}}
+
 function! perforce#get_ClientName_from_client(str) "{{{
 	return substitute(copy(a:str),'Client \(\S\+\).*','\1','g')
 endfunction "}}}
@@ -473,37 +474,14 @@ function! perforce#getPathFromDiff(out,path) "{{{
 	endif 
 	return path
 endfunction "}}}
-function! perforce#get_source_diff_from_path(outs) "{{{
-	" ********************************************************************************
-	" 差分の出力を、Uniteのjump_list化けする
-	" @param[in]	outs		差分のデータ
-	" ********************************************************************************
-	let outs = a:outs
-	let candidates = []
-	let num = { 'lnum' : 1 , 'snum' : 1 }
-	let path = ''
-	for out in outs
-		let num = perforce#get_lnum_from_diff(out, num.lnum, num.snum)
-		let lnum = num.lnum
-		let path = perforce#getPathFromDiff(out,path)
-		let candidates += [{
-					\ 'word' : lnum.' : '.out,
-					\ 'kind' : 'jump_list',
-					\ 'action__line' : lnum,
-					\ 'action__path' : path,
-					\ 'action__text' : substitute(out,'^[<>] ','',''),
-					\ }]
-	endfor
-	return candidates
-endfunction "}}}
 " 
 function! perforce#is_p4_have(str) "{{{
-" ********************************************************************************
-" クライアントにファイルがあるか調べる
-" @param[in]	str				ファイル名 , have の返り値
-" @retval       flg		TRUE 	存在する
-" @retval       flg		FLASE 	存在しない
-" ********************************************************************************
+	" ********************************************************************************
+	" クライアントにファイルがあるか調べる
+	" @param[in]	str				ファイル名 , have の返り値
+	" @retval       flg		TRUE 	存在する
+	" @retval       flg		FLASE 	存在しない
+	" ********************************************************************************
 	let str = system('p4 have '.perforce#Get_kk(a:str))
 	let flg = perforce#is_p4_have_from_have(str)
 	return flg
@@ -520,19 +498,19 @@ function! perforce#is_p4_have_from_have(str) "{{{
 
 endfunction "}}}
 function! perforce#get_trans_enspace(strs) "{{{
-" スペース対応
-" ********************************************************************************
-" スペース対応
-" @param[in]	strs		'\ 'が入った文字列
-" @retval       strs		'\ 'を削除した文字列
-" ********************************************************************************
+	" スペース対応
+	" ********************************************************************************
+	" スペース対応
+	" @param[in]	strs		'\ 'が入った文字列
+	" @retval       strs		'\ 'を削除した文字列
+	" ********************************************************************************
 	let strs = a:strs
 	return strs
 endfunction "}}}
 function! perforce#init() "{{{
-" ********************************************************************************
-" 設定変数の初期化
-" ********************************************************************************
+	" ********************************************************************************
+	" 設定変数の初期化
+	" ********************************************************************************
 
 	if exists('g:pf_settings')
 		return
@@ -574,10 +552,10 @@ function! perforce#init() "{{{
 	endif
 endfunction "}}}
 function! perforce#load(file) "{{{
-" ********************************************************************************
-" 設定ファイルの読み込み
-" param[in]		file		設定ファイル名
-" ********************************************************************************
+	" ********************************************************************************
+	" 設定ファイルの読み込み
+	" param[in]		file		設定ファイル名
+	" ********************************************************************************
 
 	" ファイルが見つからない場合は終了
 	if filereadable(a:file) == 0
@@ -598,10 +576,10 @@ function! perforce#load(file) "{{{
 
 endfunction "}}}
 function! perforce#save(file) "{{{
-" ********************************************************************************
-" 設定ファイルを保存する
-" param[in]		file		設定ファイル名
-" ********************************************************************************
+	" ********************************************************************************
+	" 設定ファイルを保存する
+	" param[in]		file		設定ファイル名
+	" ********************************************************************************
 
 	let datas = []
 
@@ -619,12 +597,12 @@ function! perforce#save(file) "{{{
 
 endfunction "}}}
 function! perforce#get_pf_settings(type, kind) "{{{
-" ********************************************************************************
-" 設定データを取得する
-" @param[in]	type		pf_settings の設定の種類
-" @param[in]	kind		common など, source の種類
-" @retval		rtns 		取得データ
-" ********************************************************************************
+	" ********************************************************************************
+	" 設定データを取得する
+	" @param[in]	type		pf_settings の設定の種類
+	" @param[in]	kind		common など, source の種類
+	" @retval		rtns 		取得データ
+	" ********************************************************************************
 	" 設定がない場合は、共通を呼び出す
 	if exists('g:pf_settings[a:type][a:kind]')
 		let kind = a:kind
@@ -693,11 +671,11 @@ function! perforce#get_paths_from_fname(str) "{{{
 endfunction "}}}
 "p4_change
 function! perforce#get_depots(args, path) "{{{
-" ********************************************************************************
-" depots を取得する
-" @param[in]	args	ファイル名
-" @param[in]	context
-" ********************************************************************************
+	" ********************************************************************************
+	" depots を取得する
+	" @param[in]	args	ファイル名
+	" @param[in]	context
+	" ********************************************************************************
 	if len(a:args) > 0
 		let depots = a:args
 	else
@@ -706,12 +684,12 @@ function! perforce#get_depots(args, path) "{{{
 	return depots
 endfunction "}}}
 function! perforce#get_pfchanges(context,outs,kind) "{{{
-" ********************************************************************************
-" p4_changes Untie 用の 返り値を返す
-" @param(in)	context	
-" @param(in)	outs
-" @param(in)	kind	
-" ********************************************************************************
+	" ********************************************************************************
+	" p4_changes Untie 用の 返り値を返す
+	" @param(in)	context	
+	" @param(in)	outs
+	" @param(in)	kind	
+	" ********************************************************************************
 	let outs = a:outs
 	let candidates = map( outs, "{
 				\ 'word' : v:val,
@@ -725,11 +703,11 @@ function! perforce#get_pfchanges(context,outs,kind) "{{{
 	return candidates
 endfunction "}}}
 function! perforce#p4_change_gather_candidates(args, context) "{{{
-" ********************************************************************************
-" チェンジリストの表示 表示設定関数
-" チェンジリストの変更の場合、開いたいるファイルを変更するか、actionで指定したファイル
-" @param[in]	args				depot
-" ********************************************************************************
+	" ********************************************************************************
+	" チェンジリストの表示 表示設定関数
+	" チェンジリストの変更の場合、開いたいるファイルを変更するか、actionで指定したファイル
+	" @param[in]	args				depot
+	" ********************************************************************************
 	"
 	" 表示するクライアント名の取得
 	let outs = g:pf_settings.client_changes_only.common ? 
@@ -751,11 +729,11 @@ function! perforce#p4_change_gather_candidates(args, context) "{{{
 	return rtn
 endfunction "}}}
 function! perforce#p4_change_change_candidates(args, context) "{{{
-" ********************************************************************************
-" p4 change ソースの 変化関数
-" @param[in]	
-" @retval       
-" ********************************************************************************
+	" ********************************************************************************
+	" p4 change ソースの 変化関数
+	" @param[in]	
+	" @retval       
+	" ********************************************************************************
 	" Unite で入力された文字
 	let newfile = a:context.input
 
@@ -773,15 +751,60 @@ function! perforce#p4_change_change_candidates(args, context) "{{{
 	endif
 
 endfunction "}}}
+"source
+function! perforce#get_source_file_from_path(path) "{{{
+	" ********************************************************************************
+	" 差分の出力を、Uniteのjump_list化けする
+	" @param[in]	outs		差分のデータ
+	" ********************************************************************************
+	let path = a:path
+	let lines = readfile(path)
+	let candidates = []
+	let lnum = 1
+	for line in lines
+		let candidates += [{
+					\ 'word' : lnum.' : '.line,
+					\ 'kind' : 'jump_list',
+					\ 'action__line' : lnum,
+					\ 'action__path' : path,
+					\ 'action__text' : line,
+					\ }]
+		let lnum += 1
+	endfor
+	return candidates
+endfunction "}}}
+function! perforce#get_source_diff_from_diff(outs) "{{{
+	" ********************************************************************************
+	" 差分の出力を、Uniteのjump_list化けする
+	" @param[in]	outs		差分のデータ
+	" ********************************************************************************
+	let outs = a:outs
+	let candidates = []
+	let num = { 'lnum' : 1 , 'snum' : 1 }
+	let path = ''
+	for out in outs
+		let num = perforce#get_lnum_from_diff(out, num.lnum, num.snum)
+		let lnum = num.lnum
+		let path = perforce#getPathFromDiff(out,path)
+		let candidates += [{
+					\ 'word' : lnum.' : '.out,
+					\ 'kind' : 'jump_list',
+					\ 'action__line' : lnum,
+					\ 'action__path' : path,
+					\ 'action__text' : substitute(out,'^[<>] ','',''),
+					\ }]
+	endfor
+	return candidates
+endfunction "}}}
 " ================================================================================
 " subroutine
 " ================================================================================
 function! s:get_pf_settings_from_lists(datas) "{{{
-" ********************************************************************************
-" BIT 演算によって、データを取得する
-" @param[in]	datas	{ bit, 文字列, ... } 
-" @retval   	rtns 	リストを返す
-" ********************************************************************************
+	" ********************************************************************************
+	" BIT 演算によって、データを取得する
+	" @param[in]	datas	{ bit, 文字列, ... } 
+	" @retval   	rtns 	リストを返す
+	" ********************************************************************************
 
 	if a:datas[0] < 0
 		" 全部返す
@@ -799,16 +822,16 @@ function! s:get_pf_settings_from_lists(datas) "{{{
 
 endfunction "}}}
 function! s:init_pf_settings() "{{{
-" ********************************************************************************
-" pf_settings を初期化します
-" ********************************************************************************
+	" ********************************************************************************
+	" pf_settings を初期化します
+	" ********************************************************************************
 	let g:pf_settings = {}
 	let s:pf_settings_orders = []
 endfunction "}}}
 function! s:set_pf_settings(type, description, kind_val ) "{{{
-" ********************************************************************************
-" pf_settings を追加します
-" ********************************************************************************
+	" ********************************************************************************
+	" pf_settings を追加します
+	" ********************************************************************************
 	" 表示順に追加
 	let s:pf_settings_orders += [a:type]
 
