@@ -13,7 +13,7 @@ function! s:source.gather_candidates(args, context) "{{{
 		let files = a:args
 		let all_flg = 0
 	else
-		let files = []
+		let files = ['']
 		let all_flg = 1
 	endif
 	let files = perforce#get_trans_enspace(files)
@@ -24,6 +24,13 @@ function! s:source.gather_candidates(args, context) "{{{
 		if perforce#is_p4_have(file)
 			let outs += perforce#pfcmds('diff','',perforce#Get_kk(file))
 		else
+			let rtns += [{
+						\ 'word' : file,
+						\ 'kind' : 'jump_list',
+						\ 'action__line' : 0,
+						\ 'action__path' : file,
+						\ 'action__text' : 0,
+						\ }]
 			let rtns += perforce#get_source_file_from_path(file)
 		endif
 	endfor
@@ -33,7 +40,25 @@ function! s:source.gather_candidates(args, context) "{{{
 	" add ‚µ‚½ƒtƒ@ƒCƒ‹‚ð’Ç‰Á‚·‚é
 	if all_flg
 		"let file = 
-		
+		let opened_strs = perforce#pfcmds('opened','')
+
+		for str in opened_strs
+			if str =~ '.*#\d\+ - add change'
+				let depot = perforce#get_depot_from_opened(str)
+				let path = perforce#get_path_from_depot(depot)
+
+				let rtns += [{
+							\ 'word' : path,
+							\ 'kind' : 'jump_list',
+							\ 'action__line' : 0,
+							\ 'action__path' : path,
+							\ 'action__text' : 0,
+							\ }]
+
+				let rtns += perforce#get_source_file_from_path(path)
+			endif
+		endfor
+
 	endif
 	return rtns
 endfunction "}}}
