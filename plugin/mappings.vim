@@ -8,10 +8,13 @@ nnoremap <Plug>(p4_print_info)
 			\ :<C-u>call perforce#LogFile(perforce#pfcmds('info',''))<CR>|"
 nnoremap <Plug>(p4_revert)
 			\ :<C-u>call perforce#LogFile(perforce#pfcmds('revert -a "<C-r>=expand("%:p")<CR>"',''))<CR>|"
+nnoremap <Plug>(p4_cd_clentpath)
+			\ :<C-u>lcd $PFCLIENTPATH<CR>|"
 
 nmap ;up<CR> <Plug>(unite_p4_commit)
 nmap ;wd<CR> <Plug>(p4_diff_tool)
 nmap ;cl<CR> <Plug>(p4_echo_client_data)
+nmap ;cr<CR> <Plug>(p4_cd_clentpath)
 nmap ;pi<CR> <Plug>(p4_print_info)
 
 nnoremap ;ff<CR> :<C-u>call perforce#pfFind()<CR>|"

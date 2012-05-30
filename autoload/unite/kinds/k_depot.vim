@@ -284,17 +284,17 @@ let s:kind.action_table.a_p4_depot_copy = {
 	\ }
 function! s:kind.action_table.a_p4_depot_copy.func(candidates) "{{{
 	for candidate in a:candidates
-		call <SID>copyFileDepot(candidate.action__depot)
+		call <SID>copy_file_depot(candidate.action__depot)
 	endfor
 endfunction "}}}
-function! s:copyFileDepot(depotfile) "{{{
+function! s:copy_file_depot(depot) "{{{
 
 	" / -> \
-	let depotfile1 = a:depotfile
-	let localfile1 = perforce#get_path_from_depot(depotfile1)
+	let depot = a:depot
+	let file1 = perforce#get_path_from_depot(depot)
 
-	let depotfile1 = substitute(depotfile1, '/','\','g')
-	let localfile1 = substitute(localfile1, '/','\','g')
+	let depot = substitute(depot, '/','\','g')
+	let file1 = substitute(file1, '/','\','g')
 
 	" 空白と引数がない場合は、defaultを設定する
 	let root2 = perforce#get_pf_settings('ClientMove_defoult_root', 'common').datas[0]
@@ -303,8 +303,11 @@ function! s:copyFileDepot(depotfile) "{{{
 	" 末尾の \ を削除する
 	let root2 = substitute(root2,'\\$','','')
 
+	" 先頭の\\を削除する
+	let depot = substitute(depot, '\\\\','\','')
+
 	" コピー先
-	let file2 = root2.''.depotfile1
+	let file2 = root2.''.depot
 
 	"--------------------------------------------------------------------------------
 	" 実行する
@@ -314,9 +317,10 @@ function! s:copyFileDepot(depotfile) "{{{
 	echo 'mkdir "'.fnamemodify(file2,':h').'"'
 
 	" コピーする
-	call system('copy "'.localfile1.'" "'.file2.'"')
+	let cmd = 'copy "'.file1.'" "'.file2.'"'
+	echo cmd
+	call system(cmd)
 
-	echo 'copy "'.localfile1.'" "'.file2.'"'
 
 endfunction
 "}}}

@@ -28,15 +28,8 @@ function! s:source.gather_candidates(args, context) "{{{
 	let candidates = map( outs, "{
 				\ 'word' : v:val,
 				\ 'kind' : 'k_depot',
-				\ 'action__depot' : <SID>get_DepotPath_from_opened(v:val)
+				\ 'action__depot' : perforce#get_depot_from_opened(v:val)
 				\ }")
 
 	return candidates
-endfunction "}}}
-
-"================================================================================
-" sub routine
-"================================================================================
-function! s:get_DepotPath_from_opened(str) "{{{
-	return substitute(a:str,'#.*','','')   " # ƒŠƒrƒWƒ‡ƒ“”Ô†‚Ìíœ
 endfunction "}}}

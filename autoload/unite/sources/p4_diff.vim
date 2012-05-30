@@ -17,5 +17,9 @@ function! s:source.gather_candidates(args, context) "{{{
 		let outs += perforce#pfcmds('diff','',perforce#Get_kk(arg))
 	endfor
 
-	return perforce#get_diff_path(outs) 
+	"let outs = map(copy(args), "perforce#pfcmds('diff','',perforce#Get_kk(v:val))")
+
+	"echo outs
+	"call input("")
+	return perforce#get_source_diff_from_path(outs) 
 endfunction "}}}
