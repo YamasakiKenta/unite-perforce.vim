@@ -49,7 +49,7 @@ endfunction "}}}
 
 let s:kind.action_table.a_p4_client_info = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'クライアントの情報',
+			\ 'description' : 'クライアントの情報 ( info ) ',
 			\ }
 function! s:kind.action_table.a_p4_client_info.func(candidates) "{{{
 	for l:candidate in a:candidates
@@ -58,7 +58,23 @@ function! s:kind.action_table.a_p4_client_info.func(candidates) "{{{
 
 		" 各クライアントごとに表示する
 		call perforce#LogFile1(clname, 0)
-		let outs = perforce#pfcmds('info','-P '.port.' -c '.clname)
+		let outs = perforce#pfcmds('info', '-p '.port.' -c '.clname)
+		call append(0,outs)
+	endfor
+endfunction "}}}
+
+let s:kind.action_table.a_p4_client = { 
+			\ 'is_selectable' : 1, 
+			\ 'description' : 'クライアントの情報 ( client )',
+			\ }
+function! s:kind.action_table.a_p4_client.func(candidates) "{{{
+	for l:candidate in a:candidates
+		let clname = l:candidate.action__clname
+		let port   = l:candidate.action__port
+
+		" 各クライアントごとに表示する
+		call perforce#LogFile1(clname, 0)
+		let outs = perforce#pfcmds('client', '-p '.port, '-o '.clname)
 		call append(0,outs)
 	endfor
 endfunction "}}}

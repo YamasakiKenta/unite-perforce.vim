@@ -346,7 +346,6 @@ function! perforce#matomeDiffs(chnum) "{{{
 	for out in outs
 		if out =~ "===="
 			let datas += [{'files' : substitute(out,'.*/\(.\{-}\)#.*','\1',''), 'adds' : 0, 'changeds' : 0, 'deleteds' : 0, }]
-			let datas[-1].files = 
 		elseif out =~ 'add'.find
 			let datas[-1].adds = substitute(out,'add'.find,'\4','')
 		elseif out =~ 'deleted'.find
@@ -378,7 +377,7 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 
 	let gcmds += [a:head]
 
-	if a:cmd  =~ 'client' || a:cmd =~ 'changes'	
+	if a:cmd  == 'clients' || a:cmd == 'changes'	
 
 		if perforce#get_pf_settings('user_changes_only', 'common').datas[0] == 1
 			call add(gcmd2s, '-u '.perforce#get_PFUSER())
@@ -701,55 +700,6 @@ function! perforce#get_pfchanges(context,outs,kind) "{{{
 
 
 	return candidates
-endfunction "}}}
-function! perforce#p4_change_gather_candidates(args, context) "{{{
-	" ********************************************************************************
-	" チェンジリストの表示 表示設定関数
-	" チェンジリストの変更の場合、開いたいるファイルを変更するか、actionで指定したファイル
-	" @param[in]	args				depot
-	" ********************************************************************************
-	"
-	" 表示するクライアント名の取得
-	let outs = g:pf_settings.client_changes_only.common ? 
-				\ [perforce#get_PFCLIENTNAME()] : 
-				\ perforce#pfcmds('clients','')
-
-	" defaultの表示
-	let rtn = []
-	let rtn += map( outs, "{
-				\ 'word' : 'default by '.perforce#get_ClientName_from_client(v:val),
-				\ 'kind' : 'k_p4_change',
-				\ 'action__chname' : '',
-				\ 'action__chnum' : 'default',
-				\ 'action__depots' : a:context.source__depots,
-				\ }")
-
-	let outs = perforce#pfcmds('changes','','-s pending')
-	let rtn += perforce#get_pfchanges(a:context, outs, 'k_p4_change')
-	return rtn
-endfunction "}}}
-function! perforce#p4_change_change_candidates(args, context) "{{{
-	" ********************************************************************************
-	" p4 change ソースの 変化関数
-	" @param[in]	
-	" @retval       
-	" ********************************************************************************
-	" Unite で入力された文字
-	let newfile = a:context.input
-
-	" 入力がない場合は、表示しない
-	if newfile != ""
-		return [{
-					\ 'word' : '[new] '.newfile,
-					\ 'kind' : 'k_p4_change_reopen',
-					\ 'action__chname' : newfile,
-					\ 'action__chnum' : 'new',
-					\ 'action__depots' : a:context.source__depots,
-					\ }]
-	else
-		return []
-	endif
-
 endfunction "}}}
 "source
 function! perforce#get_source_file_from_path(path) "{{{

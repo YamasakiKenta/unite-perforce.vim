@@ -18,8 +18,55 @@ let s:source = {
 			\ 'is_quit' : 0,
 			\ }
 let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
-let s:source.gather_candidates = function('perforce#p4_change_gather_candidates')
-let s:source.change_candidates = function('perforce#p4_change_change_candidates')
+function! s:source.gather_candidates(args, context) "{{{
+	" ********************************************************************************
+	" チェンジリストの表示 表示設定関数
+	" チェンジリストの変更の場合、開いたいるファイルを変更するか、actionで指定したファイル
+	" @param[in]	args				depot
+	" ********************************************************************************
+	"
+	" 表示するクライアント名の取得
+	let outs = g:pf_settings.client_changes_only.common ? 
+				\ [perforce#get_PFCLIENTNAME()] : 
+				\ perforce#pfcmds('clients','')
+
+	" defaultの表示
+	let rtn = []
+	let rtn += map( outs, "{
+				\ 'word' : 'default by '.perforce#get_ClientName_from_client(v:val),
+				\ 'kind' : 'k_p4_change',
+				\ 'action__chname' : '',
+				\ 'action__chnum' : 'default',
+				\ 'action__depots' : a:context.source__depots,
+				\ }")
+
+	let outs = perforce#pfcmds('changes','','-s pending')
+	let rtn += perforce#get_pfchanges(a:context, outs, 'k_p4_change')
+	return rtn
+endfunction "}}}
+function! s:source.change_candidates(args, context) "{{{
+	" ********************************************************************************
+	" p4 change ソースの 変化関数
+	" @param[in]	
+	" @retval       
+	" ********************************************************************************
+	" Unite で入力された文字
+	let newfile = a:context.input
+
+	" 入力がない場合は、表示しない
+	if newfile != ""
+		return [{
+					\ 'word' : '[new] '.newfile,
+					\ 'kind' : 'k_p4_change_reopen',
+					\ 'action__chname' : newfile,
+					\ 'action__chnum' : 'new',
+					\ 'action__depots' : a:context.source__depots,
+					\ }]
+	else
+		return []
+	endif
+
+endfunction "}}}
 
 let s:source_p4_changes_pending = s:source
 unlet s:source
@@ -34,8 +81,8 @@ let s:source = {
 			\ 'default_action' : 'a_p4_change_reopen',
 			\ }
 let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
-let s:source.gather_candidates = function('perforce#p4_change_gather_candidates')
-let s:source.change_candidates = function('perforce#p4_change_change_candidates')
+let s:source.gather_candidates = s:source_p4_changes_pending.gather_candidates
+let s:source.change_candidates = s:source_p4_changes_pending.change_candidates
 
 let s:source_p4_changes_pending_reopen = s:source
 unlet s:source 
