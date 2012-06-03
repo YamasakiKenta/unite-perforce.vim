@@ -92,7 +92,7 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 		let tmp_pfpaths = map(tmp_pfpaths, "perforce#get_path_from_have(v:val)")
 
 		"p4 Ç…Ç»ÇØÇÍÇŒÅAî‰ärÇµÇ»Ç¢ 
-		if tmp_pfpaths[0] =~ 'file(s) not on client.'
+		if exists('tmp_pfpaths[0]') && tmp_pfpaths[0] =~ 'file(s) not on client.'
 			continue
 		endif
 
