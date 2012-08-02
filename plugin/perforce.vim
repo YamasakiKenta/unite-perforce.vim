@@ -3,7 +3,8 @@
 "[ ] tags
 "[ ] label
 
-
+" テンプレートの作成方法
+" p4 -p {port} -c {clname} client -o -t {cltmp} | p4 -p {port} -c {clname} client -i
 
 "取得できる値
 "$PFCLIENTPATH " # クライアントのパス
