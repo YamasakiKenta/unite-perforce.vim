@@ -33,10 +33,10 @@ function! s:kind.action_table.a_p4_print.func(candidates) "{{{
 		endif
 
 		" ファイルを出力する
-		let strs = perforce#pfcmds('print','','-q '.perforce#Get_kk(name.''.numstr))
+		let strs = perforce#pfcmds('print','','-q '.common#Get_kk(name.''.numstr))
 		let file = fnamemodify(name,':t').file_numstr
 
-		call perforce#LogFile1(file, 0, strs) 
+		call common#LogFile1(file, 0, strs) 
 
 		" データの出力
 		exe 'setf' filetype_old
@@ -65,10 +65,10 @@ function! s:kind.action_table.preview.func(candidate) "{{{
 	endif
 
 	" ファイルを出力する
-	let strs = perforce#pfcmds('print','','-q '.perforce#Get_kk(name.''.numstr))
+	let strs = perforce#pfcmds('print','','-q '.common#Get_kk(name.''.numstr))
 	let file = fnamemodify(name,':t').file_numstr
 
-	call perforce#LogFile1(file, 0, strs) 
+	call common#LogFile1(file, 0, strs) 
 
 	" データの出力
 	"exe 'setf' filetype_old

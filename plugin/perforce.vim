@@ -37,7 +37,7 @@ function! s:get_files_for_clientMove(dirs) "{{{
 	let datas = []
 	let paths  = []
 	for dir in a:dirs
-		let dir = perforce#get_pathSrash(dir)
+		let dir = common#get_pathSrash(dir)
 
 		if recursive_flg == 1
 			let paths = split(glob(dir.'/**'),'\n')
@@ -48,7 +48,7 @@ function! s:get_files_for_clientMove(dirs) "{{{
 		" ƒf[ƒ^‚Ì“o˜^
 		for path in paths 
 			call add( datas, {
-						\ 'path' : perforce#get_pathSrash(path),
+						\ 'path' : common#get_pathSrash(path),
 						\ 'dir'  : dir,
 						\ })
 		endfor
@@ -81,7 +81,7 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 		let file = substitute( path, dir, '', '')
 
 		" \ -> /
-		let file = perforce#get_pathSrash(file)
+		let file = common#get_pathSrash(file)
 
 		" perforce ‚©‚çŽæ“¾‚·‚é
 		" –¼‘O‚ª‚©‚Ô‚é‚Ì‚ð–h‚®
@@ -93,22 +93,23 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 		let tmp_pfpaths = map(tmp_pfpaths, "perforce#get_path_from_have(v:val)")
 
 		"p4 ‚É‚È‚¯‚ê‚ÎA”äŠr‚µ‚È‚¢ 
-		if exists('tmp_pfpaths[0]') && tmp_pfpaths[0] =~ 'file(s) not on client.'
+		"if exists('tmp_pfpaths[0]') && tmp_pfpaths[0] =~ 'file(s) not on client.'
+		if tmp_pfpaths[0] =~ 'file(s) not on client.'
 			continue
 		endif
 
 		for tmp_pfpath in tmp_pfpaths
 
 			" / -> \
-			let path       = perforce#get_pathEn(path)
-			let tmp_pfpath = perforce#get_pathEn(tmp_pfpath)
+			let path       = common#get_pathEn(path)
+			let tmp_pfpath = common#get_pathEn(tmp_pfpath)
 
 			"·•ª‚ª‚È‚¯‚ê‚ÎA”äŠr‚µ‚È‚¢ 
-			if perforce#is_different(path,tmp_pfpath) == 0
+			if common#is_different(path,tmp_pfpath) == 0
 				continue
 			endif
 
-			echo path.' - '. tmp_pfpath
+			echo '	>'. path.' - '. tmp_pfpath
 
 			" ”äŠr‚·‚éƒtƒ@ƒCƒ‹‚Ì“o˜^
 			call add(merges, {
@@ -129,13 +130,13 @@ endfunction "}}}
 " ********************************************************************************
 function! s:clientMove(...) "{{{
 	" Diffƒc[ƒ‹‚ÌŽæ“¾
-	let defoult_cmd = perforce#get_pf_settings('diff_tool', 'common').datas[0]
+	let defoult_cmd = perforce#setting#get('diff_tool', 'common').datas[0]
 
 	" ˆø”‚ª‚ ‚è•¶Žš‚ª‚ ‚éê‡‚ÍAˆø”‚ðŽg—p‚·‚é
 	if a:0 > 0 && a:1 != ''
 		let dirs = a:000
 	else
-		let dirs = perforce#get_pf_settings('ClientMove_defoult_root', 'common').datas
+		let dirs = perforce#setting#get('ClientMove_defoult_root', 'common').datas
 	endif 
 
 	" root ‚Ì•\Ž¦
@@ -169,9 +170,9 @@ function! s:clientMove(...) "{{{
 	for merge in merges 
 		let file1 = merge.file1
 		let file2 = merge.file2
-		call system('p4 edit '.perforce#Get_kk(file2))
-		call system(cmd.' '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2))
-		echo cmd.' '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2)
+		call system('p4 edit '.common#Get_kk(file2))
+		call system(cmd.' '.common#Get_kk(file1).' '.common#Get_kk(file2))
+		echo cmd.' '.common#Get_kk(file1).' '.common#Get_kk(file2)
 	endfor
 	"
 endfunction "}}}

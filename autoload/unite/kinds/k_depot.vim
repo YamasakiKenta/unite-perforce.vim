@@ -32,7 +32,7 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 			\ function! action.func(candidates) \n
 				\ let outs = [] \n
 				\ for l:candidate in a:candidates \n
-					\ let outs += perforce#pfcmds('". a:cmd ."','',perforce#Get_kk(l:candidate.action__". get(kind,a:kind,"path") .")) \n
+					\ let outs += perforce#pfcmds('". a:cmd ."','',common#Get_kk(l:candidate.action__". get(kind,a:kind,"path") .")) \n
 				\ endfor \n
 				\ call perforce#LogFile(outs) \n
 			\ endfunction 
@@ -98,7 +98,7 @@ let s:kind.action_table.a_p4_files = {
 function! s:kind.action_table.a_p4_files.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
 	let outs = perforce#pfcmds('files','',join(depots))
-	call perforce#LogFile1('p4_files', 0)
+	call common#LogFile1('p4_files', 0)
 	call append(0,outs)
 endfunction "}}}
 
@@ -150,7 +150,7 @@ function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 		"}}}
 		"
 		" 初期の名前の書き出し
-		call perforce#event_save_file(g:pfmove_tmpfile,names,'perforce#do_move(g:pfmove_oris, g:pfmove_tmpfile)')
+		call common#event_save_file(g:pfmove_tmpfile,names,'common#do_move(g:pfmove_oris, g:pfmove_tmpfile)')
 
 		"}}}
 	endif 
@@ -166,7 +166,7 @@ function! s:kind.action_table.delete.func(candidate) "{{{
 	"let wnum = winnr()
 	let depot = a:candidate.action__depot
 
-	call perforce#LogFile1('diff', 1, perforce#pfcmds('diff','',depot))
+	call common#LogFile1('diff', 1, perforce#pfcmds('diff','',depot))
 
 	wincmd p
 endfunction "}}}
@@ -245,7 +245,7 @@ function! s:copyFileDir(file) "{{{
 	let file1 = substitute(a:file, '/','\','g')
 
 	" 空白と引数がない場合は、defaultを設定する
-	let root2 = perforce#get_pf_settings('ClientMove_defoult_root', 'common').datas[0]
+	let root2 = perforce#setting#get('ClientMove_defoult_root', 'common').datas[0]
 	let root2 = substitute(root2, '/', '\','g')
 
 	" 末尾の \ を削除する
@@ -297,7 +297,7 @@ function! s:copy_file_depot(depot) "{{{
 	let file1 = substitute(file1, '/','\','g')
 
 	" 空白と引数がない場合は、defaultを設定する
-	let root2 = perforce#get_pf_settings('ClientMove_defoult_root', 'common').datas[0]
+	let root2 = perforce#setting#get('ClientMove_defoult_root', 'common').datas[0]
 	let root2 = substitute(root2, '/', '\','g')
 
 	" 末尾の \ を削除する

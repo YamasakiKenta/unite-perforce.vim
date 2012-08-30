@@ -7,7 +7,7 @@ endfunction
 " ********************************************************************************
 let s:kind = {
 			\ 'name' : 'k_p4_clients',
-			\ 'default_action' : 'a_p4_client_set',
+			\ 'default_action' : 'a_p4_client',
 			\ 'action_table' : {},
 			\ 'parents' : ['k_p4'],
 			\}
@@ -57,7 +57,7 @@ function! s:kind.action_table.a_p4_client_info.func(candidates) "{{{
 		let port   = l:candidate.action__port
 
 		" 各クライアントごとに表示する
-		call perforce#LogFile1(clname, 0)
+		call common#LogFile1(port.'_'.clname, 0)
 		let outs = perforce#pfcmds('info', '-p '.port.' -c '.clname)
 		call append(0,outs)
 	endfor
@@ -73,7 +73,7 @@ function! s:kind.action_table.a_p4_client.func(candidates) "{{{
 		let port   = l:candidate.action__port
 
 		" 各クライアントごとに表示する
-		call perforce#LogFile1(clname, 0)
+		call common#LogFile1(clname, 0)
 		let outs = perforce#pfcmds('client', '-p '.port, '-o '.clname)
 		call append(0,outs)
 	endfor

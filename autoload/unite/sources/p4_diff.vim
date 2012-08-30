@@ -8,21 +8,21 @@ let s:source = {
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
 
-	" 引数がない場合は、空白を設定する
-	if len(a:args) > 1
+	" 引数がない場合は、空白を設定する ( 全検索 )
+	if len(a:args) > 0
 		let files = a:args
 		let all_flg = 0
 	else
 		let files = ['']
 		let all_flg = 1
 	endif
-	let files = perforce#get_trans_enspace(files)
+	"let files = perforce#get_trans_enspace(files) " 空白文字の削除
 
 	let rtns = []
 	let outs = []
 	for file in files
 		if perforce#is_p4_have(file)
-			let outs += perforce#pfcmds('diff','',perforce#Get_kk(file))
+			let outs += perforce#pfcmds('diff','',common#Get_kk(file))
 		else
 			let rtns += [{
 						\ 'word' : file,
@@ -36,6 +36,20 @@ function! s:source.gather_candidates(args, context) "{{{
 	endfor
 
 	let rtns += perforce#get_source_diff_from_diff(outs) 
+
+	" 表示をループさせる
+	if all_flg == 0
+		let nowline = line(".")
+		let cnt = 0
+		for rtn in rtns
+			letline = rtn.action__line
+			if line >= nowline
+				exe 'rtns = rtns['.cnt.':-1]  + rtns[0:'.cnt.']'
+				break
+			endif
+			let cnt += 1
+		endfor
+	endif
 
 	" add したファイルを追加する
 	if all_flg

@@ -8,119 +8,6 @@ else
 	let $PFDATA = expand("~").'/vim/perforce_data'
 endif
 " ================================================================================
-"okazu# からの移植
-" ================================================================================
-function! perforce#GetFileNameForUnite(args, context) "{{{
-	" ファイル名の取得
-	let a:context.source__path = expand('%:p')
-	let a:context.source__linenr = line('.')
-	let a:context.source__depots = perforce#get_depots(a:args, a:context.source__path)
-	call unite#print_message('[line] Target: ' . a:context.source__path)
-endfunction "}}}
-function! perforce#Get_kk(str) "{{{
-	"return substitute(a:str,'^\"?\(.*\)\"?','"\1"','')
-	return len(a:str) ? '"'.a:str.'"' : ''
-endfunction "}}}
-function! perforce#LogFile1(name, deleteFlg, ...) "{{{
-	" ********************************************************************************
-	" 新しいファイルを開いて書き込み禁止にする 
-	" @param[in]	name		書き込み用tmpFileName
-	" @param[in]	deleteFlg	初期化する
-	" @param[in]	[...]		書き込むデータ
-	" ********************************************************************************
-
-	let @t = expand("%:p") " # mapで呼び出し用
-	let name = a:name
-
-	" 開いているか調べる
-	let bnum = bufwinnr(name) 
-
-	if bnum == -1
-		" 画面内になければ新規作成
-		exe 'sp ~/'.name
-		%delete _          " # ファイル消去
-		setl buftype=nofile " # 保存禁止
-		setl fdm=manual
-		call perforce#MyQuit()
-	else
-		" 表示しているなら切り替える
-		exe bnum . 'wincmd w'
-	endif
-
-	" 初期化する
-	if a:deleteFlg == 1
-		%delete _
-	endif
-
-	" 書き込みデータがあるなら書き込む
-	if exists("a:1") 
-		call append(0,a:1)
-	endif
-	cal cursor(1,1) " # 一行目に移動する
-
-endfunction "}}}
-function! perforce#Map_diff() "{{{
-	map <buffer> <up> [c
-	map <buffer> <down> ]c
-	map <buffer> <left> dp:<C-u>diffupdate<CR>
-	map <buffer> <right> dn:<C-u>diffupdate<CR>
-	map <buffer> <tab> <C-w><C-w>
-endfunction "}}}
-function! perforce#event_save_file(tmpfile,strs,func) "{{{
-	" ********************************************************************************
-	" ファイルを保存したときに、関数を実行します
-	" @param[in]	tmpfile		保存するファイル名 ( 分割するファイル名 ) 
-	" @param[in]	strs		初期の文章
-	" @param[in]	func		実行する関数名
-	" ********************************************************************************
-
-
-	"画面設定
-	exe 'vnew' a:tmpfile
-	setlocal noswapfile bufhidden=hide buftype=acwrite
-
-	"文の書き込み
-	%delete _
-	call append(0,a:strs)
-
-	"一行目に移動
-	cal cursor(1,1) 
-
-	aug perforce_event_save_file "{{{
-		au!
-		exe 'autocmd BufWriteCmd <buffer> nested call '.a:func
-	aug END "}}}
-
-endfunction "}}}
-function! perforce#get_pathEn(path) "{{{
-	return substitute(a:path,'/','\','g') " # / マークに統一
-endfunction "}}}
-function! perforce#get_pathSrash(path) "{{{
-	return substitute(a:path,'\','/','g') " # / マークに統一
-endfunction "}}}
-function! perforce#is_different(path,path2) "{{{
-	" ********************************************************************************
-	" 差分を調べる
-	" @param[in]	path				比較ファイル1
-	" @param[in]	path2				比較ファイル2
-	" @retval		flg			TRUE	差分あり
-	" 							FALSE	差分なし
-	" ********************************************************************************
-	let flg = 1
-	let outs = perforce#Get_cmds('fc '.perforce#Get_kk(a:path).' '.perforce#Get_kk(a:path2))
-	if outs[1] =~ '^FC: 相違点は検出されませんでした'
-		let flg = 0
-	endif
-	return flg
-endfunction "}}}
-function! perforce#MyQuit() "{{{
-	map <buffer> q :q<CR>
-endfunction "}}}
-function! perforce#Get_cmds(cmd) "{{{
-	let rtns = split(system(a:cmd),'\n')
-	return rtns
-endfunction "}}}
-" ================================================================================
 " 取得
 " ================================================================================
 "set
@@ -148,7 +35,7 @@ function! perforce#get_PFCLIENTPATH() "{{{
 endfunction "}}}
 "global
 function! perforce#Get_dd(str) "{{{
-	return len(a:str) ? '//...'.perforce#Get_kk(a:str).'...' : ''
+	return len(a:str) ? '//...'.common#Get_kk(a:str).'...' : ''
 endfunction "}}}
 function! perforce#pf_diff_tool(file,file2) "{{{
 	call g:PerforceDiff(a:file,a:file2)
@@ -165,7 +52,7 @@ function! perforce#unite_args(source) "{{{
 		else
 			" スペース対策
 			" [ ] p4_diffなどに修正が必要
-			let tmp = a:source.':'.perforce#get_pathSrash(expand("%"))
+			let tmp = a:source.':'.common#get_pathSrash(expand("%"))
 			let tmp = substitute(tmp, ' ','\\ ', 'g')
 			let tmp = 'Unite '.tmp
 			echo tmp
@@ -180,11 +67,15 @@ endfunction "}}}
 function! perforce#get_ClientPathFromName(str) "{{{
 	let str = system('p4 clients | grep '.a:str) " # ref 直接データをもらう方法はないかな
 	let path = substitute(str,'.* \d\d\d\d/\d\d/\d\d root \(.\{-}\) ''.*','\1','g')
-	let path = perforce#get_pathSrash(path)
+	let path = common#get_pathSrash(path)
 	return path
 endfunction "}}}
-function! perforce#pfFind() "{{{
-	let str  = input('Find : ')
+function! perforce#pfFind(...) "{{{
+	if a:0 == 0
+		let str  = input('Find : ')
+	else
+		let str = a:1
+	endif 
 	if str !=# ""
 		call unite#start([insert(map(split(str),"perforce#Get_dd(v:val)"),'p4_have')])
 	endif
@@ -199,7 +90,7 @@ function! perforce#pfDiff(path) "{{{
 	let path = a:path
 
 	" 最新 REV のファイルの取得 "{{{
-	let outs = perforce#pfcmds('print','',' -q '.perforce#Get_kk(path))
+	let outs = perforce#pfcmds('print','',' -q '.common#Get_kk(path))
 
 	" エラーが発生したらファイルを検索して、すべてと比較 ( 再帰 )
 	if outs[0] =~ "is not under client's root "
@@ -266,7 +157,7 @@ function! perforce#pfChange(str,...) "{{{
 	call writefile(split(tmp,'\n'),$PFTMP)
 
 	"チェンジリストの作成
-	return perforce#Get_cmds('more '.perforce#Get_kk($PFTMP).' | p4 change -i') 
+	return common#Get_cmds('more '.common#Get_kk($PFTMP).' | p4 change -i') 
 
 endfunction "}}}
 function! perforce#pfNewChange() "{{{
@@ -293,7 +184,7 @@ function! perforce#get_client_data_from_info() "{{{
 	for data in  datas
 		if data =~ 'Client root: '
 			let clpath = substitute(data, 'Client root: ','','')
-			let clpath = perforce#get_pathSrash(clpath)
+			let clpath = common#get_pathSrash(clpath)
 		elseif data =~ 'Client name: '
 			let clname  = substitute(data, 'Client name: ','','')
 		elseif data =~ 'User name: '
@@ -379,28 +270,28 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 
 	if a:cmd  == 'clients' || a:cmd == 'changes'	
 
-		if perforce#get_pf_settings('user_changes_only', 'common').datas[0] == 1
+		if perforce#setting#get('user_changes_only', 'common').datas[0] == 1
 			call add(gcmd2s, '-u '.perforce#get_PFUSER())
 		endif 
 
 
-		if perforce#get_pf_settings('show_max_flg', 'common').datas[0] == 1
-			call add(gcmd2s, '-m '.perforce#get_pf_settings('show_max', 'common').datas[0])
+		if perforce#setting#get('show_max_flg', 'common').datas[0] == 1
+			call add(gcmd2s, '-m '.perforce#setting#get('show_max', 'common').datas[0])
 		endif 
 
 	endif
 
 	if a:cmd  =~ 'changes'
-		if perforce#get_pf_settings('client_changes_only', 'common').datas[0] == 1
+		if perforce#setting#get('client_changes_only', 'common').datas[0] == 1
 			call add(gcmd2s, '-c '.perforce#get_PFCLIENTNAME())
 		endif 
 	endif
 
 	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmd2s).' '.join(a:000)
 
-	if perforce#get_pf_settings('show_cmd_flg', 'common').datas[0]
+	if perforce#setting#get('show_cmd_flg', 'common').datas[0]
 		echo cmd
-		if perforce#get_pf_settings('show_cmd_stop_flg', 'common').datas[0]
+		if perforce#setting#get('show_cmd_stop_flg', 'common').datas[0]
 			call input("")
 		endif
 	endif
@@ -408,8 +299,8 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	let rtn = split(system(cmd),'\n')
 
 	" 非表示にするコマンド
-	if perforce#get_pf_settings('filters_flg', 'common').datas
-		let filters = perforce#get_pf_settings('filters', 'common').datas
+	if perforce#setting#get('filters_flg', 'common').datas
+		let filters = perforce#setting#get('filters', 'common').datas
 		let filter = join(filters, '\|')
 		call filter(rtn, 'v:val !~ filter')
 	endif
@@ -423,11 +314,11 @@ function! perforce#LogFile(str) "{{{
 	" @var
 	" ********************************************************************************
 	"
-	if perforce#get_pf_settings('is_out_flg', 'common').datas[0]
-		if perforce#get_pf_settings('is_out_echo_flg', 'common').datas[0]
+	if perforce#setting#get('is_out_flg', 'common').datas[0]
+		if perforce#setting#get('is_out_echo_flg', 'common').datas[0]
 			echo a:str
 		else
-			call perforce#LogFile1('p4log', 0, a:str)
+			call common#LogFile1('p4log', 0, a:str)
 		endif
 	endif
 
@@ -481,7 +372,7 @@ function! perforce#is_p4_have(str) "{{{
 	" @retval       flg		TRUE 	存在する
 	" @retval       flg		FLASE 	存在しない
 	" ********************************************************************************
-	let str = system('p4 have '.perforce#Get_kk(a:str))
+	let str = system('p4 have '.common#Get_kk(a:str))
 	let flg = perforce#is_p4_have_from_have(str)
 	return flg
 endfunction "}}}
@@ -507,127 +398,7 @@ function! perforce#get_trans_enspace(strs) "{{{
 	return strs
 endfunction "}}}
 function! perforce#init() "{{{
-	" ********************************************************************************
-	" 設定変数の初期化
-	" ********************************************************************************
-
-	if exists('g:pf_settings')
-		return
-	else
-		" init
-		call <SID>init_pf_settings() 
-
-		" 並び替え用の変数の作成
-		call <SID>set_pf_settings ( 'is_submit_flg'            , 'サブミットを許可'            , 1                         ) 
-		call <SID>set_pf_settings ( 'g_changes_only'           , 'フィルタ'                    , -1                        ) 
-		call <SID>set_pf_settings ( 'user_changes_only'        , 'ユーザー名でフィルタ'        , 1                         ) 
-		call <SID>set_pf_settings ( 'client_changes_only'      , 'クライアントでフィルタ'      , 1                         ) 
-		call <SID>set_pf_settings ( 'filters_flg'              , '除外リストを使用する'        , 1                         )
-		call <SID>set_pf_settings ( 'filters'                  , '除外リスト'                  , [-1,'tag','snip']         ) 
-		call <SID>set_pf_settings ( 'g_show'                   , 'ファイル数'                  , -1                        ) 
-		call <SID>set_pf_settings ( 'show_max_flg'             , 'ファイル数の制限'            , 0                         ) 
-		call <SID>set_pf_settings ( 'show_max'                 , 'ファイル数'                  , [1,5,10]                  ) 
-		call <SID>set_pf_settings ( 'g_is_out'                 , '実行結果'                    , -1                        ) 
-		call <SID>set_pf_settings ( 'is_out_flg'               , '実行結果を出力する'          , 1                         ) 
-		call <SID>set_pf_settings ( 'is_out_echo_flg'          , '実行結果を出力する[echo]'    , 1                         ) 
-		call <SID>set_pf_settings ( 'show_cmd_flg'             , 'p4 コマンドを表示する'       , 1                         ) 
-		call <SID>set_pf_settings ( 'show_cmd_stop_flg'        , 'p4 コマンドを表示する(stop)' , 1                         ) 
-		call <SID>set_pf_settings ( 'g_diff'                   , 'Diff'                        , -1                        ) 
-		call <SID>set_pf_settings ( 'is_vimdiff_flg'           , 'vimdiff を使用する'          , 0                         ) 
-		call <SID>set_pf_settings ( 'diff_tool'                , 'Diff で使用するツール'       , [1,'WinMergeU']           ) 
-		call <SID>set_pf_settings ( 'g_ClientMove'             , 'ClientMove'                  , -1                        ) 
-		call <SID>set_pf_settings ( 'ClientMove_recursive_flg' , 'ClientMoveで再帰検索をするか', 0                         ) 
-		call <SID>set_pf_settings ( 'ClientMove_defoult_root'  , 'ClientMoveの初期フォルダ'    , [1,'c:\tmp','c:\p4tmp']   ) 
-		call <SID>set_pf_settings ( 'g_other'                  , 'その他'                      , -1                        ) 
-		call <SID>set_pf_settings ( 'ports'                    , 'perforce port'               , [1,'localhost:1818']      ) 
-
-		" 設定を読み込む
-		call perforce#load($PFDATA)
-
-
-		" クライアントデータの読み込み
-		call perforce#get_client_data_from_info()
-
-	endif
-endfunction "}}}
-function! perforce#load(file) "{{{
-	" ********************************************************************************
-	" 設定ファイルの読み込み
-	" param[in]		file		設定ファイル名
-	" ********************************************************************************
-
-	" ファイルが見つからない場合は終了
-	if filereadable(a:file) == 0
-		echo 'Error - not fine '.a:file
-		return
-	endif
-
-	" ファイルを読み込む
-	let datas = readfile(a:file)
-
-	" データを設定する
-	for data in datas
-		let tmp = split(data,"\t")
-		exe 'let g:pf_settings["'.join(tmp[0:-2],'"]["').'"] = '.tmp[-1]
-
-		" 型が変わるため、初期化が必要
-	endfor
-
-endfunction "}}}
-function! perforce#save(file) "{{{
-	" ********************************************************************************
-	" 設定ファイルを保存する
-	" param[in]		file		設定ファイル名
-	" ********************************************************************************
-
-	let datas = []
-
-	let tmp  = ''
-	for type in keys(g:pf_settings)
-		for val in keys(g:pf_settings[type])
-			if val != 'description'
-				let datas += [type."\t".val."\t".string(g:pf_settings[type][val])."\r"]
-			endif
-		endfor
-	endfor
-
-	" 書き込む
-	call writefile(datas, a:file)
-
-endfunction "}}}
-function! perforce#get_pf_settings(type, kind) "{{{
-	" ********************************************************************************
-	" 設定データを取得する
-	" @param[in]	type		pf_settings の設定の種類
-	" @param[in]	kind		common など, source の種類
-	" @retval		rtns 		取得データ
-	" ********************************************************************************
-	" 設定がない場合は、共通を呼び出す
-	if exists('g:pf_settings[a:type][a:kind]')
-		let kind = a:kind
-	else
-		let kind = 'common'
-	endif
-
-	let val = g:pf_settings[a:type][kind]
-
-
-	let valtype = type(val)
-
-	let rtns = {}
-	if valtype == 3
-		" リストの場合は、引数で取得する
-		let rtns.datas = <SID>get_pf_settings_from_lists(val)
-	else
-		let rtns.datas = val
-	endif
-
-	let rtns.kind = kind
-
-	return rtns
-endfunction "}}}
-function! perforce#get_pf_settings_orders() "{{{
-	return s:pf_settings_orders
+	call perforce#setting#init()
 endfunction "}}}
 "================================================================================
 " 並び替え
@@ -749,45 +520,3 @@ endfunction "}}}
 " ================================================================================
 " subroutine
 " ================================================================================
-function! s:get_pf_settings_from_lists(datas) "{{{
-	" ********************************************************************************
-	" BIT 演算によって、データを取得する
-	" @param[in]	datas	{ bit, 文字列, ... } 
-	" @retval   	rtns 	リストを返す
-	" ********************************************************************************
-
-	if a:datas[0] < 0
-		" 全部返す
-		let rtns = a:datas[1:]
-	else
-		" 有効なリストの取得 ( 一つ目は、フラグが入っているためスキップする )
-		let nums = bit#get_nums_form_bit(a:datas[0]*2)
-
-		" 有効な引数のみ返す
-		let rtns = map(copy(nums), 'a:datas[v:val]')
-
-	endif
-
-	return rtns
-
-endfunction "}}}
-function! s:init_pf_settings() "{{{
-	" ********************************************************************************
-	" pf_settings を初期化します
-	" ********************************************************************************
-	let g:pf_settings = {}
-	let s:pf_settings_orders = []
-endfunction "}}}
-function! s:set_pf_settings(type, description, kind_val ) "{{{
-	" ********************************************************************************
-	" pf_settings を追加します
-	" ********************************************************************************
-	" 表示順に追加
-	let s:pf_settings_orders += [a:type]
-
-	let g:pf_settings[a:type] = {
-				\ 'common' : a:kind_val,
-				\ 'description' : a:description,
-				\ }
-
-endfunction "}}}

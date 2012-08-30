@@ -5,7 +5,6 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4_clients',
-			\ 'default_action' : 'a_p4_client_set',
 			\ 'description' : 'クライアントの表示',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
@@ -23,7 +22,7 @@ function! s:get_pfclients() "{{{
 
 	"ポートのクライアントを表示する
 	let datas = []
-	let ports = perforce#get_pf_settings('ports', 'common').datas
+	let ports = perforce#setting#get('ports', 'common').datas
 	for port in ports
 		let datas += map(perforce#pfcmds('clients','-p '.port), "{
 					\ 'port' : port,

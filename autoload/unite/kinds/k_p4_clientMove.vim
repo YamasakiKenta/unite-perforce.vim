@@ -19,17 +19,17 @@ let s:kind.action_table.a_merge = {
 function! s:kind.action_table.a_merge.func(candidates) "{{{
 	for candidate in deepcopy(a:candidates)
 
-		let defoult_cmd = perforce#get_pf_settings('diff_tool', 'common').datas[0]
+		let defoult_cmd = perforce#setting#get('diff_tool', 'common').datas[0]
 
 		" ”äŠr‚·‚é–¼‘O‚ÌŽæ“¾
 		let file1 = candidate.action__file1
 		let file2 = candidate.action__file2
 
-		call system('p4 edit '.perforce#Get_kk(file2))
+		call system('p4 edit '.common#Get_kk(file2))
 		if defoult_cmd =~ 'kdiff3'
-			call system(defoult_cmd.' '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2),' -o ',perforce#Get_kk(file2))
+			call system(defoult_cmd.' '.common#Get_kk(file1).' '.common#Get_kk(file2),' -o ',common#Get_kk(file2))
 		else
-			call system(defoult_cmd.' '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2))
+			call system(defoult_cmd.' '.common#Get_kk(file1).' '.common#Get_kk(file2))
 		endif
 	endfor
 
@@ -46,8 +46,8 @@ function! s:kind.action_table.a_copy.func(candidates) "{{{
 		let file1 = candidate.action__file1
 		let file2 = candidate.action__file2
 
-		call system('p4 edit '.perforce#Get_kk(file2))
-		call system('copy '.perforce#Get_kk(file1).' '.perforce#Get_kk(file2))
+		call system('p4 edit '.common#Get_kk(file2))
+		call system('copy '.common#Get_kk(file1).' '.common#Get_kk(file2))
 	endfor
 
 endfunction "}}}

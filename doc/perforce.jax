@@ -10,10 +10,10 @@ Author : YamasakiKenta
 使い方			|unite-perforce-usage|
 Install			|unite-perforce-install|
 Interface		|unite-perforce-interface|
-  Commands		  |unite-perforce-commands|
-  変数			  |unite-perforce-variables|
-  関数			  |unite-perforce-function|
-  KeyMapping	  |unite-perforce-key-mappings|
+  Commands		|unite-perforce-commands|
+  変数			|unite-perforce-variables|
+  関数			|unite-perforce-function|
+  KeyMapping	  	|unite-perforce-key-mappings|
 更新履歴		|unite-perforce-changelog|
 
 ==============================================================================
@@ -88,7 +88,7 @@ g:pf_setting.bool.ClientMove_recursive_flg.value			*g:pf_setting.bool.ClientMove
 
 
 ------------------------------------------------------------------------------
-関数						*unite-perforce-function*
+関数						*unite_perforce_function*
 
 g:PerforceDiff					*g:PerforceDiff*
 		Diff tool 関数
@@ -114,12 +114,25 @@ Key Mapping 					*unite-perforce-mappings*
 <Plug>(p4_revert)				*<Plug>(p4_revert)*
 	編集状態の解除
 
+						*unite_perforce_default_key_mappings*
+デフォルトキーマッピング
+
+ノーマルモードマッピング
+{lhs}		{rhs}
+--------	-----------------------------
+;pe<CR>		<PLUG>(p4_edit)
+;ff<CR>
+
+
+詳しくは、処理を確認してください
+C:\Users\yamasaki kenta\Dropbox\vim\rtp\unite-perforce.vim\plugin\mapping.vim
 
 ==============================================================================
 更新履歴					*unite-perforce-changelog*
 
 2012/01/30
 新規作成
+
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:

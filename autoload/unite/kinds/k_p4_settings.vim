@@ -4,7 +4,7 @@ endfunction
 
 " èIóπä÷êî
 function! s:common_out() "{{{
-	call perforce#save($PFDATA)
+	call perforce#setting#save($PFDATA)
 	call unite#force_redraw()
 endfunction "}}}
 
@@ -118,7 +118,7 @@ function! s:kind.action_table.a_toggles.func(candidate) "{{{
 
 	call unite#start_temporary([['p4_select', {'name' : name, 'kind' : kind}]])
 
-	call <SID>common_out()
+	" call <SID>common_out()
 endfunction "}}}
 
 let s:kind.action_table.a_set_strs = {

@@ -1,13 +1,18 @@
 nnoremap <Plug>(unite_p4_commit)
 			\ :<C-u>Unite source -input=p4\ <CR>|"
+
 nnoremap <Plug>(p4_diff_tool)
 			\ :<C-u>call perforce#pfDiff(expand("%"))<CR>|"  
+
 nnoremap <Plug>(p4_echo_client_data)
 			\ :<C-u>echo $PFCLIENTNAME . " - " . $PFCLIENTPATH<CR>|"
+
 nnoremap <Plug>(p4_print_info)
 			\ :<C-u>call perforce#LogFile(perforce#pfcmds('info',''))<CR>|"
+
 nnoremap <Plug>(p4_revert)
 			\ :<C-u>call perforce#LogFile(perforce#pfcmds('revert -a "<C-r>=expand("%:p")<CR>"',''))<CR>|"
+
 nnoremap <Plug>(p4_cd_clentpath)
 			\ :<C-u>lcd $PFCLIENTPATH<CR>|"
 
@@ -22,7 +27,6 @@ nnoremap ;pl<CR> :<C-u>call perforce#unite_args('p4_filelog')<CR>|"
 nnoremap ;pd<CR> :<C-u>call perforce#unite_args('p4_diff')<CR>|"
 
 nnoremap ;pp<CR> :<C-u>Unite p4_settings<CR>|"
-
 nnoremap ;pt<CR> :<C-u>Unite p4_clients<CR>|"
 nnoremap ;pc<CR> :<C-u>Unite p4_changes_pending<CR>|"
 nnoremap ;ps<CR> :<C-u>Unite p4_changes_submitted<CR>|"
@@ -36,7 +40,7 @@ nmap ;pe<CR> :<C-u>call <SID>pf_edit()<CR>|"
 nmap ;pr<CR> :<C-u>call <SID>pf_revert()<CR>|"
 
 function! s:pf_edit() "{{{
-	let file = perforce#Get_kk(expand("%"))
+	let file = common#Get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
 		let datas = perforce#pfcmds('edit','',file)
 	else
@@ -45,7 +49,7 @@ function! s:pf_edit() "{{{
 	call perforce#LogFile(datas)
 endfunction "}}}
 function! s:pf_revert() "{{{
-	let file = perforce#Get_kk(expand("%"))
+	let file = common#Get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
 		let datas = perforce#pfcmds('revert','',' -a '.file)
 	else

@@ -7,14 +7,14 @@ let s:source = {
 			\ 'description' : '各行にリビジョン番号を表示',
 			\ 'hooks' : {},
 			\ }
-let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
+let s:source.hooks.on_init = function('common#GetFileNameForUnite')
 function! s:source.gather_candidates(args, context) "{{{
 
 	let depots = a:context.source__depots
 
 	let candidates = []
 	for depot in depots 
-		let outs = perforce#pfcmds('annotate','',perforce#Get_kk(depot))
+		let outs = perforce#pfcmds('annotate','',common#Get_kk(depot))
 		let candidates += map( outs, "{
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog',
@@ -32,7 +32,7 @@ let s:source = {
 			\ 'description' : '各行にチェンジリスト番号を表示',
 			\ 'hooks' : {},
 			\ }
-let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
+let s:source.hooks.on_init = function('common#GetFileNameForUnite')
 function! s:source.gather_candidates(args, context) "{{{
 
 	let depots = a:context.source__depots
@@ -40,7 +40,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let candidates = []
 	for depot in depots 
 
-		let outs = perforce#pfcmds('annotate','','-ai '.perforce#Get_kk(depot))
+		let outs = perforce#pfcmds('annotate','','-ai '.common#Get_kk(depot))
 
 		let candidates += map( outs, "{
 					\ 'word' : v:val,

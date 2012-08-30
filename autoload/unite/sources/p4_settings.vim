@@ -29,10 +29,10 @@ function! s:source.gather_candidates(args, context) "{{{
 		let kind = 'common'
 	endif
 
-	let orders = copy(perforce#get_pf_settings_orders())
+	let orders = copy(perforce#setting#get_orders())
 	return map( orders, "{
 				\ 'word' : <SID>get_word_from_pf_setting(v:val, kind),
-				\ 'kind' : <SID>get_kind_from_pf_setting(perforce#get_pf_settings(v:val,kind).datas),
+				\ 'kind' : <SID>get_kind_from_pf_setting(perforce#setting#get(v:val,kind).datas),
 				\ 'action__valname' : v:val,
 				\ 'action__kind' : kind,
 				\ }")

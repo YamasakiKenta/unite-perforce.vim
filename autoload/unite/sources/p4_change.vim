@@ -17,7 +17,7 @@ let s:source = {
 			\ 'hooks' : {},
 			\ 'is_quit' : 0,
 			\ }
-let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
+let s:source.hooks.on_init = function('common#GetFileNameForUnite')
 function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" チェンジリストの表示 表示設定関数
@@ -80,7 +80,7 @@ let s:source = {
 			\ 'hooks' : {},
 			\ 'default_action' : 'a_p4_change_reopen',
 			\ }
-let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
+let s:source.hooks.on_init = function('common#GetFileNameForUnite')
 let s:source.gather_candidates = s:source_p4_changes_pending.gather_candidates
 let s:source.change_candidates = s:source_p4_changes_pending.change_candidates
 
@@ -96,7 +96,7 @@ let s:source = {
 			\ 'hooks' : {},
 			\ 'is_quit' : 0,
 			\ }
-let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
+let s:source.hooks.on_init = function('common#GetFileNameForUnite')
 function! s:source.gather_candidates(args, context) "{{{
 	let outs = perforce#pfcmds('changes','','-s submitted')
 	return perforce#get_pfchanges(a:context, outs, 'k_p4_change')
