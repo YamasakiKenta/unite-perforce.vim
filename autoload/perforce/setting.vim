@@ -47,7 +47,7 @@ function! <SID>get_pf_settings_from_lists(datas) "{{{
 		let rtns = a:datas[1:]
 	else
 		" 有効なリストの取得 ( 一つ目は、フラグが入っているためスキップする )
-		let nums = bit#get_nums_form_bit(a:datas[0]*2)
+		let nums = perforce#common#bit#get_nums_form_bit(a:datas[0]*2)
 
 		" 有効な引数のみ返す
 		let rtns = map(copy(nums), 'a:datas[v:val]')
