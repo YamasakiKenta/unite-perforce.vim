@@ -43,18 +43,19 @@ endfunction "}}}
 
 call <SID>setPfcmd('jump_list' , 'add'       , '追加'               ) 
 call <SID>setPfcmd('jump_list' , 'edit'      , '編集'               ) 
-call <SID>setPfcmd(' file'     , 'add'       , '追加'               ) 
-call <SID>setPfcmd(' file'     , 'edit'      , '編集'               ) 
+call <SID>setPfcmd('file'      , 'add'       , '追加'               ) 
+call <SID>setPfcmd('file'      , 'edit'      , '編集'               ) 
 call <SID>setPfcmd('k_depot'   , 'edit'      , '編集'               ) 
 call <SID>setPfcmd('k_depot'   , 'delete'    , '削除'               ) 
 call <SID>setPfcmd('k_depot'   , 'revert -a' , '元に戻す'           ) 
 call <SID>setPfcmd('k_depot'   , 'revert'    , '元に戻す [ 強制 ] ' ) 
 
 "p4 k_depot 
-let s:kind = { 'name' : 'k_depot',
+let s:kind = {
+			\ 'name'           : 'k_depot',
 			\ 'default_action' : 'a_open',
-			\ 'action_table' : {},
-			\ 'parents' : ['k_p4'],
+			\ 'action_table'   : {},
+			\ 'parents'        : ['k_p4'],
 			\ }
 call unite#define_kind(s:kind)
 

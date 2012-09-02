@@ -14,6 +14,8 @@ Interface		|unite-perforce-interface|
   変数			|unite-perforce-variables|
   関数			|unite-perforce-function|
   KeyMapping	  	|unite-perforce-key-mappings|
+Sources			|unite-perforce-sources|
+Actions			|unite-perforce-actions|
 更新履歴		|unite-perforce-changelog|
 
 ==============================================================================
@@ -55,7 +57,7 @@ g:pf_setting.bool.is_submit_flg.value				*g:pf_setting.bool.is_submit_flg.value*
 g:pf_ports					*g:pf_ports*
 		port の設定
 >
-	    	g:pf_ports = ['1818',...]
+	    	g:pf_ports = [1818...]
 <
 g:pf_setting.bool.is_out_flg.value					*g:pf_setting.bool.is_out_flg.value*
 		結果出力を行う
@@ -103,7 +105,7 @@ Key Mapping 					*unite-perforce-mappings*
 	file を client との差分を指定したDiff Tool
 
 <Plug>(p4_echo_client_data)			*<Plug>(p4_echo_client_data)*
-	現在の Client Name  , Client Path の表示を行います
+	現在の Client Name   Client Path の表示を行います
 
 <Plug>(p4_print_info)				*<Plug>(p4_print_info)*
 	Client 情報を表示する
@@ -128,11 +130,176 @@ Key Mapping 					*unite-perforce-mappings*
 C:\Users\yamasaki kenta\Dropbox\vim\rtp\unite-perforce.vim\plugin\mapping.vim
 
 ==============================================================================
+SOURCES						*unite-perforce-sources*
+p4_annotate			
+	各行にリビジョン番号を表示
+p4_annotate_ai			
+	各行にチェンジリスト番号を表示 ( 全て )
+p4_changes_pending		
+	作成中のチェンジリスト
+p4_changes_pending_reopen	
+	チェンジリストの移動
+p4_changes_submitted		
+	submit 済みチェンジリスト
+p4_clientMove 			
+	特定のフォルダからファイルを比較する
+p4_clients			
+	クライアントの表示
+p4_describe			
+	サブミット済みのチェンジリストの差分を表示
+p4_diff				
+	ファイルの差分表示
+p4_filelog
+	履歴
+p4_have
+	所有するファイル
+p4_have_async
+	所有するファイル ( file から取得する ) 
+p4_help
+	ヘルプを表示
+p4_jobs
+	ジョブの表示
+p4_opened
+	編集しているファイルの表示 ( チェンジリスト番号 )
+p4_settings
+	unite-perforce.vim の設定
+p4_select
+	複数選択
+p4_users
+	ユーザーの切り替え
+
+
+Actions						 *unite-perforce-actions*
+jump_list					 *unite-perforce-action-jump_list*
+	add
+		追加
+	edit
+		編集
+file 						*unite-perforce-file*
+	add
+		追加
+	edit
+		編集
+
+k_depot						 *unite-perforce-k_depot*
+	edit
+		編集
+	delete
+		削除
+	revert -a
+		元に戻す
+	revert
+		元に戻す [ 強制 ] 
+	a_open
+		開く
+	preview
+		preview  
+	a_p4_files 
+		ファイルの情報
+	a_p4_move
+		移動 ( 名前の変更 ) 
+	delete 
+		差分
+	a_p4_diff 
+		差分
+	a_p4_diff_tool
+		差分 ( TOOL ) 
+	a_p4_reopen
+		チェンジリストの変更 
+	a_p4_filelog 
+		履歴
+	a_p4_sync 
+		ファイルの最新同期
+	a_p4_dir_copy
+		dirでコピーする
+	a_p4_depot_copy
+		depotでコピーする
+
+k_p4						 *unite-perforce-k_p4*
+	a_pf_settings
+		設定
+	a_add_fix
+		quickfixに追加
+
+k_p4_change_reopen				 *unite-perforce-k_p4_change_reopen*
+	a_p4_change_reopen
+		チェンジリストの変更 ( reopen )
+
+k_p4_change					 *unite-perforce-k_p4_change*
+	delete
+		チェンジリストの削除 
+	a_p4_change_opened 
+		ファイルの表示
+	a_p4_change_info 
+		チェンジリストの情報 
+	a_p4_change_submit
+		サブミット 
+	a_p4change_describe 
+		差分の表示
+	a_p4_matomeDiff 
+		差分のまとめを表示
+	a_p4_change_reopen
+		チェンジリストの変更 
+	a_p4_change_rename
+		名前の変更 
+k_p4_clientMove					 *unite-perforce-k_p4_clientMove*
+	a_merge
+		比較する
+	a_copy
+		置き換える
+k_p4_clients					 *unite-perforce-k_p4_clients*
+	a_p4_client_set
+		クライアントの変更
+	a_p4_client_sync 
+		最新同期
+	a_p4_client_info 
+		ライアントの情報 ( info )
+	a_p4_client 
+		クライアントの情報 ( client 
+
+k_p4_filelog					 *unite-perforce-k_p4_filelog*
+	preview
+		preview
+
+	a_p4_print
+		ファイルの表示
+
+k_p4_help 					 *unite-perforce-k_p4_help*
+	a_help
+		詳しい情報を表示
+k_p4_jobs					 *unite-perforce-k_p4_jobs*
+	a_p4_fixes
+		ジョブの情報
+
+k_p4_settings_bool				 *unite-perforce-k_p1_settings_bool*
+	a_toggle
+		設定の切替
+	a_set_enable
+		有効にする
+	a_set_disable
+		無効にする
+
+k_p4_settings_strs				 *unite-perforce-k_p4_settings_strs*
+	a_toggle
+		設定の切替
+	a_toggles
+		複数選択
+	a_set_strs
+		名前の登録 ( リスト ) 
+
+k_p4_select					 *unite-perforce-k_p4_select*
+	a_toggle
+		設定の切替
+
+k_p4_users					 *unite-perforce-k_p4_users*
+	a_p4_user_change
+		ユーザーの切り替え1
+
+==============================================================================
 更新履歴					*unite-perforce-changelog*
 
 2012/01/30
 新規作成
 
-
 ==============================================================================
-vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:
+vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:sw=8

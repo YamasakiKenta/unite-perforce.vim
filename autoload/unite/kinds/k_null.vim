@@ -2,6 +2,7 @@ function! unite#kinds#k_null#define()
 	return s:kind
 endfunction
 
+" p4_settings.vim ‚ÅŽg—p‚·‚é
 let s:kind = { 'name' : 'k_null',
 			\ 'default_action' : 'a_null',
 			\ 'action_table' : {},

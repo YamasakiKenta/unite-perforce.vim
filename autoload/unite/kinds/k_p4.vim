@@ -17,8 +17,8 @@ function! s:kind.action_table.a_pf_settings.func(candidate) "{{{
 endfunction "}}}
 
 let s:kind.action_table.a_add_fix = {
-			\ 'is_selectable' : 1 ,
 			\ 'description' : 'quickfix‚É’Ç‰Á',
+			\ 'is_selectable' : 1 ,
 			\ }
 function! s:kind.action_table.a_add_fix.func(candidates) "{{{
 

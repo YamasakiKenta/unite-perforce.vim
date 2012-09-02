@@ -19,8 +19,8 @@ let s:kind = {
 			\ }
 
 let s:kind.action_table.a_toggle = {
-			\ 'is_selectable' : 1,
 			\ 'description' : 'İ’è‚ÌØ‘Ö',
+			\ 'is_selectable' : 1,
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_toggle.func(candidates) "{{{
@@ -36,8 +36,8 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.a_set_enable = {
-			\ 'is_selectable' : 1,
 			\ 'description' : '—LŒø‚É‚·‚é',
+			\ 'is_selectable' : 1,
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_set_enable.func(candidates) "{{{
@@ -50,8 +50,8 @@ function! s:kind.action_table.a_set_enable.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.a_set_disable = {
-			\ 'is_selectable' : 1,
 			\ 'description' : '–³Œø‚É‚·‚é',
+			\ 'is_selectable' : 1,
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_set_disable.func(candidates) "{{{
@@ -77,8 +77,8 @@ let s:kind = {
 			\ }
 
 let s:kind.action_table.a_toggle = {
-			\ 'is_selectable' : 1,
 			\ 'description' : 'İ’è‚ÌØ‘Ö',
+			\ 'is_selectable' : 1,
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_toggle.func(candidates) "{{{
@@ -151,8 +151,8 @@ let s:kind = {
 			\ }
 
 let s:kind.action_table.a_toggle = {
-			\ 'is_selectable' : 1,
 			\ 'description' : 'İ’è‚ÌØ‘Ö',
+			\ 'is_selectable' : 1,
 			\ }
 function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	let val = 0

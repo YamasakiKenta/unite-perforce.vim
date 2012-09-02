@@ -50,8 +50,8 @@ let s:kind = { 'name' : 'k_p4_change',
 
 " 共通
 let s:kind.action_table.delete = {
-			\ 'is_selectable' : 1,
 			\ 'description' : 'チェンジリストの削除' ,
+			\ 'is_selectable' : 1,
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.delete.func(candidates) "{{{
@@ -67,8 +67,8 @@ endfunction "}}}
 
 "複数選択可能
 let s:kind.action_table.a_p4_change_opened = { 
-			\ 'is_selectable' : 1, 
 			\ 'description' : 'ファイルの表示',
+			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_p4_change_opened.func(candidates) "{{{
@@ -83,8 +83,8 @@ function! s:kind.action_table.a_p4_change_opened.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.a_p4_change_info = { 
-			\ 'is_selectable' : 1, 
 			\ 'description' : 'チェンジリストの情報' ,
+			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_p4_change_info.func(candidates) "{{{
@@ -97,8 +97,8 @@ function! s:kind.action_table.a_p4_change_info.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.a_p4_change_submit = {
-			\ 'is_selectable' : 1,
 			\ 'description' : 'サブミット' ,
+			\ 'is_selectable' : 1,
 			\ }
 function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 
@@ -115,8 +115,8 @@ function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.a_p4change_describe = { 
-			\ 'is_selectable' : 1, 
 			\ 'description' : '差分の表示',
+			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_p4change_describe.func(candidates) "{{{
@@ -125,8 +125,8 @@ function! s:kind.action_table.a_p4change_describe.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.a_p4_matomeDiff = { 
-			\ 'is_selectable' : 1, 
 			\ 'description' : '差分のまとめを表示',
+			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_p4_matomeDiff.func(candidates) "{{{
@@ -190,7 +190,7 @@ unlet s:kind
 " @param[in]	candidate	unite のあれ	
 " @retval       chnum		番号
 " ********************************************************************************
-function! s:make_new_changes(candidate) "{{{
+function! <SID>make_new_changes(candidate) "{{{
 
 	let chnum = a:candidate.action__chnum
 	let chname = a:candidate.action__chname

@@ -29,7 +29,7 @@ let s:source__p4_annotate = s:source
 
 let s:source = {
 			\ 'name' : 'p4_annotate_ai',
-			\ 'description' : '各行にチェンジリスト番号を表示',
+			\ 'description' : '各行にチェンジリスト番号を表示 ( 全て )',
 			\ 'hooks' : {},
 			\ }
 let s:source.hooks.on_init = function('common#GetFileNameForUnite')
@@ -55,8 +55,7 @@ endfunction "}}}
 let s:source__p4_annotate_ai = s:source 
 
 " ================================================================================
-" subrutine 
-" ================================================================================
+" sub rutine 
 function! s:getRevisionNumFromAnnotate(str) "{{{
 	return substitute(a:str,'^\(\d\+\).*','\1','')
 endfunction "}}}

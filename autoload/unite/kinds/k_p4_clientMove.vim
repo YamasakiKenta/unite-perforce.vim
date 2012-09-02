@@ -13,8 +13,8 @@ let s:kind = { 'name' : 'k_p4_clientMove',
 call unite#define_kind(s:kind)
 
 let s:kind.action_table.a_merge = {
-			\ 'is_selectable' : 1, 
 			\ 'description' : '”äŠr‚·‚é', 
+			\ 'is_selectable' : 1, 
 			\ }
 function! s:kind.action_table.a_merge.func(candidates) "{{{
 	for candidate in deepcopy(a:candidates)
@@ -36,8 +36,8 @@ function! s:kind.action_table.a_merge.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.a_copy = {
-			\ 'is_selectable' : 1, 
 			\ 'description' : '’u‚«Š·‚¦‚é', 
+			\ 'is_selectable' : 1, 
 			\ }
 function! s:kind.action_table.a_copy.func(candidates) "{{{
 	for candidate in deepcopy(a:candidates)

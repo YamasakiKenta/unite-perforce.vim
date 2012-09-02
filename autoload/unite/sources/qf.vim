@@ -8,7 +8,8 @@ function! unite#sources#qf#define()"{{{
 endfunction"}}}
 
 let s:source = {
-      \ 'name': 'qf'
+      \ 'name' : 'qf',
+	  \ 'description' : '',
       \ }
 
 function! s:source.gather_candidates(args, context) "{{{

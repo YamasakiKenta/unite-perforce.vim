@@ -13,8 +13,8 @@ let s:kind = {
 			\ }
 
 let s:kind.action_table.a_p4_print = {
-			\ 'is_selectable' : 1, 
 			\ 'description' : 'ファイルの表示',
+			\ 'is_selectable' : 1, 
 			\ }
 function! s:kind.action_table.a_p4_print.func(candidates) "{{{
 	for l:candidate in deepcopy(a:candidates)
