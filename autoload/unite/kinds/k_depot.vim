@@ -99,7 +99,7 @@ let s:kind.action_table.a_p4_files = {
 function! s:kind.action_table.a_p4_files.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
 	let outs = perforce#pfcmds('files','',join(depots))
-	call common#LogFile1('p4_files', 0)
+	call common#LogFile('p4_files', 0)
 	call append(0,outs)
 endfunction "}}}
 
@@ -167,7 +167,7 @@ function! s:kind.action_table.delete.func(candidate) "{{{
 	"let wnum = winnr()
 	let depot = a:candidate.action__depot
 
-	call common#LogFile1('diff', 1, perforce#pfcmds('diff','',depot))
+	call common#LogFile('diff', 1, perforce#pfcmds('diff','',depot))
 
 	wincmd p
 endfunction "}}}

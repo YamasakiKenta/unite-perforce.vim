@@ -11,6 +11,12 @@ endif
 " Žæ“¾
 " ================================================================================
 "set
+function! perforce#GetFileNameForUnite(args, context) "{{{
+	" ƒtƒ@ƒCƒ‹–¼‚ÌŽæ“¾
+	let a:context.source__path = expand('%:p')
+	let a:context.source__linenr = line('.')
+	call unite#print_message('[line] Target: ' . a:context.source__path)
+endfunction "}}}
 function! perforce#set_PFCLIENTNAME(str) "{{{
 	let $PFCLIENTNAME = a:str
 endfunction "}}}

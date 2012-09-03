@@ -36,7 +36,7 @@ function! s:kind.action_table.a_p4_print.func(candidates) "{{{
 		let strs = perforce#pfcmds('print','','-q '.common#Get_kk(name.''.numstr))
 		let file = fnamemodify(name,':t').file_numstr
 
-		call common#LogFile1(file, 0, strs) 
+		call common#LogFile(file, 0, strs) 
 
 		" データの出力
 		exe 'setf' filetype_old
@@ -68,7 +68,7 @@ function! s:kind.action_table.preview.func(candidate) "{{{
 	let strs = perforce#pfcmds('print','','-q '.common#Get_kk(name.''.numstr))
 	let file = fnamemodify(name,':t').file_numstr
 
-	call common#LogFile1(file, 0, strs) 
+	call common#LogFile(file, 0, strs) 
 
 	" データの出力
 	"exe 'setf' filetype_old
