@@ -1,11 +1,11 @@
-if exists('$VIMTMP')
-	let $PFTMP  = expand($VIMTMP.'/perforce_tmpfile')
-	let $PFHAVE = expand($VIMTMP.'/perforce_have')
-	let $PFDATA = expand($VIMTMP.'/perforce_data')
+if exists('$LOCALWORK')
+	let $PFTMP  = expand($LOCALWORK.'/perforce/tmpfile')
+	let $PFHAVE = expand($LOCALWORK.'/perforce/have.txt')
+	let $PFDATA = expand($LOCALWORK.'/perforce/data.txt')
 else
-	let $PFTMP  = expand("~").'/vim/perforce_tmpfile'
-	let $PFHAVE = expand("~").'/vim/perforce_have'
-	let $PFDATA = expand("~").'/vim/perforce_data'
+	let $PFTMP  = expand("~").'/vim/perforce/tmpfile'
+	let $PFHAVE = expand("~").'/vim/perforce/have.txt'
+	let $PFDATA = expand("~").'/vim/perforce/data.txt'
 endif
 " ================================================================================
 " Žæ“¾
