@@ -324,7 +324,7 @@ function! perforce#LogFile(str) "{{{
 		if perforce#setting#get('is_out_echo_flg', 'common').datas[0]
 			echo a:str
 		else
-			call common#LogFile1('p4log', 0, a:str)
+			call common#LogFile('p4log', 0, a:str)
 		endif
 	endif
 

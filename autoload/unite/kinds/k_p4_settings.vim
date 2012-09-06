@@ -28,7 +28,7 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
 		let kind = candidate.action__kind
-		let g:pf_settings[name][kind] = 1 - g:pf_settings[name][kind]
+		let g:pf_settings[name][kind] = 1 - perforce#setting#get(name, kind).datas
 	endfor
 
 	" •\¦‚ÌXV

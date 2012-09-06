@@ -140,7 +140,7 @@ function! s:get_word_from_pf_setting(val, kind) "{{{
 
 	" –¢’è‹`‚È‚ç‹¤’Êİ’è‚ğ‘ã“ü‚·‚é
 	if !exists('g:pf_settings[a:val][a:kind]')
-		let kind = common
+		let kind = 'common'
 	else
 		let kind = a:kind 
 	endif
