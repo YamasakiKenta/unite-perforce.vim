@@ -4,7 +4,7 @@ endfunction
 
 " 終了関数
 function! s:common_out() "{{{
-	call perforce#setting#save($PFDATA)
+	call perforce#data#save($PFDATA)
 	call unite#force_redraw()
 endfunction "}}}
 
@@ -28,7 +28,7 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
 		let kind = candidate.action__kind
-		let g:pf_settings[name][kind] = 1 - perforce#setting#get(name, kind).datas
+		let g:pf_settings[name][kind] = 1 - perforce#data#get(name, kind).datas
 	endfor
 
 	" 表示の更新
@@ -71,7 +71,7 @@ unlet s:kind
 " ********************************************************************************
 let s:kind = { 
 			\ 'name' : 'k_p4_settings_strs',
-			\ 'default_action' : 'a_toggle',
+			\ 'default_action' : 'a_toggles',
 			\ 'action_table' : {},
 			\ 'parents' : ['k_p4'],
 			\ }

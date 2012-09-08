@@ -266,37 +266,48 @@ function! perforce#is_submitted_chnum(chnum) "{{{
 
 endfunction "}}}
 function! perforce#pfcmds(cmd,head,...) "{{{
+	" ********************************************************************************
+	" p4 コマンドを実行します
+	" @param[in]	str		cmd		コマンド
+	" @param[in]	str		head	コマンドの前に挿入する
+	" @param[in]	str		a:000	コマンドの後に挿入する
+	" @retval       strs	実行結果
+	" ********************************************************************************
 
 	" common をコマンドに変更する
-	let gcmds  = []
-	let gcmd2s = []
+	let gcmds  = [] " 引数からコマンドを作成する
+	let gcmds_from_set = [] " 設定からコマンドを作成する
 
 	let gcmds += [a:head]
 
+	" 取得するポートと、クライアント
+	"if (perforce#data#get('
+
+	" 個別設定 （ ローカル引数は、コマンドによりけりな為 ) 
 	if a:cmd  == 'clients' || a:cmd == 'changes'	
 
-		if perforce#setting#get('user_changes_only', 'common').datas[0] == 1
-			call add(gcmd2s, '-u '.perforce#get_PFUSER())
+		if perforce#data#get('user_changes_only', 'common').datas[0] == 1
+			call add(gcmds_from_set, '-u '.perforce#get_PFUSER())
 		endif 
 
 
-		if perforce#setting#get('show_max_flg', 'common').datas[0] == 1
-			call add(gcmd2s, '-m '.perforce#setting#get('show_max', 'common').datas[0])
+		if perforce#data#get('show_max_flg', 'common').datas[0] == 1
+			call add(gcmds_from_set, '-m '.perforce#data#get('show_max', 'common').datas[0])
 		endif 
 
 	endif
 
 	if a:cmd  =~ 'changes'
-		if perforce#setting#get('client_changes_only', 'common').datas[0] == 1
-			call add(gcmd2s, '-c '.perforce#get_PFCLIENTNAME())
+		if perforce#data#get('client_changes_only', 'common').datas[0] == 1
+			call add(gcmds_from_set, '-c '.perforce#get_PFCLIENTNAME())
 		endif 
 	endif
 
-	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmd2s).' '.join(a:000)
+	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmds_from_set).' '.join(a:000)
 
-	if perforce#setting#get('show_cmd_flg', 'common').datas[0]
+	if perforce#data#get('show_cmd_flg', 'common').datas[0]
 		echo cmd
-		if perforce#setting#get('show_cmd_stop_flg', 'common').datas[0]
+		if perforce#data#get('show_cmd_stop_flg', 'common').datas[0]
 			call input("")
 		endif
 	endif
@@ -304,8 +315,8 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	let rtn = split(system(cmd),'\n')
 
 	" 非表示にするコマンド
-	if perforce#setting#get('filters_flg', 'common').datas
-		let filters = perforce#setting#get('filters', 'common').datas
+	if perforce#data#get('filters_flg', 'common').datas
+		let filters = perforce#data#get('filters', 'common').datas
 		let filter = join(filters, '\|')
 		call filter(rtn, 'v:val !~ filter')
 	endif
@@ -319,8 +330,8 @@ function! perforce#LogFile(str) "{{{
 	" @var
 	" ********************************************************************************
 	"
-	if perforce#setting#get('is_out_flg', 'common').datas[0]
-		if perforce#setting#get('is_out_echo_flg', 'common').datas[0]
+	if perforce#data#get('is_out_flg', 'common').datas[0]
+		if perforce#data#get('is_out_echo_flg', 'common').datas[0]
 			echo a:str
 		else
 			call perforce#common#LogFile('p4log', 0, a:str)
@@ -403,7 +414,7 @@ function! perforce#get_trans_enspace(strs) "{{{
 	return strs
 endfunction "}}}
 function! perforce#init() "{{{
-	call perforce#setting#init()
+	call perforce#data#init()
 endfunction "}}}
 "================================================================================
 " 並び替え

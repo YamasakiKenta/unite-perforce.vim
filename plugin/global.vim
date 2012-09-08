@@ -8,7 +8,7 @@
 " 	DiffTool名
 " ********************************************************************************
 function! g:PerforceDiff(file,file2) "{{{
-	if perforce#setting#get('is_vimdiff_flg', 'common').datas[0]
+	if perforce#data#get('is_vimdiff_flg', 'common').datas[0]
 		" タブで新しいファイルを開く
 		exe 'tabe' a:file2
 		exe 'vs' a:file
@@ -19,7 +19,7 @@ function! g:PerforceDiff(file,file2) "{{{
 		" キーマップの登録
 		call common#map_diff()
 	else
-		let cmd = perforce#setting#get('diff_tool','common').datas[0]
+		let cmd = perforce#data#get('diff_tool','common').datas[0]
 
 		if cmd =~ 'kdiff3'
 			call system(cmd.' '.perforce#common#Get_kk(a:file).' '.perforce#common#Get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))

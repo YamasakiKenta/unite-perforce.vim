@@ -29,10 +29,10 @@ function! s:source.gather_candidates(args, context) "{{{
 		let kind = 'common'
 	endif
 
-	let orders = copy(perforce#setting#get_orders())
+	let orders = copy(perforce#data#get_orders())
 	return map( orders, "{
 				\ 'word' : <SID>get_word_from_pf_setting(v:val, kind),
-				\ 'kind' : <SID>get_kind_from_pf_setting(perforce#setting#get(v:val,kind).datas),
+				\ 'kind' : <SID>get_kind_from_pf_setting(perforce#data#get(v:val,kind).datas),
 				\ 'action__valname' : v:val,
 				\ 'action__kind' : kind,
 				\ }")
@@ -170,7 +170,7 @@ endfunction "}}}
 function! s:get_kind_from_pf_setting(val) "{{{
 	let type = type(a:val)
 
-	if type == 0
+	if type == type(1)
 		if <SID>is_group(a:val)
 			let kind = 'k_null'
 		else
