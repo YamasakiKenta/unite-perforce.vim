@@ -1,22 +1,18 @@
-if exists('$LOCALWORK')
-	let $PFTMP  = expand($LOCALWORK.'/perforce/tmpfile')
-	let $PFHAVE = expand($LOCALWORK.'/perforce/have.txt')
-	let $PFDATA = expand($LOCALWORK.'/perforce/data.txt')
-else
-	let $PFTMP  = expand("~").'/vim/perforce/tmpfile'
-	let $PFHAVE = expand("~").'/vim/perforce/have.txt'
-	let $PFDATA = expand("~").'/vim/perforce/data.txt'
-endif
+let $PFTMP = expand( exists('$PFTMP') ? $PFTMP : '~' )
+let $PFTMPFILE  = $PFTMP.'\perforce\tmpfile'
+let $PFHAVE = $PFTMP.'\perforce\have'
+let $PFDATA = $PFTMP.'\perforce\data'
 " ================================================================================
-" 取得
+"@ 取得
 " ================================================================================
-"set
-function! perforce#GetFileNameForUnite(args, context) "{{{
+function! perforce#get_filename_for_unite(args, context) "{{{
 	" ファイル名の取得
 	let a:context.source__path = expand('%:p')
 	let a:context.source__linenr = line('.')
+	let a:context.source__depots = perforce#get_depots(a:args, a:context.source__path)
 	call unite#print_message('[line] Target: ' . a:context.source__path)
 endfunction "}}}
+@set
 function! perforce#set_PFCLIENTNAME(str) "{{{
 	let $PFCLIENTNAME = a:str
 endfunction "}}}
@@ -29,41 +25,44 @@ endfunction "}}}
 function! perforce#set_PFUSER(str) "{{{
 	let g:pfuser = a:str
 endfunction "}}}
-"get
-function! perforce#get_PFUSER() "{{{
-	return g:pfuser
-endfunction "}}}
+"@get
 function! perforce#get_PFCLIENTNAME() "{{{
 	return $PFCLIENTNAME
 endfunction "}}}
 function! perforce#get_PFCLIENTPATH() "{{{
 	return $PFCLIENTPATH
 endfunction "}}}
-"global
+function! perforce#get_PFPORT() "{{{
+	return $PFPORT
+endfunction "}}}
+function! perforce#get_PFUSER() "{{{
+	return g:pfuser
+endfunction "}}}
+"@global
 function! perforce#Get_dd(str) "{{{
 	return len(a:str) ? '//...'.common#Get_kk(a:str).'...' : ''
 endfunction "}}}
 function! perforce#pf_diff_tool(file,file2) "{{{
 	call g:PerforceDiff(a:file,a:file2)
 endfunction "}}}
-"static
+"@static
 function! perforce#unite_args(source) "{{{
-		"********************************************************************
-		" 現在のファイル名を Unite に引数に渡します。
-		" @param[in]	source	コマンド
-		"********************************************************************
+	"********************************************************************
+	" 現在のファイル名を Unite に引数に渡します。
+	" @param[in]	source	コマンド
+	"********************************************************************
 
-		if 0
-			exe 'Unite '.a:source.':'.perforce#Get_dd(expand("%:t"))
-		else
-			" スペース対策
-			" [ ] p4_diffなどに修正が必要
-			let tmp = a:source.':'.common#get_pathSrash(expand("%"))
-			let tmp = substitute(tmp, ' ','\\ ', 'g')
-			let tmp = 'Unite '.tmp
-			echo tmp
-			exe tmp
-		endif
+	if 0
+		exe 'Unite '.a:source.':'.perforce#Get_dd(expand("%:t"))
+	else
+		" スペース対策
+		" [ ] p4_diffなどに修正が必要
+		let tmp = a:source.':'.common#get_pathSrash(expand("%"))
+		let tmp = substitute(tmp, ' ','\\ ', 'g')
+		let tmp = 'Unite '.tmp
+		echo tmp
+		exe tmp
+	endif
 
 endfunction "}}}
 
@@ -105,11 +104,11 @@ function! perforce#pfDiff(path) "{{{
 	endif
 
 	"tmpファイルの書き出し
-	call writefile(outs,$PFTMP)
+	call writefile(outs,$PFTMPFILE)
 	"}}}
 
 	" 改行が一致しないので保存し直す "{{{
-	exe 'sp' $PFTMP
+	exe 'sp' $PFTMPFILE
 	set ff=dos
 	wq
 	"}}}
@@ -120,7 +119,7 @@ function! perforce#pfDiff(path) "{{{
 	endif
 
 	" 実際に比較 
-	call perforce#pf_diff_tool($PFTMP,path)
+	call perforce#pf_diff_tool($PFTMPFILE,path)
 
 endfunction "}}}
 function! perforce#pfDiff_from_fname(fname) "{{{
@@ -160,10 +159,10 @@ function! perforce#pfChange(str,...) "{{{
 	if chnum == "" | let tmp = substitute(tmp,'\nFiles:\zs\_.*','','') | endif
 
 	"一時ファイルの書き出し
-	call writefile(split(tmp,'\n'),$PFTMP)
+	call writefile(split(tmp,'\n'),$PFTMPFILE)
 
 	"チェンジリストの作成
-	return common#Get_cmds('more '.common#Get_kk($PFTMP).' | p4 change -i') 
+	return common#Get_cmds('more '.common#Get_kk($PFTMPFILE).' | p4 change -i') 
 
 endfunction "}}}
 function! perforce#pfNewChange() "{{{
