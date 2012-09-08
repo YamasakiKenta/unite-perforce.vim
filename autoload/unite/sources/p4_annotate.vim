@@ -14,7 +14,7 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	let candidates = []
 	for depot in depots 
-		let outs = perforce#pfcmds('annotate','',common#Get_kk(depot))
+		let outs = perforce#pfcmds('annotate','',perforce#common#Get_kk(depot))
 		let candidates += map( outs, "{
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog',
@@ -40,7 +40,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let candidates = []
 	for depot in depots 
 
-		let outs = perforce#pfcmds('annotate','','-ai '.common#Get_kk(depot))
+		let outs = perforce#pfcmds('annotate','','-ai '.perforce#common#Get_kk(depot))
 
 		let candidates += map( outs, "{
 					\ 'word' : v:val,

@@ -12,7 +12,7 @@ function! perforce#get_filename_for_unite(args, context) "{{{
 	let a:context.source__depots = perforce#get_depots(a:args, a:context.source__path)
 	call unite#print_message('[line] Target: ' . a:context.source__path)
 endfunction "}}}
-@set
+"@set
 function! perforce#set_PFCLIENTNAME(str) "{{{
 	let $PFCLIENTNAME = a:str
 endfunction "}}}
@@ -40,7 +40,7 @@ function! perforce#get_PFUSER() "{{{
 endfunction "}}}
 "@global
 function! perforce#Get_dd(str) "{{{
-	return len(a:str) ? '//...'.common#Get_kk(a:str).'...' : ''
+	return len(a:str) ? '//...'.perforce#common#Get_kk(a:str).'...' : ''
 endfunction "}}}
 function! perforce#pf_diff_tool(file,file2) "{{{
 	call g:PerforceDiff(a:file,a:file2)
@@ -95,7 +95,7 @@ function! perforce#pfDiff(path) "{{{
 	let path = a:path
 
 	" 最新 REV のファイルの取得 "{{{
-	let outs = perforce#pfcmds('print','',' -q '.common#Get_kk(path))
+	let outs = perforce#pfcmds('print','',' -q '.perforce#common#Get_kk(path))
 
 	" エラーが発生したらファイルを検索して、すべてと比較 ( 再帰 )
 	if outs[0] =~ "is not under client's root "
@@ -162,7 +162,7 @@ function! perforce#pfChange(str,...) "{{{
 	call writefile(split(tmp,'\n'),$PFTMPFILE)
 
 	"チェンジリストの作成
-	return common#Get_cmds('more '.common#Get_kk($PFTMPFILE).' | p4 change -i') 
+	return perforce#common#Get_cmds('more '.perforce#common#Get_kk($PFTMPFILE).' | p4 change -i') 
 
 endfunction "}}}
 function! perforce#pfNewChange() "{{{
@@ -328,7 +328,7 @@ function! perforce#LogFile(str) "{{{
 	endif
 
 endfunction "}}}
-" diff
+"@diff
 function! perforce#get_lnum_from_diff(str,lnum,snum) "{{{
 	" ********************************************************************************
 	" 行番号を更新する
@@ -377,7 +377,7 @@ function! perforce#is_p4_have(str) "{{{
 	" @retval       flg		TRUE 	存在する
 	" @retval       flg		FLASE 	存在しない
 	" ********************************************************************************
-	let str = system('p4 have '.common#Get_kk(a:str))
+	let str = system('p4 have '.perforce#common#Get_kk(a:str))
 	let flg = perforce#is_p4_have_from_have(str)
 	return flg
 endfunction "}}}
@@ -408,21 +408,21 @@ endfunction "}}}
 "================================================================================
 " 並び替え
 "================================================================================
-"get_file
+"@get_file
 function! perforce#get_file_from_where(str) "{{{
 	let file = a:str
 	let file = substitute(file,'.*[\/]','','')
 	let file = substitute(file,'\n','','g')
 	return file
 endfunction "}}}
-"get_depot(s)
+"@get_depot(s)
 function! perforce#get_depot_from_have(str) "{{{
 	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')
 endfunction "}}}
 function! perforce#get_depot_from_opened(str) "{{{
 	return substitute(a:str,'#.*','','')   " # リビジョン番号の削除
 endfunction "}}}
-"get_path(s)
+"@get_path(s)
 function! perforce#get_path_from_where(str) "{{{
 	return matchstr(a:str, '.\{-}\zs\w*:.*\ze\n.*')
 endfunction "}}}
@@ -444,7 +444,7 @@ function! perforce#get_paths_from_fname(str) "{{{
 	let outs = perforce#pfcmds('have','',perforce#Get_dd(a:str)) " # ファイル名の取得
 	return perforce#get_paths_from_haves(outs)                   " # ヒットした場合
 endfunction "}}}
-"p4_change
+"@p4_change
 function! perforce#get_depots(args, path) "{{{
 	" ********************************************************************************
 	" depots を取得する
@@ -477,7 +477,7 @@ function! perforce#get_pfchanges(context,outs,kind) "{{{
 
 	return candidates
 endfunction "}}}
-"source
+"@source
 function! perforce#get_source_file_from_path(path) "{{{
 	" ********************************************************************************
 	" 差分の出力を、Uniteのjump_list化けする
@@ -522,6 +522,3 @@ function! perforce#get_source_diff_from_diff(outs) "{{{
 	endfor
 	return candidates
 endfunction "}}}
-" ================================================================================
-" subroutine
-" ================================================================================

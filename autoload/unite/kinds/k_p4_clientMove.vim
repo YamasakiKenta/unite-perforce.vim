@@ -25,11 +25,11 @@ function! s:kind.action_table.a_merge.func(candidates) "{{{
 		let file1 = candidate.action__file1
 		let file2 = candidate.action__file2
 
-		call system('p4 edit '.common#Get_kk(file2))
+		call system('p4 edit '.perforce#common#Get_kk(file2))
 		if defoult_cmd =~ 'kdiff3'
-			call system(defoult_cmd.' '.common#Get_kk(file1).' '.common#Get_kk(file2),' -o ',common#Get_kk(file2))
+			call system(defoult_cmd.' '.perforce#common#Get_kk(file1).' '.perforce#common#Get_kk(file2),' -o ',perforce#common#Get_kk(file2))
 		else
-			call system(defoult_cmd.' '.common#Get_kk(file1).' '.common#Get_kk(file2))
+			call system(defoult_cmd.' '.perforce#common#Get_kk(file1).' '.perforce#common#Get_kk(file2))
 		endif
 	endfor
 
@@ -46,8 +46,8 @@ function! s:kind.action_table.a_copy.func(candidates) "{{{
 		let file1 = candidate.action__file1
 		let file2 = candidate.action__file2
 
-		call system('p4 edit '.common#Get_kk(file2))
-		call system('copy '.common#Get_kk(file1).' '.common#Get_kk(file2))
+		call system('p4 edit '.perforce#common#Get_kk(file2))
+		call system('copy '.perforce#common#Get_kk(file1).' '.perforce#common#Get_kk(file2))
 	endfor
 
 endfunction "}}}

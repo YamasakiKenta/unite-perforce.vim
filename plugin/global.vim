@@ -22,10 +22,10 @@ function! g:PerforceDiff(file,file2) "{{{
 		let cmd = perforce#setting#get('diff_tool','common').datas[0]
 
 		if cmd =~ 'kdiff3'
-			call system(cmd.' '.common#Get_kk(a:file).' '.common#Get_kk(a:file2).' -o '.common#Get_kk(a:file2))
+			call system(cmd.' '.perforce#common#Get_kk(a:file).' '.perforce#common#Get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))
 		else
 			" winmergeu
-			call system(cmd.' '.common#Get_kk(a:file).' '.common#Get_kk(a:file2))
+			call system(cmd.' '.perforce#common#Get_kk(a:file).' '.perforce#common#Get_kk(a:file2))
 		endif
 	endif
 

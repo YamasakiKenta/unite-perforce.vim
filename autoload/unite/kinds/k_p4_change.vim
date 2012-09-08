@@ -29,7 +29,7 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 	let chnum = <SID>make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.common#Get_kk(join(reopen_depots,'" "')))
+	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#Get_kk(join(reopen_depots,'" "')))
 
 	" ログの出力
 	call perforce#LogFile(outs)
@@ -153,7 +153,7 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 	let chnum = <SID>make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.common#Get_kk(join(reopen_depots,'" "')))
+	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#Get_kk(join(reopen_depots,'" "')))
 
 	" ログの出力
 	call perforce#LogFile(outs)
