@@ -8,7 +8,7 @@ let s:source = {
 			\ 'description' : 'クライアントの表示',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
-	return <SID>get_pfclients()
+	return s:get_pfclients()
 endfunction "}}}
 let s:source_p4_clients = s:source
 

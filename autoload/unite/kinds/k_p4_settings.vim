@@ -32,7 +32,7 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	endfor
 
 	" 表示の更新
-	call <SID>common_out()
+	call s:common_out()
 endfunction "}}}
 
 let s:kind.action_table.a_set_enable = {
@@ -46,7 +46,7 @@ function! s:kind.action_table.a_set_enable.func(candidates) "{{{
 		let kind = candidate.action__kind
 		let g:pf_settings.name][kind] = 1
 	endfor
-	call <SID>common_out()
+	call s:common_out()
 endfunction "}}}
 
 let s:kind.action_table.a_set_disable = {
@@ -60,7 +60,7 @@ function! s:kind.action_table.a_set_disable.func(candidates) "{{{
 		let kind = candidate.action__kind
 		let g:pf_settings.name][kin] = 0
 	endfor
-	call <SID>common_out()
+	call s:common_out()
 endfunction "}}}
 
 let s:k_p4_settings_bool = s:kind
@@ -101,7 +101,7 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 		let g:pf_settings[name][kind][0] = val
 
 	endfor
-	call <SID>common_out()
+	call s:common_out()
 
 
 endfunction "}}}
@@ -118,7 +118,7 @@ function! s:kind.action_table.a_toggles.func(candidate) "{{{
 
 	call unite#start_temporary([['p4_select', {'name' : name, 'kind' : kind}]])
 
-	" call <SID>common_out()
+	" call s:common_out()
 endfunction "}}}
 
 let s:kind.action_table.a_set_strs = {
@@ -134,7 +134,7 @@ function! s:kind.action_table.a_set_strs.func(candidate) "{{{
 		exe 'let g:pf_settings[name][kind] = '.tmp
 	endif
 
-	call <SID>common_out()
+	call s:common_out()
 endfunction "}}}
 
 let s:k_p4_settings_strs = s:kind
@@ -164,7 +164,7 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	let kind = a:candidates[0].action__kind
 	let g:pf_settings[name][kind][0] = val
 	
-	call <SID>common_out()
+	call s:common_out()
 
 	" 開きなおす
 	call unite#start([['p4_settings', kind]])

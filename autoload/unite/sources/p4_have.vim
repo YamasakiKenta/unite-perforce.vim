@@ -14,7 +14,7 @@ let s:source = {
 "@param[in]	args		perforce‚©‚çŒŸõ‚·‚éƒtƒ@ƒCƒ‹–¼
 "********************************************************************************
 function! s:source.gather_candidates(args, context) "{{{
-	return <SID>get_datas_from_p4_have(join(a:args)).candidates
+	return s:get_datas_from_p4_have(join(a:args)).candidates
 endfunction "}}}
 let s:souce_p4have = s:source
 
@@ -33,7 +33,7 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	else
 		let kind = $PFHAVE
-		let datas = <SID>get_datas(kind)
+		let datas = s:get_datas(kind)
 
 	endif
 
@@ -55,7 +55,7 @@ function! s:source.async_gather_candidates(args, context) "{{{
 	while str2float(reltimestr(reltime(time))) < 0.05
 				\ && len(a:context.source__p4have.datas.lines) > 0
 		let data = [remove(a:context.source__p4have.datas.lines,0)]
-		let rtns += <SID>get_candidates_from_pfhave(data)
+		let rtns += s:get_candidates_from_pfhave(data)
 	endwhile
 	let nowlen = len(a:context.source__p4have.datas.lines)
 
@@ -102,7 +102,7 @@ function! s:get_datas_from_p4_have(str) "{{{
 		let datas = split(system('p4 have '.str),'\n')
 		let g:cache[str] = {
 					\ 'lines' : [],
-					\ 'candidates' : <SID>get_candidates_from_pfhave(datas),
+					\ 'candidates' : s:get_candidates_from_pfhave(datas),
 					\ }
 		echo 'finish !!'
 	else

@@ -1,4 +1,4 @@
-function! <SID>pf_edit() "{{{
+function! s:pf_edit() "{{{
 	let file = perforce#common#Get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
 		let datas = perforce#pfcmds('edit','',file)
@@ -7,7 +7,7 @@ function! <SID>pf_edit() "{{{
 	endif
 	call perforce#LogFile(datas)
 endfunction "}}}
-function! <SID>pf_revert() "{{{
+function! s:pf_revert() "{{{
 	let file = perforce#common#Get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
 		let datas = perforce#pfcmds('revert','',' -a '.file)
@@ -18,10 +18,10 @@ function! <SID>pf_revert() "{{{
 endfunction "}}}
 
 nnoremap <PLUG>(p4_edit)
-			\ :<C-u>call <SID>pf_edit()|"
+			\ :<C-u>call s:pf_edit()|"
 
 nnoremap <PLUG>(p4_revert)
-			\ :<C-u>call <SID>pf_revert()|"
+			\ :<C-u>call s:pf_revert()|"
 
 nnoremap <PLUG>(unite_p4_commit)
 			\ :<C-u>Unite source -input=p4\ <CR>|"

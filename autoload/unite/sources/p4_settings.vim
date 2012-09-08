@@ -31,8 +31,8 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	let orders = copy(perforce#data#get_orders())
 	return map( orders, "{
-				\ 'word' : <SID>get_word_from_pf_setting(v:val, kind),
-				\ 'kind' : <SID>get_kind_from_pf_setting(perforce#data#get(v:val,kind).datas),
+				\ 'word' : s:get_word_from_pf_setting(v:val, kind),
+				\ 'kind' : s:get_kind_from_pf_setting(perforce#data#get(v:val,kind).datas),
 				\ 'action__valname' : v:val,
 				\ 'action__kind' : kind,
 				\ }")
@@ -148,12 +148,12 @@ function! s:get_word_from_pf_setting(val, kind) "{{{
 	let val = g:pf_settings[a:val][kind]
 
 	if type(val) == 0
-		let str = <SID>get_word_from_bool(val)
+		let str = s:get_word_from_bool(val)
 	else
-		let str = <SID>get_word_from_strs(val)
+		let str = s:get_word_from_strs(val)
 	endif
 
-	if <SID>is_group(val)
+	if s:is_group(val)
 		let rtn = '"'.g:pf_settings[a:val].description.'"'
 	else
 		let rtn = printf(' %-50s (%-30s,%-10s) - %s', g:pf_settings[a:val].description, a:val, kind, str)
@@ -171,7 +171,7 @@ function! s:get_kind_from_pf_setting(val) "{{{
 	let type = type(a:val)
 
 	if type == type(1)
-		if <SID>is_group(a:val)
+		if s:is_group(a:val)
 			let kind = 'k_null'
 		else
 			let kind = 'k_p4_settings_bool'

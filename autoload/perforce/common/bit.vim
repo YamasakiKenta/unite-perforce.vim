@@ -13,7 +13,7 @@ function! perforce#common#bit#and(...) "{{{
 
 	while max 
 		" 変換
-		let rtn += <SID>and(nums) * val
+		let rtn += s:and(nums) * val
 
 		" 値の更新
 		let nums = map(nums, "v:val / 2")
@@ -35,7 +35,7 @@ function! perforce#common#bit#or(...) "{{{
 
 	while max 
 		" 変換
-		let rtn += <SID>or(nums) * val
+		let rtn += s:or(nums) * val
 
 		" 値の更新
 		let nums = map(nums, "v:val / 2")
@@ -52,10 +52,10 @@ endfunction "}}}
 " @param[in]	
 " @retval       
 " ********************************************************************************
-function! <SID>and(nums) "{{{
+function! s:and(nums) "{{{
 	return eval(join(map(copy(a:nums), "v:val%2"),'*')) ? 1 : 0
 endfunction "}}}
-function! <SID>or(nums) "{{{
+function! s:or(nums) "{{{
 	return eval(join(map(copy(a:nums), "v:val%2"),'+')) ? 1 : 0
 endfunction "}}}
 
@@ -65,7 +65,7 @@ endfunction "}}}
 " @param[in]	bit		幅
 " @retval       flg		bit の取得
 " ********************************************************************************
-function! <SID>get_bit(num, bit) "{{{
+function! s:get_bit(num, bit) "{{{
 	
 	let num1 = float2nr(pow(2, a:bit+1))
 	let num2 = num1 / 2 

@@ -26,7 +26,7 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 	let reopen_depots = a:candidate.action__depots
 
 	"チェンジリストの番号の取得
-	let chnum = <SID>make_new_changes(a:candidate)
+	let chnum = s:make_new_changes(a:candidate)
 
 	" チェンジリストの変更
 	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#Get_kk(join(reopen_depots,'" "')))
@@ -76,7 +76,7 @@ function! s:kind.action_table.a_p4_change_opened.func(candidates) "{{{
 	let chnums = []
 	for candidate in a:candidates
 		" チェンジリストの番号の取得をする
-		let chnums += [<SID>make_new_changes(candidate)]
+		let chnums += [s:make_new_changes(candidate)]
 	endfor
 
 	call unite#start_temporary([insert(chnums,'p4_opened')]) " # 閉じない ? 
@@ -150,7 +150,7 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 	let reopen_depots = a:candidate.action__depots
 
 	"チェンジリストの番号の取得
-	let chnum = <SID>make_new_changes(a:candidate)
+	let chnum = s:make_new_changes(a:candidate)
 
 	" チェンジリストの変更
 	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#Get_kk(join(reopen_depots,'" "')))
@@ -172,7 +172,7 @@ function! s:get_chname_from_change(str) "{{{
 endfunction "}}}
 function! s:kind.action_table.a_p4_change_rename.func(candidate) "{{{
 	let chnum = a:candidate.action__chnum
-	let chname = <SID>get_chname_from_change(a:candidate.word)
+	let chname = s:get_chname_from_change(a:candidate.word)
 	let chname = input(chname.'-> ', chname)
 
 	" 入力がない場合は、実行しない
@@ -190,7 +190,7 @@ unlet s:kind
 " @param[in]	candidate	unite のあれ	
 " @retval       chnum		番号
 " ********************************************************************************
-function! <SID>make_new_changes(candidate) "{{{
+function! s:make_new_changes(candidate) "{{{
 
 	let chnum = a:candidate.action__chnum
 	let chname = a:candidate.action__chname

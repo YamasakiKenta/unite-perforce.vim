@@ -41,14 +41,14 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 	unlet action
 endfunction "}}}
 
-call <SID>setPfcmd('jump_list' , 'add'       , '追加'               ) 
-call <SID>setPfcmd('jump_list' , 'edit'      , '編集'               ) 
-call <SID>setPfcmd('file'      , 'add'       , '追加'               ) 
-call <SID>setPfcmd('file'      , 'edit'      , '編集'               ) 
-call <SID>setPfcmd('k_depot'   , 'edit'      , '編集'               ) 
-call <SID>setPfcmd('k_depot'   , 'delete'    , '削除'               ) 
-call <SID>setPfcmd('k_depot'   , 'revert -a' , '元に戻す'           ) 
-call <SID>setPfcmd('k_depot'   , 'revert'    , '元に戻す [ 強制 ] ' ) 
+call s:setPfcmd('jump_list' , 'add'       , '追加'               ) 
+call s:setPfcmd('jump_list' , 'edit'      , '編集'               ) 
+call s:setPfcmd('file'      , 'add'       , '追加'               ) 
+call s:setPfcmd('file'      , 'edit'      , '編集'               ) 
+call s:setPfcmd('k_depot'   , 'edit'      , '編集'               ) 
+call s:setPfcmd('k_depot'   , 'delete'    , '削除'               ) 
+call s:setPfcmd('k_depot'   , 'revert -a' , '元に戻す'           ) 
+call s:setPfcmd('k_depot'   , 'revert'    , '元に戻す [ 強制 ] ' ) 
 
 "p4 k_depot 
 let s:kind = {
@@ -78,7 +78,7 @@ let s:kind.action_table.a_open = {
 			\ 'description' : '開く',
 			\ }
 function! s:kind.action_table.a_open.func(candidate) "{{{
-	let path = <SID>find_filepath_from_depot(a:candidate) 
+	let path = s:find_filepath_from_depot(a:candidate) 
 	exe 'edit' path
 endfunction "}}}
 
@@ -87,7 +87,7 @@ let s:kind.action_table.preview = {
 			\ 'is_quit' : 0, 
 			\ }
 function! s:kind.action_table.preview.func(candidate) "{{{
-	let path = <SID>find_filepath_from_depot(a:candidate) 
+	let path = s:find_filepath_from_depot(a:candidate) 
 	exe 'pedit' path
 endfunction "}}}
 
@@ -237,7 +237,7 @@ let s:kind.action_table.a_p4_dir_copy = {
 function! s:kind.action_table.a_p4_dir_copy.func(candidates) "{{{
 	for candidate in a:candidates
 		let path = perforce#get_path_from_depot(candidate.action__depot)
-		call <SID>copyFileDir(path)
+		call s:copyFileDir(path)
 	endfor
 endfunction "}}}
 function! s:copyFileDir(file) "{{{
@@ -285,7 +285,7 @@ let s:kind.action_table.a_p4_depot_copy = {
 	\ }
 function! s:kind.action_table.a_p4_depot_copy.func(candidates) "{{{
 	for candidate in a:candidates
-		call <SID>copy_file_depot(candidate.action__depot)
+		call s:copy_file_depot(candidate.action__depot)
 	endfor
 endfunction "}}}
 function! s:copy_file_depot(depot) "{{{

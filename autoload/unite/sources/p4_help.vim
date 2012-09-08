@@ -15,7 +15,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let candidates = map( datas, "{
 				\ 'word' : substitute(v:val,'\t','',''),
 				\ 'kind' : 'k_p4_help',
-				\ 'action__cmd' : <SID>get_pfcmd_from_help(v:val),
+				\ 'action__cmd' : s:get_pfcmd_from_help(v:val),
 				\ }")
 	return candidates
 endfunction "}}}

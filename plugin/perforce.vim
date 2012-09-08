@@ -21,7 +21,7 @@
 " @var	g:ClientMove_defoult_root
 " 	引数がない場合の取得するDir
 " ********************************************************************************
-command! -nargs=* ClientMove call <SID>clientMove(<q-args>)
+command! -nargs=* ClientMove call s:clientMove(<q-args>)
 
 " ********************************************************************************
 " ファイルを取得する
@@ -142,10 +142,10 @@ function! s:clientMove(...) "{{{
 	" root の表示
 	echo ' Root : '.string(dirs)
 
-	let datas = <SID>get_files_for_clientMove(dirs)
+	let datas = s:get_files_for_clientMove(dirs)
 	
 	" 比較するファイルの取得
-	let merges = <SID>get_merge_files_for_clientMove(datas)
+	let merges = s:get_merge_files_for_clientMove(datas)
 
 	"マージ確認 
 	let str = input("Merge ? [yes/no/unite/force]\n")

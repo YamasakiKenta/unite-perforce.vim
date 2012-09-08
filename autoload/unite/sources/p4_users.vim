@@ -15,7 +15,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let candidates = map( datas, "{
 				\ 'word' : v:val,
 				\ 'kind' : 'k_p4_users',
-				\ 'action__user' : <SID>get_UserName_from_users(v:val),
+				\ 'action__user' : s:get_UserName_from_users(v:val),
 				\ }")
 	return candidates
 endfunction "}}}

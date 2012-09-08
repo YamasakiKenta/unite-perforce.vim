@@ -19,7 +19,7 @@ function! s:source.gather_candidates(args, context) "{{{
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog',
 					\ 'action__depot' : depot,
-					\ 'action__revnum' : <SID>getRevisionNumFromAnnotate(v:val),
+					\ 'action__revnum' : s:getRevisionNumFromAnnotate(v:val),
 					\ }")
 	endfor
 
@@ -46,7 +46,7 @@ function! s:source.gather_candidates(args, context) "{{{
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog',
 					\ 'action__depot' : depot,
-					\ 'action__chnum' : <SID>get_chnum_from_annotate(v:val),
+					\ 'action__chnum' : s:get_chnum_from_annotate(v:val),
 					\ }")
 	endfor
 

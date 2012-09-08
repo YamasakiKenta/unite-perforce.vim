@@ -15,7 +15,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let candidates = map( datas, "{
 				\ 'word' : v:val,
 				\ 'kind' : 'k_p4_jobs',
-				\ 'action__job' : <SID>get_job_from_jobs(v:val),
+				\ 'action__job' : s:get_job_from_jobs(v:val),
 				\ }")
 	return candidates
 endfunction "}}}

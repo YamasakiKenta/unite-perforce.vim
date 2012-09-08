@@ -21,7 +21,7 @@ function! s:source.gather_candidates(args, context) "{{{
 		let candidates += map(lines, "{ 
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog', 
-					\ 'action__revnum' : <SID>getRevisionNum(v:val),
+					\ 'action__revnum' : s:getRevisionNum(v:val),
 					\ 'action__depot' : arg,
 					\ }")
 	endfor

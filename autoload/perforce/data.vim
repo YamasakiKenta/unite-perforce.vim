@@ -1,4 +1,4 @@
-function! <SID>set_pf_settings(type, description, kind_val ) "{{{
+function! s:set_pf_settings(type, description, kind_val ) "{{{
 	" ********************************************************************************
 	" pf_settings を追加します
 	" ********************************************************************************
@@ -11,7 +11,7 @@ function! <SID>set_pf_settings(type, description, kind_val ) "{{{
 				\ }
 
 endfunction "}}}
-function! <SID>data_load(file) "{{{
+function! s:data_load(file) "{{{
 	" ********************************************************************************
 	" 設定ファイルの読み込み
 	" param[in]		file		設定ファイル名
@@ -35,7 +35,7 @@ function! <SID>data_load(file) "{{{
 	endfor
 
 endfunction "}}}
-function! <SID>get_pf_settings_from_lists(datas) "{{{
+function! s:get_pf_settings_from_lists(datas) "{{{
 	" ********************************************************************************
 	" BIT 演算によって、データを取得する
 	" @param[in]	datas	{ bit, 文字列, ... } 
@@ -80,7 +80,7 @@ function! perforce#data#get(type, kind) "{{{
 	let rtns = {}
 	if valtype == 3
 		" リストの場合は、引数で取得する
-		let rtns.datas = <SID>get_pf_settings_from_lists(val)
+		let rtns.datas = s:get_pf_settings_from_lists(val)
 	else
 		let rtns.datas = val
 	endif
@@ -102,31 +102,31 @@ function! perforce#data#init() "{{{
 		let s:pf_settings_orders = []
 
 		" 並び替え用の変数の作成
-		call <SID>set_pf_settings ( 'is_submit_flg'            , 'サブミットを許可'            , 1                         ) 
-		call <SID>set_pf_settings ( 'g_changes_only'           , 'フィルタ'                    , -1                        ) 
-		call <SID>set_pf_settings ( 'user_changes_only'        , 'ユーザー名でフィルタ'        , 1                         ) 
-		call <SID>set_pf_settings ( 'client_changes_only'      , 'クライアントでフィルタ'      , 1                         ) 
-		call <SID>set_pf_settings ( 'filters_flg'              , '除外リストを使用する'        , 1                         )
-		call <SID>set_pf_settings ( 'filters'                  , '除外リスト'                  , [-1,'tag','snip']         ) 
-		call <SID>set_pf_settings ( 'g_show'                   , 'ファイル数'                  , -1                        ) 
-		call <SID>set_pf_settings ( 'show_max_flg'             , 'ファイル数の制限'            , 0                         ) 
-		call <SID>set_pf_settings ( 'show_max'                 , 'ファイル数'                  , [1,5,10]                  ) 
-		call <SID>set_pf_settings ( 'g_is_out'                 , '実行結果'                    , -1                        ) 
-		call <SID>set_pf_settings ( 'is_out_flg'               , '実行結果を出力する'          , 1                         ) 
-		call <SID>set_pf_settings ( 'is_out_echo_flg'          , '実行結果を出力する[echo]'    , 1                         ) 
-		call <SID>set_pf_settings ( 'show_cmd_flg'             , 'p4 コマンドを表示する'       , 1                         ) 
-		call <SID>set_pf_settings ( 'show_cmd_stop_flg'        , 'p4 コマンドを表示する(stop)' , 1                         ) 
-		call <SID>set_pf_settings ( 'g_diff'                   , 'Diff'                        , -1                        ) 
-		call <SID>set_pf_settings ( 'is_vimdiff_flg'           , 'vimdiff を使用する'          , 0                         ) 
-		call <SID>set_pf_settings ( 'diff_tool'                , 'Diff で使用するツール'       , [1,'WinMergeU']           ) 
-		call <SID>set_pf_settings ( 'g_ClientMove'             , 'ClientMove'                  , -1                        ) 
-		call <SID>set_pf_settings ( 'ClientMove_recursive_flg' , 'ClientMoveで再帰検索をするか', 0                         ) 
-		call <SID>set_pf_settings ( 'ClientMove_defoult_root'  , 'ClientMoveの初期フォルダ'    , [1,'c:\tmp','c:\p4tmp']   ) 
-		call <SID>set_pf_settings ( 'g_other'                  , 'その他'                      , -1                        ) 
-		call <SID>set_pf_settings ( 'ports'                    , 'perforce port'               , [1,'localhost:1818']      ) 
+		call s:set_pf_settings ( 'is_submit_flg'            , 'サブミットを許可'            , 1                         ) 
+		call s:set_pf_settings ( 'g_changes_only'           , 'フィルタ'                    , -1                        ) 
+		call s:set_pf_settings ( 'user_changes_only'        , 'ユーザー名でフィルタ'        , 1                         ) 
+		call s:set_pf_settings ( 'client_changes_only'      , 'クライアントでフィルタ'      , 1                         ) 
+		call s:set_pf_settings ( 'filters_flg'              , '除外リストを使用する'        , 1                         )
+		call s:set_pf_settings ( 'filters'                  , '除外リスト'                  , [-1,'tag','snip']         ) 
+		call s:set_pf_settings ( 'g_show'                   , 'ファイル数'                  , -1                        ) 
+		call s:set_pf_settings ( 'show_max_flg'             , 'ファイル数の制限'            , 0                         ) 
+		call s:set_pf_settings ( 'show_max'                 , 'ファイル数'                  , [1,5,10]                  ) 
+		call s:set_pf_settings ( 'g_is_out'                 , '実行結果'                    , -1                        ) 
+		call s:set_pf_settings ( 'is_out_flg'               , '実行結果を出力する'          , 1                         ) 
+		call s:set_pf_settings ( 'is_out_echo_flg'          , '実行結果を出力する[echo]'    , 1                         ) 
+		call s:set_pf_settings ( 'show_cmd_flg'             , 'p4 コマンドを表示する'       , 1                         ) 
+		call s:set_pf_settings ( 'show_cmd_stop_flg'        , 'p4 コマンドを表示する(stop)' , 1                         ) 
+		call s:set_pf_settings ( 'g_diff'                   , 'Diff'                        , -1                        ) 
+		call s:set_pf_settings ( 'is_vimdiff_flg'           , 'vimdiff を使用する'          , 0                         ) 
+		call s:set_pf_settings ( 'diff_tool'                , 'Diff で使用するツール'       , [1,'WinMergeU']           ) 
+		call s:set_pf_settings ( 'g_ClientMove'             , 'ClientMove'                  , -1                        ) 
+		call s:set_pf_settings ( 'ClientMove_recursive_flg' , 'ClientMoveで再帰検索をするか', 0                         ) 
+		call s:set_pf_settings ( 'ClientMove_defoult_root'  , 'ClientMoveの初期フォルダ'    , [1,'c:\tmp','c:\p4tmp']   ) 
+		call s:set_pf_settings ( 'g_other'                  , 'その他'                      , -1                        ) 
+		call s:set_pf_settings ( 'ports'                    , 'perforce port'               , [1,'localhost:1818']      ) 
 
 		" 設定を読み込む
-		call <SID>data_load($PFDATA)
+		call s:data_load($PFDATA)
 
 		" クライアントデータの読み込み
 		call perforce#get_client_data_from_info()
