@@ -136,7 +136,7 @@ function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 	else 
 		" 複数選択の場合 "{{{
 
-		let g:pfmove_tmpfile = copy($PFTMP)
+		let g:pfmove_tmpfile = copy($PFTMPFILE)
 		"
 		" 元のパスの登録と初期のファイル名の取得 "{{{
 		let names = []
