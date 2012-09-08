@@ -7,7 +7,7 @@ let s:source = {
 			\ 'description' : '各行にリビジョン番号を表示',
 			\ 'hooks' : {},
 			\ }
-let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
+let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
 function! s:source.gather_candidates(args, context) "{{{
 
 	let depots = a:context.source__depots
@@ -32,7 +32,7 @@ let s:source = {
 			\ 'description' : '各行にチェンジリスト番号を表示 ( 全て )',
 			\ 'hooks' : {},
 			\ }
-let s:source.hooks.on_init = function('perforce#GetFileNameForUnite')
+let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
 function! s:source.gather_candidates(args, context) "{{{
 
 	let depots = a:context.source__depots
