@@ -57,7 +57,7 @@ function! s:kind.action_table.a_p4_client_info.func(candidates) "{{{
 		let port   = l:candidate.action__port
 
 		" 各クライアントごとに表示する
-		call common#LogFile(port.'_'.clname, 0)
+		call perforce#common#LogFile(port.'_'.clname, 0)
 		let outs = perforce#pfcmds('info', '-p '.port.' -c '.clname)
 		call append(0,outs)
 	endfor
@@ -73,7 +73,7 @@ function! s:kind.action_table.a_p4_client.func(candidates) "{{{
 		let port   = l:candidate.action__port
 
 		" 各クライアントごとに表示する
-		call common#LogFile(clname, 0)
+		call perforce#common#LogFile(clname, 0)
 		let outs = perforce#pfcmds('client', '-p '.port, '-o '.clname)
 		call append(0,outs)
 	endfor
