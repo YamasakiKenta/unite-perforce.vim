@@ -18,10 +18,10 @@ function! s:pf_revert() "{{{
 endfunction "}}}
 
 nnoremap <PLUG>(p4_edit)
-			\ :<C-u>call s:pf_edit()|"
+			\ :<C-u>call <SID>pf_edit()<CR>|"
 
 nnoremap <PLUG>(p4_revert)
-			\ :<C-u>call s:pf_revert()|"
+			\ :<C-u>call <SID>pf_revert()<CR>|"
 
 nnoremap <PLUG>(unite_p4_commit)
 			\ :<C-u>Unite source -input=p4\ <CR>|"
