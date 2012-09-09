@@ -26,7 +26,7 @@ function! s:data_load(file) "{{{
 
 	if s:save_data_type == 0
 		" ファイルを読み込む
-		let datas = readfile(a:file)
+		let datas = readfile(a:file.'_1')
 
 		" データを設定する
 		for data in datas
@@ -36,7 +36,7 @@ function! s:data_load(file) "{{{
 			" 型が変わるため、初期化が必要
 		endfor
 	else
-		let g:pf_settings = readfile(a:file)
+		exe 'let g:pf_settings = '.join(readfile(a:file.'_2'))
 	endif
 
 endfunction "}}}
@@ -100,7 +100,7 @@ function! perforce#data#init() "{{{
 		call s:set_pf_settings ( 'ports'                    , 'perforce port'               , [1,'localhost:1818']      ) 
 
 		" 設定を読み込む
-		"call s:data_load($PFDATA)
+		call s:data_load($PFDATA)
 
 		" クライアントデータの読み込み
 		call perforce#get_client_data_from_info()
@@ -108,6 +108,9 @@ function! perforce#data#init() "{{{
 	endif
 endfunction "}}}
 function! perforce#data#set(type, kind, val) "{{{
+	let g:pf_settings[a:type][a:kind] = a:val
+endfunction "}}}
+function! perforce#data#delete(type, kind, val) "{{{
 	let g:pf_settings[a:type][a:kind] = a:val
 endfunction "}}}
 function! perforce#data#set_list(type, kind, val) "{{{
@@ -179,9 +182,9 @@ function! perforce#data#save(file) "{{{
 
 
 		" 書き込む
-		call writefile(datas, a:file)
+		call writefile(datas, a:file.'_1')
 	else
-		call writefile([string(g:pf_settings)], a:file)
+		call writefile([string(g:pf_settings)], a:file.'_2')
 	endif
 
 endfunction "}}}
