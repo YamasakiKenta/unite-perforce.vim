@@ -102,8 +102,8 @@ let s:kind.action_table.a_p4_change_submit = {
 			\ }
 function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 
-	if g:pf_settings.is_submit_flg.common == 0
-		echo ' g:pf_settings.is_submit_flg.common is not TRUE'
+	if perforce#data#get('is_submit_flg', 'common') == 0
+		echo ' perforce#data#set( .is_submit_flg.common is not TRUE'
 		return 
 	else
 

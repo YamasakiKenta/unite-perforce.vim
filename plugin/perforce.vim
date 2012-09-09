@@ -15,7 +15,7 @@
 " 指定したfolder をMergeします
 " @param[in]	取得するDir		...
 "
-" @var	g:pf_settings.ClientMove_recursive_flg.common
+" @var	perforce#data#set(ClientMove_recursive_flg, common)
 " 	Folder を再帰的に検索するか
 "
 " @var	g:ClientMove_defoult_root
@@ -32,7 +32,7 @@ command! -nargs=* ClientMove call s:clientMove(<q-args>)
 function! s:get_files_for_clientMove(dirs) "{{{	
 
 	" 再帰検索
-	let recursive_flg = g:pf_settings.ClientMove_recursive_flg.common
+	let recursive_flg = perforce#data#set(ClientMove_recursive_flg, common)
 
 	let datas = []
 	let paths  = []

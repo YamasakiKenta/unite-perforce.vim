@@ -58,7 +58,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	endif
 
 	" 引数を取得する
-	let words = g:pf_settings[name][kind][1:]
+	let words = perforce#data#get_orig(name,kind).datas[1:]
 
 	let val = 1
 	let rtns = []
@@ -107,6 +107,7 @@ function! s:get_word_from_strs(strs) "{{{
 
 	" 選択状態の変更
 	"
+	"全選択
 	if select < 0
 		let strs   = map(copy(a:strs[1:]), "'<'.v:val.'>'")
 	else
@@ -130,22 +131,18 @@ function! s:get_word_from_strs(strs) "{{{
 	return join(strs)
 endfunction "}}}
 
+function! s:get_word_from_pf_setting(type, kind) "{{{
 " ********************************************************************************
 " word 出力
-" @param[in]	val			引数名
+" @param[in]	typeval			引数名
 " @param[in]	kind		設定しているsource
 " @retval		word		unite word
 " ********************************************************************************
-function! s:get_word_from_pf_setting(val, kind) "{{{
 
 	" 未定義なら共通設定を代入する
-	if !exists('g:pf_settings[a:val][a:kind]')
-		let kind = 'common'
-	else
-		let kind = a:kind 
-	endif
-
-	let val = g:pf_settings[a:val][kind]
+	let data = perforce#data#get_orig(a:type, a:kind)
+	let val  = data.datas
+	let kind = data.kind
 
 	if type(val) == 0
 		let str = s:get_word_from_bool(val)
@@ -154,9 +151,9 @@ function! s:get_word_from_pf_setting(val, kind) "{{{
 	endif
 
 	if s:is_group(val)
-		let rtn = '"'.g:pf_settings[a:val].description.'"'
+		let rtn = '"'.perforce#data#get(a:type, 'description').datas.'"'
 	else
-		let rtn = printf(' %-50s (%-30s,%-10s) - %s', g:pf_settings[a:val].description, a:val, kind, str)
+		let rtn = printf(' %-50s (%-30s,%-10s) - %s', perforce#data#get(a:type, 'description').datas , a:type, kind, str)
 	endif
 
 	return rtn

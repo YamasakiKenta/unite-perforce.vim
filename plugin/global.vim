@@ -2,7 +2,7 @@
 " DIFFツールの登録
 " @param[in]	file	過去のファイル
 " @param[in]	file2	現在のファイル
-" @var g:pf_settings.is_vimdiff_flg.common
+" @var perforce#data#set(is_vimdiff_flg, common)
 " 	TRUE 	vimdiffで比較する
 " @var g:pf_diff_tool
 " 	DiffTool名
