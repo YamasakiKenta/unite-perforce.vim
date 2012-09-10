@@ -43,7 +43,26 @@ function! perforce#Get_dd(str) "{{{
 	return len(a:str) ? '//...'.perforce#common#Get_kk(a:str).'...' : ''
 endfunction "}}}
 function! perforce#pf_diff_tool(file,file2) "{{{
-	call g:PerforceDiff(a:file,a:file2)
+	if perforce#data#get('is_vimdiff_flg', 'common').datas[0]
+		" タブで新しいファイルを開く
+		exe 'tabe' a:file2
+		exe 'vs' a:file
+
+		" diffの開始
+		windo diffthis
+
+		" キーマップの登録
+		call common#map_diff()
+	else
+		let cmd = perforce#data#get('diff_tool','common').datas[0]
+
+		if cmd =~ 'kdiff3'
+			call system(cmd.' '.perforce#common#Get_kk(a:file).' '.perforce#common#Get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))
+		else
+			" winmergeu
+			call system(cmd.' '.perforce#common#Get_kk(a:file).' '.perforce#common#Get_kk(a:file2))
+		endif
+	endif
 endfunction "}}}
 "@static
 function! perforce#unite_args(source) "{{{
