@@ -128,13 +128,17 @@ let s:kind.action_table.a_set_strs = {
 function! s:kind.action_table.a_set_strs.func(candidate) "{{{
 	let name = a:candidate.action__valname
 	let kind = a:candidate.action__kind
-	let tmp = input("",string(perforce#data#get(name, kind))
+	let tmp = input("",string(perforce#data#get_orig(name, kind).datas))
 
 	if tmp != ""
-		let perforce#data#set(name, kind, tmp)
+		exe 'let tmp_dict = '.tmp
+		call perforce#data#set(name, kind, tmp_dict)
 	endif
 
 	call s:common_out()
+
+	call unite#force_quit_session()
+
 endfunction "}}}
 
 let s:k_p4_settings_strs = s:kind
@@ -163,10 +167,34 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	let name = a:candidates[0].action__name
 	let kind = a:candidates[0].action__kind
 
-	call perforce#data#set_list(name, kind, val)
+	call perforce#data#set_bits_orig(name, kind, val)
 	
 	call unite#force_quit_session()
 
+	call s:common_out()
+
+endfunction "}}}
+
+let s:kind.action_table.delete = {
+			\ 'description' : 'delete',
+			\ 'is_selectable' : 1,
+			\ }
+function! s:kind.action_table.delete.func(candidates) "{{{
+
+	" ‰Šú‰»
+	let nums = []
+	for candidate in a:candidates
+		call add(nums, candidate.action__num)
+	endfor
+
+	" ˆêí—Ş‚Ì‚İŒÀ’è‚Ì‚½‚ß
+	let name = a:candidates[0].action__name
+	let kind = a:candidates[0].action__kind
+
+	" íœ‚·‚é
+	call perforce#data#delte(name, kind, nums)
+
+	call unite#force_quit_session()
 	call s:common_out()
 
 endfunction "}}}
