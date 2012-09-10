@@ -15,12 +15,14 @@ endfunction "}}}
 "@set
 function! perforce#set_PFCLIENTNAME(str) "{{{
 	let $PFCLIENTNAME = a:str
+	call system('p4 set P4CLIENT='.$PFCLIENTNAME) 
 endfunction "}}}
 function! perforce#set_PFCLIENTPATH(str) "{{{
 	let $PFCLIENTPATH = a:str
 endfunction "}}}
 function! perforce#set_PFPORT(str) "{{{
 	let $PFPORT = a:str
+	call system('p4 set P4PORT='.$PFPORT)
 endfunction "}}}
 function! perforce#set_PFUSER(str) "{{{
 	let g:pfuser = a:str
@@ -203,16 +205,19 @@ function! perforce#get_client_data_from_info() "{{{
 	let clname = ""
 	let clpath = ""
 	let user = ""
+	let port = ""
 
 	let datas = split(system('p4 info'),'\n')
 	for data in  datas
 		if data =~ 'Client root: '
-			let clpath = substitute(data, 'Client root: ','','')
+			let clpath = matchstr(data, 'Client root: \zs.*')
 			let clpath = common#get_pathSrash(clpath)
 		elseif data =~ 'Client name: '
-			let clname  = substitute(data, 'Client name: ','','')
+			let clname  = matchstr(data, 'Client name: \zs.*')
 		elseif data =~ 'User name: '
-			let user  = substitute(data, 'User name: ','','')
+			let user  = matchstr(data, 'User name: \zs.*')
+		elseif data =~ ' Server address: '
+			let user  = matchstr(data, 'Server address: \zs.*')
 		elseif data =~ 'error'
 			break " # 取得に失敗したら終了
 		endif
@@ -221,6 +226,7 @@ function! perforce#get_client_data_from_info() "{{{
 	" 設定する
 	call perforce#set_PFCLIENTNAME(clname)
 	call perforce#set_PFCLIENTPATH(clpath)
+	call perforce#set_PFPORT(port)
 	call perforce#set_PFUSER(user)
 endfunction "}}}
 
@@ -433,6 +439,11 @@ function! perforce#get_trans_enspace(strs) "{{{
 	return strs
 endfunction "}}}
 function! perforce#init() "{{{
+
+	" クライアントデータの読み込み
+	call perforce#get_client_data_from_info()
+
+	" 設定の取得
 	call perforce#data#init()
 endfunction "}}}
 "================================================================================
@@ -450,6 +461,10 @@ function! perforce#get_depot_from_have(str) "{{{
 	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')
 endfunction "}}}
 function! perforce#get_depot_from_opened(str) "{{{
+	return substitute(a:str,'#.*','','')   " # リビジョン番号の削除
+endfunction "}}}
+function! perforce#get_depot_from_path(str) "{{{
+perforce#get_depot_from_have(split(system('p4 where '.a:str), "\n"))
 	return substitute(a:str,'#.*','','')   " # リビジョン番号の削除
 endfunction "}}}
 "@get_path(s)

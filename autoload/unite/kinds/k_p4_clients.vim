@@ -23,14 +23,10 @@ function! s:kind.action_table.a_p4_client_set.func(candidates) "{{{
 	let port   = a:candidates.action__port
 	let clpath = perforce#get_ClientPathFromName(clname)
 
-	" 作成するファイルの名前の保存
+	" 作成するファイルの名前の保存 ( 切り替え ) 
 	call perforce#set_PFCLIENTNAME(clname)
 	call perforce#set_PFCLIENTPATH(clpath)
 	call perforce#set_PFPORT(port)
-
-	" 実際に切り替える処理
-	call system('p4 set P4CLIENT='.$PFCLIENTNAME) 
-	call system('p4 set P4PORT='.$PFPORT)
 
 	echo $PFCLIENTNAME
 endfunction "}}}
