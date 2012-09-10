@@ -13,7 +13,7 @@ let s:source = {
 			\ 'hooks' : {},
 			\ }
 function! s:source.hooks.on_syntax(args, context) "{{{
-	syntax match uniteSource__p4_settings_choose /<.*>/ containedin=uniteSource__p4_settings contained
+	syntax match uniteSource__p4_settings_choose /<.\{-}>/ containedin=uniteSource__p4_settings contained
 	syntax match uniteSource__p4_settings_group /".*"/ containedin=uniteSource__p4_settings contained
 
 	highlight default link uniteSource__p4_settings_choose Type 
@@ -61,6 +61,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let words = perforce#data#get_orig(name,kind).datas[1:]
 
 	let val = 1
+	let num = 1
 	let rtns = []
 
 	for word in words 
@@ -70,8 +71,10 @@ function! s:source.gather_candidates(args, context) "{{{
 					\ 'action__name' : name,
 					\ 'action__kind' : kind,
 					\ 'action__bitnum' : val,
+					\ 'action__num' : num,
 					\ }]
 		let val = val * 2
+		let num = num + 1
 	endfor	
 
 	return rtns
@@ -118,7 +121,9 @@ function! s:get_word_from_strs(strs) "{{{
 
 			" フラグがあれば、選択状態にする
 			if flg 
-				let strs[lnum] = '<'.a:strs[lnum+1].'>'
+				if exists('strs[lnum]')
+					let strs[lnum] = '<'.a:strs[lnum+1].'>'
+				endif
 			endif
 
 			" while 用に更新
