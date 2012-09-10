@@ -1,30 +1,18 @@
 let s:save_data_type = 1 " 新しい
-function! s:set_pf_settings(type, description, kind_val ) "{{{
-	" ********************************************************************************
-	" pf_settings を追加します
-	" ********************************************************************************
-	" 表示順に追加
-	let s:pf_settings_orders += [a:type]
-
-	let g:pf_settings[a:type] = {
-				\ 'common' : a:kind_val,
-				\ 'description' : a:description,
-				\ }
-
-endfunction "}}}
+"@ sub
 function! s:data_load(file) "{{{
 	" ********************************************************************************
 	" 設定ファイルの読み込み
 	" param[in]		file		設定ファイル名
-	" ********************************************************************************
 
-	" ファイルが見つからない場合は終了
-	if filereadable(a:file) == 0
-		echo 'Error - not fine '.a:file
-		return
-	endif
 
 	if s:save_data_type == 0
+		" ファイルが見つからない場合は終了
+		if filereadable(a:file) == 0
+			echo 'Error - not fine '.a:file.'_1'
+			return
+		endif
+
 		" ファイルを読み込む
 		let datas = readfile(a:file.'_1')
 
@@ -36,8 +24,32 @@ function! s:data_load(file) "{{{
 			" 型が変わるため、初期化が必要
 		endfor
 	else
-		exe 'let g:pf_settings = '.join(readfile(a:file.'_2'))
+		" ファイルが見つからない場合は終了
+		if filereadable(a:file) == 0
+			echo 'Error - not fine '.a:file.'_1'
+			return
+		endif
+
+		exe 'let tmp_dicts = '.join(readfile(a:file.'_2'))
+		for type in keys(tmp_dicts)
+			for kind in keys(tmp_dicts[type])
+				call perforce#data#set_orig( type, kind, tmp_dicts[type][kind])
+			endfor
+		endfor
 	endif
+
+endfunction "}}}
+function! s:set_pf_settings(type, description, kind_val ) "{{{
+	" ********************************************************************************
+	" pf_settings を追加します
+	" ********************************************************************************
+	" 表示順に追加
+	let s:pf_settings_orders += [a:type]
+
+	let g:pf_settings[a:type] = {
+				\ 'common'      : a:kind_val,
+				\ 'description' : a:description,
+				\ }
 
 endfunction "}}}
 function! s:get_pf_settings_from_lists(datas) "{{{
@@ -55,7 +67,12 @@ function! s:get_pf_settings_from_lists(datas) "{{{
 		let nums = perforce#common#bit#get_nums_form_bit(a:datas[0]*2)
 
 		" 有効な引数のみ返す
-		let rtns = map(copy(nums), 'a:datas[v:val]')
+		let rtns = []
+		for num in nums
+			if exists('a:datas[num]')
+				call add(rtns, a:datas[num])
+			endif
+		endfor
 
 	endif
 
@@ -71,6 +88,9 @@ function! perforce#data#init() "{{{
 	if exists('g:pf_settings')
 		return
 	else
+		" クライアントデータの読み込み
+		call perforce#get_client_data_from_info()
+
 		" init
 		let g:pf_settings = {}
 		let s:pf_settings_orders = []
@@ -95,73 +115,17 @@ function! perforce#data#init() "{{{
 		call s:set_pf_settings ( 'diff_tool'                , 'Diff で使用するツール'       , [1,'WinMergeU']           ) 
 		call s:set_pf_settings ( 'g_ClientMove'             , 'ClientMove'                  , -1                        ) 
 		call s:set_pf_settings ( 'ClientMove_recursive_flg' , 'ClientMoveで再帰検索をするか', 0                         ) 
-		call s:set_pf_settings ( 'ClientMove_defoult_root'  , 'ClientMoveの初期フォルダ'    , [1,'c:\tmp','c:\p4tmp']   ) 
+		call s:set_pf_settings ( 'ClientMove_defoult_root'  , 'ClientMoveの初期フォルダ'    , [1, 'c:\tmp','c:\p4tmp']  ) 
 		call s:set_pf_settings ( 'g_other'                  , 'その他'                      , -1                        ) 
-		call s:set_pf_settings ( 'ports'                    , 'perforce port'               , [1,'localhost:1818']      ) 
+		call s:set_pf_settings ( 'ports'                    , 'perforce port'               , [1, 'localhost:1818']     ) 
+		call s:set_pf_settings ( 'users'                    , 'perforce user'               , [1, 'yamasaki']           )
+		call s:set_pf_settings ( 'clients'                  , 'perforce client'             , [1, 'main']               )
 
 		" 設定を読み込む
 		call s:data_load($PFDATA)
 
-		" クライアントデータの読み込み
-		call perforce#get_client_data_from_info()
 
 	endif
-endfunction "}}}
-function! perforce#data#set(type, kind, val) "{{{
-	let g:pf_settings[a:type][a:kind] = a:val
-endfunction "}}}
-function! perforce#data#delete(type, kind, val) "{{{
-	let g:pf_settings[a:type][a:kind] = a:val
-endfunction "}}}
-function! perforce#data#set_list(type, kind, val) "{{{
-	let g:pf_settings[a:type][a:kind][0] = a:val
-endfunction "}}}
-function! perforce#data#get_orig(type, kind) "{{{
-	" ********************************************************************************
-	" 設定データを取得する
-	" @param[in]	type		pf_settings の設定の種類
-	" @param[in]	kind		common など, source の種類
-	" @retval		rtns 		取得データ
-	" ********************************************************************************
-	" 設定がない場合は、共通を呼び出す
-	let kind = perforce#data#get_kind(a:type, a:kind)
-
-	let val = g:pf_settings[a:type][kind]
-
-	let valtype = type(val)
-
-	let rtns = {
-				\ 'datas' : val,
-				\ 'kind' : kind,
-				\ }
-
-	return rtns
-endfunction "}}}
-function! perforce#data#get(type, kind) "{{{
-	" ********************************************************************************
-	" 設定データを取得する
-	" @param[in]	type		pf_settings の設定の種類
-	" @param[in]	kind		common など, source の種類
-	" @retval		rtns 		取得データ
-	" ********************************************************************************
-	" 設定がない場合は、共通を呼び出す
-	let kind = perforce#data#get_kind(a:type, a:kind)
-
-	let val = g:pf_settings[a:type][kind]
-
-	let valtype = type(val)
-
-	let rtns = {}
-	if valtype == 3
-		" リストの場合は、引数で取得する
-		let rtns.datas = s:get_pf_settings_from_lists(val)
-	else
-		let rtns.datas = val
-	endif
-
-	let rtns.kind = kind
-
-	return rtns
 endfunction "}}}
 function! perforce#data#save(file) "{{{
 	" ********************************************************************************
@@ -188,6 +152,36 @@ function! perforce#data#save(file) "{{{
 	endif
 
 endfunction "}}}
+function! perforce#data#delete(type, kind, val) "{{{
+	let g:pf_settings[a:type][a:kind] = a:val
+endfunction "}}}
+"@ get
+function! perforce#data#get(type, kind) "{{{
+	" ********************************************************************************
+	" 設定データを取得する
+	" @param[in]	type		pf_settings の設定の種類
+	" @param[in]	kind		common など, source の種類
+	" @retval		rtns 		取得データ
+	" ********************************************************************************
+	" 設定がない場合は、共通を呼び出す
+	let kind = perforce#data#get_kind(a:type, a:kind)
+
+	let val = g:pf_settings[a:type][kind]
+
+	let valtype = type(val)
+
+	let rtns = {}
+	if valtype == 3
+		" リストの場合は、引数で取得する
+		let rtns.datas = s:get_pf_settings_from_lists(val)
+	else
+		let rtns.datas = val
+	endif
+
+	let rtns.kind = kind
+
+	return rtns
+endfunction "}}}
 function! perforce#data#get_orders() "{{{
 	"********************************************************************************
 	" unite で表示するデータ
@@ -202,4 +196,110 @@ function! perforce#data#get_kind(type, kind) "{{{
 	endif
 
 	return kind
+endfunction "}}}
+function! perforce#data#get_bits(type, kind) "{{{
+	let tmp_data_d = perforce#data#get_orig(a:name, a:kind).datas
+
+	" bit の変換
+	let tmp_num = tmp_data_d[0]
+	let bits = []
+	let num  = 1
+	while ( tmp_num > 0 )
+		call add(bits,  tmp_num % 2 ? num : 0)
+		let tmp_num = tmp_num / 2
+		let num = num * 2
+	endwhile
+
+	return bits
+
+endfunction "}}}
+function! perforce#data#get_orig(type, kind) "{{{
+	" ********************************************************************************
+	" 設定データを取得する
+	" @param[in]	type		pf_settings の設定の種類
+	" @param[in]	kind		common など, source の種類
+	" @retval		rtns 		取得データ
+	" ********************************************************************************
+	" 設定がない場合は、共通を呼び出す
+	let kind = perforce#data#get_kind(a:type, a:kind)
+
+	let val = g:pf_settings[a:type][kind]
+
+	let valtype = type(val)
+
+	let rtns = {
+				\ 'datas' : val,
+				\ 'kind' : kind,
+				\ }
+
+	return rtns
+endfunction "}}}
+"@ set
+function! perforce#data#set(type, kind, val) "{{{
+	let g:pf_settings[a:type][a:kind] = a:val
+endfunction "}}}
+function! perforce#data#set_orig(type, kind, val) "{{{
+"********************************************************************************
+" 値をそのまま代入する
+" @param[in]  str 		type 	
+" @param[in]  str 		kind	
+" @param[out] void* 	val 	
+"********************************************************************************
+	let g:pf_settings[a:type][a:kind] = a:val
+endfunction "}}}
+function! perforce#data#set_bits(type, kind, val) "{{{
+	" ********************************************************************************
+	" 使用する箇所のフラグを立てたものを代入する
+	" ********************************************************************************
+	exe 'let sum = '.join(a:val, '+')
+	perforce#data#set_bits_orig(a:type, a:kind, sum)
+endfunction "}}}
+function! perforce#data#set_bits_orig(type, kind, val) "{{{
+"********************************************************************************
+" bits をそのまま代入する
+"********************************************************************************
+	let g:pf_settings[a:type][a:kind][0] = a:val
+endfunction "}}}
+"@ delete
+function! perforce#data#delete(type, kind, nums) "{{{
+"********************************************************************************
+" 拍所する番号がはいっている配列変数を代入する
+"********************************************************************************
+	let type = a:type
+	let kind = a:kind
+	let nums = a:nums
+
+	" 並び替え
+	call sort(nums)
+
+	" 取得
+	let tmp_data_d = perforce#data#get_orig(name, kind).datas
+	
+	" 番号の取得
+	let datas = tmp_data_d.datas
+
+	" 更新
+	let kind = tmp_data_d.kind
+
+	" 選択番号の取得
+	let bits = perforce#data#get_bits(name, kind)
+
+	" 削除
+	let cnt = 0
+	let bitnum = 1
+	for num in nums
+		" 番号の更新
+		let tmp_num = num - cnt
+		unlet datas[tmp_num]
+		unlet bits[tmp_num]
+		let cnt    = cnt + 1
+		let bitnum = bitnum * 2
+	endfor
+
+	" 選択番号の再設定
+	call perforce#data#set_bits(name, kind, bits)
+
+	" 設定
+	call perforce#data#set(name, kind, datas)
+
 endfunction "}}}
