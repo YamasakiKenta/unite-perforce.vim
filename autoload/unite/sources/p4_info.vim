@@ -1,5 +1,5 @@
 function! unite#sources#p4_info#define()
-	return []
+	return [s:source]
 endfunction
 
 "source - p4_info "{{{
@@ -9,11 +9,10 @@ let s:source = {
 			\ }
 "\ 'default_action' : '',
 function! s:source.gather_candidates(args, context) "{{{
-	let datas = perforce#pf
+	let datas = perforce#pfcmds('info','')
 	let candidates = map( datas, "{
 				\ 'word' : v:val,
-				\ 'kind' : 'file',
+				\ 'kind' : 'k_null',
 				\ }")
 	return candidates
 endfunction "}}}
-unlet s:source "}}}

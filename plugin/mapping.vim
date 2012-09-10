@@ -51,13 +51,13 @@ nmap ;up<CR> <PLUG>(unite_p4_commit)
 nmap ;wd<CR> <PLUG>(p4_diff_tool)
 nmap ;cl<CR> <PLUG>(p4_echo_client_data)
 nmap ;cr<CR> <PLUG>(p4_cd_clentpath)
-nmap ;pi<CR> <PLUG>(p4_print_info)
 nmap ;ff<CR> <PLUG>(p4_find)
 nmap ;pl<CR> <PLUG>(p4_filelog)
 nmap ;pd<CR> <PLUG>(p4_diff)
 nmap ;pe<CR> <PLUG>(p4_edit)
 nmap ;pr<CR> <PLUG>(p4_revert)
 
+nnoremap ;pi<CR> :<C-u>Unite p4_info<CR>|"
 nnoremap ;pp<CR> :<C-u>Unite p4_settings<CR>|"
 nnoremap ;pt<CR> :<C-u>Unite p4_clients<CR>|"
 nnoremap ;pc<CR> :<C-u>Unite p4_changes_pending<CR>|"
