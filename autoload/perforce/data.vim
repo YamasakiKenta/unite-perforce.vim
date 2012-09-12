@@ -123,17 +123,13 @@ function! perforce#data#get(type, kind) "{{{
 
 	let val = g:pf_settings[a:type][kind]
 
-	let valtype = type(val)
-
-	let rtns = {}
-	if valtype == 3
+	if type(val) == type([])
 		" リストの場合は、引数で取得する
-		let rtns.datas = s:get_pf_settings_from_lists(val)
+		let rtns = s:get_pf_settings_from_lists(val)
 	else
-		let rtns.datas = val
+		let rtns = val
 	endif
 
-	let rtns.kind = kind
 
 	return rtns
 endfunction "}}}
@@ -153,7 +149,7 @@ function! perforce#data#get_kind(type, kind) "{{{
 	return kind
 endfunction "}}}
 function! perforce#data#get_bits(type, kind) "{{{
-	let tmp_data_d = perforce#data#get_orig(a:name, a:kind).datas
+	let tmp_data_d = perforce#data#get_orig(a:name, a:kind)
 
 	" bit の変換
 	let tmp_num = tmp_data_d[0]
@@ -178,29 +174,23 @@ function! perforce#data#get_orig(type, kind) "{{{
 	" 設定がない場合は、共通を呼び出す
 	let kind = perforce#data#get_kind(a:type, a:kind)
 
-	let val = g:pf_settings[a:type][kind]
+	return g:pf_settings[a:type][kind]
 
-	let valtype = type(val)
-
-	let rtns = {
-				\ 'datas' : val,
-				\ 'kind' : kind,
-				\ }
-
-	return rtns
 endfunction "}}}
 "@ set
 function! perforce#data#set(type, kind, val) "{{{
 	let g:pf_settings[a:type][a:kind] = a:val
 endfunction "}}}
 function! perforce#data#set_orig(type, kind, val) "{{{
-"********************************************************************************
-" 値をそのまま代入する
-" @param[in]  str 		type 	
-" @param[in]  str 		kind	
-" @param[out] void* 	val 	
-"********************************************************************************
-	let g:pf_settings[a:type][a:kind] = a:val
+	"********************************************************************************
+	" 値をそのまま代入する
+	" param[in]  str 		type 	
+	" param[in]  str 		kind	
+	" param[out] void* 	val 	
+	"********************************************************************************
+	if exists("g:pf_settings[a:type][a:kind]")
+		let g:pf_settings[a:type][a:kind] = a:val
+	endif
 endfunction "}}}
 function! perforce#data#set_bits(type, kind, val) "{{{
 	" ********************************************************************************
@@ -227,14 +217,11 @@ function! perforce#data#delete(type, kind, nums) "{{{
 	" 並び替え
 	call sort(nums)
 
-	" 取得
-	let tmp_data_d = perforce#data#get_orig(name, kind).datas
-	
 	" 番号の取得
-	let datas = tmp_data_d.datas
-
+	let datas = perforce#data#get_orig(name, kind)
+	
 	" 更新
-	let kind = tmp_data_d.kind
+	let kind = perforce#data#get#kind(name, kind)
 
 	" 選択番号の取得
 	let bits = perforce#data#get_bits(name, kind)

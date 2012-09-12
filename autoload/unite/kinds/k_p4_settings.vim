@@ -28,7 +28,7 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
 		let kind = candidate.action__kind
-		call perforce#data#set(name, kind, 1 - perforce#data#get(name, kind).datas)
+		call perforce#data#set(name, kind, 1-perforce#data#get(name, kind))
 	endfor
 
 	" ï\é¶ÇÃçXêV
@@ -91,7 +91,7 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 		let len  = len(perforce#data#set(name, kind, - 1))
 		let max  = float2nr(pow(2, len))
 
-		let val = perforce#data#get(name, kind).datas[0] * 2 
+		let val = perforce#data#get(name, kind)[0] * 2 
 
 		" îªíËÇ≈Ç´Ç»Ç¢èÍçá
 		if val < 1 || val >= max 
@@ -128,7 +128,7 @@ let s:kind.action_table.a_set_strs = {
 function! s:kind.action_table.a_set_strs.func(candidate) "{{{
 	let name = a:candidate.action__valname
 	let kind = a:candidate.action__kind
-	let tmp = input("",string(perforce#data#get_orig(name, kind).datas))
+	let tmp = input("",string(perforce#data#get_orig(name, kind)))
 
 	if tmp != ""
 		exe 'let tmp_dict = '.tmp

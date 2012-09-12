@@ -32,7 +32,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let orders = copy(perforce#data#get_orders())
 	return map( orders, "{
 				\ 'word' : s:get_word_from_pf_setting(v:val, kind),
-				\ 'kind' : s:get_kind_from_pf_setting(perforce#data#get(v:val,kind).datas),
+				\ 'kind' : s:get_kind_from_pf_setting(perforce#data#get(v:val,kind)),
 				\ 'action__valname' : v:val,
 				\ 'action__kind' : kind,
 				\ }")
@@ -58,7 +58,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	endif
 
 	" ˆø”‚ğæ“¾‚·‚é
-	let words = perforce#data#get_orig(name,kind).datas[1:]
+	let words = perforce#data#get_orig(name,kind)[1:]
 
 	let val = 1
 	let num = 1
@@ -145,9 +145,8 @@ function! s:get_word_from_pf_setting(type, kind) "{{{
 " ********************************************************************************
 
 	" –¢’è‹`‚È‚ç‹¤’Êİ’è‚ğ‘ã“ü‚·‚é
-	let data = perforce#data#get_orig(a:type, a:kind)
-	let val  = data.datas
-	let kind = data.kind
+	let val  = perforce#data#get_orig(a:type, a:kind)
+	let kind = perforce#data#get_kind(a:type, a:kind)
 
 	if type(val) == 0
 		let str = s:get_word_from_bool(val)
@@ -156,9 +155,9 @@ function! s:get_word_from_pf_setting(type, kind) "{{{
 	endif
 
 	if s:is_group(val)
-		let rtn = '"'.perforce#data#get(a:type, 'description').datas.'"'
+		let rtn = '"'.perforce#data#get(a:type, 'description').'"'
 	else
-		let rtn = printf(' %-50s (%-30s,%-10s) - %s', perforce#data#get(a:type, 'description').datas , a:type, kind, str)
+		let rtn = printf(' %-50s (%-30s,%-10s) - %s', perforce#data#get(a:type, 'description'), a:type, kind, str)
 	endif
 
 	return rtn

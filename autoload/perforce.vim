@@ -45,7 +45,7 @@ function! perforce#Get_dd(str) "{{{
 	return len(a:str) ? '//...'.perforce#common#Get_kk(a:str).'...' : ''
 endfunction "}}}
 function! perforce#pf_diff_tool(file,file2) "{{{
-	if perforce#data#get('is_vimdiff_flg', 'common').datas[0]
+	if perforce#data#get('is_vimdiff_flg', 'common')
 		" タブで新しいファイルを開く
 		exe 'tabe' a:file2
 		exe 'vs' a:file
@@ -56,7 +56,7 @@ function! perforce#pf_diff_tool(file,file2) "{{{
 		" キーマップの登録
 		call common#map_diff()
 	else
-		let cmd = perforce#data#get('diff_tool','common').datas[0]
+		let cmd = perforce#data#get('diff_tool','common')
 
 		if cmd =~ 'kdiff3'
 			call system(cmd.' '.perforce#common#Get_kk(a:file).' '.perforce#common#Get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))
@@ -306,33 +306,26 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	let gcmds += [a:head]
 
 	" 取得するポートと、クライアント
-	"if (perforce#data#get('
-
-	" 個別設定 （ ローカル引数は、コマンドによりけりな為 ) 
-	if a:cmd  == 'clients' || a:cmd == 'changes'	
-
-		if perforce#data#get('user_changes_only', 'common').datas[0] == 1
-			call add(gcmds_from_set, '-u '.perforce#get_PFUSER())
-		endif 
+	if perforce#data#get('user_changes_only', 'common') == 1
+		call add(gcmds_from_set, '-u '.perforce#get_PFUSER())
+	endif 
 
 
-		if perforce#data#get('show_max_flg', 'common').datas[0] == 1
-			call add(gcmds_from_set, '-m '.perforce#data#get('show_max', 'common').datas[0])
-		endif 
-
-	endif
+	if perforce#data#get('show_max_flg', 'common') == 1
+		call add(gcmds_from_set, '-m '.perforce#data#get('show_max', 'common')[0])
+	endif 
 
 	if a:cmd  =~ 'changes'
-		if perforce#data#get('client_changes_only', 'common').datas[0] == 1
+		if perforce#data#get('client_changes_only', 'common') == 1
 			call add(gcmds_from_set, '-c '.perforce#get_PFCLIENTNAME())
 		endif 
 	endif
 
 	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmds_from_set).' '.join(a:000)
 
-	if perforce#data#get('show_cmd_flg', 'common').datas[0]
+	if perforce#data#get('show_cmd_flg', 'common') == 1
 		echo cmd
-		if perforce#data#get('show_cmd_stop_flg', 'common').datas[0]
+		if perforce#data#get('show_cmd_stop_flg', 'common') == 1
 			call input("")
 		endif
 	endif
@@ -340,8 +333,8 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	let rtn = split(system(cmd),'\n')
 
 	" 非表示にするコマンド
-	if perforce#data#get('filters_flg', 'common').datas
-		let filters = perforce#data#get('filters', 'common').datas
+	if perforce#data#get('filters_flg', 'common') == 1
+		let filters = perforce#data#get('filters', 'common')
 		let filter = join(filters, '\|')
 		call filter(rtn, 'v:val !~ filter')
 	endif
@@ -355,8 +348,8 @@ function! perforce#LogFile(str) "{{{
 	" @var
 	" ********************************************************************************
 	"
-	if perforce#data#get('is_out_flg', 'common').datas[0]
-		if perforce#data#get('is_out_echo_flg', 'common').datas[0]
+	if perforce#data#get('is_out_flg', 'common') == 1
+		if perforce#data#get('is_out_echo_flg', 'common') == 1
 			echo a:str
 		else
 			call perforce#common#LogFile('p4log', 0, a:str)
@@ -464,7 +457,7 @@ function! perforce#get_depot_from_opened(str) "{{{
 	return substitute(a:str,'#.*','','')   " # リビジョン番号の削除
 endfunction "}}}
 function! perforce#get_depot_from_path(str) "{{{
-perforce#get_depot_from_have(split(system('p4 where '.a:str), "\n"))
+	perforce#get_depot_from_have(split(system('p4 where '.a:str), "\n"))
 	return substitute(a:str,'#.*','','')   " # リビジョン番号の削除
 endfunction "}}}
 "@get_path(s)

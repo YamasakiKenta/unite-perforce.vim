@@ -246,7 +246,7 @@ function! s:copyFileDir(file) "{{{
 	let file1 = substitute(a:file, '/','\','g')
 
 	" ‹ó”’‚Æˆø”‚ª‚È‚¢ê‡‚ÍAdefault‚ğİ’è‚·‚é
-	let root2 = perforce#data#get('ClientMove_defoult_root', 'common').datas[0]
+	let root2 = perforce#data#get('ClientMove_defoult_root', 'common')[0]
 	let root2 = substitute(root2, '/', '\','g')
 
 	" ––”ö‚Ì \ ‚ğíœ‚·‚é
@@ -298,7 +298,7 @@ function! s:copy_file_depot(depot) "{{{
 	let file1 = substitute(file1, '/','\','g')
 
 	" ‹ó”’‚Æˆø”‚ª‚È‚¢ê‡‚ÍAdefault‚ğİ’è‚·‚é
-	let root2 = perforce#data#get('ClientMove_defoult_root', 'common').datas[0]
+	let root2 = perforce#data#get('ClientMove_defoult_root', 'common')[0]
 	let root2 = substitute(root2, '/', '\','g')
 
 	" ––”ö‚Ì \ ‚ğíœ‚·‚é
