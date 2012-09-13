@@ -192,7 +192,7 @@ function! s:kind.action_table.delete.func(candidates) "{{{
 	let kind = a:candidates[0].action__kind
 
 	" íœ‚·‚é
-	call perforce#data#delte(name, kind, nums)
+	call perforce#data#delete(name, kind, nums)
 
 	call unite#force_quit_session()
 	call s:common_out()

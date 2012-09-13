@@ -25,7 +25,8 @@ function! perforce#set_PFPORT(str) "{{{
 	call system('p4 set P4PORT='.$PFPORT)
 endfunction "}}}
 function! perforce#set_PFUSER(str) "{{{
-	let g:pfuser = a:str
+	let $PFUSER= a:str
+	call system('p4 set P4USER='.$PFUSER)
 endfunction "}}}
 "@get
 function! perforce#get_PFCLIENTNAME() "{{{
@@ -38,7 +39,7 @@ function! perforce#get_PFPORT() "{{{
 	return $PFPORT
 endfunction "}}}
 function! perforce#get_PFUSER() "{{{
-	return g:pfuser
+	return $PFUSER 
 endfunction "}}}
 "@global
 function! perforce#Get_dd(str) "{{{
@@ -217,7 +218,7 @@ function! perforce#get_client_data_from_info() "{{{
 		elseif data =~ 'User name: '
 			let user  = matchstr(data, 'User name: \zs.*')
 		elseif data =~ ' Server address: '
-			let user  = matchstr(data, 'Server address: \zs.*')
+			let port  = matchstr(data, 'Server address: \zs.*')
 		elseif data =~ 'error'
 			break " # éÊìæÇ…é∏îsÇµÇΩÇÁèIóπ
 		endif
