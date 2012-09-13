@@ -1,3 +1,7 @@
+let g:set_pf_settings = {}
+let s:pf_settings_orders = []
+let s:set_pf_settings_default = {}
+
 "@ sub
 function! s:data_load(file) "{{{
 	" ********************************************************************************
@@ -7,14 +11,14 @@ function! s:data_load(file) "{{{
 
 
 	" ファイルが見つからない場合は終了
-	if filereadable(a:file) == 0
+	if !filereadable(a:file)
 		echo 'Error - not fine '.a:file.'_1'
 		return
 	endif
 
 	exe 'let tmp_dicts = '.join(readfile(a:file))
 
-	" 登録する
+	" 存在する値のみ登録する
 	for type in keys(tmp_dicts)
 		for kind in keys(tmp_dicts[type])
 			call perforce#data#set_orig( type, kind, tmp_dicts[type][kind])
@@ -22,12 +26,18 @@ function! s:data_load(file) "{{{
 	endfor
 
 endfunction "}}}
-function! s:set_pf_settings(type, description, kind_val ) "{{{
+function! s:set_pf_settings_default(type, description, kind_val ) "{{{
 	" ********************************************************************************
 	" pf_settings を追加します
 	" ********************************************************************************
 	" 表示順に追加
 	let s:pf_settings_orders += [a:type]
+
+	" 初期値を追加
+	let s:pf_settings_default[a:type] = {
+				\ 'common'      : a:kind_val,
+				\ 'description' : a:description,
+				\ }
 
 	let g:pf_settings[a:type] = {
 				\ 'common'      : a:kind_val,
@@ -61,38 +71,31 @@ function! s:get_pf_settings_from_lists(datas) "{{{
 endfunction "}}}
 "@ main
 function! perforce#data#init() "{{{
-	" ********************************************************************************
 	" 設定変数の初期化
-	" ********************************************************************************
-
-	let g:pf_settings = {}
-	let s:pf_settings_orders = []
-
-	" 並び替え用の変数の作成
-	call s:set_pf_settings ( 'is_submit_flg'            , 'サブミットを許可'            , 1                         ) 
-	call s:set_pf_settings ( 'g_changes_only'           , 'フィルタ'                    , -1                        ) 
-	call s:set_pf_settings ( 'user_changes_only'        , 'ユーザー名でフィルタ'        , 1                         ) 
-	call s:set_pf_settings ( 'client_changes_only'      , 'クライアントでフィルタ'      , 1                         ) 
-	call s:set_pf_settings ( 'filters_flg'              , '除外リストを使用する'        , 1                         )
-	call s:set_pf_settings ( 'filters'                  , '除外リスト'                  , [-1,'tag','snip']         ) 
-	call s:set_pf_settings ( 'g_show'                   , 'ファイル数'                  , -1                        ) 
-	call s:set_pf_settings ( 'show_max_flg'             , 'ファイル数の制限'            , 0                         ) 
-	call s:set_pf_settings ( 'show_max'                 , 'ファイル数'                  , [1,5,10]                  ) 
-	call s:set_pf_settings ( 'g_is_out'                 , '実行結果'                    , -1                        ) 
-	call s:set_pf_settings ( 'is_out_flg'               , '実行結果を出力する'          , 1                         ) 
-	call s:set_pf_settings ( 'is_out_echo_flg'          , '実行結果を出力する[echo]'    , 1                         ) 
-	call s:set_pf_settings ( 'show_cmd_flg'             , 'p4 コマンドを表示する'       , 1                         ) 
-	call s:set_pf_settings ( 'show_cmd_stop_flg'        , 'p4 コマンドを表示する(stop)' , 1                         ) 
-	call s:set_pf_settings ( 'g_diff'                   , 'Diff'                        , -1                        ) 
-	call s:set_pf_settings ( 'is_vimdiff_flg'           , 'vimdiff を使用する'          , 0                         ) 
-	call s:set_pf_settings ( 'diff_tool'                , 'Diff で使用するツール'       , [1,'WinMergeU']           ) 
-	call s:set_pf_settings ( 'g_ClientMove'             , 'ClientMove'                  , -1                        ) 
-	call s:set_pf_settings ( 'ClientMove_recursive_flg' , 'ClientMoveで再帰検索をするか', 0                         ) 
-	call s:set_pf_settings ( 'ClientMove_defoult_root'  , 'ClientMoveの初期フォルダ'    , [1, 'c:\tmp','c:\p4tmp']  ) 
-	call s:set_pf_settings ( 'g_other'                  , 'その他'                      , -1                        ) 
-	call s:set_pf_settings ( 'ports'                    , 'perforce port'               , [1, 'localhost:1818']     ) 
-	call s:set_pf_settings ( 'users'                    , 'perforce user'               , [1, 'yamasaki']           )
-	call s:set_pf_settings ( 'clients'                  , 'perforce client'             , [1, 'main']               )
+	call s:set_pf_settings_default ( 'is_submit_flg'            , 'サブミットを許可'            , 1                         ) 
+	call s:set_pf_settings_default ( 'g_changes_only'           , 'フィルタ'                    , -1                        ) 
+	call s:set_pf_settings_default ( 'user_changes_only'        , 'ユーザー名でフィルタ'        , 1                         ) 
+	call s:set_pf_settings_default ( 'client_changes_only'      , 'クライアントでフィルタ'      , 1                         ) 
+	call s:set_pf_settings_default ( 'filters_flg'              , '除外リストを使用する'        , 1                         )
+	call s:set_pf_settings_default ( 'filters'                  , '除外リスト'                  , [-1,'tag','snip']         ) 
+	call s:set_pf_settings_default ( 'g_show'                   , 'ファイル数'                  , -1                        ) 
+	call s:set_pf_settings_default ( 'show_max_flg'             , 'ファイル数の制限'            , 0                         ) 
+	call s:set_pf_settings_default ( 'show_max'                 , 'ファイル数'                  , [1,5,10]                  ) 
+	call s:set_pf_settings_default ( 'g_is_out'                 , '実行結果'                    , -1                        ) 
+	call s:set_pf_settings_default ( 'is_out_flg'               , '実行結果を出力する'          , 1                         ) 
+	call s:set_pf_settings_default ( 'is_out_echo_flg'          , '実行結果を出力する[echo]'    , 1                         ) 
+	call s:set_pf_settings_default ( 'show_cmd_flg'             , 'p4 コマンドを表示する'       , 1                         ) 
+	call s:set_pf_settings_default ( 'show_cmd_stop_flg'        , 'p4 コマンドを表示する(stop)' , 1                         ) 
+	call s:set_pf_settings_default ( 'g_diff'                   , 'Diff'                        , -1                        ) 
+	call s:set_pf_settings_default ( 'is_vimdiff_flg'           , 'vimdiff を使用する'          , 0                         ) 
+	call s:set_pf_settings_default ( 'diff_tool'                , 'Diff で使用するツール'       , [1,'WinMergeU']           ) 
+	call s:set_pf_settings_default ( 'g_ClientMove'             , 'ClientMove'                  , -1                        ) 
+	call s:set_pf_settings_default ( 'ClientMove_recursive_flg' , 'ClientMoveで再帰検索をするか', 0                         ) 
+	call s:set_pf_settings_default ( 'ClientMove_defoult_root'  , 'ClientMoveの初期フォルダ'    , [1, 'c:\tmp','c:\p4tmp']  ) 
+	call s:set_pf_settings_default ( 'g_other'                  , 'その他'                      , -1                        ) 
+	call s:set_pf_settings_default ( 'ports'                    , 'perforce port'               , [1, 'localhost:1818']     ) 
+	call s:set_pf_settings_default ( 'users'                    , 'perforce user'               , [1, 'yamasaki']           )
+	call s:set_pf_settings_default ( 'clients'                  , 'perforce client'             , [1, 'main']               )
 
 	" 設定を読み込む
 	call s:data_load($PFDATA)
@@ -107,9 +110,6 @@ function! perforce#data#save(file) "{{{
 		call writefile([string(g:pf_settings)], a:file)
 
 endfunction "}}}
-function! perforce#data#delete(type, kind, val) "{{{
-	let g:pf_settings[a:type][a:kind] = a:val
-endfunction "}}}
 "@ get
 function! perforce#data#get(type, kind) "{{{
 	" ********************************************************************************
@@ -120,6 +120,10 @@ function! perforce#data#get(type, kind) "{{{
 	" ********************************************************************************
 	" 設定がない場合は、共通を呼び出す
 	let kind = perforce#data#get_kind(a:type, a:kind)
+
+	if !exists("g:pf_settings[a:type][kind]")
+		let g:pf_settings[a:type][kind] = s:pf_settings_default[a:type][kind]
+	endif
 
 	let val = g:pf_settings[a:type][kind]
 

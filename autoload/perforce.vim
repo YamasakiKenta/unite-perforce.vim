@@ -217,7 +217,7 @@ function! perforce#get_client_data_from_info() "{{{
 			let clname  = matchstr(data, 'Client name: \zs.*')
 		elseif data =~ 'User name: '
 			let user  = matchstr(data, 'User name: \zs.*')
-		elseif data =~ ' Server address: '
+		elseif data =~ 'Server address: '
 			let port  = matchstr(data, 'Server address: \zs.*')
 		elseif data =~ 'error'
 			break " # æ“¾‚É¸”s‚µ‚½‚çI—¹
