@@ -13,20 +13,27 @@ function! perforce#get_filename_for_unite(args, context) "{{{
 	call unite#print_message('[line] Target: ' . a:context.source__path)
 endfunction "}}}
 "@set
-function! perforce#set_PFCLIENTNAME(str) "{{{
+function! perforce#set_PFCLIENTNAME(str, ...) "{{{
 	let $PFCLIENTNAME = a:str
-	call system('p4 set P4CLIENT='.$PFCLIENTNAME) 
+
+	if a:0 > 0 && a:1 > 9
+		call system('p4 set P4CLIENT='.$PFCLIENTNAME) 
+	endif
 endfunction "}}}
-function! perforce#set_PFCLIENTPATH(str) "{{{
+function! perforce#set_PFCLIENTPATH(str, ...) "{{{
 	let $PFCLIENTPATH = a:str
 endfunction "}}}
-function! perforce#set_PFPORT(str) "{{{
+function! perforce#set_PFPORT(str, ...) "{{{
 	let $PFPORT = a:str
-	call system('p4 set P4PORT='.$PFPORT)
+	if a:0 > 0 && a:1 > 9
+		call system('p4 set P4PORT='.$PFPORT)
+	endif
 endfunction "}}}
-function! perforce#set_PFUSER(str) "{{{
+function! perforce#set_PFUSER(str, ...) "{{{
 	let $PFUSER= a:str
-	call system('p4 set P4USER='.$PFUSER)
+	if a:0 > 0 && a:1 > 9
+		call system('p4 set P4USER='.$PFUSER)
+	endif
 endfunction "}}}
 "@get
 function! perforce#get_PFCLIENTNAME() "{{{
@@ -224,11 +231,11 @@ function! perforce#get_client_data_from_info() "{{{
 		endif
 	endfor 
 
-	" ê›íËÇ∑ÇÈ
-	call perforce#set_PFCLIENTNAME(clname)
-	call perforce#set_PFCLIENTPATH(clpath)
-	call perforce#set_PFPORT(port)
-	call perforce#set_PFUSER(user)
+	" ê›íËÇ∑ÇÈ ( é∏îsÇµÇΩèÍçáÅAïœÇ…Ç»ÇÈà◊ç≈èâÇÕèCê≥ÇµÇ»Ç¢ )
+	call perforce#set_PFCLIENTNAME(clname, 0)
+	call perforce#set_PFCLIENTPATH(clpath, 0)
+	call perforce#set_PFPORT(port, 0)
+	call perforce#set_PFUSER(user, 0)
 endfunction "}}}
 
 function! perforce#get_ChangeNum_from_changes(str) "{{{
