@@ -1,6 +1,6 @@
-let g:set_pf_settings = {}
+let g:pf_settings = {}
 let s:pf_settings_orders = []
-let s:set_pf_settings_default = {}
+let s:pf_settings_default = {}
 
 "@ sub
 function! s:data_load(file) "{{{
@@ -153,7 +153,7 @@ function! perforce#data#get_kind(type, kind) "{{{
 	return kind
 endfunction "}}}
 function! perforce#data#get_bits(type, kind) "{{{
-	let tmp_data_d = perforce#data#get_orig(a:name, a:kind)
+	let tmp_data_d = perforce#data#get_orig(a:type, a:kind)
 
 	" bit の変換
 	let tmp_num = tmp_data_d[0]
@@ -222,13 +222,13 @@ function! perforce#data#delete(type, kind, nums) "{{{
 	call sort(nums)
 
 	" 番号の取得
-	let datas = perforce#data#get_orig(name, kind)
+	let datas = perforce#data#get_orig(type, kind)
 	
 	" 更新
-	let kind = perforce#data#get#kind(name, kind)
+	let kind = perforce#data#get_kind(type, kind)
 
 	" 選択番号の取得
-	let bits = perforce#data#get_bits(name, kind)
+	let bits = perforce#data#get_bits(type, kind)
 
 	" 削除
 	let cnt = 0
@@ -236,16 +236,20 @@ function! perforce#data#delete(type, kind, nums) "{{{
 	for num in nums
 		" 番号の更新
 		let tmp_num = num - cnt
-		unlet datas[tmp_num]
-		unlet bits[tmp_num]
+		if exists('datas[tmp_num]')
+			unlet datas[tmp_num]
+		endif
+		if exists('bits[tmp_num]')
+			unlet bits[tmp_num]
+		endif
 		let cnt    = cnt + 1
 		let bitnum = bitnum * 2
 	endfor
 
 	" 選択番号の再設定
-	call perforce#data#set_bits(name, kind, bits)
+	call perforce#data#set_bits(type, kind, bits)
 
 	" 設定
-	call perforce#data#set(name, kind, datas)
+	call perforce#data#set(type, kind, datas)
 
 endfunction "}}}
