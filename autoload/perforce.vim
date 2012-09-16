@@ -49,7 +49,7 @@ function! perforce#get_PFUSER() "{{{
 	return $PFUSER 
 endfunction "}}}
 "@global
-function! perforce#Get_dd(str) "{{{
+function! perforce#get_dd(str) "{{{
 	return len(a:str) ? '//...'.perforce#common#Get_kk(a:str).'...' : ''
 endfunction "}}}
 function! perforce#pf_diff_tool(file,file2) "{{{
@@ -64,7 +64,7 @@ function! perforce#pf_diff_tool(file,file2) "{{{
 		" キーマップの登録
 		call common#map_diff()
 	else
-		let cmd = perforce#data#get('diff_tool','common')
+		let cmd = perforce#data#get('diff_tool','common')[0]
 
 		if cmd =~ 'kdiff3'
 			call system(cmd.' '.perforce#common#Get_kk(a:file).' '.perforce#common#Get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))
@@ -82,10 +82,10 @@ function! perforce#unite_args(source) "{{{
 	"********************************************************************
 
 	if 0
-		exe 'Unite '.a:source.':'.perforce#Get_dd(expand("%:t"))
+		exe 'Unite '.a:source.':'.perforce#get_dd(expand("%:t"))
 	else
 		" スペース対策
-		" [ ] p4_diffなどに修正が必要
+		" [ ] p4_diff などに修正が必要
 		let tmp = a:source.':'.common#get_pathSrash(expand("%"))
 		let tmp = substitute(tmp, ' ','\\ ', 'g')
 		let tmp = 'Unite '.tmp
@@ -111,7 +111,7 @@ function! perforce#pfFind(...) "{{{
 		let str = a:1
 	endif 
 	if str !=# ""
-		call unite#start([insert(map(split(str),"perforce#Get_dd(v:val)"),'p4_have')])
+		call unite#start([insert(map(split(str),"perforce#get_dd(v:val)"),'p4_have')])
 	endif
 endfunction "}}}
 function! perforce#pfDiff(path) "{{{
@@ -465,7 +465,13 @@ function! perforce#get_depot_from_opened(str) "{{{
 	return substitute(a:str,'#.*','','')   " # リビジョン番号の削除
 endfunction "}}}
 function! perforce#get_depot_from_path(str) "{{{
-	perforce#get_depot_from_have(split(system('p4 where '.a:str), "\n"))
+	let out = split(system('p4 where "'.a:str.'"'), "\n")[0]
+	let depot =  perforce#get_depot_from_have(out)
+	echo out
+	echo a:str
+	echo depot
+	call input("")
+	return depot 
 	return substitute(a:str,'#.*','','')   " # リビジョン番号の削除
 endfunction "}}}
 "@get_path(s)
@@ -487,7 +493,7 @@ function! perforce#get_paths_from_haves(strs) "{{{
 endfunction "}}}
 function! perforce#get_paths_from_fname(str) "{{{
 	" ファイルを検索
-	let outs = perforce#pfcmds('have','',perforce#Get_dd(a:str)) " # ファイル名の取得
+	let outs = perforce#pfcmds('have','',perforce#get_dd(a:str)) " # ファイル名の取得
 	return perforce#get_paths_from_haves(outs)                   " # ヒットした場合
 endfunction "}}}
 "@p4_change
