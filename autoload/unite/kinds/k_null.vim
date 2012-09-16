@@ -3,10 +3,11 @@ function! unite#kinds#k_null#define()
 endfunction
 
 " p4_settings.vim ‚ÅŽg—p‚·‚é
-let s:kind = { 'name' : 'k_null',
+let s:kind = { 
+			\ 'name'           : 'k_null',
 			\ 'default_action' : 'a_null',
-			\ 'action_table' : {},
-			\ 'is_quit' : 0,
+			\ 'action_table'   : {},
+			\ 'is_quit'        : 0,
 			\ }
 
 let s:kind.action_table.a_null = {
