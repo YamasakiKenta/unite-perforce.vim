@@ -17,7 +17,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let candidates = []
 
 	for arg in a:args 
-		let lines = perforce#pfcmds('filelog','',perforce#common#Get_kk(arg))
+		let lines = perforce#pfcmds('filelog','',perforce#common#get_kk(arg))
 		let candidates += map(lines, "{ 
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog', 

@@ -1,7 +1,7 @@
 function! perforce#common#Get_cmds(cmd) "{{{
 	return split(system(a:cmd),'\n')
 endfunction "}}}
-function! perforce#common#Get_kk(str) "{{{
+function! perforce#common#get_kk(str) "{{{
 	return len(a:str) ? '"'.a:str.'"' : ''
 endfunction "}}}
 function! perforce#common#LogFile(name, deleteFlg, ...) "{{{

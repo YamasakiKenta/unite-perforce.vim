@@ -32,7 +32,7 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 			\ function! action.func(candidates) \n
 				\ let outs = [] \n
 				\ for l:candidate in a:candidates \n
-					\ let outs += perforce#pfcmds('". a:cmd ."','',perforce#common#Get_kk(l:candidate.action__". get(kind,a:kind,"path") .")) \n
+					\ let outs += perforce#pfcmds('". a:cmd ."','',perforce#common#get_kk(l:candidate.action__". get(kind,a:kind,"path") .")) \n
 				\ endfor \n
 				\ call perforce#LogFile(outs) \n
 			\ endfunction 

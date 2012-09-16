@@ -1,5 +1,5 @@
 function! s:pf_edit() "{{{
-	let file = perforce#common#Get_kk(expand("%"))
+	let file = perforce#common#get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
 		let datas = perforce#pfcmds('edit','',file)
 	else
@@ -8,7 +8,7 @@ function! s:pf_edit() "{{{
 	call perforce#LogFile(datas)
 endfunction "}}}
 function! s:pf_revert() "{{{
-	let file = perforce#common#Get_kk(expand("%"))
+	let file = perforce#common#get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
 		let datas = perforce#pfcmds('revert','',' -a '.file)
 	else

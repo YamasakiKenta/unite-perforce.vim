@@ -33,7 +33,7 @@ function! s:kind.action_table.a_p4_print.func(candidates) "{{{
 		endif
 
 		" ファイルを出力する
-		let strs = perforce#pfcmds('print','','-q '.perforce#common#Get_kk(name.''.numstr))
+		let strs = perforce#pfcmds('print','','-q '.perforce#common#get_kk(name.''.numstr))
 		let file = fnamemodify(name,':t').file_numstr
 
 		call perforce#common#LogFile(file, 0, strs) 
@@ -65,7 +65,7 @@ function! s:kind.action_table.preview.func(candidate) "{{{
 	endif
 
 	" ファイルを出力する
-	let strs = perforce#pfcmds('print','','-q '.perforce#common#Get_kk(name.''.numstr))
+	let strs = perforce#pfcmds('print','','-q '.perforce#common#get_kk(name.''.numstr))
 	let file = fnamemodify(name,':t').file_numstr
 
 	call perforce#common#LogFile(file, 0, strs) 

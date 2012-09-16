@@ -22,7 +22,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let outs = []
 	for file in files
 		if perforce#is_p4_have(file)
-			let outs += perforce#pfcmds('diff','',perforce#common#Get_kk(file))
+			let outs += perforce#pfcmds('diff','',perforce#common#get_kk(file))
 		else
 			let rtns += [{
 						\ 'word' : file,

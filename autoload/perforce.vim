@@ -50,7 +50,7 @@ function! perforce#get_PFUSER() "{{{
 endfunction "}}}
 "@global
 function! perforce#get_dd(str) "{{{
-	return len(a:str) ? '//...'.perforce#common#Get_kk(a:str).'...' : ''
+	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''
 endfunction "}}}
 function! perforce#pf_diff_tool(file,file2) "{{{
 	if perforce#data#get('is_vimdiff_flg', 'common')
@@ -67,10 +67,10 @@ function! perforce#pf_diff_tool(file,file2) "{{{
 		let cmd = perforce#data#get('diff_tool','common')[0]
 
 		if cmd =~ 'kdiff3'
-			call system(cmd.' '.perforce#common#Get_kk(a:file).' '.perforce#common#Get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))
+			call system(cmd.' '.perforce#common#get_kk(a:file).' '.perforce#common#Get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))
 		else
 			" winmergeu
-			call system(cmd.' '.perforce#common#Get_kk(a:file).' '.perforce#common#Get_kk(a:file2))
+			call system(cmd.' '.perforce#common#get_kk(a:file).' '.perforce#common#Get_kk(a:file2))
 		endif
 	endif
 endfunction "}}}
@@ -124,7 +124,7 @@ function! perforce#pfDiff(path) "{{{
 	let path = a:path
 
 	" 最新 REV のファイルの取得 "{{{
-	let outs = perforce#pfcmds('print','',' -q '.perforce#common#Get_kk(path))
+	let outs = perforce#pfcmds('print','',' -q '.perforce#common#get_kk(path))
 
 	" エラーが発生したらファイルを検索して、すべてと比較 ( 再帰 )
 	if outs[0] =~ "is not under client's root "
@@ -191,7 +191,7 @@ function! perforce#pfChange(str,...) "{{{
 	call writefile(split(tmp,'\n'),$PFTMPFILE)
 
 	"チェンジリストの作成
-	return perforce#common#Get_cmds('more '.perforce#common#Get_kk($PFTMPFILE).' | p4 change -i') 
+	return perforce#common#Get_cmds('more '.perforce#common#get_kk($PFTMPFILE).' | p4 change -i') 
 
 endfunction "}}}
 function! perforce#pfNewChange() "{{{
@@ -414,7 +414,7 @@ function! perforce#is_p4_have(str) "{{{
 	" @retval       flg		TRUE 	存在する
 	" @retval       flg		FLASE 	存在しない
 	" ********************************************************************************
-	let str = system('p4 have '.perforce#common#Get_kk(a:str))
+	let str = system('p4 have '.perforce#common#get_kk(a:str))
 	let flg = perforce#is_p4_have_from_have(str)
 	return flg
 endfunction "}}}
