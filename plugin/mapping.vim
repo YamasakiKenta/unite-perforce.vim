@@ -48,7 +48,7 @@ nnoremap <PLUG>(p4_find)
 			\ :<C-u>call perforce#pfFind()<CR>|"
 
 nnoremap <PLUG>(p4_get_depot)
-			\ :<C-u>call perforce#get_depot_from_path('<CWORD>')<CR>
+			\ :let @+ = perforce#get_depot_from_path(expand("%:p"))<CR>
 
 nmap ;up<CR> <PLUG>(unite_p4_commit)
 nmap ;wd<CR> <PLUG>(p4_diff_tool)
@@ -59,7 +59,7 @@ nmap ;pl<CR> <PLUG>(p4_filelog)
 nmap ;pd<CR> <PLUG>(p4_diff)
 nmap ;pe<CR> <PLUG>(p4_edit)
 nmap ;pr<CR> <PLUG>(p4_revert)
-nmap ;pg<CR> <PLUG>(p4_get_depot)
+nmap ;id<CR> <PLUG>(p4_get_depot)
 
 nnoremap ;pi<CR> :<C-u>Unite p4_info<CR>|"
 nnoremap ;pp<CR> :<C-u>Unite p4_settings<CR>|"

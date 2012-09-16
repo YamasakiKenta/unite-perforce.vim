@@ -369,7 +369,7 @@ k_p4_select					*unite-perforce-action-k_p4_select*
 
 k_p4_users					*unite-perforce-action-k_p4_users*
 	a_p4_user_change
-		ユーザーの切り替え1
+		ユーザーの切り替え 1
 ==============================================================================
 更新履歴					*unite-perforce-changelog*
 
