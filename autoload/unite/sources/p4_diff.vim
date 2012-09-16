@@ -42,9 +42,9 @@ function! s:source.gather_candidates(args, context) "{{{
 		let nowline = line(".")
 		let cnt = 0
 		for rtn in rtns
-			letline = rtn.action__line
+			let line = rtn.action__line
 			if line >= nowline
-				exe 'rtns = rtns['.cnt.':-1]  + rtns[0:'.cnt.']'
+				exe 'let rtns = rtns['.cnt.':-1]  + rtns[0:'.cnt.']'
 				break
 			endif
 			let cnt += 1

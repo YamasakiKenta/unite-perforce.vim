@@ -201,7 +201,7 @@ function! perforce#data#set_bits(type, kind, val) "{{{
 	" 使用する箇所のフラグを立てたものを代入する
 	" ********************************************************************************
 	exe 'let sum = '.join(a:val, '+')
-	perforce#data#set_bits_orig(a:type, a:kind, sum)
+	call perforce#data#set_bits_orig(a:type, a:kind, sum)
 endfunction "}}}
 function! perforce#data#set_bits_orig(type, kind, val) "{{{
 "********************************************************************************
