@@ -2,6 +2,16 @@ let $PFTMP = expand( exists('$PFTMP') ? $PFTMP : '~' )
 let $PFTMPFILE  = $PFTMP.'\perforce\tmpfile'
 let $PFHAVE = $PFTMP.'\perforce\have'
 let $PFDATA = $PFTMP.'\perforce\data'
+
+" ================================================================================
+"@ sub
+function! s:get_split_from_where(str,...) "{{{
+	let lines = split(a:str, '[^\\]\zs ')
+	if a:0 > 0
+		return lines[a:1]
+	else
+		return lines 
+endfunction "}}}
 " ================================================================================
 "@ 取得
 " ================================================================================
@@ -452,12 +462,13 @@ endfunction "}}}
 "================================================================================
 "@get_file
 function! perforce#get_file_from_where(str) "{{{
-	let file = a:str
-	let file = substitute(file,'.*[\/]','','')
-	let file = substitute(file,'\n','','g')
-	return file
+	" 現在未使用
+	return s:get_split_from_where(a:str, 2)
 endfunction "}}}
 "@get_depot(s)
+function! perforce#get_depot_from_where(str) "{{{
+	return s:get_split_from_where(a:str, 1)
+endfunction "}}}
 function! perforce#get_depot_from_have(str) "{{{
 	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')
 endfunction "}}}
@@ -466,13 +477,9 @@ function! perforce#get_depot_from_opened(str) "{{{
 endfunction "}}}
 function! perforce#get_depot_from_path(str) "{{{
 	let out = split(system('p4 where "'.a:str.'"'), "\n")[0]
-	let depot =  perforce#get_depot_from_have(out)
-	echo out
-	echo a:str
+	let depot =  perforce#get_depot_from_where(out)
 	echo depot
-	call input("")
 	return depot 
-	return substitute(a:str,'#.*','','')   " # リビジョン番号の削除
 endfunction "}}}
 "@get_path(s)
 function! perforce#get_path_from_where(str) "{{{
