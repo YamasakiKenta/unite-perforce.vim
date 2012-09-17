@@ -171,8 +171,8 @@ function! s:clientMove(...) "{{{
 		let file1 = merge.file1
 		let file2 = merge.file2
 		call system('p4 edit '.perforce#common#get_kk(file2))
-		call system(cmd.' '.perforce#common#get_kk(file1).' '.perforce#common#Get_kk(file2))
-		echo cmd.' '.perforce#common#get_kk(file1).' '.perforce#common#Get_kk(file2)
+		call system(cmd.' '.perforce#common#get_kk(file1).' '.perforce#common#get_kk(file2))
+		echo cmd.' '.perforce#common#get_kk(file1).' '.perforce#common#get_kk(file2)
 	endfor
 	"
 endfunction "}}}

@@ -67,10 +67,10 @@ function! perforce#pf_diff_tool(file,file2) "{{{
 		let cmd = perforce#data#get('diff_tool','common')[0]
 
 		if cmd =~ 'kdiff3'
-			call system(cmd.' '.perforce#common#get_kk(a:file).' '.perforce#common#Get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))
+			call system(cmd.' '.perforce#common#get_kk(a:file).' '.perforce#common#get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))
 		else
 			" winmergeu
-			call system(cmd.' '.perforce#common#get_kk(a:file).' '.perforce#common#Get_kk(a:file2))
+			call system(cmd.' '.perforce#common#get_kk(a:file).' '.perforce#common#get_kk(a:file2))
 		endif
 	endif
 endfunction "}}}
