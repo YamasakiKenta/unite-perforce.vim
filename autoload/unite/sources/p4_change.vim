@@ -28,7 +28,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" 表示するクライアント名の取得
 	let outs = perforce#data#get('client_changes_only', 'common') ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
-				\ perforce#pfcmds('clients',''))
+				\ perforce#pfcmds('clients','')
 
 	" defaultの表示
 	let rtn = []
