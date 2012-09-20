@@ -491,7 +491,7 @@ function! perforce#get_path_from_have(str) "{{{
 	return rtn
 endfunction "}}}
 function! perforce#get_path_from_depot(str) "{{{
-	let out = system('p4 where '.a:str)
+	let out = system('p4 where "'.a:str.'"')
 	let path = perforce#get_path_from_where(out)
 	return path
 endfunction "}}}

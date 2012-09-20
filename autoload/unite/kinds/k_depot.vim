@@ -78,8 +78,7 @@ let s:kind.action_table.a_open = {
 			\ 'description' : 'ŠJ‚­',
 			\ }
 function! s:kind.action_table.a_open.func(candidate) "{{{
-	let path = s:find_filepath_from_depot(a:candidate) 
-	exe 'edit' path
+	exe 'edit '.s:find_filepath_from_depot(a:candidate)
 endfunction "}}}
 
 let s:kind.action_table.preview = {
