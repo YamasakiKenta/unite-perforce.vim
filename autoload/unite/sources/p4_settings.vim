@@ -157,7 +157,8 @@ function! s:get_word_from_pf_setting(type, kind) "{{{
 	if s:is_group(val)
 		let rtn = '"'.perforce#data#get(a:type, 'description').'"'
 	else
-		let rtn = printf(' %-50s (%-30s,%-10s) - %s', perforce#data#get(a:type, 'description'), a:type, kind, str)
+		let star = kind == 'common' ? '*' : ' '
+		let rtn = printf(' %-30s %50s - %s', perforce#data#get(a:type, 'description'), star."".a:type.''.star, str)
 	endif
 
 	return rtn

@@ -11,9 +11,9 @@ Author : YamasakiKenta
 Install			|unite-perforce-install|
 Interface		|unite-perforce-interface|
   Commands		|unite-perforce-commands|
-  変数			|unite-perforce-variables|
   関数			|unite-perforce-function|
   KeyMapping	  	|unite-perforce-key-mappings|
+  Variables		|unite-perforce-variables|
 Sources			|unite-perforce-sources|
 Kinds			|unite-perforce-kinds|
 Actions			|unite-perforce-actions|
@@ -35,11 +35,21 @@ Install						*unite-perforce-install*
 
 ==============================================================================
 Interface					*unite-perforce-interface*
+
 ------------------------------------------------------------------------------
 Commands					*unite-perforce-commands*
 
+:PfMerge {path}		*:PfMerge*
+	perforce のクライアントパスと、指定したパスと比較します。
+
 ------------------------------------------------------------------------------
 変数						*unite-perforce-variables*
+
+g:perforce_merge_tool *g:perforce_merge_tool*
+	|:PfMerge|で使用するツール
+
+g:perforce_merge_default_path *g:perforce_merge_default_path*
+	|:PfMerge|のデフォルトルート
 
 g:pf_setting.bool.user_changes_only.value	*g:pf_setting.bool.user_changes_only.value*
 		user name で changelist を filter する
@@ -149,9 +159,6 @@ KEY MAPPING 					*unite-perforce-mappings*
 ;ph<CR> 	Unite p4_have
 ;pa<CR> 	Unite p4_annotate
 ;pC<CR> 	Unite p4_changes_pending_reopen
-
-
-
 
 ==============================================================================
 SOURCES						*unite-perforce-sources*
@@ -370,7 +377,9 @@ k_p4_select					*unite-perforce-action-k_p4_select*
 k_p4_users					*unite-perforce-action-k_p4_users*
 	a_p4_user_change
 		ユーザーの切り替え 1
+
 ==============================================================================
+
 更新履歴					*unite-perforce-changelog*
 
 2012/01/30
