@@ -12,11 +12,11 @@ endfunction
 " source - p4_settings
 " ********************************************************************************
 let s:source = {
-			\ 'name' : 'p4_settings',
+			\ 'name'        : 'p4_settings',
 			\ 'description' : 'unite-perforce.vim ÇÃê›íË',
-			\ 'is_quit' : 0,
-			\ 'syntax' : 'uniteSource__p4_settings',
-			\ 'hooks' : {},
+			\ 'is_quit'     : 0,
+			\ 'syntax'      : 'uniteSource__p4_settings',
+			\ 'hooks'       : {},
 			\ }
 function! s:source.hooks.on_syntax(args, context) "{{{
 	syntax match uniteSource__p4_settings_choose /<.\{-}>/ containedin=uniteSource__p4_settings contained
@@ -51,9 +51,9 @@ unlet s:source
 " source - p4_select
 " ********************************************************************************
 let s:source = {
-			\ 'name' : 'p4_select',
+			\ 'name'        : 'p4_select',
 			\ 'description' : 'ï°êîëIë',
-			\ 'hooks' : {},
+			\ 'hooks'       : {},
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
 
