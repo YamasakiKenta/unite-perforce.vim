@@ -16,7 +16,6 @@ function! s:source.gather_candidates(args, context) "{{{
 		let files = ['']
 		let all_flg = 1
 	endif
-	"let files = perforce#get_trans_enspace(files) " ‹ó”’•¶š‚Ìíœ
 
 	let rtns = []
 	let outs = []

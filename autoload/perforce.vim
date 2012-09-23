@@ -439,16 +439,6 @@ function! perforce#is_p4_have_from_have(str) "{{{
 	return flg
 
 endfunction "}}}
-function! perforce#get_trans_enspace(strs) "{{{
-	" スペース対応
-	" ********************************************************************************
-	" スペース対応
-	" @param[in]	strs		'\ 'が入った文字列
-	" @retval       strs		'\ 'を削除した文字列
-	" ********************************************************************************
-	let strs = a:strs
-	return strs
-endfunction "}}}
 function! perforce#init() "{{{
 
 	" クライアントデータの読み込み
