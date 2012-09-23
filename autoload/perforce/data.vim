@@ -122,9 +122,9 @@ function! perforce#data#get(type, ...) "{{{
 	" ********************************************************************************
 	
 	if a:0 > 0 
-		let kind = 'common'
-	else
 		let kind = a:1
+	else
+		let kind = 'common'
 	endif
 
 	" İ’è‚ª‚È‚¢ê‡‚ÍA‹¤’Ê‚ğŒÄ‚Ño‚·
