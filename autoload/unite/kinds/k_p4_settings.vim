@@ -176,8 +176,8 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.delete = {
-			\ 'description' : 'delete',
 			\ 'is_selectable' : 1,
+			\ 'description' : 'delete',
 			\ }
 function! s:kind.action_table.delete.func(candidates) "{{{
 
@@ -199,6 +199,20 @@ function! s:kind.action_table.delete.func(candidates) "{{{
 
 endfunction "}}}
 
+let s:kind.action_table.add = {
+	\ 'is_selectable' : 1,
+	\ 'description' : '',
+	\ }
+function! s:kind.action_table.add.func(candidates) "{{{
+	for candidate in a:candidates
+		" ********************************************************************************
+		" 新規テーブルを追加する
+		" @param[in]	
+		" @retval       
+		" ********************************************************************************
+	endfor
+endfunction "}}}
+
+
 let s:k_p4_select = s:kind
 unlet s:kind
-
