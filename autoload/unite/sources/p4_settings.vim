@@ -1,3 +1,9 @@
+let s:perforce_setting_unite_kind = {
+			\ 'title' : 'k_null',
+			\ 'bool' : 'k_p4_settings_bool',
+			\ 'strs' : 'k_p4_settings_strs',
+			\ }
+
 function! unite#sources#p4_settings#define()
 	return [s:source_p4_select, s:source_p4_settings]
 endfunction
@@ -32,7 +38,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let orders = copy(perforce#data#get_orders())
 	return map( orders, "{
 				\ 'word' : s:get_word_from_pf_setting(v:val, kind),
-				\ 'kind' : s:get_kind_from_pf_setting(perforce#data#get(v:val,kind)),
+				\ 'kind' : s:get_kind_from_pf_setting(v:val),
 				\ 'action__valname' : v:val,
 				\ 'action__kind' : kind,
 				\ }")
@@ -137,64 +143,48 @@ function! s:get_word_from_strs(strs) "{{{
 endfunction "}}}
 
 function! s:get_word_from_pf_setting(type, kind) "{{{
-" ********************************************************************************
-" word 出力
-" @param[in]	typeval			引数名
-" @param[in]	kind		設定しているsource
-" @retval		word		unite word
-" ********************************************************************************
+	" ********************************************************************************
+	" word 出力
+	" @param[in]	typeval			引数名
+	" @param[in]	kind		設定しているsource
+	" @retval		word		unite word
+	" ********************************************************************************
 
 	" 未定義なら共通設定を代入する
-	let val  = perforce#data#get_orig(a:type, a:kind)
-	let kind = perforce#data#get_kind(a:type, a:kind)
+	let val         = perforce#data#get_orig(a:type, a:kind)
+	let kind        = perforce#data#get_kind(a:type, a:kind)
+	let description = perforce#data#get(a:type, 'description')
+	let type        = perforce#data#get(a:type, 'type')
 
-	if type(val) == 0
+	let end_flg = 0
+	if type == 'bool'
 		let str = s:get_word_from_bool(val)
-	else
+	elseif type == 'strs'
 		let str = s:get_word_from_strs(val)
-	endif
-
-	if s:is_group(val)
+	elseif type == 'title'
+		let end_flg = 1
 		let rtn = '"'.perforce#data#get(a:type, 'description').'"'
-	else
-		let star = kind == 'common' ? '*' : ' '
-		let rtn = printf(' %-30s %50s - %s', perforce#data#get(a:type, 'description'), star."".a:type.''.star, str)
+	endif
+
+	if end_flg == 0
+		let star = (kind=='common') ? '*' : ' '
+		let rtn = printf(' %-30s %50s - %s', description, star."".a:type.''.star, str)
 	endif
 
 	return rtn
 endfunction "}}}
 
-" ********************************************************************************
-" kindを調べる
-" @param[in]	val			引数名
-" retval		kind		unite kind
-" ********************************************************************************
 function! s:get_kind_from_pf_setting(val) "{{{
-	let type = type(a:val)
+	" ********************************************************************************
+	" kindを調べる
+	" @param[in]	val			引数名
+	" retval		kind		unite kind
+	" ********************************************************************************
+	"
+	let type = perforce#data#get(a:val, 'type')
+	"echo type
+	"call input("")
+	return s:perforce_setting_unite_kind[type]
 
-	if type == type(1)
-		if s:is_group(a:val)
-			let kind = 'k_null'
-		else
-			let kind = 'k_p4_settings_bool'
-		endif
-	else
-		let kind = 'k_p4_settings_strs'
-	endif
-	return kind
-endfunction "}}}
-
-" ********************************************************************************
-" タイトルか調べる
-" @retval	rtn		TRUE	タイトル
-" @retval	rtn		FALSE	タイトルではない
-" ********************************************************************************
-function! s:is_group(val) "{{{
-	if type(a:val) == 0 && a:val < 0 
-		let rtn = 1
-	else 
-		let rtn = 0
-	endif
-	return rtn
 endfunction "}}}
 
