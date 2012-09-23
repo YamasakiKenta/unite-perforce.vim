@@ -1,44 +1,41 @@
 function! unite#kinds#k_p4_settings#define()
-	return [s:k_p4_settings_bool, s:k_p4_settings_strs, s:k_p4_select]
+	return [
+				\ s:k_p4_settings_bool,
+				\ s:k_p4_settings_strs,
+				\ s:k_p4_select,
+				\ ]
 endfunction
-
-" 終了関数
 function! s:common_out() "{{{
 	call perforce#data#save($PFDATA)
 	call unite#force_redraw()
 endfunction "}}}
-
-" ********************************************************************************
-" kind - k_p4_settings_bool
-" ********************************************************************************
+"@ main
+" kind - k_p4_settings_bool " {{{
 let s:kind = { 
-			\ 'name' : 'k_p4_settings_bool',
+			\ 'name'           : 'k_p4_settings_bool',
 			\ 'default_action' : 'a_toggle',
-			\ 'action_table' : {},
-			\ 'parents' : ['k_p4'],
+			\ 'action_table'   : {},
+			\ 'parents'        : ['k_p4'],
 			\ }
-
+"@ action
 let s:kind.action_table.a_toggle = {
-			\ 'description' : '設定の切替',
 			\ 'is_selectable' : 1,
-			\ 'is_quit' : 0,
+			\ 'description'   : '設定の切替',
+			\ 'is_quit'       : 0,
 			\ }
 function! s:kind.action_table.a_toggle.func(candidates) "{{{
-
 	for candidate in a:candidates	
 		let name = candidate.action__valname
 		let kind = candidate.action__kind
 		call perforce#data#set(name, kind, 1-perforce#data#get(name, kind))
 	endfor
-
 	" 表示の更新
 	call s:common_out()
 endfunction "}}}
-
 let s:kind.action_table.a_set_enable = {
-			\ 'description' : '有効にする',
 			\ 'is_selectable' : 1,
-			\ 'is_quit' : 0,
+			\ 'description'   : '有効にする',
+			\ 'is_quit'       : 0,
 			\ }
 function! s:kind.action_table.a_set_enable.func(candidates) "{{{
 	for candidate in a:candidates	
@@ -48,11 +45,10 @@ function! s:kind.action_table.a_set_enable.func(candidates) "{{{
 	endfor
 	call s:common_out()
 endfunction "}}}
-
 let s:kind.action_table.a_set_disable = {
-			\ 'description' : '無効にする',
 			\ 'is_selectable' : 1,
-			\ 'is_quit' : 0,
+			\ 'description'   : '無効にする',
+			\ 'is_quit'       : 0,
 			\ }
 function! s:kind.action_table.a_set_disable.func(candidates) "{{{
 	for candidate in a:candidates	
@@ -62,24 +58,21 @@ function! s:kind.action_table.a_set_disable.func(candidates) "{{{
 	endfor
 	call s:common_out()
 endfunction "}}}
-
 let s:k_p4_settings_bool = s:kind
 unlet s:kind
-
-" ********************************************************************************
-" kind - k_p4_settings_strs
-" ********************************************************************************
+"}}}
+" kind - k_p4_settings_strs "{{{
 let s:kind = { 
-			\ 'name' : 'k_p4_settings_strs',
+			\ 'name'           : 'k_p4_settings_strs',
 			\ 'default_action' : 'a_toggles',
-			\ 'action_table' : {},
-			\ 'parents' : ['k_p4'],
+			\ 'action_table'   : {},
+			\ 'parents'        : ['k_p4'],
 			\ }
-
+" action
 let s:kind.action_table.a_toggle = {
-			\ 'description' : '設定の切替',
 			\ 'is_selectable' : 1,
-			\ 'is_quit' : 0,
+			\ 'description'   : '設定の切替',
+			\ 'is_quit'       : 0,
 			\ }
 function! s:kind.action_table.a_toggle.func(candidates) "{{{
 
@@ -105,10 +98,9 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 
 
 endfunction "}}}
-
 let s:kind.action_table.a_toggles = {
 			\ 'description' : '複数選択',
-			\ 'is_quit' : 0,
+			\ 'is_quit'     : 0,
 			\ }
 function! s:kind.action_table.a_toggles.func(candidate) "{{{
 
@@ -120,10 +112,9 @@ function! s:kind.action_table.a_toggles.func(candidate) "{{{
 
 	" call s:common_out()
 endfunction "}}}
-
 let s:kind.action_table.a_set_strs = {
-			\ 'description' : '名前の登録 ( リスト ) ',
-			\ 'is_quit' : 0,
+			\ 'description' : '設定編集',
+			\ 'is_quit'     : 0,
 			\ }
 function! s:kind.action_table.a_set_strs.func(candidate) "{{{
 	let name = a:candidate.action__valname
@@ -140,23 +131,20 @@ function! s:kind.action_table.a_set_strs.func(candidate) "{{{
 	call unite#force_quit_session()
 
 endfunction "}}}
-
 let s:k_p4_settings_strs = s:kind
 unlet s:kind
-
-" ********************************************************************************
-" kind - k_p4_select
-" ********************************************************************************
+"}}}
+" kind - k_p4_select "{{{
 let s:kind = { 
-			\ 'name' : 'k_p4_select',
+			\ 'name'           : 'k_p4_select',
 			\ 'default_action' : 'a_toggle',
-			\ 'action_table' : {},
-			\ 'parents' : ['k_p4'],
+			\ 'action_table'   : {},
+			\ 'parents'        : ['k_p4'],
 			\ }
-
+" action
 let s:kind.action_table.a_toggle = {
-			\ 'description' : '設定の切替',
 			\ 'is_selectable' : 1,
+			\ 'description' : '設定の切替',
 			\ }
 function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	let val = 0
@@ -174,10 +162,9 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	call s:common_out()
 
 endfunction "}}}
-
 let s:kind.action_table.delete = {
 			\ 'is_selectable' : 1,
-			\ 'description' : 'delete',
+			\ 'description'   : 'delete',
 			\ }
 function! s:kind.action_table.delete.func(candidates) "{{{
 
@@ -198,10 +185,9 @@ function! s:kind.action_table.delete.func(candidates) "{{{
 	call s:common_out()
 
 endfunction "}}}
-
 let s:kind.action_table.add = {
 			\ 'is_selectable' : 1,
-			\ 'description' : '',
+			\ 'description'   : 'add',
 			\ }
 function! s:kind.action_table.add.func(candidates) "{{{
 	for candidate in a:candidates
@@ -212,7 +198,6 @@ function! s:kind.action_table.add.func(candidates) "{{{
 		" ********************************************************************************
 	endfor
 endfunction "}}}
-
-
 let s:k_p4_select = s:kind
 unlet s:kind
+"}}}
