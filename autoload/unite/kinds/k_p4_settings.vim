@@ -168,7 +168,7 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	let kind = a:candidates[0].action__kind
 
 	call perforce#data#set_bits_orig(name, kind, val)
-	
+
 	call unite#force_quit_session()
 
 	call s:common_out()
@@ -200,9 +200,9 @@ function! s:kind.action_table.delete.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.add = {
-	\ 'is_selectable' : 1,
-	\ 'description' : '',
-	\ }
+			\ 'is_selectable' : 1,
+			\ 'description' : '',
+			\ }
 function! s:kind.action_table.add.func(candidates) "{{{
 	for candidate in a:candidates
 		" ********************************************************************************

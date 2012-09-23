@@ -157,6 +157,7 @@ function! s:get_word_from_pf_setting(type, kind) "{{{
 	let type        = perforce#data#get(a:type, 'type')
 
 	let end_flg = 0
+	let str = 'ERROR'
 	if type == 'bool'
 		let str = s:get_word_from_bool(val)
 	elseif type == 'strs'
@@ -182,8 +183,6 @@ function! s:get_kind_from_pf_setting(val) "{{{
 	" ********************************************************************************
 	"
 	let type = perforce#data#get(a:val, 'type')
-	"echo type
-	"call input("")
 	return s:perforce_setting_unite_kind[type]
 
 endfunction "}}}
