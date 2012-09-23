@@ -127,9 +127,6 @@ function! perforce#data#get(type, ...) "{{{
 		let kind = a:1
 	endif
 
-	let kind = a:1
-"	echo kind
-
 	" İ’è‚ª‚È‚¢ê‡‚ÍA‹¤’Ê‚ğŒÄ‚Ño‚·
 	let kind = perforce#data#get_kind(a:type, kind)
 
