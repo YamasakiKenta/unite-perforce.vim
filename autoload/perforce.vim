@@ -2,6 +2,7 @@ let $PFTMP = expand( exists('$PFTMP') ? $PFTMP : '~' )
 let $PFTMPFILE  = $PFTMP.'\perforce\tmpfile'
 let $PFHAVE = $PFTMP.'\perforce\have'
 let $PFDATA = $PFTMP.'\perforce\data'
+if !isdirectory($PFTMP.'\perforce') | call mkdir($PFMP.'\perforce') | endif
 
 " ================================================================================
 "@ sub
