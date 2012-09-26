@@ -1,11 +1,57 @@
+"@ subrutine
+function! s:get_datas(str) "{{{
 
+	if !has_key(g:cache, a:str)
+		let g:cache[a:str] = {
+			\ 'lines' : readfile(a:str),
+			\ 'candidates' :[],
+			\ } 
+		let g:cache[a:str].line_max = len(g:cache[a:str].lines)
+	endif
+
+	return g:cache[a:str]
+endfunction "}}}
+function! s:get_datas_from_p4_have(str, reset_flg) "{{{
+
+	" 空白の場合は、スペースを使用する
+	let str = a:str
+	if str == ''
+		let str = ' '
+	endif 
+
+	let port   = perforce#get_PFPORT()
+	let client = perforce#get_PFCLIENTNAME()
+	let key    = port.'_'.client.'_'.str
+
+	if !has_key(g:cache, key) && a:reset_flg == 0
+		echo 'loading...'
+		let datas = split(system('p4 have '.str),'\n')
+		let g:cache[key] = {
+					\ 'lines' : [],
+					\ 'candidates' : s:get_candidates_from_pfhave(datas),
+					\ }
+		echo 'finish !!'
+	else
+		echo 'cache load!'
+	endif
+
+	return g:cache[key]
+endfunction "}}}
+function! s:get_candidates_from_pfhave(datas) "{{{
+	let candidates = map( a:datas, "{
+				\ 'word' : perforce#get_depot_from_have(v:val),
+				\ 'kind' : 'k_depot',
+				\ 'action__depot' : perforce#get_depot_from_have(v:val),
+				\ }")
+	return candidates
+endfunction "}}}
+
+"@ Main
 function! unite#sources#p4_have#define()
-	return [s:souce_p4have, s:source_p4_have_async]
+	return [s:souce_p4have, s:source_p4_have_async, s:souce_p4have_reset]
 endfunction
 
 let g:cache = {}
-
-"p4 have 
 let s:source = {
 			\ 'name' : 'p4_have',
 			\ 'description' : '所有するファイル',
@@ -14,9 +60,22 @@ let s:source = {
 "@param[in]	args		perforceから検索するファイル名
 "********************************************************************************
 function! s:source.gather_candidates(args, context) "{{{
-	return s:get_datas_from_p4_have(join(a:args)).candidates
+	return s:get_datas_from_p4_have(join(a:args), 0).candidates
 endfunction "}}}
 let s:souce_p4have = s:source
+
+let g:cache = {}
+let s:source = {
+			\ 'name' : 'p4_have_reset',
+			\ 'description' : '所有するファイル ( キャッシュを削除する ) ',
+			\ }
+"********************************************************************************
+"@param[in]	args		perforceから検索するファイル名
+"********************************************************************************
+function! s:source.gather_candidates(args, context) "{{{
+	return s:get_datas_from_p4_have(join(a:args), 1).candidates
+endfunction "}}}
+let s:souce_p4have_reset = s:source
 
 let s:source = {
 			\ 'name' : 'p4_have_async',
@@ -72,50 +131,4 @@ function! s:source.async_gather_candidates(args, context) "{{{
 	return rtns
 endfunction "}}}
 let s:source_p4_have_async = s:source
-  
 
-"================================================================================
-" subrutine
-"================================================================================
-function! s:get_datas(str) "{{{
-
-	if !has_key(g:cache, a:str)
-		let g:cache[a:str] = {
-			\ 'lines' : readfile(a:str),
-			\ 'candidates' :[],
-			\ } 
-		let g:cache[a:str].line_max = len(g:cache[a:str].lines)
-	endif
-
-	return g:cache[a:str]
-endfunction "}}}
-function! s:get_datas_from_p4_have(str) "{{{
-
-	" 空白の場合は、スペースを使用する
-	let str = a:str
-	if str == ''
-		let str = ' '
-	endif 
-
-	if !has_key(g:cache, str)
-		echo 'loading...'
-		let datas = split(system('p4 have '.str),'\n')
-		let g:cache[str] = {
-					\ 'lines' : [],
-					\ 'candidates' : s:get_candidates_from_pfhave(datas),
-					\ }
-		echo 'finish !!'
-	else
-		echo 'cache load!'
-	endif
-
-	return g:cache[str]
-endfunction "}}}
-function! s:get_candidates_from_pfhave(datas) "{{{
-	let candidates = map( a:datas, "{
-				\ 'word' : perforce#get_depot_from_have(v:val),
-				\ 'kind' : 'k_depot',
-				\ 'action__depot' : perforce#get_depot_from_have(v:val),
-				\ }")
-	return candidates
-endfunction "}}}

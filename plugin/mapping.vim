@@ -50,7 +50,6 @@ nnoremap <PLUG>(p4_find)
 nnoremap <PLUG>(p4_get_depot)
 			\ :<C-u>let @+ = perforce#get_depot_from_path(expand("%:p"))<CR>
 
-nmap ;up<CR> <PLUG>(unite_p4_commit)
 nmap ;wd<CR> <PLUG>(p4_diff_tool)
 nmap ;cl<CR> <PLUG>(p4_echo_client_data)
 nmap ;cr<CR> <PLUG>(p4_cd_clentpath)
