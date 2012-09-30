@@ -273,8 +273,6 @@ function! s:copyFileDir(file) "{{{
 	" ÉRÉsÅ[Ç∑ÇÈ
 	call system('copy "'.file1.'" "'.file2.'"')
 
-	echo 'copy "'.file1.'" "'.file2.'"'
-
 endfunction
 "}}}
 let s:kind.action_table.a_p4_depot_copy = {

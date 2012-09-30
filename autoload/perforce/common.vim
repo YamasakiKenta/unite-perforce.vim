@@ -93,8 +93,6 @@ function! perforce#common#map_diff() "{{{
 	map <buffer> <A-left>  :diffget<CR>:<C-u>diffupdate<CR>|"
 	map <buffer> <A-right> :diffget<CR>:<C-u>diffupdate<CR>|"
 	map <buffer> <tab> <C-w><C-w>|"
-
-	echo 'vimwork'
 endfunction "}}}
 function! perforce#common#event_save_file(tmpfile,strs,func,args) "{{{
 " ********************************************************************************

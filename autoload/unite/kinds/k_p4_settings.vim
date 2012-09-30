@@ -105,10 +105,10 @@ let s:kind.action_table.a_toggles = {
 function! s:kind.action_table.a_toggles.func(candidate) "{{{
 
 	" todo : unite source ‚Å•¡”‘I‘ğ‚ğ‚·‚é
-	let name = a:candidate.action__valname
+	let type = a:candidate.action__valname
 	let kind = a:candidate.action__kind
 
-	call unite#start_temporary([['p4_select', {'name' : name, 'kind' : kind}]])
+	call unite#start_temporary([['p4_select', {'type' : type, 'kind' : kind}]])
 
 	" call s:common_out()
 endfunction "}}}
@@ -152,7 +152,7 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 		let val += candidate.action__bitnum
 	endfor
 
-	let name = a:candidates[0].action__name
+	let name = a:candidates[0].action__type
 	let kind = a:candidates[0].action__kind
 
 	call perforce#data#set_bits_orig(name, kind, val)
@@ -175,7 +175,7 @@ function! s:kind.action_table.delete.func(candidates) "{{{
 	endfor
 
 	" ˆêí—Ş‚Ì‚İŒÀ’è‚Ì‚½‚ß
-	let name = a:candidates[0].action__name
+	let name = a:candidates[0].action__type
 	let kind = a:candidates[0].action__kind
 
 	" íœ‚·‚é

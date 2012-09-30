@@ -100,7 +100,6 @@ function! perforce#unite_args(source) "{{{
 		let tmp = a:source.':'.common#get_pathSrash(expand("%"))
 		let tmp = substitute(tmp, ' ','\\ ', 'g')
 		let tmp = 'Unite '.tmp
-		echo tmp
 		exe tmp
 	endif
 
@@ -471,7 +470,6 @@ endfunction "}}}
 function! perforce#get_depot_from_path(str) "{{{
 	let out = split(system('p4 where "'.a:str.'"'), "\n")[0]
 	let depot =  perforce#get_depot_from_where(out)
-	echo depot
 	return depot 
 endfunction "}}}
 "@get_path(s)

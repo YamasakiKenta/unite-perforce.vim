@@ -59,12 +59,12 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	" İ’è‚·‚é€–Ú
 	if len(a:args) > 0
-		let name = a:args[0].name
+		let type = a:args[0].type
 		let kind = a:args[0].kind
 	endif
 
 	" ˆø”‚ğæ“¾‚·‚é
-	let words = perforce#data#get_orig(name,kind)[1:]
+	let words = perforce#data#get_orig(type,kind)[1:]
 
 	let val = 1
 	let num = 1
@@ -74,7 +74,7 @@ function! s:source.gather_candidates(args, context) "{{{
 		let rtns += [{
 					\ 'word' : val.' - '.word,
 					\ 'kind' : 'k_p4_select',
-					\ 'action__name' : name,
+					\ 'action__type' : type,
 					\ 'action__kind' : kind,
 					\ 'action__bitnum' : val,
 					\ 'action__num' : num,
