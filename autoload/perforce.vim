@@ -325,7 +325,7 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 
 	" 取得するポートと、クライアント
 	if perforce#data#get('user_changes_only', 'common') == 1
-		if a:cmd !~ 'diff'
+		if a:cmd =~ 'clients'
 			call add(gcmds_from_set, '-u '.perforce#get_PFUSER())
 		endif
 	endif 
