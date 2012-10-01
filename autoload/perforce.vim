@@ -97,7 +97,7 @@ function! perforce#unite_args(source) "{{{
 	else
 		" スペース対策
 		" [ ] p4_diff などに修正が必要
-		let tmp = a:source.':'.common#get_pathSrash(expand("%"))
+		let tmp = a:source.':'.perforce#common#get_pathSrash(expand("%"))
 		let tmp = substitute(tmp, ' ','\\ ', 'g')
 		let tmp = 'Unite '.tmp
 		exe tmp
@@ -106,12 +106,12 @@ function! perforce#unite_args(source) "{{{
 endfunction "}}}
 
 function! perforce#get_ClientName_from_client(str) "{{{
-	return substitute(copy(a:str),'Client \(\S\+\).*','\1','g')
+	return matchstr(a:str,'Client \zs\S\+')
 endfunction "}}}
 function! perforce#get_ClientPathFromName(str) "{{{
 	let str = system('p4 clients | grep '.a:str) " # ref 直接データをもらう方法はないかな
-	let path = substitute(str,'.* \d\d\d\d/\d\d/\d\d root \(.\{-}\) ''.*','\1','g')
-	let path = common#get_pathSrash(path)
+	let path = matchstr(str,'.* \d\d\d\d/\d\d/\d\d root \zs\S*')
+	let path = perforce#common#get_pathSrash(path)
 	return path
 endfunction "}}}
 function! perforce#pfFind(...) "{{{
@@ -229,7 +229,7 @@ function! perforce#get_client_data_from_info() "{{{
 	for data in  datas
 		if data =~ 'Client root: '
 			let clpath = matchstr(data, 'Client root: \zs.*')
-			let clpath = common#get_pathSrash(clpath)
+			let clpath = perforce#common#get_pathSrash(clpath)
 		elseif data =~ 'Client name: '
 			let clname  = matchstr(data, 'Client name: \zs.*')
 		elseif data =~ 'User name: '
@@ -323,9 +323,7 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 
 	let gcmds += [a:head]
 
-	" 取得するポートと、クライアント
-	if perforce#data#get('user_changes_only', 'common') == 1
-		if a:cmd =~ 'clients'
+	if perforce#data#get('user_changes_only', 'common') == 1 && a:cmd =~ 'clients'
 			call add(gcmds_from_set, '-u '.perforce#get_PFUSER())
 		endif
 	endif 
@@ -335,10 +333,8 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 		call add(gcmds_from_set, '-m '.perforce#data#get('show_max', 'common')[0])
 	endif 
 
-	if a:cmd  =~ 'changes'
-		if perforce#data#get('client_changes_only', 'common') == 1
+	if perforce#data#get('client_changes_only', 'common') == 1 && a:cmd  =~ 'changes'
 			call add(gcmds_from_set, '-c '.perforce#get_PFCLIENTNAME())
-		endif 
 	endif
 
 	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmds_from_set).' '.join(a:000)

@@ -37,7 +37,7 @@ function! s:get_files_for_clientMove(dirs) "{{{
 	let datas = []
 	let paths  = []
 	for dir in a:dirs
-		let dir = common#get_pathSrash(dir)
+		let dir = perforce#common#get_pathSrash(dir)
 
 		if recursive_flg == 1
 			let paths = split(glob(dir.'/**'),'\n')
@@ -48,7 +48,7 @@ function! s:get_files_for_clientMove(dirs) "{{{
 		" ƒf[ƒ^‚Ì“o˜^
 		for path in paths 
 			call add( datas, {
-						\ 'path' : common#get_pathSrash(path),
+						\ 'path' : perforce#common#get_pathSrash(path),
 						\ 'dir'  : dir,
 						\ })
 		endfor
@@ -81,7 +81,7 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 		let file = substitute( path, dir, '', '')
 
 		" \ -> /
-		let file = common#get_pathSrash(file)
+		let file = perforce#common#get_pathSrash(file)
 
 		" perforce ‚©‚çŽæ“¾‚·‚é
 		" –¼‘O‚ª‚©‚Ô‚é‚Ì‚ð–h‚®
