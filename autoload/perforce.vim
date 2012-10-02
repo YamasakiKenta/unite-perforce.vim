@@ -321,23 +321,27 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	let gcmds  = [] " 引数からコマンドを作成する
 	let gcmds_from_set = [] " 設定からコマンドを作成する
 
-	let gcmds += [a:head]
+	call add(gcmds, a:head)
+	call add(gcmds, a:cmd)
 
-	if perforce#data#get('user_changes_only', 'common') == 1 && a:cmd =~ 'clients'
-			call add(gcmds_from_set, '-u '.perforce#get_PFUSER())
+	if perforce#data#get('show_max_flg', 'common') == 1
+		call add(gcmds, '-m '.perforce#data#get('show_max', 'common')[0])
+	endif 
+
+
+	if a:cmd =~ 'clients' || a:cmd =~ 'changes'
+		if perforce#data#get('user_changes_only', 'common') == 1 
+			call add(gcmds, '-u '.perforce#get_PFUSER())
+		endif
+
+		if perforce#data#get('client_changes_only', 'common') == 1
+			call add(gcmds, '-c '.perforce#get_PFCLIENTNAME())
 		endif
 	endif 
 
+	call add(gcmds, join(a:000))
 
-	if perforce#data#get('show_max_flg', 'common') == 1
-		call add(gcmds_from_set, '-m '.perforce#data#get('show_max', 'common')[0])
-	endif 
-
-	if perforce#data#get('client_changes_only', 'common') == 1 && a:cmd  =~ 'changes'
-			call add(gcmds_from_set, '-c '.perforce#get_PFCLIENTNAME())
-	endif
-
-	let cmd = 'p4 '.join(gcmds).' '.a:cmd.' '.join(gcmds_from_set).' '.join(a:000)
+	let cmd = 'p4 '.join(gcmds)
 
 	if perforce#data#get('show_cmd_flg', 'common') == 1
 		echo cmd
@@ -350,9 +354,8 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 
 	" 非表示にするコマンド
 	if perforce#data#get('filters_flg', 'common') == 1
-		let filters = perforce#data#get('filters', 'common')
-		let filter = join(filters, '\|')
-		call filter(rtn, 'v:val !~ filter')
+		let filter_ = join ( perforce#data#get('filters', 'common'), '\|' ) 
+		call filter(rtn, 'v:val !~ filter_')
 	endif
 
 	return rtn
