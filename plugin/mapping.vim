@@ -1,4 +1,4 @@
-function! s:pf_edit() "{{{
+function! <SID>pf_edit() "{{{
 	let file = perforce#common#get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
 		let datas = perforce#pfcmds('edit','',file)
@@ -7,7 +7,7 @@ function! s:pf_edit() "{{{
 	endif
 	call perforce#LogFile(datas)
 endfunction "}}}
-function! s:pf_revert() "{{{
+function! <SID>pf_revert() "{{{
 	let file = perforce#common#get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
 		let datas = perforce#pfcmds('revert','',' -a '.file)
@@ -61,7 +61,6 @@ nmap ;pr<CR> <PLUG>(p4_revert)
 nmap ;id<CR> <PLUG>(p4_get_depot)
 
 nnoremap ;pi<CR> :<C-u>Unite p4_info<CR>|"
-nnoremap ;pp<CR> :<C-u>call unite#start([['settings_ex', 'g:unite_pf_data']])<CR>
 nnoremap ;pt<CR> :<C-u>Unite p4_clients<CR>|"
 nnoremap ;pc<CR> :<C-u>Unite p4_changes_pending<CR>|"
 nnoremap ;ps<CR> :<C-u>Unite p4_changes_submitted<CR>|"
@@ -70,3 +69,5 @@ nnoremap ;pj<CR> :<C-u>Unite p4_jobs<CR>|"
 nnoremap ;ph<CR> :<C-u>Unite p4_have<CR>|"
 nnoremap ;pa<CR> :<C-u>Unite p4_annotate<CR>|"
 nnoremap ;pC<CR> :<C-u>Unite p4_changes_pending_reopen<CR>|"
+
+nnoremap ;pp<CR> :<C-u>call unite#start([['settings_ex', 'g:unite_pf_data']])<CR>
