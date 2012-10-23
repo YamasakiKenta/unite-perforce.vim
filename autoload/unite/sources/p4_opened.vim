@@ -17,12 +17,14 @@ function! s:source.gather_candidates(args, context) "{{{
 	if len(a:args)
 		" ˆø”‚ª‚ ‚éê‡
 		for arg in a:args
-			let outs += perforce#pfcmds('opened','','-c '.arg).outs
+			let outs += perforce#pfcmds_for_unite('opened','','-c '.arg).outs
 		endfor
 	else
 		" ˆø”‚ª‚È‚¢ê‡
-		let outs += perforce#pfcmds('opened','').outs
+		let outs += perforce#pfcmds_for_unite('opened','').outs
 	endif
+
+	echo outs
 
 	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é
 	let candidates = map( outs, "{

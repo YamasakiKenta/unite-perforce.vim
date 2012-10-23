@@ -1,6 +1,22 @@
 function! unite#sources#p4_annotate#define()
-	return [ s:source__p4_annotate, s:source__p4_annotate_ai ]
+	return [ 
+				\ s:source__p4_annotate,
+				\ s:source__p4_annotate_ai
+				\ ]
 endfunction
+
+function! s:getRevisionNumFromAnnotate(str) "{{{
+	return substitute(a:str,'^\(\d\+\).*','\1','')
+endfunction "}}}
+function! s:get_chnum_from_annotate(str) "{{{
+	let low  = substitute(a:str, '\(\d\+\)-\(\d\+\):.*', '\1', '')
+	let high = substitute(a:str, '\(\d\+\)-\(\d\+\):.*', '\2', '')
+
+	return {
+				\ 'low' : low,
+				\ 'high' : high,
+				\ }
+endfunction "}}}
 
 let s:source = {
 			\ 'name' : 'p4_annotate',
@@ -25,7 +41,7 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	return candidates
 endfunction "}}}
-let s:source__p4_annotate = s:source 
+let s:source__p4_annotate = deepcopy(s:source)
 
 let s:source = {
 			\ 'name' : 'p4_annotate_ai',
@@ -52,19 +68,5 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	return candidates
 endfunction "}}}
-let s:source__p4_annotate_ai = s:source 
+let s:source__p4_annotate_ai = deepcopy(s:source)
 
-" ================================================================================
-" sub rutine 
-function! s:getRevisionNumFromAnnotate(str) "{{{
-	return substitute(a:str,'^\(\d\+\).*','\1','')
-endfunction "}}}
-function! s:get_chnum_from_annotate(str) "{{{
-	let low  = substitute(a:str, '\(\d\+\)-\(\d\+\):.*', '\1', '')
-	let high = substitute(a:str, '\(\d\+\)-\(\d\+\):.*', '\2', '')
-
-	return {
-				\ 'low' : low,
-				\ 'high' : high,
-				\ }
-endfunction "}}}

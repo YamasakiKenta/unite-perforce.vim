@@ -308,6 +308,11 @@ endfunction "}}}
 function! perforce#is_submitted_chnum(chnum) "{{{
 
 endfunction "}}}
+function! perforce#pfcmds_for_unite(cmd,head,...) "{{{
+	exe 'let rtn_d = perforce#pfcmds(a:cmd, a:head, ' join(a:000, ',').')'
+	call unite#print_message(rtn_d.cmd)
+	return rtn_d
+endfunction "}}}
 function! perforce#pfcmds(cmd,head,...) "{{{
 	" ********************************************************************************
 	" p4 コマンドを実行します
