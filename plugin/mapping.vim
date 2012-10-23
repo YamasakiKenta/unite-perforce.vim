@@ -48,7 +48,7 @@ nnoremap <PLUG>(p4_find)
 			\ :<C-u>call perforce#pfFind()<CR>|"
 
 nnoremap <PLUG>(p4_get_depot)
-			\ :<C-u>let @+ = perforce#get_depot_from_path(expand("%:p"))<CR>
+			\ :<C-u>let @+ = perforce#get_depot_from_path(expand("%:p"))<CR>|"
 
 nmap ;wd<CR> <PLUG>(p4_diff_tool)
 nmap ;cl<CR> <PLUG>(p4_echo_client_data)
@@ -70,4 +70,4 @@ nnoremap ;ph<CR> :<C-u>Unite p4_have<CR>|"
 nnoremap ;pa<CR> :<C-u>Unite p4_annotate<CR>|"
 nnoremap ;pC<CR> :<C-u>Unite p4_changes_pending_reopen<CR>|"
 
-nnoremap ;pp<CR> :<C-u>call unite#start([['settings_ex', 'g:unite_pf_data']])<CR>
+nnoremap ;pp<CR> :<C-u>call unite#start([['settings_ex', 'g:unite_pf_data']])<CR>|"
