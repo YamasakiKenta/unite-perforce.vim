@@ -201,7 +201,7 @@ function! perforce#pfChange(str,...) "{{{
 	call writefile(split(tmp,'\n'),$PFTMPFILE)
 
 	"チェンジリストの作成
-	return perforce#common#Get_cmds('more '.perforce#common#get_kk($PFTMPFILE).' | p4 change -i') 
+	return split('more '.perforce#common#get_kk($PFTMPFILE).' | p4 change -i', '\n')
 
 endfunction "}}}
 function! perforce#pfNewChange() "{{{
