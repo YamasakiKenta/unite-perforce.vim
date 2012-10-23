@@ -61,7 +61,7 @@ nmap ;pr<CR> <PLUG>(p4_revert)
 nmap ;id<CR> <PLUG>(p4_get_depot)
 
 nnoremap ;pi<CR> :<C-u>Unite p4_info<CR>|"
-nnoremap ;pp<CR> :<C-u>Unite p4_settings<CR>|"
+nnoremap ;pp<CR> :<C-u>call unite#start([['settings_ex', 'g:unite_pf_data']])<CR>
 nnoremap ;pt<CR> :<C-u>Unite p4_clients<CR>|"
 nnoremap ;pc<CR> :<C-u>Unite p4_changes_pending<CR>|"
 nnoremap ;ps<CR> :<C-u>Unite p4_changes_submitted<CR>|"
