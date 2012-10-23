@@ -11,7 +11,7 @@ function! s:get_job_from_jobs(str) "{{{
 	
 endfunction "}}}
 function! s:source.gather_candidates(args, context) "{{{
-	let datas = perforce#pfcmds('jobs','')
+	let datas = perforce#pfcmds('jobs','').outs
 	let candidates = map( datas, "{
 				\ 'word' : v:val,
 				\ 'kind' : 'k_p4_jobs',

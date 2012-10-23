@@ -21,7 +21,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let outs = []
 	for file in files
 		if perforce#is_p4_have(file)
-			let outs += perforce#pfcmds('diff','',perforce#common#get_kk(file))
+			let outs += perforce#pfcmds('diff','',perforce#common#get_kk(file)).outs
 		else
 			let rtns += [{
 						\ 'word' : file,
@@ -53,7 +53,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" add ‚µ‚½ƒtƒ@ƒCƒ‹‚ð’Ç‰Á‚·‚é
 	if all_flg
 		"let file = 
-		let opened_strs = perforce#pfcmds('opened','')
+		let opened_strs = perforce#pfcmds('opened','').outs
 
 		for str in opened_strs
 			if str =~ '.*#\d\+ - add change'

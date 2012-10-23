@@ -9,7 +9,7 @@ let s:source = {
 			\ }
 "\ 'default_action' : '',
 function! s:source.gather_candidates(args, context) "{{{
-	let datas = perforce#pfcmds('info','')
+	let datas = perforce#pfcmds('info','').outs
 	let candidates = map( datas, "{
 				\ 'word' : v:val,
 				\ 'kind' : 'k_null',

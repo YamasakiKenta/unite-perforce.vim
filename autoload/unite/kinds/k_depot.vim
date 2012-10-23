@@ -32,7 +32,7 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 			\ function! action.func(candidates) \n
 				\ let outs = [] \n
 				\ for l:candidate in a:candidates \n
-					\ let outs += perforce#pfcmds('". a:cmd ."','',perforce#common#get_kk(l:candidate.action__". get(kind,a:kind,"path") .")) \n
+					\ let outs += perforce#pfcmds('". a:cmd ."','',perforce#common#get_kk(l:candidate.action__". get(kind,a:kind,"path") .")).outs \n
 				\ endfor \n
 				\ call perforce#LogFile(outs) \n
 			\ endfunction 
@@ -97,7 +97,7 @@ let s:kind.action_table.a_p4_files = {
 			\ }
 function! s:kind.action_table.a_p4_files.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
-	let outs = perforce#pfcmds('files','',join(depots))
+	let outs = perforce#pfcmds('files','',join(depots)).outs
 	call perforce#common#LogFile('p4_files', 0)
 	call append(0,outs)
 endfunction "}}}
@@ -127,8 +127,8 @@ function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 		let new          = input(file.' -> ')
 		if new != ''
 			let outs = []
-			let outs += perforce#pfcmds('edit','',path)
-			let outs += perforce#pfcmds('move','',path.' '.dir.'/'.new)
+			let outs += perforce#pfcmds('edit','',path).outs
+			let outs += perforce#pfcmds('move','',path.' '.dir.'/'.new).outs
 			call perforce#LogFile(outs)
 		endif
 		"}}}
@@ -166,7 +166,7 @@ function! s:kind.action_table.delete.func(candidate) "{{{
 	"let wnum = winnr()
 	let depot = a:candidate.action__depot
 
-	call perforce#common#LogFile('diff', 1, perforce#pfcmds('diff','',depot))
+	call perforce#common#LogFile('diff', 1, perforce#pfcmds('diff','',depot)).outs
 
 	wincmd p
 endfunction "}}}
@@ -224,7 +224,7 @@ let s:kind.action_table.a_p4_sync = {
 			\ }
 function! s:kind.action_table.a_p4_sync.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
-	let outs = perforce#pfcmds('sync','',join(depots))
+	let outs = perforce#pfcmds('sync','',join(depots)).outs
 	call perforce#LogFile(outs)
 endfunction "}}}
 

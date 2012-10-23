@@ -85,7 +85,7 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 
 		" perforce ‚©‚çŽæ“¾‚·‚é
 		" –¼‘O‚ª‚©‚Ô‚é‚Ì‚ð–h‚®
-		let tmp_pfpaths = perforce#pfcmds('have','',('//...'.file))
+		let tmp_pfpaths = perforce#pfcmds('have','',('//...'.file)).outs
 
 		echo tmp_pfpaths
 

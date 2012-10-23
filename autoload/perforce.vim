@@ -134,7 +134,7 @@ function! perforce#pfDiff(path) "{{{
 	let path = a:path
 
 	" 最新 REV のファイルの取得 "{{{
-	let outs = perforce#pfcmds('print','',' -q '.perforce#common#get_kk(path))
+	let outs = perforce#pfcmds('print','',' -q '.perforce#common#get_kk(path)).outs
 
 	" エラーが発生したらファイルを検索して、すべてと比較 ( 再帰 )
 	if outs[0] =~ "is not under client's root "
@@ -253,19 +253,19 @@ function! perforce#get_ChangeNum_from_changes(str) "{{{
 endfunction "}}}
 function! perforce#matomeDiffs(chnum) "{{{
 	" データの取得 {{{
-	let outs = perforce#pfcmds('describe -ds','',a:chnum)
+	let outs = perforce#pfcmds('describe -ds','',a:chnum).outs
 
 	" new file 用にここで初期化
 	let datas = []
 
 	" 作業中のファイル
 	if outs[0] =~ '\*pending\*' || a:chnum == 'default'
-		let files = perforce#pfcmds('opened','','-c '.a:chnum)
+		let files = perforce#pfcmds('opened','','-c '.a:chnum).outs
 		call map(files, "perforce#get_depot_from_opened(v:val)")
 
 		let outs = []
 		for file in files 
-			let list_tmps = perforce#pfcmds('diff -ds','',file)
+			let list_tmps = perforce#pfcmds('diff -ds','',file).outs
 
 			for list_tmp in list_tmps
 				if list_tmp =~ '- file(s) not opened for edit.'
@@ -314,7 +314,6 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	" @param[in]	str		cmd		コマンド
 	" @param[in]	str		head	コマンドの前に挿入する
 	" @param[in]	str		a:000	コマンドの後に挿入する
-	" @retval       strs	実行結果
 	" ********************************************************************************
 
 	" common をコマンドに変更する
@@ -350,15 +349,17 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 		endif
 	endif
 
-	let rtn = split(system(cmd),'\n')
+	let rtn_d = {}
+	let rtn_d.cmd = cmd
+	let rtn_d.outs = split(system(cmd),'\n')
 
 	" 非表示にするコマンド
 	if perforce#data#get('filters_flg', 'common') == 1
 		let filter_ = join ( perforce#data#get('filters', 'common'), '\|' ) 
-		call filter(rtn, 'v:val !~ filter_')
+		call filter(rtn_d.outs, 'v:val !~ filter_')
 	endif
 
-	return rtn
+	return rtn_d
 endfunction "}}}
 function! perforce#LogFile(str) "{{{
 	" ********************************************************************************
@@ -490,7 +491,7 @@ function! perforce#get_paths_from_haves(strs) "{{{
 endfunction "}}}
 function! perforce#get_paths_from_fname(str) "{{{
 	" ファイルを検索
-	let outs = perforce#pfcmds('have','',perforce#get_dd(a:str)) " # ファイル名の取得
+	let outs = perforce#pfcmds('have','',perforce#get_dd(a:str)).outs " # ファイル名の取得
 	return perforce#get_paths_from_haves(outs)                   " # ヒットした場合
 endfunction "}}}
 "@p4_change

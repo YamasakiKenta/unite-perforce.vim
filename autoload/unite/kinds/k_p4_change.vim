@@ -29,7 +29,7 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 	let chnum = s:make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "')))
+	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "'))).outs
 
 	" ログの出力
 	call perforce#LogFile(outs)
@@ -106,7 +106,7 @@ function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 		echo ' perforce#data#set( .is_submit_flg.common is not TRUE'
 	else
 		let chnums = map(copy(a:candidates), "v:val.action__chnum")
-		let outs = perforce#pfcmds('submit','',' -c '.join(chnums))
+		let outs = perforce#pfcmds('submit','',' -c '.join(chnums)).outs
 		call perforce#LogFile(outs)
 	endif 
 
@@ -151,7 +151,7 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 	let chnum = s:make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "')))
+	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "'))).outs
 
 	" ログの出力
 	call perforce#LogFile(outs)

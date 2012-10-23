@@ -1,18 +1,18 @@
 function! <SID>pf_edit() "{{{
 	let file = perforce#common#get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
-		let datas = perforce#pfcmds('edit','',file)
+		let datas = perforce#pfcmds('edit','',file).outs
 	else
-		let datas = perforce#pfcmds('add','',file)
+		let datas = perforce#pfcmds('add','',file).outs
 	endif
 	call perforce#LogFile(datas)
 endfunction "}}}
 function! <SID>pf_revert() "{{{
 	let file = perforce#common#get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
-		let datas = perforce#pfcmds('revert','',' -a '.file)
+		let datas = perforce#pfcmds('revert','',' -a '.file).outs
 	else
-		let datas = perforce#pfcmds('revert','',file)
+		let datas = perforce#pfcmds('revert','',file).outs
 	endif
 	call perforce#LogFile(datas)
 endfunction "}}}

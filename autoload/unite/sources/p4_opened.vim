@@ -17,11 +17,11 @@ function! s:source.gather_candidates(args, context) "{{{
 	if len(a:args)
 		" ˆø”‚ª‚ ‚éê‡
 		for arg in a:args
-			let outs += perforce#pfcmds('opened','','-c '.arg)
+			let outs += perforce#pfcmds('opened','','-c '.arg).outs
 		endfor
 	else
 		" ˆø”‚ª‚È‚¢ê‡
-		let outs += perforce#pfcmds('opened','')
+		let outs += perforce#pfcmds('opened','').outs
 	endif
 
 	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é

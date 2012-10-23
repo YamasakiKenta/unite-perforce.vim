@@ -28,7 +28,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" 表示するクライアント名の取得
 	let outs = perforce#data#get('client_changes_only', 'common') ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
-				\ perforce#pfcmds('clients','')
+				\ perforce#pfcmds('clients','').outs
 
 	" defaultの表示
 	let rtn = []
@@ -40,7 +40,7 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ 'action__depots' : a:context.source__depots,
 				\ }")
 
-	let outs = perforce#pfcmds('changes','','-s pending')
+	let outs = perforce#pfcmds('changes','','-s pending').outs
 	let rtn += perforce#get_pfchanges(a:context, outs, 'k_p4_change')
 	return rtn
 endfunction "}}}
@@ -98,7 +98,7 @@ let s:source = {
 			\ }
 let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
 function! s:source.gather_candidates(args, context) "{{{
-	let outs = perforce#pfcmds('changes','','-s submitted')
+	let outs = perforce#pfcmds('changes','','-s submitted').outs
 	return perforce#get_pfchanges(a:context, outs, 'k_p4_change')
 endfunction "}}}
 let s:source_p4_changes_submitted = s:source

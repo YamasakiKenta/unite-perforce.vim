@@ -24,7 +24,7 @@ function! s:get_pfclients() "{{{
 	let datas = []
 	let ports = perforce#data#get('ports', 'common')
 	for port in ports
-		let datas += map(perforce#pfcmds('clients','-p '.port), "{
+		let datas += map(perforce#pfcmds('clients','-p '.port).outs, "{
 					\ 'port' : port,
 					\ 'client' : v:val,
 					\ }")
