@@ -75,7 +75,7 @@ function! perforce#pf_diff_tool(file,file2) "{{{
 		" キーマップの登録
 		call common#map_diff()
 	else
-		let cmd = perforce#data#get('diff_tool','common')[0]
+		let cmd = perforce#data#get('diff_tool','common')
 
 		if cmd =~ 'kdiff3'
 			call system(cmd.' '.perforce#common#get_kk(a:file).' '.perforce#common#get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))
