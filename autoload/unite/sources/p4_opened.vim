@@ -24,8 +24,6 @@ function! s:source.gather_candidates(args, context) "{{{
 		let outs += perforce#pfcmds_for_unite('opened','').outs
 	endif
 
-	echo outs
-
 	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é
 	let candidates = map( outs, "{
 				\ 'word' : v:val,
