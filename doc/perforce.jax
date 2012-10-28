@@ -1,31 +1,31 @@
-unite-perforce.txt	perforce‚ğunite‚Åg‚¤
+unite-perforce.txt	perforceã‚’uniteã§ä½¿ã†
 
 Version: 0.5
 Author : YamasakiKenta
 
 
-–ÚŸ						*unite-perforce-contents*
+ç›®æ¬¡						*unite-perforce-contents*
 
-ŠT—v			|unite-perforce-introduction|
-g‚¢•û			|unite-perforce-usage|
+æ¦‚è¦			|unite-perforce-introduction|
+ä½¿ã„æ–¹			|unite-perforce-usage|
 Install			|unite-perforce-install|
 Interface		|unite-perforce-interface|
   Commands		|unite-perforce-commands|
-  ŠÖ”			|unite-perforce-function|
+  é–¢æ•°			|unite-perforce-function|
   KeyMapping	  	|unite-perforce-key-mappings|
   Variables		|unite-perforce-variables|
 Sources			|unite-perforce-sources|
 Kinds			|unite-perforce-kinds|
 Actions			|unite-perforce-actions|
-XV—š—ğ		|unite-perforce-changelog|
+æ›´æ–°å±¥æ­´		|unite-perforce-changelog|
 
 ==============================================================================
-ŠT—v						*unite-perforce-introduction*
+æ¦‚è¦						*unite-perforce-introduction*
 
-*unite-perforce* ‚ÍAperforce‚ğunite‚Åg—p‚Å‚«‚Ü‚·B
+*unite-perforce* ã¯ã€perforceã‚’uniteã§ä½¿ç”¨ã§ãã¾ã™ã€‚
 
 ==============================================================================
-g‚¢•û						*unite-perforce-usage*
+ä½¿ã„æ–¹						*unite-perforce-usage*
 
 $PFTMP
 	
@@ -40,105 +40,105 @@ Interface					*unite-perforce-interface*
 Commands					*unite-perforce-commands*
 
 :PfMerge {path}		*:PfMerge*
-	perforce ‚ÌƒNƒ‰ƒCƒAƒ“ƒgƒpƒX‚ÆAw’è‚µ‚½ƒpƒX‚Æ”äŠr‚µ‚Ü‚·B
+	perforce ã®ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ‘ã‚¹ã¨ã€æŒ‡å®šã—ãŸãƒ‘ã‚¹ã¨æ¯”è¼ƒã—ã¾ã™ã€‚
 
 ------------------------------------------------------------------------------
-•Ï”						*unite-perforce-variables*
+å¤‰æ•°						*unite-perforce-variables*
 
 g:perforce_merge_tool *g:perforce_merge_tool*
-	|:PfMerge|‚Åg—p‚·‚éƒc[ƒ‹
+	|:PfMerge|ã§ä½¿ç”¨ã™ã‚‹ãƒ„ãƒ¼ãƒ«
 
 g:perforce_merge_default_path *g:perforce_merge_default_path*
-	|:PfMerge|‚ÌƒfƒtƒHƒ‹ƒgƒ‹[ƒg
+	|:PfMerge|ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒ«ãƒ¼ãƒˆ
 
 g:pf_setting.bool.user_changes_only.value	*g:pf_setting.bool.user_changes_only.value*
-		user name ‚Å changelist ‚ğ filter ‚·‚é
+		user name ã§ changelist ã‚’ filter ã™ã‚‹
 
-		‰Šú’l‚ÍATRUE ‚Å‚ ‚é
+		åˆæœŸå€¤ã¯ã€TRUE ã§ã‚ã‚‹
 
 g:pf_setting.bool.client_changes_only.value	*g:pf_setting.bool.client_changes_only.value*
-		client name ‚Å changelist ‚ğ filter ‚·‚é
+		client name ã§ changelist ã‚’ filter ã™ã‚‹
 
-		‰Šú’l‚ÍATRUE ‚Å‚ ‚é
+		åˆæœŸå€¤ã¯ã€TRUE ã§ã‚ã‚‹
 
 g:pf_setting.bool.is_submit_flg.value		*g:pf_setting.bool.is_submit_flg.value*
-		submit ‚·‚é‚©‚Ç‚¤‚©‚Ìİ’è
+		submit ã™ã‚‹ã‹ã©ã†ã‹ã®è¨­å®š
 
-		‰Šú’l‚ÍATRUE ‚Å‚ ‚é
+		åˆæœŸå€¤ã¯ã€TRUE ã§ã‚ã‚‹
 
 g:pf_ports					*g:pf_ports*
-		port ‚Ìİ’è
+		port ã®è¨­å®š
 >
 	    	g:pf_ports = [1818...]
 <
 g:pf_setting.bool.is_out_flg.value		*g:pf_setting.bool.is_out_flg.value*
-		Œ‹‰Êo—Í‚ğs‚¤
+		çµæœå‡ºåŠ›ã‚’è¡Œã†
 
-		‰Šú’l‚ÍATRUE ‚Å‚ ‚é
+		åˆæœŸå€¤ã¯ã€TRUE ã§ã‚ã‚‹
 
 g:pf_setting.bool.is_out_echo_flg.value		*g:pf_setting.bool.is_out_echo_flg.value*
-		Œ‹‰Êo—Í‚ğecho‚Ås‚¤
+		çµæœå‡ºåŠ›ã‚’echoã§è¡Œã†
 
-		‰Šú’l‚ÍATRUE ‚Å‚ ‚é
+		åˆæœŸå€¤ã¯ã€TRUE ã§ã‚ã‚‹
 
 g:pf_setting.bool.is_vimdiff_flg.value		*g:pf_setting.bool.is_vimdiff_flg.value*
-	" 	vimdiff‚Å”äŠr‚·‚é
+	" 	vimdiffã§æ¯”è¼ƒã™ã‚‹
 
-		‰Šú’l‚ÍATRUE ‚Å‚ ‚é
+		åˆæœŸå€¤ã¯ã€TRUE ã§ã‚ã‚‹
 
 g:pf_diff_tool					*g:pf_diff_tool*
-		DiffTool‚ğw’è‚·‚é
+		DiffToolã‚’æŒ‡å®šã™ã‚‹
 
-		‰Šú’l‚ÍAWinMergeU ‚Å‚ ‚é
+		åˆæœŸå€¤ã¯ã€WinMergeU ã§ã‚ã‚‹
 
 $PFTMP						*$PFTMP*
-		”äŠr‚·‚é‚Ìˆê file ‚Ì–¼‘O
+		æ¯”è¼ƒã™ã‚‹æ™‚ã®ä¸€æ™‚ file ã®åå‰
 
 g:pf_setting.bool.ClientMove_recursive_flg.value	*g:pf_setting.bool.ClientMove_recursive_flg.value*
-		|ClientMove|‚ÅÄ‹AŒŸõ‚ğ‚·‚é‚©
+		|ClientMove|ã§å†å¸°æ¤œç´¢ã‚’ã™ã‚‹ã‹
 	
-		‰Šú’l‚ÍAFALSE ‚Å‚ ‚é
+		åˆæœŸå€¤ã¯ã€FALSE ã§ã‚ã‚‹
 
 
 
 ------------------------------------------------------------------------------
-ŠÖ”						*unite_perforce_function*
+é–¢æ•°						*unite_perforce_function*
 
 g:PerforceDiff					*g:PerforceDiff*
-		Diff tool ŠÖ”
+		Diff tool é–¢æ•°
 
 ------------------------------------------------------------------------------
 KEY MAPPING 					*unite-perforce-mappings*
 
 <Plug>(unite_p4_commit)				*<Plug>(unite_p4_commit)*
-	perforce ‚Ì unite source‚ğ•\¦‚·‚é
+	perforce ã® unite sourceã‚’è¡¨ç¤ºã™ã‚‹
 
 <Plug>(p4_diff_tool)				*<Plug>(p4_diff_tool)*
-	file ‚ğ client ‚Æ‚Ì·•ª‚ğw’è‚µ‚½Diff Tool
+	file ã‚’ client ã¨ã®å·®åˆ†ã‚’æŒ‡å®šã—ãŸDiff Tool
 
 <Plug>(p4_echo_client_data)			*<Plug>(p4_echo_client_data)*
-	Œ»İ‚Ì Client Name   Client Path ‚Ì•\¦‚ğs‚¢‚Ü‚·
+	ç¾åœ¨ã® Client Name   Client Path ã®è¡¨ç¤ºã‚’è¡Œã„ã¾ã™
 
 <Plug>(p4_print_info)				*<Plug>(p4_print_info)*
-	Client î•ñ‚ğ•\¦‚·‚é
+	Client æƒ…å ±ã‚’è¡¨ç¤ºã™ã‚‹
 
 <Plug>(p4_edit)					*<Plug>(p4_edit)*
-	•ÒWó‘Ô‚É‚·‚é
+	ç·¨é›†çŠ¶æ…‹ã«ã™ã‚‹
 
 <Plug>(p4_revert)				*<Plug>(p4_revert)*
-	•ÒWó‘Ô‚Ì‰ğœ
+	ç·¨é›†çŠ¶æ…‹ã®è§£é™¤
 
 <PLUG>(p4_filelog)				*<PLUG>(p4_filelog)*
-	Œ»İ‚Ìƒtƒ@ƒCƒ‹‚Ìƒtƒ@ƒCƒ‹ƒƒO‚Ìo—Í
+	ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ­ã‚°ã®å‡ºåŠ›
 
 <PLUG>(p4_diff)					*<PLUG>(p4_diff)*
-	Œ»İ‚Ìƒtƒ@ƒCƒ‹‚Ì·•ª‚Ìo—Í
+	ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®å·®åˆ†ã®å‡ºåŠ›
 
 <PLUG>(p4_find)					*<PLUG>(p4_find)*
-	ƒtƒ@ƒCƒ‹‚ğƒT[ƒo[‚©‚çŒŸõ‚·‚é
+	ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰æ¤œç´¢ã™ã‚‹
 
 
-ƒm[ƒ}ƒ‹ƒ‚[ƒhƒ}ƒbƒsƒ“ƒO
+ãƒãƒ¼ãƒãƒ«ãƒ¢ãƒ¼ãƒ‰ãƒãƒƒãƒ”ãƒ³ã‚°
 {lhs}		{rhs}
 --------	-----------------------------
 ;ff<CR>		<PLUG>(p4_find)
@@ -163,58 +163,58 @@ KEY MAPPING 					*unite-perforce-mappings*
 ==============================================================================
 SOURCES						*unite-perforce-sources*
 p4_annotate			
-	Šes‚ÉƒŠƒrƒWƒ‡ƒ“”Ô†‚ğ•\¦
+	å„è¡Œã«ãƒªãƒ“ã‚¸ãƒ§ãƒ³ç•ªå·ã‚’è¡¨ç¤º
 
 p4_annotate_ai			
-	Šes‚Éƒ`ƒFƒ“ƒWƒŠƒXƒg”Ô†‚ğ•\¦ ( ‘S‚Ä )
+	å„è¡Œã«ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆç•ªå·ã‚’è¡¨ç¤º ( å…¨ã¦ )
 
 p4_changes_pending		
-	ì¬’†‚Ìƒ`ƒFƒ“ƒWƒŠƒXƒg
+	ä½œæˆä¸­ã®ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆ
 
 p4_changes_pending_reopen	
-	ƒ`ƒFƒ“ƒWƒŠƒXƒg‚ÌˆÚ“®
+	ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç§»å‹•
 
 p4_changes_submitted		
-	submit Ï‚İƒ`ƒFƒ“ƒWƒŠƒXƒg
+	submit æ¸ˆã¿ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆ
 
 p4_clientMove 			
-	“Á’è‚ÌƒtƒHƒ‹ƒ_‚©‚çƒtƒ@ƒCƒ‹‚ğ”äŠr‚·‚é
+	ç‰¹å®šã®ãƒ•ã‚©ãƒ«ãƒ€ã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ¯”è¼ƒã™ã‚‹
 
 p4_clients			
-	ƒNƒ‰ƒCƒAƒ“ƒg‚Ì•\¦
+	ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®è¡¨ç¤º
 
 p4_describe			
-	ƒTƒuƒ~ƒbƒgÏ‚İ‚Ìƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì·•ª‚ğ•\¦
+	ã‚µãƒ–ãƒŸãƒƒãƒˆæ¸ˆã¿ã®ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å·®åˆ†ã‚’è¡¨ç¤º
 
 p4_diff				
-	ƒtƒ@ƒCƒ‹‚Ì·•ª•\¦
+	ãƒ•ã‚¡ã‚¤ãƒ«ã®å·®åˆ†è¡¨ç¤º
 
 p4_filelog
-	—š—ğ
+	å±¥æ­´
 
 p4_have
-	Š—L‚·‚éƒtƒ@ƒCƒ‹
+	æ‰€æœ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«
 
 p4_have_async
-	Š—L‚·‚éƒtƒ@ƒCƒ‹ ( file ‚©‚çæ“¾‚·‚é ) 
+	æ‰€æœ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ« ( file ã‹ã‚‰å–å¾—ã™ã‚‹ ) 
 
 p4_help
-	ƒwƒ‹ƒv‚ğ•\¦
+	ãƒ˜ãƒ«ãƒ—ã‚’è¡¨ç¤º
 
 p4_jobs
-	ƒWƒ‡ƒu‚Ì•\¦
+	ã‚¸ãƒ§ãƒ–ã®è¡¨ç¤º
 
 p4_opened
-	•ÒW‚µ‚Ä‚¢‚éƒtƒ@ƒCƒ‹‚Ì•\¦ ( ƒ`ƒFƒ“ƒWƒŠƒXƒg”Ô† )
+	ç·¨é›†ã—ã¦ã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º ( ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆç•ªå· )
 
 p4_settings
-	unite-perforce.vim ‚Ìİ’è
+	unite-perforce.vim ã®è¨­å®š
 
 p4_select
-	•¡”‘I‘ğ
+	è¤‡æ•°é¸æŠ
 
 p4_users
-	ƒ†[ƒU[‚ÌØ‚è‘Ö‚¦
+	ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®åˆ‡ã‚Šæ›¿ãˆ
 
 ==============================================================================
 KINDS						*unite-kinds*
@@ -253,137 +253,137 @@ k_p4_users					*unite-perforce-kind-k_p4_users*
 ACTIONS						*unite-perforce-actions*
 jump_list					*unite-perforce-action-jump_list*
 	add
-		’Ç‰Á
+		è¿½åŠ 
 	edit
-		•ÒW
+		ç·¨é›†
 file 						*unite-perforce-action-file*
 	add
-		’Ç‰Á
+		è¿½åŠ 
 	edit
-		•ÒW
+		ç·¨é›†
 
 k_depot						*unite-perforce-action-k_depot*
 	edit
-		•ÒW
+		ç·¨é›†
 	delete
-		íœ
+		å‰Šé™¤
 	revert -a
-		Œ³‚É–ß‚·
+		å…ƒã«æˆ»ã™
 	revert
-		Œ³‚É–ß‚· [ ‹­§ ] 
+		å…ƒã«æˆ»ã™ [ å¼·åˆ¶ ] 
 	a_open
-		ŠJ‚­
+		é–‹ã
 	preview
 		preview  
 	a_p4_files 
-		ƒtƒ@ƒCƒ‹‚Ìî•ñ
+		ãƒ•ã‚¡ã‚¤ãƒ«ã®æƒ…å ±
 	a_p4_move
-		ˆÚ“® ( –¼‘O‚Ì•ÏX ) 
+		ç§»å‹• ( åå‰ã®å¤‰æ›´ ) 
 	delete 
-		·•ª
+		å·®åˆ†
 	a_p4_diff 
-		·•ª
+		å·®åˆ†
 	a_p4_diff_tool
-		·•ª ( TOOL ) 
+		å·®åˆ† ( TOOL ) 
 	a_p4_reopen
-		ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX 
+		ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´ 
 	a_p4_filelog 
-		—š—ğ
+		å±¥æ­´
 	a_p4_sync 
-		ƒtƒ@ƒCƒ‹‚ÌÅV“¯Šú
+		ãƒ•ã‚¡ã‚¤ãƒ«ã®æœ€æ–°åŒæœŸ
 	a_p4_dir_copy
-		dir‚ÅƒRƒs[‚·‚é
+		dirã§ã‚³ãƒ”ãƒ¼ã™ã‚‹
 	a_p4_depot_copy
-		depot‚ÅƒRƒs[‚·‚é
+		depotã§ã‚³ãƒ”ãƒ¼ã™ã‚‹
 
 k_p4						*unite-perforce-action-k_p4*
 	a_pf_settings
-		İ’è
+		è¨­å®š
 	a_add_fix
-		quickfix‚É’Ç‰Á
+		quickfixã«è¿½åŠ 
 
 k_p4_change_reopen				*unite-perforce-action-k_p4_change_reopen*
 	a_p4_change_reopen
-		ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX ( reopen )
+		ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´ ( reopen )
 
 k_p4_change					*unite-perforce-action-k_p4_change*
 	delete
-		ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìíœ 
+		ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å‰Šé™¤ 
 	a_p4_change_opened 
-		ƒtƒ@ƒCƒ‹‚Ì•\¦
+		ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º
 	a_p4_change_info 
-		ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìî•ñ 
+		ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®æƒ…å ± 
 	a_p4_change_submit
-		ƒTƒuƒ~ƒbƒg 
+		ã‚µãƒ–ãƒŸãƒƒãƒˆ 
 	a_p4change_describe 
-		·•ª‚Ì•\¦
+		å·®åˆ†ã®è¡¨ç¤º
 	a_p4_matomeDiff 
-		·•ª‚Ì‚Ü‚Æ‚ß‚ğ•\¦
+		å·®åˆ†ã®ã¾ã¨ã‚ã‚’è¡¨ç¤º
 	a_p4_change_reopen
-		ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX 
+		ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´ 
 	a_p4_change_rename
-		–¼‘O‚Ì•ÏX 
+		åå‰ã®å¤‰æ›´ 
 k_p4_clientMove					*unite-perforce-action-k_p4_clientMove*
 	a_merge
-		”äŠr‚·‚é
+		æ¯”è¼ƒã™ã‚‹
 	a_copy
-		’u‚«Š·‚¦‚é
+		ç½®ãæ›ãˆã‚‹
 k_p4_clients					*unite-perforce-action-k_p4_clients*
 	a_p4_client_set
-		ƒNƒ‰ƒCƒAƒ“ƒg‚Ì•ÏX
+		ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®å¤‰æ›´
 	a_p4_client_sync 
-		ÅV“¯Šú
+		æœ€æ–°åŒæœŸ
 	a_p4_client_info 
-		ƒ‰ƒCƒAƒ“ƒg‚Ìî•ñ ( info )
+		ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®æƒ…å ± ( info )
 	a_p4_client 
-		ƒNƒ‰ƒCƒAƒ“ƒg‚Ìî•ñ ( client 
+		ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®æƒ…å ± ( client 
 
 k_p4_filelog					*unite-perforce-action-k_p4_filelog*
 	preview
 		preview
 
 	a_p4_print
-		ƒtƒ@ƒCƒ‹‚Ì•\¦
+		ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º
 
 k_p4_help 					*unite-perforce-action-k_p4_help*
 	a_help
-		Ú‚µ‚¢î•ñ‚ğ•\¦
+		è©³ã—ã„æƒ…å ±ã‚’è¡¨ç¤º
 k_p4_jobs					*unite-perforce-action-k_p4_jobs*
 	a_p4_fixes
-		ƒWƒ‡ƒu‚Ìî•ñ
+		ã‚¸ãƒ§ãƒ–ã®æƒ…å ±
 
 k_p4_settings_bool				*unite-perforce-action-k_p1_settings_bool*
 	a_toggle
-		İ’è‚ÌØ‘Ö
+		è¨­å®šã®åˆ‡æ›¿
 	a_set_enable
-		—LŒø‚É‚·‚é
+		æœ‰åŠ¹ã«ã™ã‚‹
 	a_set_disable
-		–³Œø‚É‚·‚é
+		ç„¡åŠ¹ã«ã™ã‚‹
 
 k_p4_settings_strs				*unite-perforce-action-k_p4_settings_strs*
 	a_toggle
-		İ’è‚ÌØ‘Ö
+		è¨­å®šã®åˆ‡æ›¿
 	a_toggles
-		•¡”‘I‘ğ
+		è¤‡æ•°é¸æŠ
 	a_set_strs
-		–¼‘O‚Ì“o˜^ ( ƒŠƒXƒg ) 
+		åå‰ã®ç™»éŒ² ( ãƒªã‚¹ãƒˆ ) 
 
 k_p4_select					*unite-perforce-action-k_p4_select*
 	a_toggle
-		İ’è‚ÌØ‘Ö
+		è¨­å®šã®åˆ‡æ›¿
 	delete
-		íœ
+		å‰Šé™¤
 
 k_p4_users					*unite-perforce-action-k_p4_users*
 	a_p4_user_change
-		ƒ†[ƒU[‚ÌØ‚è‘Ö‚¦ 1
+		ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®åˆ‡ã‚Šæ›¿ãˆ 1
 
 ==============================================================================
 
-XV—š—ğ					*unite-perforce-changelog*
+æ›´æ–°å±¥æ­´					*unite-perforce-changelog*
 
 2012/01/30
-V‹Kì¬
+æ–°è¦ä½œæˆ
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:sw=8
