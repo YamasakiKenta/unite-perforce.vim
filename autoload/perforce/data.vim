@@ -1,6 +1,7 @@
 function! perforce#data#init() "{{{
-	if 1
-		call unite_setting_ex#load('g:unite_pf_data', $PFDATA)
+	let file_ = $PFDATA
+	if filereadable(file_)
+		call unite_setting_ex#load('g:unite_pf_data', file_)
 		nnoremap ;pp<CR> :<C-u>call unite#start([['settings_ex', 'g:unite_pf_data']])<CR>
 	else
 		let g:unite_pf_data = {'__order' : [], '__file' : $PFDATA }
