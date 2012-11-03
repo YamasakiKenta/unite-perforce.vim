@@ -412,7 +412,6 @@ function! perforce#pfcmds_with_clients(ports,clients,cmd,head,tail) "{{{
 		let user = '-u '.perforce#get_PFUSER()
 	endif
 
-	let tail = join(a:tail)
 	let rtns = []
 
 	for port in ports
@@ -437,15 +436,16 @@ function! perforce#pfcmds_with_clients(ports,clients,cmd,head,tail) "{{{
 				endif
 			endif 
 
-			call add(gcmds, tail)
+			call add(gcmds, a:tail)
 
 			let cmd = join(gcmds)
 
 			call add(rtns, {
 						\ 'cmd'  : cmd,
-						\ 'outs' : split(system(cmd),'\n')
-						\ 'client' : '-p '.port.' -c '.client
-						\ }
+						\ 'outs' : split(system(cmd),'\n'),
+						\ 'port' : port,
+						\ 'client' : client,
+						\ })
 
 			if perforce#data#get('filters_flg',kind) == 1
 				let filter_ = join( perforce#data#get('filters',kind), '\|' ) 

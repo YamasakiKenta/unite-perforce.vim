@@ -1,6 +1,8 @@
+if 0
 function! unite#sources#p4_opened#define()
 	return s:source_p4_opened
 endfunction
+endif
 
 " ********************************************************************************
 " source - p4_opened 
@@ -12,25 +14,31 @@ let s:source = {
 			\ 'is_quit' : 0,
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
-	" @param[in]  args[] : change list
 
-	let outs = []
+	let tmps = []
 	if len(a:args)
 		" ˆø”‚ª‚ ‚éê‡
 		for arg in a:args
-			let outs += perforce#pfcmds_for_unite('opened','','-c '.arg).outs
+			let tmps += perforce#pfcmds_with_client_from_data('opened','','-c '.arg,'')
 		endfor
 	else
 		" ˆø”‚ª‚È‚¢ê‡
-		let tmps += perforce#pfcmds_for_unite('opened','')
+		let tmps += perforce#pfcmds_with_client_from_data('opened','','')
 	endif
 
 	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é
-	let candidates = map( outs, "{
-				\ 'word' : v:val.client.' : '.outs,
-				\ 'kind' : 'k_depot',
-				\ 'action__depot' : perforce#get_depot_from_opened(v:val.outs)
-				\ }")
+	let candidates = []
+	for tmp in tmps
+		let port = tmp.port
+		let client = tmp.client
+		let candidates = map( tmp.outs, "{
+					\ 'word'           : ''.port.' - '.client.' : '.v:val,
+					\ 'kind'           : 'k_depot',
+					\ 'action__depot'  : perforce#get_depot_from_opened(v:val),
+					\ 'action__port'   : port,
+					\ 'action__client' : client,
+					\ }")
+	endfor
 
 	return candidates
 endfunction "}}}
