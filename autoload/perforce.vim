@@ -371,13 +371,33 @@ endif
 
 	return rtn_d
 endfunction "}}}
-function! perforce#pfcmds_with_client(port,client,cmd,head,...) "{{{
+function! perforce#LogFile(str) "{{{
 	" ********************************************************************************
-	" p4 コマンドを実行します
-	" @param[in]	str		cmd		コマンド
-	" @param[in]	str		head	コマンドの前に挿入する
-	" @param[in]	str		a:000	コマンドの後に挿入する
+	" 結果の出力を行う
+	" @param[in]	str		表示する文字
+	" @var
 	" ********************************************************************************
+	"
+	if perforce#data#get('is_out_flg', 'common') == 1
+		if perforce#data#get('is_out_echo_flg', 'common') == 1
+			echo a:str
+		else
+			call perforce#common#LogFile('p4log', 0, a:str)
+		endif
+	endif
+
+endfunction "}}}
+
+function! perforce#pfcmds_with_client_from_data(cmd,head,tail) "{{{
+	let ports   = perforce#data#get('ports')
+	let clients = perforce#data#get('clients')
+	return perforce#pfcmds_with_clients(ports, clients, a:cmd, a:head, a:tail)
+endfunction "}}}
+
+function! perforce#pfcmds_with_client(port,client,cmd,head,tail) "{{{
+	return perforce#pfcmds_with_clients([a:port], [a:client], a:cmd, a:head, a:tail)
+endfunction "}}}
+function! perforce#pfcmds_with_clients(ports,clients,cmd,head,tail) "{{{
 
 	let kind = 'common'
 
@@ -392,11 +412,9 @@ function! perforce#pfcmds_with_client(port,client,cmd,head,...) "{{{
 		let user = '-u '.perforce#get_PFUSER()
 	endif
 
-	let tail = join(a:000)
+	let tail = join(a:tail)
 	let rtns = []
 
-	" ポート以外のコマンド "{{{
-	" }}}
 	for port in ports
 		for client in clients
 
@@ -438,22 +456,8 @@ function! perforce#pfcmds_with_client(port,client,cmd,head,...) "{{{
 
 	return rtns
 endfunction "}}}
-function! perforce#LogFile(str) "{{{
-	" ********************************************************************************
-	" 結果の出力を行う
-	" @param[in]	str		表示する文字
-	" @var
-	" ********************************************************************************
-	"
-	if perforce#data#get('is_out_flg', 'common') == 1
-		if perforce#data#get('is_out_echo_flg', 'common') == 1
-			echo a:str
-		else
-			call perforce#common#LogFile('p4log', 0, a:str)
-		endif
-	endif
 
-endfunction "}}}
+
 "@diff
 function! perforce#get_lnum_from_diff(str,lnum,snum) "{{{
 	" ********************************************************************************

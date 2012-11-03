@@ -1,5 +1,5 @@
 function! unite#sources#p4_opened#define()
-	return s:source
+	return s:source_p4_opened
 endfunction
 
 " ********************************************************************************
@@ -34,3 +34,5 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	return candidates
 endfunction "}}}
+let s:source_p4_opened = deepcopy(s:source)
+call unite#define_source(s:source_p4_opened) | unlet s:source_p4_opened
