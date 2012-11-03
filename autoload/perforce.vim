@@ -309,7 +309,7 @@ function! perforce#is_submitted_chnum(chnum) "{{{
 
 endfunction "}}}
 function! perforce#pfcmds_for_unite(cmd,head,...) "{{{
-	exe 'let rtn_d = perforce#pfcmds(a:cmd, a:head, ' join(a:000, ',').')'
+	let rtn_d = perforce#pfcmds(a:cmd, a:head, join(a:000))
 	call unite#print_message(rtn_d.cmd)
 	return rtn_d
 endfunction "}}}
@@ -321,12 +321,7 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	" @param[in]	str		a:000	コマンドの後に挿入する
 	" ********************************************************************************
 
-	" common をコマンドに変更する
-	let gcmds  = [] " 引数からコマンドを作成する
-	let gcmds_from_set = [] " 設定からコマンドを作成する
-
-	call add(gcmds, a:head)
-	call add(gcmds, a:cmd)
+	let gcmds = expand(a:head, a:cmd)
 
 	if perforce#data#get('show_max_flg', 'common') == 1
 		call add(gcmds, '-m '.perforce#data#get('show_max', 'common')[0])
@@ -354,9 +349,10 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 		endif
 	endif
 
-	let rtn_d = {}
-	let rtn_d.cmd = cmd
-	let rtn_d.outs = split(system(cmd),'\n')
+	let rtn_d = {
+				\ 'cmd'  : cmd,
+				\ 'outs' : split(system(cmd),'\n'),
+				\ }
 
 	" 非表示にするコマンド
 	if perforce#data#get('filters_flg', 'common') == 1
@@ -365,6 +361,70 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	endif
 
 	return rtn_d
+endfunction "}}}
+function! perforce#pfcmds_with_client(port,client,cmd,head,...) "{{{
+	" ********************************************************************************
+	" p4 コマンドを実行します
+	" @param[in]	str		cmd		コマンド
+	" @param[in]	str		head	コマンドの前に挿入する
+	" @param[in]	str		a:000	コマンドの後に挿入する
+	" ********************************************************************************
+
+	let kind = 'common'
+
+	let ports   = perforce#data#get('ports'   , kind)
+	let clients = perforce#data#get('clients' , kind)
+
+	if perforce#data#get('show_max_flg', kind) == 1
+		let max = '-m '.perforce#data#get('show_max',kind)
+	endif 
+
+	if perforce#data#get('user_changes_only',kind) == 1 
+		let user = '-u '.perforce#get_PFUSER()
+	endif
+
+	let tail = join(a:000)
+	let rtns = []
+
+	" ポート以外のコマンド "{{{
+	" }}}
+	for port in ports
+		for client in clients
+
+			let gcmds = ['p4']
+			call add(gcmds, a:head)
+			call add(gcmds, '-p '.port)
+			call add(gcmds, '-c '.client)
+
+			call add(gcmds, a:cmd)
+			call add(gcmds, max)
+
+			if a:cmd =~ 'clients' || a:cmd =~ 'changes'
+				call add(gcmds, user)
+
+				if perforce#data#get('client_changes_only',kind) == 1
+					call add(gcmds, '-c '.a:client)
+				endif
+			endif 
+
+			call add(gcmds, tail)
+
+			let cmd = join(gcmds)
+
+			call add(rtns, {
+						\ 'cmd'  : cmd,
+						\ 'outs' : split(system(cmd),'\n')
+						\ 'client' : '-p '.port.' -c '.client
+						\ }
+
+			if perforce#data#get('filters_flg',kind) == 1
+				let filter_ = join( perforce#data#get('filters',kind), '\|' ) 
+				call filter(rtns[-1].outs, 'v:val !~ filter_')
+			endif
+		endfor 
+	endfor 
+
+	return rtns
 endfunction "}}}
 function! perforce#LogFile(str) "{{{
 	" ********************************************************************************

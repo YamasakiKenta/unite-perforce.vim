@@ -12,6 +12,7 @@ let s:source = {
 			\ 'is_quit' : 0,
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
+	" @param[in]  args[] : change list
 
 	let outs = []
 	if len(a:args)
