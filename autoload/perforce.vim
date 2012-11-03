@@ -310,7 +310,7 @@ function! perforce#is_submitted_chnum(chnum) "{{{
 endfunction "}}}
 function! perforce#pfcmds_for_unite(cmd,head,...) "{{{
 	let rtn_d = perforce#pfcmds(a:cmd, a:head, join(a:000))
-	call unite#print_message(rtn_d.cmd)
+	"call unite#print_message(rtn_d.cmd)
 	return rtn_d
 endfunction "}}}
 function! perforce#pfcmds(cmd,head,...) "{{{
@@ -321,10 +321,12 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	" @param[in]	str		a:000	コマンドの後に挿入する
 	" ********************************************************************************
 
-	let gcmds = expand(a:head, a:cmd)
+	let gcmds = ['p4']
+	call add(gcmds, a:head)
+	call add(gcmds, a:cmd)
 
 	if perforce#data#get('show_max_flg', 'common') == 1
-		call add(gcmds, '-m '.perforce#data#get('show_max', 'common')[0])
+		call add(gcmds, '-m '.perforce#data#get('show_max', 'common'))
 	endif 
 
 
@@ -332,7 +334,9 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 		if perforce#data#get('user_changes_only', 'common') == 1 
 			call add(gcmds, '-u '.perforce#get_PFUSER())
 		endif
+	endif 
 
+	if a:cmd =~ 'changes'
 		if perforce#data#get('client_changes_only', 'common') == 1
 			call add(gcmds, '-c '.perforce#get_PFCLIENTNAME())
 		endif
@@ -340,19 +344,24 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 
 	call add(gcmds, join(a:000))
 
-	let cmd = 'p4 '.join(gcmds)
+	echo gcmds
+	let cmd = join(gcmds)
 
+	if 0
 	if perforce#data#get('show_cmd_flg', 'common') == 1
 		echo cmd
 		if perforce#data#get('show_cmd_stop_flg', 'common') == 1
 			call input("")
 		endif
 	endif
+endif
 
 	let rtn_d = {
 				\ 'cmd'  : cmd,
 				\ 'outs' : split(system(cmd),'\n'),
 				\ }
+
+	call unite#print_message(rtn_d.cmd)
 
 	" 非表示にするコマンド
 	if perforce#data#get('filters_flg', 'common') == 1
@@ -402,6 +411,9 @@ function! perforce#pfcmds_with_client(port,client,cmd,head,...) "{{{
 			if a:cmd =~ 'clients' || a:cmd =~ 'changes'
 				call add(gcmds, user)
 
+			endif 
+
+			if a:cmd =~ 'changes'
 				if perforce#data#get('client_changes_only',kind) == 1
 					call add(gcmds, '-c '.a:client)
 				endif

@@ -22,14 +22,14 @@ function! s:source.gather_candidates(args, context) "{{{
 		endfor
 	else
 		" ˆø”‚ª‚È‚¢ê‡
-		let outs += perforce#pfcmds_for_unite('opened','').outs
+		let tmps += perforce#pfcmds_for_unite('opened','')
 	endif
 
 	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é
 	let candidates = map( outs, "{
-				\ 'word' : v:val,
+				\ 'word' : v:val.client.' : '.outs,
 				\ 'kind' : 'k_depot',
-				\ 'action__depot' : perforce#get_depot_from_opened(v:val)
+				\ 'action__depot' : perforce#get_depot_from_opened(v:val.outs)
 				\ }")
 
 	return candidates
