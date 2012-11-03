@@ -50,6 +50,25 @@ call s:setPfcmd('k_depot'   , 'delete'    , '削除'               )
 call s:setPfcmd('k_depot'   , 'revert -a' , '元に戻す'           ) 
 call s:setPfcmd('k_depot'   , 'revert'    , '元に戻す [ 強制 ] ' ) 
 
+function! s:find_filepath_from_depot(candidate) "{{{
+	" ********************************************************************************
+	" 編集するファイル名を取得する 
+	" @param[in]	candidate		unite action の引数
+	" @retval       path			編集するファイル名
+	" ********************************************************************************
+	let candidate = a:candidate
+	let depot     = candidate.action__depot
+	if exists( candidate.action__client )
+		let client    = candidate.action__client
+		let port      = candidate.action__port
+		let path = perforce#get_path_from_depot_with_client(port, client, depot)
+	else
+		let path = perforce#get_path_from_depot(depot)
+	endif
+
+	return path
+endfunction "}}}
+
 "p4 k_depot 
 let s:kind = {
 			\ 'name'           : 'k_depot',
@@ -58,21 +77,6 @@ let s:kind = {
 			\ 'parents'        : ['k_p4'],
 			\ }
 call unite#define_kind(s:kind)
-
-function! s:find_filepath_from_depot(candidate) "{{{
-	" ********************************************************************************
-	" 編集するファイル名を取得する 
-	" @param[in]	candidate		unite action の引数
-	" @retval       path			編集するファイル名
-	" ********************************************************************************
-	let candidate = a:candidate
-	let depot = candidate.action__depot
-
-	" ローカルパスを取得して開く
-	let path = perforce#get_path_from_depot(depot)
-
-	return path
-endfunction "}}}
 
 let s:kind.action_table.a_open = {
 			\ 'description' : '開く',

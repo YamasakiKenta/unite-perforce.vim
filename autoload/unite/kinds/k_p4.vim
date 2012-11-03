@@ -17,7 +17,7 @@ function! s:kind.action_table.a_pf_settings.func(candidate) "{{{
 endfunction "}}}
 
 let s:kind.action_table.a_add_fix = {
-			\ 'description' : 'quickfix‚É’Ç‰Á',
+			\ 'description' : 'add qfix ( p4 )',
 			\ 'is_selectable' : 1 ,
 			\ }
 function! s:kind.action_table.a_add_fix.func(candidates) "{{{
@@ -27,9 +27,8 @@ function! s:kind.action_table.a_add_fix.func(candidates) "{{{
 
 	for candidate in a:candidates
 		let depot = candidate.action__depot
-		let path = perforce#get_path_from_depot(depot)
+		let path  = perforce#get_path_from_depot(depot)
 
-		" ’Ç‰Á‚·‚é
 		caddexpr path.':1:1'
 	endfor
 

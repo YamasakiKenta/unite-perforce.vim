@@ -1,7 +1,7 @@
-let $PFTMP = expand( exists('$PFTMP') ? $PFTMP : '~' )
-let $PFTMPFILE  = $PFTMP.'\perforce\tmpfile'
-let $PFHAVE = $PFTMP.'\perforce\have'
-let $PFDATA = $PFTMP.'\perforce\data'
+let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~' )
+let $PFTMPFILE = $PFTMP.'\perforce\tmpfile'
+let $PFHAVE    = $PFTMP.'\perforce\have'
+let $PFDATA    = $PFTMP.'\perforce\data'
 if !isdirectory($PFTMP.'\perforce') | call mkdir($PFMP.'\perforce') | endif
 
 function! perforce#LogFile(str) "{{{
@@ -159,8 +159,8 @@ function! perforce#get_lnum_from_diff(str,lnum,snum) "{{{
 	endif
 	return num
 endfunction "}}}
-function! perforce#get_path_from_depot(str) "{{{
-	let out = system('p4 where "'.a:str.'"')
+function! perforce#get_path_from_depot(depot) "{{{
+	let out = system('p4 where "'.a:depot.'"')
 	let path = perforce#get_path_from_where(out)
 	return path
 endfunction "}}}
@@ -633,4 +633,8 @@ function! perforce#pfcmds_with_clients(ports,clients,cmd,head,tail) "{{{
 	endfor 
 
 	return rtns
+endfunction "}}}
+function! perforce#get_path_from_depot_with_client(port, client, depot) "{{{
+	let out = system('p4 -p '.a:port.' -c '.a:client.' where "'.a:depot.'"')
+	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')
 endfunction "}}}
