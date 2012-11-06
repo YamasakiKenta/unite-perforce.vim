@@ -562,23 +562,12 @@ function! s:get_split_from_where(str,...) "{{{
 endfunction "}}}
 
 "new
-function! perforce#pfcmds_with_client_from_data(cmd,head,tail) "{{{
-	let ports   = perforce#data#get('ports')
-	let clients = perforce#data#get('clients')
-	let rtns = perforce#pfcmds_with_clients(ports, clients, a:cmd, a:head, a:tail)
-	"let str = join(map(deepcopy(rtns)."v:val.cmd"))
-	call unite#print_message(join(map(deepcopy(rtns),"v:val.cmd")))
-	return rtns
+function! perforce#pfcmds_with_client(client,cmd,head,tail) "{{{
+	return perforce#pfcmds_with_clients([a:client], a:cmd, a:head, a:tail)
 endfunction "}}}
-function! perforce#pfcmds_with_client(port,client,cmd,head,tail) "{{{
-	return perforce#pfcmds_with_clients([a:port], [a:client], a:cmd, a:head, a:tail)
-endfunction "}}}
-function! perforce#pfcmds_with_clients(ports,clients,cmd,head,tail) "{{{
+function! perforce#pfcmds_with_clients(clients,cmd,head,tail) "{{{
 
 	let kind = 'common'
-
-	let ports   = perforce#data#get('ports'   , kind)
-	let clients = perforce#data#get('clients' , kind)
 
 	if perforce#data#get('show_max_flg', kind) == 1
 		let max = '-m '.perforce#data#get('show_max',kind)
@@ -592,13 +581,11 @@ function! perforce#pfcmds_with_clients(ports,clients,cmd,head,tail) "{{{
 
 	let rtns = []
 
-	for port in ports
-		for client in clients
+		for client in a:clients
 
 			let gcmds = ['p4']
 			call add(gcmds, a:head)
-			call add(gcmds, '-p '.port)
-			call add(gcmds, '-c '.client)
+			call add(gcmds, client)
 
 			call add(gcmds, a:cmd)
 			call add(gcmds, max)
@@ -621,7 +608,6 @@ function! perforce#pfcmds_with_clients(ports,clients,cmd,head,tail) "{{{
 			call add(rtns, {
 						\ 'cmd'  : cmd,
 						\ 'outs' : split(system(cmd),'\n'),
-						\ 'port' : port,
 						\ 'client' : client,
 						\ })
 
@@ -630,10 +616,16 @@ function! perforce#pfcmds_with_clients(ports,clients,cmd,head,tail) "{{{
 				call filter(rtns[-1].outs, 'v:val !~ filter_')
 			endif
 		endfor 
-	endfor 
 
 	return rtns
 endfunction "}}}
+function! perforce#pfcmds_with_clients_from_data(cmd,head,tail) "{{{
+	let clients = perforce#data#get('clients')
+	let rtns = perforce#pfcmds_with_clients(clients, a:cmd, a:head, a:tail)
+	call unite#print_message(join(map(deepcopy(rtns),"v:val.cmd")))
+	return rtns
+endfunction "}}}
+
 function! perforce#get_path_from_depot_with_client(port, client, depot) "{{{
 	let out = system('p4 -p '.a:port.' -c '.a:client.' where "'.a:depot.'"')
 	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')

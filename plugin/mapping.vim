@@ -3,7 +3,7 @@ function! <SID>pf_edit() "{{{
 	if perforce#is_p4_have(expand("%"))
 		let datas = perforce#pfcmds('edit','',file).outs
 	else
-		let datas = perforce#pfcmds('add','',file).outs
+		"let datas = perforce#pfcmds('add','',file).outs
 	endif
 	call perforce#LogFile(datas)
 endfunction "}}}

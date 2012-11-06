@@ -1,8 +1,6 @@
-if 0
 function! unite#sources#p4_opened#define()
 	return s:source_p4_opened
 endfunction
-endif
 
 " ********************************************************************************
 " source - p4_opened 
@@ -19,28 +17,28 @@ function! s:source.gather_candidates(args, context) "{{{
 	if len(a:args)
 		" ˆø”‚ª‚ ‚éê‡
 		for arg in a:args
-			let tmps += perforce#pfcmds_with_client_from_data('opened','','-c '.arg,'')
+			let tmps += perforce#pfcmds_with_clients_from_data('opened','','-c '.arg,'')
 		endfor
 	else
 		" ˆø”‚ª‚È‚¢ê‡
-		let tmps += perforce#pfcmds_with_client_from_data('opened','','')
+		let tmps += perforce#pfcmds_with_clients_from_data('opened','','')
 	endif
 
 	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é
 	let candidates = []
+	echo len(tmps)
 	for tmp in tmps
-		let port = tmp.port
 		let client = tmp.client
-		let candidates = map( tmp.outs, "{
-					\ 'word'           : ''.port.' - '.client.' : '.v:val,
+		call extend(candidates , map(tmp.outs, "{
+					\ 'word'           : ''.client.' : '.v:val,
 					\ 'kind'           : 'k_depot',
 					\ 'action__depot'  : perforce#get_depot_from_opened(v:val),
-					\ 'action__port'   : port,
 					\ 'action__client' : client,
-					\ }")
+					\ }"))
 	endfor
 
 	return candidates
 endfunction "}}}
 let s:source_p4_opened = deepcopy(s:source)
-call unite#define_source(s:source_p4_opened) | unlet s:source_p4_opened
+
+"call unite#define_source(s:source_p4_opened) | unlet s:source_p4_opened
