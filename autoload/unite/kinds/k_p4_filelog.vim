@@ -16,12 +16,13 @@ let s:kind.action_table.a_p4_print = {
 			\ 'description' : 'ファイルの表示',
 			\ 'is_selectable' : 1, 
 			\ }
-function! s:kind.action_table.a_p4_print.func(candidates) "{{{
+functio! s:kind.action_table.a_p4_print.func(candidates) "{{{
+	let filetype_old = &filetype
+	tabe
 	for l:candidate in deepcopy(a:candidates)
 
 		let name = perforce#get_path_from_depot(candidate.action__depot)
 		
-		let filetype_old = &filetype
 
 		" 表示するバージョンを取得する
 		if exists('candidate.action__revnum')
