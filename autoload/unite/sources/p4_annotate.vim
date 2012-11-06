@@ -29,14 +29,18 @@ function! s:source.gather_candidates(args, context) "{{{
 	let depots = a:context.source__depots
 
 	let candidates = []
+	let lnum = 1
 	for depot in depots 
 		let outs = perforce#pfcmds('annotate','',perforce#common#get_kk(depot)).outs
-		let candidates += map( outs, "{
-					\ 'word' : v:val,
+
+		for out in outs
+		let candidates += map( [out], "{
+					\ 'word' : lnum.' : '.v:val,
 					\ 'kind' : 'k_p4_filelog',
 					\ 'action__depot' : depot,
 					\ 'action__revnum' : s:getRevisionNumFromAnnotate(v:val),
 					\ }")
+		let lnum += 1
 	endfor
 
 	return candidates
