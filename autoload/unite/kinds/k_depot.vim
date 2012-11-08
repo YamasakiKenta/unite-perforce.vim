@@ -58,8 +58,8 @@ function! s:find_filepath_from_depot(candidate) "{{{
 	" ********************************************************************************
 	let candidate = a:candidate
 	let depot     = candidate.action__depot
-	if exists( candidate.action__client )
-		let client    = candidate.action__client
+	if exists( 'candidate.action__client' )
+		let client = candidate.action__client
 		let path = perforce#get_path_from_depot_with_client(client, depot)
 	else
 		let path = perforce#get_path_from_depot(depot)

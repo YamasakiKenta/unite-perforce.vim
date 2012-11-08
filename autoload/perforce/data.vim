@@ -1,10 +1,8 @@
 function! perforce#data#init() "{{{
 	let file_ = $PFDATA.'_2'
-	if filereadable(file_)
-	"if 0
-		call unite_setting_ex#load('g:unite_pf_data', file_)
-	else
-		let g:unite_pf_data = {'__order' : [], '__file' : file_ }
+
+		call unite_setting_ex#init('g:unite_pf_data', file_)
+
 		call unite_setting_ex#add_title ( 'g:unite_pf_data' , '_clients') 
 		call unite_setting_ex#add       ( 'g:unite_pf_data' , 'clients'                       ,'perforce clients'             , 'list_ex'   , [[1,2], '-p localhost:1818 -c main_1', '-p localhost:1668 -c main_1']) 
 		call unite_setting_ex#add       ( 'g:unite_pf_data' , 'ports'                         ,'perforce ports'               , 'list_ex'   , [[1,2], 'localhost:1668', 'localhost:1818']) 
@@ -32,9 +30,12 @@ function! perforce#data#init() "{{{
 		call unite_setting_ex#add       ( 'g:unite_pf_data' , 'g:perforce_merge_tool'         ,''                             , 'select'    , [[1], 'winmergeu /S']) 
 		call unite_setting_ex#add       ( 'g:unite_pf_data' , 'g:perforce_merge_default_path' ,''                             , 'select'    , [[1], 'c:\tmp']) 
 		call unite_setting_ex#add       ( 'g:unite_pf_data' , 'is_submit_flg'                 ,'サブミットを許可'             , 'bool'      , 0) 
-	endif
 
-	nnoremap ;pp<CR> :<C-u>call unite#start([['settings_ex', 'g:unite_pf_data']])<CR>
+		call unite_setting_ex#load('g:unite_pf_data', file_)
+
+		command! PerforceSetting call unite#start([['settings_ex', 'g:unite_pf_data']])
+
+		nnoremap ;pp<CR> :PerforceSetting<CR>
 
 endfunction "}}}
 function! perforce#data#get(valname, ...) "{{{
