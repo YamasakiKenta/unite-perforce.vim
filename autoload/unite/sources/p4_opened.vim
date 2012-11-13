@@ -13,20 +13,16 @@ let s:source = {
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
 
-	let tmps = []
 	if len(a:args)
 		" ˆø”‚ª‚ ‚éê‡
-		for arg in a:args
-			let tmps += perforce#pfcmds_with_clients_from_data('opened','','-c '.arg,'')
-		endfor
+		let tmps = map( a:args, "perforce#pfcmds_with_clients_from_data('opened','','-c '.v:val)")
 	else
 		" ˆø”‚ª‚È‚¢ê‡
-		let tmps += perforce#pfcmds_with_clients_from_data('opened','','')
+		let tmps = perforce#pfcmds_with_clients_from_data('opened','','')
 	endif
 
 	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é
 	let candidates = []
-	echo len(tmps)
 	for tmp in tmps
 		let client = tmp.client
 		call extend(candidates , map(tmp.outs, "{

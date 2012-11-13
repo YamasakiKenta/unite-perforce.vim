@@ -102,7 +102,7 @@ let s:kind.action_table.a_p4_change_submit = {
 			\ }
 function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 
-	if perforce#data#get('is_submit_flg', 'common') == 0
+	if perforce#data#get('is_submit_flg') == 0
 		echo ' perforce#data#set( .is_submit_flg.common is not TRUE'
 	else
 		let chnums = map(copy(a:candidates), "v:val.action__chnum")
@@ -191,9 +191,10 @@ unlet s:kind
 function! s:make_new_changes(candidate) "{{{
 
 	let chnum = a:candidate.action__chnum
-	let chname = a:candidate.action__chname
 
 	if chnum == 'new'
+		let chname = a:candidate.action__chname
+
 		" チェンジリストの作成
 		let outs = perforce#pfChange(chname)
 

@@ -2,21 +2,7 @@ function! unite#kinds#k_p4_filelog#define()
 	return s:kind
 endfunction
 
-" ********************************************************************************
-" kind - k_p4_filelog
-" ********************************************************************************
-let s:kind = {
-			\ 'name' : 'k_p4_filelog',
-			\ 'default_action' : 'a_p4_print',
-			\ 'action_table' : {},
-			\ 'parents' : ['k_p4'],
-			\ }
-
-let s:kind.action_table.a_p4_print = {
-			\ 'description' : 'ファイルの表示',
-			\ 'is_selectable' : 1, 
-			\ }
-functio! s:kind.action_table.a_p4_print.func(candidates) "{{{
+functio! s:p4_print(candidates) "{{{
 	let filetype_old = &filetype
 	tabe
 	for l:candidate in deepcopy(a:candidates)
@@ -37,12 +23,38 @@ functio! s:kind.action_table.a_p4_print.func(candidates) "{{{
 		let strs = perforce#pfcmds('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
 		let file = fnamemodify(name,':t').file_numstr
 
+		tabe
 		call perforce#common#LogFile(file, 0, strs) 
 
 		" データの出力
 		exe 'setf' filetype_old
 
 	endfor
+endfunction "}}}
+" ********************************************************************************
+" kind - k_p4_filelog
+" ********************************************************************************
+let s:kind = {
+			\ 'name' : 'k_p4_filelog',
+			\ 'default_action' : 'a_p4_print',
+			\ 'action_table' : {},
+			\ 'parents' : ['k_p4'],
+			\ }
+
+let s:kind.action_table.a_p4_print = {
+			\ 'description' : 'ファイルの表示',
+			\ 'is_selectable' : 1, 
+			\ }
+functio! s:kind.action_table.a_p4_print.func(candidates) "{{{
+	return s:p4_print(a:candidates)
+endfunction "}}}
+
+let s:kind.action_table.a_p4_print_diff = {
+			\ 'description' : 'ファイルの表示 ( ひとつ前のファイルと一緒 )',
+			\ 'is_selectable' : 1, 
+			\ }
+functio! s:kind.action_table.a_p4_print_diff.func(candidates) "{{{
+	return s:p4_print(a:candidates)
 endfunction "}}}
 
 let s:kind.action_table.preview = {

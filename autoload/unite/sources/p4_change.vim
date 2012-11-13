@@ -26,17 +26,16 @@ function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	"
 	" 表示するクライアント名の取得
-	let outs = perforce#data#get('client_changes_only', 'common') ? 
+	let outs = perforce#data#get('client_changes_only') ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
 				\ perforce#pfcmds('clients','').outs
 
 	" defaultの表示
 	let rtn = []
 	let rtn += map( outs, "{
-				\ 'word' : 'default by '.perforce#get_ClientName_from_client(v:val),
-				\ 'kind' : 'k_p4_change',
-				\ 'action__chname' : '',
-				\ 'action__chnum' : 'default',
+				\ 'word'           : 'default by '.perforce#get_ClientName_from_client(v:val),
+				\ 'kind'           : 'k_p4_change',
+				\ 'action__chnum'  : 'default',
 				\ 'action__depots' : a:context.source__depots,
 				\ }")
 

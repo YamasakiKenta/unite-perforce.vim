@@ -19,7 +19,7 @@ let s:kind.action_table.a_merge = {
 function! s:kind.action_table.a_merge.func(candidates) "{{{
 	for candidate in deepcopy(a:candidates)
 
-		let defoult_cmd = perforce#data#get('diff_tool', 'common')[0]
+		let defoult_cmd = perforce#data#get('diff_tool')[0]
 
 		" ”äŠr‚·‚é–¼‘O‚ÌŽæ“¾
 		let file1 = candidate.action__file1

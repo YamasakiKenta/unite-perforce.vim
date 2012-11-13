@@ -22,7 +22,7 @@ function! s:get_pfclients() "{{{
 
 	"ポートのクライアントを表示する
 	let datas = []
-	let ports = perforce#data#get('ports', 'common')
+	let ports = perforce#data#get('ports')
 	for port in ports
 		let datas += map(perforce#pfcmds('clients','-p '.port).outs, "{
 					\ 'port' : port,

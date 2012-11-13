@@ -56,10 +56,9 @@ function! s:find_filepath_from_depot(candidate) "{{{
 	" @param[in]	candidate		unite action の引数
 	" @retval       path			編集するファイル名
 	" ********************************************************************************
-	let candidate = a:candidate
-	let depot     = candidate.action__depot
-	if exists( 'candidate.action__client' )
-		let client = candidate.action__client
+	let depot     = a:candidate.action__depot
+	if exists( 'a:candidate.action__client' )
+		let client = a:candidate.action__client
 		let path = perforce#get_path_from_depot_with_client(client, depot)
 	else
 		let path = perforce#get_path_from_depot(depot)
@@ -82,6 +81,19 @@ let s:kind.action_table.a_open = {
 			\ }
 function! s:kind.action_table.a_open.func(candidate) "{{{
 	exe 'edit '.s:find_filepath_from_depot(a:candidate)
+endfunction "}}}
+
+let s:kind.action_table.yank = {
+			\ 'description' : '',
+			\ 'is_selectable' : 1, 
+			\ }
+function! s:kind.action_table.yank.func(candidates) "{{{
+	let tmps = []
+	for candidate in a:candidates
+		calladd(tmps, s:find_filepath_from_depot(candidate))
+	endfor
+	let @" = join(tmps, "\n")
+	let @+ = join(tmps, "\n")
 endfunction "}}}
 
 let s:kind.action_table.preview = {
@@ -248,7 +260,7 @@ function! s:copyFileDir(file) "{{{
 	let file1 = substitute(a:file, '/','\','g')
 
 	" 空白と引数がない場合は、defaultを設定する
-	let root2 = perforce#data#get('ClientMove_defoult_root', 'common')[0]
+	let root2 = perforce#data#get('g:perforce_merge_default_path')[0]
 	let root2 = substitute(root2, '/', '\','g')
 
 	" 末尾の \ を削除する
@@ -298,7 +310,7 @@ function! s:copy_file_depot(depot) "{{{
 	let file1 = substitute(file1, '/','\','g')
 
 	" 空白と引数がない場合は、defaultを設定する
-	let root2 = perforce#data#get('ClientMove_defoult_root', 'common')[0]
+	let root2 = perforce#data#get('g:perforce_merge_default_path')[0]
 	let root2 = substitute(root2, '/', '\','g')
 
 	" 末尾の \ を削除する

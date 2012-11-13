@@ -12,7 +12,7 @@ function! perforce#LogFile(str) "{{{
 	" ********************************************************************************
 	"
 	if perforce#data#get('is_out_flg', 'common') == 1
-		if perforce#data#get('is_out_echo_flg', 'common') == 1
+		if perforce#data#get('is_out_echo_flg') == 1
 			echo a:str
 		else
 			call perforce#common#LogFile('p4log', 0, a:str)
@@ -191,7 +191,6 @@ function! perforce#get_pfchanges(context,outs,kind) "{{{
 	let candidates = map( outs, "{
 				\ 'word' : v:val,
 				\ 'kind' : a:kind,
-				\ 'action__chname' : '',
 				\ 'action__chnum' : perforce#get_ChangeNum_from_changes(v:val),
 				\ 'action__depots' : a:context.source__depots,
 				\ }")
@@ -429,7 +428,7 @@ function! perforce#pfNewChange() "{{{
 	endif
 endfunction "}}}
 function! perforce#pf_diff_tool(file,file2) "{{{
-	if perforce#data#get('is_vimdiff_flg', 'common')
+	if perforce#data#get('is_vimdiff_flg')
 		" タブで新しいファイルを開く
 		exe 'tabe' a:file2
 		exe 'vs' a:file
@@ -440,7 +439,7 @@ function! perforce#pf_diff_tool(file,file2) "{{{
 		" キーマップの登録
 		call common#map_diff()
 	else
-		let cmd = perforce#data#get('diff_tool','common')
+		let cmd = perforce#data#get('diff_tool')
 
 		if cmd =~ 'kdiff3'
 			call system(cmd.' '.perforce#common#get_kk(a:file).' '.perforce#common#get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))
@@ -462,37 +461,26 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	call add(gcmds, a:head)
 	call add(gcmds, a:cmd)
 
-	if perforce#data#get('show_max_flg', 'common') == 1
-		call add(gcmds, '-m '.perforce#data#get('show_max', 'common'))
+	if perforce#data#get('show_max_flg') == 1
+		call add(gcmds, '-m '.perforce#data#get('show_max'))
 	endif 
 
 
 	if a:cmd =~ 'clients' || a:cmd =~ 'changes'
-		if perforce#data#get('user_changes_only', 'common') == 1 
+		if perforce#data#get('user_changes_only') == 1 
 			call add(gcmds, '-u '.perforce#get_PFUSER())
 		endif
 	endif 
 
 	if a:cmd =~ 'changes'
-		if perforce#data#get('client_changes_only', 'common') == 1
+		if perforce#data#get('client_changes_only') == 1
 			call add(gcmds, '-c '.perforce#get_PFCLIENTNAME())
 		endif
 	endif 
 
 	call add(gcmds, join(a:000))
 
-	echo gcmds
 	let cmd = join(gcmds)
-
-	if 0
-	if perforce#data#get('show_cmd_flg', 'common') == 1
-		echo cmd
-		if perforce#data#get('show_cmd_stop_flg', 'common') == 1
-			call input("")
-		endif
-	endif
-endif
-
 	let rtn_d = {
 				\ 'cmd'  : cmd,
 				\ 'outs' : split(system(cmd),'\n'),
@@ -501,8 +489,8 @@ endif
 	call unite#print_message(rtn_d.cmd)
 
 	" 非表示にするコマンド
-	if perforce#data#get('filters_flg', 'common') == 1
-		let filter_ = join ( perforce#data#get('filters', 'common'), '\|' ) 
+	if perforce#data#get('filters_flg') == 1
+		let filter_ = join ( perforce#data#get('filters'), '\|' ) 
 		call filter(rtn_d.outs, 'v:val !~ filter_')
 	endif
 
@@ -559,18 +547,19 @@ function! s:get_split_from_where(str,...) "{{{
 		return lines[a:1]
 	else
 		return lines 
+	endif
 endfunction "}}}
 
 "new
 function! perforce#pfcmds_with_client(client,cmd,head,tail) "{{{
 	return perforce#pfcmds_with_clients([a:client], a:cmd, a:head, a:tail)
 endfunction "}}}
-function! perforce#pfcmds_with_clients(clients,cmd,head,tail) "{{{
+function! perforce#pfcmds_with_clients(clients, cmd, head, tail) "{{{
 
-	let kind = 'common'
+	let kind = '__common'
 
 	if perforce#data#get('show_max_flg', kind) == 1
-		let max = '-m '.perforce#data#get('show_max',kind)
+		let max = '-m '.perforce#data#get('show_max', kind)
 	else 
 		let max = ''
 	endif 
@@ -581,41 +570,41 @@ function! perforce#pfcmds_with_clients(clients,cmd,head,tail) "{{{
 
 	let rtns = []
 
-		for client in a:clients
+	for client in a:clients
 
-			let gcmds = ['p4']
-			call add(gcmds, a:head)
-			call add(gcmds, client)
+		let gcmds = ['p4']
+		call add(gcmds, a:head)
+		call add(gcmds, client)
 
-			call add(gcmds, a:cmd)
-			call add(gcmds, max)
+		call add(gcmds, a:cmd)
+		call add(gcmds, max)
 
-			if a:cmd =~ 'clients' || a:cmd =~ 'changes'
-				call add(gcmds, user)
+		if a:cmd =~ 'clients' || a:cmd =~ 'changes'
+			call add(gcmds, user)
 
-			endif 
+		endif 
 
-			if a:cmd =~ 'changes'
-				if perforce#data#get('client_changes_only',kind) == 1
-					call add(gcmds, '-c '.a:client)
-				endif
-			endif 
-
-			call add(gcmds, a:tail)
-
-			let cmd = join(gcmds)
-
-			call add(rtns, {
-						\ 'cmd'  : cmd,
-						\ 'outs' : split(system(cmd),'\n'),
-						\ 'client' : client,
-						\ })
-
-			if perforce#data#get('filters_flg',kind) == 1
-				let filter_ = join( perforce#data#get('filters',kind), '\|' ) 
-				call filter(rtns[-1].outs, 'v:val !~ filter_')
+		if a:cmd =~ 'changes'
+			if perforce#data#get('client_changes_only',kind) == 1
+				call add(gcmds, '-c '.a:client)
 			endif
-		endfor 
+		endif 
+
+		call add(gcmds, a:tail)
+
+		let cmd = join(gcmds)
+
+		call add(rtns, {
+					\ 'cmd'  : cmd,
+					\ 'outs' : split(system(cmd),'\n'),
+					\ 'client' : client,
+					\ })
+
+		if perforce#data#get('filters_flg',kind) == 1
+			let filter_ = join( perforce#data#get('filters',kind), '\|' ) 
+			call filter(rtns[-1].outs, 'v:val !~ filter_')
+		endif
+	endfor 
 
 	return rtns
 endfunction "}}}
@@ -626,7 +615,8 @@ function! perforce#pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 	return rtns
 endfunction "}}}
 
-function! perforce#get_path_from_depot_with_client(port, client, depot) "{{{
-	let out = system('p4 -p '.a:port.' -c '.a:client.' where "'.a:depot.'"')
+function! perforce#get_path_from_depot_with_client(client, depot) "{{{
+	let cmd = 'p4 '.a:client.' where "'.a:depot.'"'
+	let out = system(cmd)
 	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')
 endfunction "}}}
