@@ -30,10 +30,11 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ [perforce#get_PFCLIENTNAME()] : 
 				\ perforce#pfcmds('clients','').outs
 
+				"\ 'word'           : 'default by '.perforce#get_ClientName_from_client(v:val),
 	" default‚Ì•\Ž¦
 	let rtn = []
 	let rtn += map( outs, "{
-				\ 'word'           : 'default by '.perforce#get_ClientName_from_client(v:val),
+				\ 'word'           : 'default by '.v:val,
 				\ 'kind'           : 'k_p4_change',
 				\ 'action__chnum'  : 'default',
 				\ 'action__depots' : a:context.source__depots,
