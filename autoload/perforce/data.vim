@@ -3,6 +3,7 @@ function! perforce#data#init() "{{{
 
 	call unite_setting_ex#init('g:unite_pf_data', file_)
 	call unite_setting_ex#add_title ( 'g:unite_pf_data' , '_clients') 
+	call unite_setting_ex#add       ( 'g:unite_pf_data' , 'use_default'                   ,''                             , 'bool'      , 1)
 	call unite_setting_ex#add       ( 'g:unite_pf_data' , 'clients'                       ,'perforce clients'             , 'list_ex'   , [[1,2], '-p localhost:1818 -c main_1', '-p localhost:1668 -c main_1']) 
 	call unite_setting_ex#add       ( 'g:unite_pf_data' , 'ports'                         ,'perforce ports'               , 'list_ex'   , [[1,2], 'localhost:1668', 'localhost:1818']) 
 	call unite_setting_ex#add       ( 'g:unite_pf_data' , 'users'                         ,'perforce user'                , 'list_ex'   , [[1], 'yamasaki']) 

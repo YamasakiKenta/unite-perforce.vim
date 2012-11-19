@@ -15,10 +15,12 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	if len(a:args)
 		" ˆø”‚ª‚ ‚éê‡
-		let tmps = map( a:args, "perforce#pfcmds_with_clients_from_data('opened','','-c '.v:val)")
+		let tmps = map( a:args, "
+					\ perforce#pfcmds_new('opened','','-c '.v:val)
+					\ ")
 	else
 		" ˆø”‚ª‚È‚¢ê‡
-		let tmps = perforce#pfcmds_with_clients_from_data('opened','','')
+		let tmps = perforce#pfcmds_new('opened','','')
 	endif
 
 	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é

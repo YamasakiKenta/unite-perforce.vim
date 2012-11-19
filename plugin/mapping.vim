@@ -30,7 +30,7 @@ nnoremap <PLUG>(p4_diff_tool)
 			\ :<C-u>call perforce#pfDiff(expand("%"))<CR>|"  
 
 nnoremap <PLUG>(p4_echo_client_data)
-			\ :<C-u>echo $PFPORT . " - " . $PFCLIENTNAME . " - " . $PFCLIENTPATH<CR>|"
+			\ :<C-u>echo " -p " . $PFPORT . " -c " . $PFCLIENTNAME . "\n" . $PFCLIENTPATH<CR>|"
 
 nnoremap <PLUG>(p4_print_info)
 			\ :<C-u>call perforce#LogFile(perforce#pfcmds('info',''))<CR>|"
