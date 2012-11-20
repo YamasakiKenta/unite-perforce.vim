@@ -12,13 +12,13 @@ function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 
 	let data_ds = {}
 	if !has_key(g:cache, key) && a:reset_flg == 0
-		echo
-		echo 'loading...'
+		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.
+		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.'loading...'
 		let datas = perforce#pfcmds_with_clients_from_data('have', '', str)
 		let g:cache[key] = s:get_candidates_from_pfhave(deepcopy(datas))
-		echo 'finish !!'
+		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.'finish !!'
 	else
-		echo 'cache load!'
+		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.'cache load!'
 	endif
 
 	return g:cache[key]

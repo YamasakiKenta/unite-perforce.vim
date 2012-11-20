@@ -13,6 +13,7 @@ let s:source = {
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
 
+	echo a:args
 	if len(a:args)
 		" ˆø”‚ª‚ ‚éê‡
 		let tmps = map( a:args, "

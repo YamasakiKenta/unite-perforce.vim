@@ -103,7 +103,7 @@ let s:kind.action_table.a_p4_change_submit = {
 function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 
 	if perforce#data#get('is_submit_flg') == 0
-		echo ' perforce#data#set( .is_submit_flg.common is not TRUE'
+		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.' perforce#data#set( .is_submit_flg.common is not TRUE'
 	else
 		let chnums = map(copy(a:candidates), "v:val.action__chnum")
 		let outs = perforce#pfcmds('submit','',' -c '.join(chnums)).outs

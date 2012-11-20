@@ -327,11 +327,11 @@ function! s:copy_file_depot(depot) "{{{
 	"--------------------------------------------------------------------------------
 	" フォルダの作成
 	call system('mkdir "'.fnamemodify(file2,':h').'"')
-	echo 'mkdir "'.fnamemodify(file2,':h').'"'
+	echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.'mkdir "'.fnamemodify(file2,':h').'"'
 
 	" コピーする
 	let cmd = 'copy "'.file1.'" "'.file2.'"'
-	echo cmd
+	echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.cmd
 	call system(cmd)
 
 

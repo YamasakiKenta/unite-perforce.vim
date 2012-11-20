@@ -23,12 +23,21 @@ function! s:get_pfclients() "{{{
 	"ポートのクライアントを表示する
 	let datas = []
 	let ports = perforce#data#get('ports')
-	for port in ports
-		let datas += map(perforce#pfcmds('clients','-p '.port).outs, "{
+
+	" デフォルトの追加
+	if perforce#data#get('use_default') == 0
+		for port in ports
+			let datas += map(perforce#pfcmds('clients','-p '.port).outs, "{
+						\ 'port' : port,
+						\ 'client' : v:val,
+						\ }")
+		endfor
+	else
+		let datas += map(perforce#pfcmds('clients').outs, "{
 					\ 'port' : port,
 					\ 'client' : v:val,
 					\ }")
-	endfor
+	endif
 
 	let candidates = map(datas, "{
 				\ 'word' : '-p '.v:val.port.' -c '.perforce#get_ClientName_from_client(v:val.client),

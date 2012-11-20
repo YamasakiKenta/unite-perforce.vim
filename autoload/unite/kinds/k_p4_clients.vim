@@ -28,7 +28,7 @@ function! s:kind.action_table.a_p4_client_set.func(candidates) "{{{
 	call perforce#set_PFCLIENTPATH(clpath)
 	call perforce#set_PFPORT(port)
 
-	echo $PFCLIENTNAME
+	echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.$PFCLIENTNAME
 endfunction "}}}
 
 let s:kind.action_table.a_p4_client_sync = { 

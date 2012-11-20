@@ -13,7 +13,7 @@ function! perforce#LogFile(str) "{{{
 	"
 	if perforce#data#get('is_out_flg', 'common') == 1
 		if perforce#data#get('is_out_echo_flg') == 1
-			echo a:str
+			echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.a:str
 		else
 			call perforce#common#LogFile('p4log', 0, a:str)
 		endif
@@ -449,7 +449,7 @@ function! perforce#pf_diff_tool(file,file2) "{{{
 		endif
 	endif
 endfunction "}}}
-function! perforce#pfcmds(cmd,head,...) "{{{
+function! perforce#pfcmds(cmd,...) "{{{
 	" ********************************************************************************
 	" p4 コマンドを実行します
 	" @param[in]	str		cmd		コマンド
@@ -458,7 +458,9 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 	" ********************************************************************************
 
 	let gcmds = ['p4']
-	call add(gcmds, a:head)
+	if a:0 > 0 
+		call add(gcmds, a:1)
+	endif
 	call add(gcmds, a:cmd)
 
 	if perforce#data#get('show_max_flg') == 1
@@ -478,13 +480,22 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 		endif
 	endif 
 
-	call add(gcmds, join(a:000))
+	if a:0 > 1
+		call add(gcmds, join(a:000[1:]))
+	endif
 
 	let cmd = join(gcmds)
 	let rtn_d = {
 				\ 'cmd'  : cmd,
 				\ 'outs' : split(system(cmd),'\n'),
 				\ }
+
+	" Error
+	if len(rtn_d.outs) > 0
+		if rtn_d.outs[0] =~ "^Perforce client error:"
+			let rtn_d.outs = []
+		endif
+	endif
 
 	call unite#print_message(rtn_d.cmd)
 
@@ -494,7 +505,7 @@ function! perforce#pfcmds(cmd,head,...) "{{{
 		call filter(rtn_d.outs, 'v:val !~ filter_')
 	endif
 
-	"return rtn_d
+
 	return rtn_d
 endfunction "}}}
 function! perforce#pfcmds_for_unite(cmd,head,...) "{{{
@@ -613,7 +624,7 @@ endfunction "}}}
 function! perforce#pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 	let clients = perforce#data#get('clients')
 	let rtns = perforce#pfcmds_with_clients(clients, a:cmd, a:head, a:tail)
-	call unite#print_message(join(map(deepcopy(rtns), "v:val.cmd")))
+	call unite#print_message(join(map(deepcopy(rtns), "v:val.cmd"),"\n"))
 	return rtns
 endfunction "}}}
 function! perforce#pfcmds_new(cmd, head, tail) "{{{
