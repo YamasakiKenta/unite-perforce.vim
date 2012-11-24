@@ -1,3 +1,8 @@
+let s:_file  = expand("<sfile>")
+let s:_vital = vital#of('ymknjugg')
+let s:_debug = s:_vital.import("Debug")
+"exe s:_debug.exe_line()
+"
 "vim : set fdm = marker :
 function! unite#kinds#k_p4_change#define()
 	return [ s:kind_k_p4_change, s:kind_k_p4_change_reopen ]
@@ -103,7 +108,7 @@ let s:kind.action_table.a_p4_change_submit = {
 function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 
 	if perforce#data#get('is_submit_flg') == 0
-		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.' perforce#data#set( .is_submit_flg.common is not TRUE'
+		exe s:_debug.exe_line()
 	else
 		let chnums = map(copy(a:candidates), "v:val.action__chnum")
 		let outs = perforce#pfcmds('submit','',' -c '.join(chnums)).outs

@@ -1,3 +1,11 @@
+let s:_file  = expand("<sfile>")
+let s:_vital = vital#of('ymknjugg')
+let s:_debug = s:_vital.import("Debug")
+"exe s:_debug.exe_line()
+"
+function! unite#kinds#k_p4_clients#define()
+	return s:kind
+endfunction
 function! unite#kinds#k_p4_users#define()
 	return s:kind
 endfunction
@@ -19,5 +27,5 @@ function! s:kind.action_table.a_p4_user_change.func(candidates) "{{{
 	let candidate = a:candidates
 	let user = candidate.action__user
 	call system('p4 set P4User='.user)
-	echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.user
+	exe s:_debug.exe_line()
 endfunction "}}}

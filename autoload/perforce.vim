@@ -1,3 +1,8 @@
+let s:_file  = expand("<sfile>")
+let s:_vital = vital#of('ymknjugg')
+let s:_debug = s:_vital.import("Debug")
+"exe s:_debug.exe_line()
+
 let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~' )
 let $PFTMPFILE = $PFTMP.'\perforce\tmpfile'
 let $PFHAVE    = $PFTMP.'\perforce\have'
@@ -8,12 +13,12 @@ function! perforce#LogFile(str) "{{{
 	" ********************************************************************************
 	" åãâ ÇÃèoóÕÇçsÇ§
 	" @param[in]	str		ï\é¶Ç∑ÇÈï∂éö
-	" @var
 	" ********************************************************************************
-	"
+	
 	if perforce#data#get('is_out_flg', 'common') == 1
 		if perforce#data#get('is_out_echo_flg') == 1
-			echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.a:str
+			echo s:_file
+			exe s:_debug.exe_line()
 		else
 			call perforce#common#LogFile('p4log', 0, a:str)
 		endif

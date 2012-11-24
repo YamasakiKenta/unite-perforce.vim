@@ -1,10 +1,13 @@
-function! s:get_datas_from_p4_have(str, reset_flg) "{{{
+let s:_file  = expand("<sfile>")
+let s:_vital = vital#of('ymknjugg')
+let s:_debug = s:_vital.import("Debug")
 
+function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 	" 空白の場合は、スペースを使用する
 	let str = a:str
-	if str == ''
-		let str = ' '
-	endif 
+	"if str == ''
+		"let str = ' '
+	"endif 
 
 	let port   = perforce#get_PFPORT()
 	let client = perforce#get_PFCLIENTNAME()
@@ -12,13 +15,12 @@ function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 
 	let data_ds = {}
 	if !has_key(g:cache, key) && a:reset_flg == 0
-		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.
-		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.'loading...'
+		echo 'loading...'
 		let datas = perforce#pfcmds_with_clients_from_data('have', '', str)
 		let g:cache[key] = s:get_candidates_from_pfhave(deepcopy(datas))
-		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.'finish !!'
+		echo 'finish !!'
 	else
-		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.'cache load!'
+		echo 'cache load!'
 	endif
 
 	return g:cache[key]

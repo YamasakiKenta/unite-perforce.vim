@@ -1,3 +1,7 @@
+let s:_file  = expand("<sfile>")
+let s:_vital = vital#of('ymknjugg')
+let s:_debug = s:_vital.import("Debug")
+
 " ********************************************************************************
 " depotで操作できるもの
 " ********************************************************************************
@@ -327,13 +331,12 @@ function! s:copy_file_depot(depot) "{{{
 	"--------------------------------------------------------------------------------
 	" フォルダの作成
 	call system('mkdir "'.fnamemodify(file2,':h').'"')
-	echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.'mkdir "'.fnamemodify(file2,':h').'"'
+	exe s:_debug.exe_line('mkdir "'.fnamemodify(file2,':h').'"')
 
 	" コピーする
 	let cmd = 'copy "'.file1.'" "'.file2.'"'
-	echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.cmd
+	exe s:_debug.exe_line(cmd)
 	call system(cmd)
-
 
 endfunction
 "}}}

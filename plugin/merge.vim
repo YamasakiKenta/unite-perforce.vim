@@ -1,3 +1,11 @@
+let s:_file  = expand("<sfile>")
+let s:_vital = vital#of('ymknjugg')
+let s:_debug = s:_vital.import("Debug")
+"exe s:_debug.exe_line()
+"
+function! unite#kinds#k_p4_clients#define()
+	return s:kind
+endfunction
 let g:perforce_merge_tool         = get(g:, 'perforce_merge_tool', 'winmergeu /S')
 let g:perforce_merge_default_path = get(g:, 'perforce_merge_default_path', 'c:\tmp')
 
@@ -38,7 +46,7 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 		" 名前がかぶるのを防ぐ
 		let tmp_pfpaths = perforce#pfcmds('have','',('//...'.file)).outs
 
-		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.tmp_pfpaths
+		exe s:_debug.exe_line()
 
 		" ローカル名に変更
 		let tmp_pfpaths = map(tmp_pfpaths, "perforce#get_path_from_have(v:val)")
@@ -60,7 +68,7 @@ function! s:get_merge_files_for_clientMove(datas) "{{{
 				continue
 			endif
 
-			echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.'	>'. path.' - '. tmp_pfpath
+			exe s:_debug.exe_line()
 
 			" 比較するファイルの登録
 			call add(merges, {
@@ -114,7 +122,7 @@ function! s:clientMove(...) "{{{
 	endif 
 
 	" root の表示
-	echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.' Root : '.string(dirs)
+	echo string(dirs)
 
 	let datas = s:get_files_for_clientMove(dirs)
 	
@@ -123,7 +131,6 @@ function! s:clientMove(...) "{{{
 
 	"マージ確認 
 	let str = input("Merge ? [yes/no/unite/force]\n")
-	echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.'' 
 
 	if str =~ 'f'
 		" 強制コピー
@@ -136,7 +143,7 @@ function! s:clientMove(...) "{{{
 		return
 	else
 		" 終了
-		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'."...END...\n"
+		echo "...END..."
 		return
 	endif
 	"
@@ -146,7 +153,7 @@ function! s:clientMove(...) "{{{
 		let file2 = merge.file2
 		call system('p4 edit '.perforce#common#get_kk(file2))
 		call system(cmd.' '.perforce#common#get_kk(file1).' '.perforce#common#get_kk(file2))
-		echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.cmd.' '.perforce#common#get_kk(file1).' '.perforce#common#get_kk(file2)
+		echo perforce#common#get_kk(file1).' '.perforce#common#get_kk(file2)
 	endfor
 	"
 endfunction "}}}

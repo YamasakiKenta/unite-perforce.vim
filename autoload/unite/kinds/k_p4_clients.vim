@@ -1,3 +1,8 @@
+let s:_file  = expand("<sfile>")
+let s:_vital = vital#of('ymknjugg')
+let s:_debug = s:_vital.import("Debug")
+"exe s:_debug.exe_line()
+"
 function! unite#kinds#k_p4_clients#define()
 	return s:kind
 endfunction
@@ -28,7 +33,8 @@ function! s:kind.action_table.a_p4_client_set.func(candidates) "{{{
 	call perforce#set_PFCLIENTPATH(clpath)
 	call perforce#set_PFPORT(port)
 
-	echo '--'.expand("<sfile>").':'.expand("<slnum>").'--'.$PFCLIENTNAME
+	exe s:_debug.exe_line()
+
 endfunction "}}}
 
 let s:kind.action_table.a_p4_client_sync = { 
