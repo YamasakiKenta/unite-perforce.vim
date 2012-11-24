@@ -628,6 +628,7 @@ function! perforce#pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 	for cmd in map(deepcopy(rtns), "v:val.cmd")
 		call unite#print_message('[cmd] '.cmd)
 	endfor
+
 	return rtns
 endfunction "}}}
 function! perforce#pfcmds_new(cmd, head, tail) "{{{
