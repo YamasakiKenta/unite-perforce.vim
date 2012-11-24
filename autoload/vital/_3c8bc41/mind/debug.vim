@@ -7,4 +7,3 @@ function s:exe_line(str)
 				\ a:str
 	return str
 endfunction
-

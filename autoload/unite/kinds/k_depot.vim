@@ -1,6 +1,5 @@
 let s:_file  = expand("<sfile>")
-let s:_vital = vital#of('ymknjugg')
-let s:_debug = s:_vital.import("Debug")
+let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 
 " ********************************************************************************
 " depot‚Å‘€ì‚Å‚«‚é‚à‚Ì

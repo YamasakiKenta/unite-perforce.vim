@@ -1,9 +1,6 @@
 let s:_file  = expand("<sfile>")
-let s:_vital = vital#of('ymknjugg')
-let s:_debug = s:_vital.import("Debug")
-"exe s:_debug.exe_line()
+let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 "
-"vim : set fdm = marker :
 function! unite#kinds#k_p4_change#define()
 	return [ s:kind_k_p4_change, s:kind_k_p4_change_reopen ]
 endfunction

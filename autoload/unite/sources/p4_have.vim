@@ -1,6 +1,5 @@
 let s:_file  = expand("<sfile>")
-let s:_vital = vital#of('ymknjugg')
-let s:_debug = s:_vital.import("Debug")
+let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 
 function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 	" 空白の場合は、スペースを使用する
