@@ -13,7 +13,7 @@ function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 	let key    = port.'_'.client.'_'.str
 
 	let data_ds = {}
-	if !has_key(g:cache, key) && a:reset_flg == 0
+	if !has_key(g:cache, key) || a:reset_flg == 0
 		echo 'loading...'
 		let datas = perforce#pfcmds_with_clients_from_data('have', '', str)
 		let g:cache[key] = s:get_candidates_from_pfhave(deepcopy(datas))
