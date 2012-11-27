@@ -1,9 +1,6 @@
 let s:_file  = expand("<sfile>")
 let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 "
-function! unite#kinds#k_p4_clients#define()
-	return s:kind
-endfunction
 let g:perforce_merge_tool         = get(g:, 'perforce_merge_tool', 'winmergeu /S')
 let g:perforce_merge_default_path = get(g:, 'perforce_merge_default_path', 'c:\tmp')
 
