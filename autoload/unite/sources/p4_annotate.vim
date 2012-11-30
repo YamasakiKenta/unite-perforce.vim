@@ -23,7 +23,10 @@ let s:source = {
 			\ 'description' : '各行にリビジョン番号を表示',
 			\ 'hooks' : {},
 			\ }
-let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
+let s:source.hooks.on_init = function('perforce#get_filename_for_unite')let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! s:source.gather_candidates(args, context) "{{{
 
 	let depots = a:context.source__depots
@@ -73,4 +76,8 @@ function! s:source.gather_candidates(args, context) "{{{
 	return candidates
 endfunction "}}}
 let s:source__p4_annotate_ai = deepcopy(s:source)
+
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
 

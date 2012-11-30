@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! unite#kinds#k_p4_clientMove#define()
 	return s:kind
 endfunction
@@ -51,4 +55,8 @@ function! s:kind.action_table.a_copy.func(candidates) "{{{
 	endfor
 
 endfunction "}}}
+
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
 

@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! unite#kinds#k_null#define()
 	return s:kind
 endfunction
@@ -16,3 +20,7 @@ let s:kind.action_table.a_null = {
 			\ }
 function! s:kind.action_table.a_null.func(candidate) "{{{
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

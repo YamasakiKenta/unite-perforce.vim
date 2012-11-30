@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! unite#kinds#k_p4_help#define()
 	return s:kind
 endfunction
@@ -25,3 +29,7 @@ function! s:kind.action_table.a_help.func(candidates) "{{{
 	endfor
 	call append(0, outs)
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

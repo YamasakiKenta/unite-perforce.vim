@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 let s:perforce_setting_unite_kind = {
 			\ 'title' : 'k_null',
 			\ 'bool' : 'k_p4_settings_bool',
@@ -186,4 +190,8 @@ function! s:get_kind_from_pf_setting(val) "{{{
 	return s:perforce_setting_unite_kind[type]
 
 endfunction "}}}
+
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
 

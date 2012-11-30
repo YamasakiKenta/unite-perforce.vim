@@ -1,5 +1,8 @@
  let s:save_cpo = &cpo
  set cpo&vim
+let s:save_cpo = &cpo
+set cpo&vim
+
 
 let s:O = vital#of('unite-perforce.vim').import("Mind.Common")
 
@@ -18,3 +21,7 @@ endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

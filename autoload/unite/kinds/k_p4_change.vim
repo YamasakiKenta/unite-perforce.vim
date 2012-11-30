@@ -1,4 +1,7 @@
-let s:_file  = expand("<sfile>")
+let s:_file  = expand("<sfile>")let s:save_cpo = &cpo
+set cpo&vim
+
+
 let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 "
 function! unite#kinds#k_p4_change#define()
@@ -206,4 +209,8 @@ function! s:make_new_changes(candidate) "{{{
 
 	return chnum
 endfunction "}}}
+
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
 

@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+"
 " Usage: Unite qf	"unite quickfix result
 " Usage: Unite qf:enc=utf-8 "iconv(getqflist(),enc,&enc)
 " Usage: Unite qf:enc=utf-8:ex= "show prompt for ex-command (ex. grep, vimgrep, make)
@@ -36,3 +40,8 @@ function! s:source.gather_candidates(args, context) "{{{
         \ }')
 endfunction "}}}
 " vim:set foldmethod=marker:
+"
+"
+"let &cpo = s:save_cpo
+"unlet s:save_cpo
+"

@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! unite#kinds#k_p4_settings#define()
 	return [
 				\ s:k_p4_settings_bool,
@@ -201,3 +205,8 @@ endfunction "}}}
 let s:k_p4_select = s:kind
 unlet s:kind
 "}}}
+"
+"
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

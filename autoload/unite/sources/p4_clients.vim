@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! unite#sources#p4_clients#define()
 	return s:source_p4_clients
 endfunction
@@ -47,3 +51,7 @@ function! s:get_pfclients() "{{{
 				\ }")
 	return candidates
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

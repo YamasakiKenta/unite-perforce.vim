@@ -1,4 +1,7 @@
-let s:_file  = expand("<sfile>")
+let s:_file  = expand("<sfile>")let s:save_cpo = &cpo
+set cpo&vim
+
+
 let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 "
 function! unite#kinds#k_p4_clients#define()
@@ -27,3 +30,7 @@ function! s:kind.action_table.a_p4_user_change.func(candidates) "{{{
 	call system('p4 set P4User='.user)
 	exe s:_debug.exe_line()
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

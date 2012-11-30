@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! unite#kinds#k_p4_jobs#define()
 	return s:kind
 endfunction
@@ -20,3 +24,7 @@ function! s:kind.action_table.a_p4_fixes.func(candidates) "{{{
 	let jobs = map(copy(a:candidates),"v:val.action__job")
 	let outs = perforce#pfcmds('fixes','',perforce#get_PFUSER().' '.'-j '.join(jobs,'-j ')).outs
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

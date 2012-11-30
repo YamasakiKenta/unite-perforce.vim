@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! <SID>pf_edit() "{{{
 	let file = perforce#common#get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
@@ -71,3 +75,7 @@ nnoremap ;pa<CR> :<C-u>Unite p4_annotate<CR>|"
 nnoremap ;pC<CR> :<C-u>Unite p4_changes_pending_reopen<CR>|"
 
 nnoremap ;pp<CR> :<C-u>call unite#start([['settings_ex', 'g:unite_pf_data']])<CR>|"
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

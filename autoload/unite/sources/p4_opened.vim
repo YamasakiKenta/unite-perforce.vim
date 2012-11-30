@@ -10,7 +10,10 @@ let s:source = {
 			\ 'name' : 'p4_opened',
 			\ 'description' : '編集しているファイルの表示 ( チェンジリスト番号 )',
 			\ 'is_quit' : 0,
-			\ }
+			\ }let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! s:source.gather_candidates(args, context) "{{{
 
 	" 引数の設定
@@ -39,3 +42,7 @@ endfunction "}}}
 let s:source_p4_opened = deepcopy(s:source)
 
 call unite#define_source(s:source_p4_opened) 
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

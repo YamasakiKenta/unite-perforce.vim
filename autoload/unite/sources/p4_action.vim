@@ -20,5 +20,12 @@ function! s:source.gather_candidates(args, context)
 				\ }")
 	return candidates
 endfunction
-unlet s:source
+unlet s:sourcelet s:save_cpo = &cpo
+set cpo&vim
+
+
 endif
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! unite#sources#p4_change#define()
 	return [s:source_p4_changes_pending, s:source_p4_changes_submitted, s:source_p4_changes_pending_reopen]
 endfunction
@@ -103,3 +107,7 @@ function! s:source.gather_candidates(args, context) "{{{
 endfunction "}}}
 let s:source_p4_changes_submitted = s:source
 unlet s:source 
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

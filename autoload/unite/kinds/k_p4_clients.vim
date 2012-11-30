@@ -1,5 +1,9 @@
 let s:_file  = expand("<sfile>")
 let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
+let s:save_cpo = &cpo
+set cpo&vim
+
+"
 "
 function! unite#kinds#k_p4_clients#define()
 	return s:kind
@@ -78,3 +82,7 @@ function! s:kind.action_table.a_p4_client.func(candidates) "{{{
 		call append(0,outs)
 	endfor
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! unite#kinds#k_p4_filelog#define()
 	return s:kind
 endfunction
@@ -88,3 +92,7 @@ function! s:kind.action_table.preview.func(candidate) "{{{
 	wincmd p
 
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

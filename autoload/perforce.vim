@@ -1,4 +1,7 @@
-let s:_file  = expand("<sfile>")
+let s:_file  = expand("<sfile>")let s:save_cpo = &cpo
+set cpo&vim
+
+
 let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 
 let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~' )
@@ -652,3 +655,7 @@ function! perforce#get_path_from_depot_with_client(client, depot) "{{{
 	let out = system(cmd)
 	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

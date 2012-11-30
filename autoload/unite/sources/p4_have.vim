@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 let s:_file  = expand("<sfile>")
 let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 let s:p4_have_cache = {}
@@ -66,4 +70,8 @@ function! s:source.gather_candidates(args, context) "{{{
 	return s:get_datas_from_p4_have(join(a:args), 1)
 endfunction "}}}
 let s:souce_p4have_reset = deepcopy(s:source)
+
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
 

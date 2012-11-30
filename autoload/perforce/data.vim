@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! perforce#data#init() "{{{
 	let file_ = $PFDATA.'_2'
 
@@ -42,3 +46,7 @@ function! perforce#data#get(valname, ...) "{{{
 	let kind = '__common'
 	return unite_setting_ex#get('g:unite_pf_data', a:valname, kind)
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

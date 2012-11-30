@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! unite#sources#p4_clientMove#define()
 	return s:source
 endfunction
@@ -14,3 +18,7 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ 'action__file2' : v:val.file2,
 				\ }")
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! unite#sources#p4_diff#define()
 	return s:source
 endfunction
@@ -75,3 +79,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	endif
 	return rtns
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+

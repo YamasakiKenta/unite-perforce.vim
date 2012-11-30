@@ -1,3 +1,7 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 function! unite#sources#p4_describe#define()
 	return s:source
 endfunction
@@ -11,3 +15,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let outs = perforce#pfcmds('describe','',join(chnums)).outs
 	return perforce#get_source_diff_from_diff(outs) 
 endfunction "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+
