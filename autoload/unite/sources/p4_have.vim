@@ -1,5 +1,6 @@
 let s:_file  = expand("<sfile>")
 let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
+let s:p4_have_cache = {}
 
 function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 	" 空白の場合は、スペースを使用する
@@ -13,16 +14,16 @@ function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 	let key    = port.'_'.client.'_'.str
 
 	let data_ds = {}
-	if !has_key(g:cache, key) || a:reset_flg == 0
+	if !has_key(s:p4_have_cache, key) || a:reset_flg == 0
 		echo 'loading...'
 		let datas = perforce#pfcmds_with_clients_from_data('have', '', str)
-		let g:cache[key] = s:get_candidates_from_pfhave(deepcopy(datas))
+		let s:p4_have_cache[key] = s:get_candidates_from_pfhave(deepcopy(datas))
 		echo 'finish !!'
 	else
 		echo 'cache load!'
 	endif
 
-	return g:cache[key]
+	return s:p4_have_cache[key]
 endfunction "}}}
 function! s:get_candidates_from_pfhave(datas) "{{{
 	let candidates = []
@@ -42,7 +43,6 @@ function! unite#sources#p4_have#define()
 	return [s:souce_p4have, s:souce_p4have_reset]
 endfunction
 
-let g:cache = {}
 let s:source = {
 			\ 'name' : 'p4_have',
 			\ 'description' : '所有するファイル',
@@ -55,7 +55,6 @@ function! s:source.gather_candidates(args, context) "{{{
 endfunction "}}}
 let s:souce_p4have = deepcopy(s:source)
 
-let g:cache = {}
 let s:source = {
 			\ 'name' : 'p4_have_reset',
 			\ 'description' : '所有するファイル ( キャッシュを削除する ) ',
