@@ -1,3 +1,6 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
 function! unite#sources#p4_action#define()
 	"return s:source__p4_action
 	return []
@@ -20,8 +23,7 @@ function! s:source.gather_candidates(args, context)
 				\ }")
 	return candidates
 endfunction
-unlet s:sourcelet s:save_cpo = &cpo
-set cpo&vim
+unlet s:source
 
 
 endif
