@@ -1,5 +1,7 @@
-let s:_file  = expand("<sfile>")let s:save_cpo = &cpo
+let s:save_cpo = &cpo
 set cpo&vim
+
+let s:_file  = expand("<sfile>")
 
 
 let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")

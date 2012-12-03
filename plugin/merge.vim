@@ -1,11 +1,13 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
 let s:_file  = expand("<sfile>")
 let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 "
 let g:perforce_merge_tool         = get(g:, 'perforce_merge_tool', 'winmergeu /S')
 let g:perforce_merge_default_path = get(g:, 'perforce_merge_default_path', 'c:\tmp')
 
-command! -nargs=? PfMerge call s:pf_merge(<q-args>)let s:save_cpo = &cpo
-set cpo&vim
+command! -nargs=? PfMerge call s:pf_merge(<q-args>)
 
 
 function! s:pf_merge(...) "{{{
