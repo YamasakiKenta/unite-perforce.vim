@@ -38,7 +38,7 @@ function! s:get_pfclients() "{{{
 		endfor
 	else
 		let datas += map(perforce#pfcmds('clients').outs, "{
-					\ 'port' : port,
+					\ 'port' : perforce#get_PFPORT(),
 					\ 'client' : v:val,
 					\ }")
 	endif
