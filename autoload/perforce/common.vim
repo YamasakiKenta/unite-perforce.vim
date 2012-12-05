@@ -1,7 +1,6 @@
  let s:save_cpo = &cpo
  set cpo&vim
 
-
 let s:O = vital#of('unite-perforce.vim').import("Mind.Common")
 
 function! perforce#common#MyQuit(...)

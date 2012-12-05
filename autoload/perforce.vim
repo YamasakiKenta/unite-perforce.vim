@@ -4,7 +4,7 @@ set cpo&vim
 let s:_file  = expand("<sfile>")
 
 
-let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
+let s:Debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 
 let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~' )
 let $PFTMPFILE = $PFTMP.'\perforce\tmpfile'
@@ -21,7 +21,7 @@ function! perforce#LogFile(str) "{{{
 	if perforce#data#get('is_out_flg', 'common') == 1
 		if perforce#data#get('is_out_echo_flg') == 1
 			echo s:_file
-			exe s:_debug.exe_line()
+			exe s:Debug.exe_line('')
 		else
 			call perforce#common#LogFile('p4log', 0, a:str)
 		endif
@@ -283,49 +283,52 @@ endfunction "}}}
 function! perforce#is_submitted_chnum(chnum) "{{{
 
 endfunction "}}}
-function! perforce#matomeDiffs(chnum) "{{{
-	" データの取得 {{{
-	let outs = perforce#pfcmds('describe -ds','',a:chnum).outs
-
+function! perforce#matomeDiffs(...) "{{{
 	" new file 用にここで初期化
 	let datas = []
 
-	" 作業中のファイル
-	if outs[0] =~ '\*pending\*' || a:chnum == 'default'
-		let files = perforce#pfcmds('opened','','-c '.a:chnum).outs
-		call map(files, "perforce#get_depot_from_opened(v:val)")
+	echo a:000
+	for chnum in a:000
+		" データの取得 {{{
+		let outs = perforce#pfcmds('describe -ds','',chnum).outs
 
-		let outs = []
-		for file in files 
-			let list_tmps = perforce#pfcmds('diff -ds','',file).outs
+		" 作業中のファイル
+		if outs[0] =~ '\*pending\*' || chnum == 'default'
+			let files = perforce#pfcmds('opened','','-c '.chnum).outs
+			call map(files, "perforce#get_depot_from_opened(v:val)")
 
-			for list_tmp in list_tmps
-				if list_tmp =~ '- file(s) not opened for edit.'
-					let file_tmp = substitute(file, '.*[\/]','','')
-					let path = perforce#get_path_from_depot(file)
-					let datas += [{'files' : file_tmp, 'adds' : len(readfile(path)), 'changeds' : 0, 'deleteds' : 0, }]
-				else
-					let outs += [list_tmp]
-				endif
+			let outs = []
+			for file in files 
+				let list_tmps = perforce#pfcmds('diff -ds','',file).outs
+
+				for list_tmp in list_tmps
+					if list_tmp =~ '- file(s) not opened for edit.'
+						let file_tmp = substitute(file, '.*[\/]','','')
+						let path = perforce#get_path_from_depot(file)
+						let datas += [{'files' : file_tmp, 'adds' : len(readfile(path)), 'changeds' : 0, 'deleteds' : 0, }]
+					else
+						let outs += [list_tmp]
+					endif
+				endfor
 			endfor
-		endfor
 
 
-	endif
-
-	let find = ' \(\d\+\) chunks \(\|\(\d\+\) / \)\(\d\+\) lines'
-	for out in outs
-		if out =~ "===="
-			let datas += [{'files' : substitute(out,'.*/\(.\{-}\)#.*','\1',''), 'adds' : 0, 'changeds' : 0, 'deleteds' : 0, }]
-		elseif out =~ 'add'.find
-			let datas[-1].adds = substitute(out,'add'.find,'\4','')
-		elseif out =~ 'deleted'.find
-			let datas[-1].deleteds = substitute(out,'deleted'.find,'\4','')
-		elseif out =~ 'changed'.find
-			let a = substitute(out,'changed'.find,'\3','')
-			let b = substitute(out,'changed'.find,'\4','')
-			let datas[-1].changeds = a > b ? a : b
 		endif
+
+		let find = ' \(\d\+\) chunks \(\|\(\d\+\) / \)\(\d\+\) lines'
+		for out in outs
+			if out =~ "===="
+				let datas += [{'files' : substitute(out,'.*/\(.\{-}\)#.*','\1',''), 'adds' : 0, 'changeds' : 0, 'deleteds' : 0, }]
+			elseif out =~ 'add'.find
+				let datas[-1].adds = substitute(out,'add'.find,'\4','')
+			elseif out =~ 'deleted'.find
+				let datas[-1].deleteds = substitute(out,'deleted'.find,'\4','')
+			elseif out =~ 'changed'.find
+				let a = substitute(out,'changed'.find,'\3','')
+				let b = substitute(out,'changed'.find,'\4','')
+				let datas[-1].changeds = a > b ? a : b
+			endif
+		endfor
 	endfor
 	"}}}
 	"

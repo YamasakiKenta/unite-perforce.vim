@@ -13,9 +13,8 @@ function! Pf_complate_have(A,L,P) "{{{
 				\ ")
 endfunction "}}}
 
-command! -nargs=* MatomeDiffs call perforce#matomeDiffs(<args>)
+command! -nargs=+ MatomeDiffs call perforce#matomeDiffs(<f-args>)
 command! GetClientName call perforce#get_client_data_from_info()
-
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
