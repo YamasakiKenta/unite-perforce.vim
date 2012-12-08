@@ -27,8 +27,6 @@ let s:source = {
 			\ 'hooks' : {},
 			\ }
 let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
-
-
 function! s:source.gather_candidates(args, context) "{{{
 
 	let depots = a:context.source__depots

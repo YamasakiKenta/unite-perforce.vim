@@ -192,6 +192,9 @@ p4_select
 p4_users
 	ユーザーの切り替え
 
+p4_template
+	テンプレートで管理します
+
 ==============================================================================
 KINDS						*unite-kinds*
 jump_list					*unite-perforce-kind-jump_list*
@@ -338,6 +341,9 @@ k_p4_select					*unite-perforce-action-k_p4_select*
 k_p4_users					*unite-perforce-action-k_p4_users*
 	a_p4_user_change
 		ユーザーの切り替え 1
+
+k_p4_template *unite-perforce-action-k_p4_template*
+	a_update
 
 ==============================================================================
 TODO *unite-perforce-todo*

@@ -64,15 +64,16 @@ nmap ;pe<CR> <PLUG>(p4_edit)
 nmap ;pr<CR> <PLUG>(p4_revert)
 nmap ;id<CR> <PLUG>(p4_get_depot)
 
-nnoremap ;pi<CR> :<C-u>Unite p4_info<CR>|"
-nnoremap ;pt<CR> :<C-u>Unite p4_clients<CR>|"
-nnoremap ;pc<CR> :<C-u>Unite p4_changes_pending<CR>|"
-nnoremap ;ps<CR> :<C-u>Unite p4_changes_submitted<CR>|"
-nnoremap ;po<CR> :<C-u>Unite p4_opened<CR>|"
-nnoremap ;pj<CR> :<C-u>Unite p4_jobs<CR>|"
-nnoremap ;ph<CR> :<C-u>Unite p4_have<CR>|"
-nnoremap ;pa<CR> :<C-u>Unite p4_annotate<CR>|"
-nnoremap ;pC<CR> :<C-u>Unite p4_changes_pending_reopen<CR>|"
+nnoremap ;pi<CR>  :<C-u>Unite p4_info<CR>|"
+nnoremap ;pt<CR>  :<C-u>Unite p4_clients<CR>|"
+nnoremap ;pc<CR>  :<C-u>Unite p4_changes_pending<CR>|"
+nnoremap ;ps<CR>  :<C-u>Unite p4_changes_submitted<CR>|"
+nnoremap ;po<CR>  :<C-u>Unite p4_opened<CR>|"
+nnoremap ;pj<CR>  :<C-u>Unite p4_jobs<CR>|"
+nnoremap ;ph<CR>  :<C-u>Unite p4_have<CR>|"
+nnoremap ;pa<CR>  :<C-u>Unite p4_annotate<CR>|"
+nnoremap ;pC<CR>  :<C-u>Unite p4_changes_pending_reopen<CR>|"
+nnoremap ;pte<CR> :<C-u>Unite p4_template<CR>|"
 
 nnoremap ;pp<CR> :<C-u>call unite#start([['settings_ex', 'g:unite_pf_data']])<CR>|"
 
