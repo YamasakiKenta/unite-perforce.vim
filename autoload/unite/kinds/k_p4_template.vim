@@ -1,5 +1,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
+
+let s:Tab = vital#of('unite-perforce.vim').import('Mind.Tab')
 function! unite#kinds#k_p4_template#define()
 	return [s:kind_p4_template]
 endfunction
@@ -22,8 +24,7 @@ function! s:kind.action_table.update_.func(candidates) "{{{
 		let clname = candidate.action__clname
 		let port   = candidate.action__port
 		let cmd = 'p4 -p '.port.' client -o -t '.tmp.' '.clname.' | p4 client -i'
-		"call system(cmd)
-		exe '!'.cmd
+		call system(cmd)
 	endfor
 endfunction "}}}
 
@@ -31,10 +32,18 @@ let s:kind.action_table.info = {
 	\ 'is_selectable' : 1,
 	\ 'description'   : 'ê‡ñæÇï\é¶ÇµÇ‹Ç∑',
 	\ }
-function! s:kind.action_table.info.func(candidates)
+function! s:kind.action_table.info.func(candidates) "{{{
+	let datas = []
 	for candidate in a:candidates
+		let tmp    = candidate.action__tmp
+		let clname = candidate.action__clname
+		let port   = candidate.action__port
+		let outs = perforce#pfcmds('info', '-p '.port.' -c '.clname).outs
+		call add(datas, outs)
 	endfor
-endfunction
+
+	call s:Tab.open_lines(datas)
+endfunction "}}}
 
 let s:kind_p4_template = deepcopy(s:kind)
 let &cpo = s:save_cpo
