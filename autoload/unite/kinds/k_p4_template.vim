@@ -11,7 +11,7 @@ let s:kind = {
 	\ 'description'    : 'テンプレートから設定します',
 	\ 'action_table'   : {},
 	\ 'default_action' : 'update_',
-	\ 'parents'        : [],
+	\ 'parents'        : ['common'],
 	\ }
 call unite#define_kind(s:kind) 
 let s:kind.action_table.update_ = {
