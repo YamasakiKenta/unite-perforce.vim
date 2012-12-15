@@ -19,8 +19,14 @@ let s:source = {
 function! s:source.gather_candidates(args, context) "{{{
 
 	" ˆø”‚ÌÝ’è
+	if len(a:args) > 0
+		let datas = map(a:args, "'-c '.v:val")
+	else 
+		let datas = [""]
+	endif
+
 	let tmps = []
-	for arg in extend([''], map(a:args, "'-c '.v:val"))
+	for arg in datas
 		call extend(tmps, perforce#pfcmds_new('opened', '', arg))
 	endfor
 

@@ -97,7 +97,7 @@ let s:kind.action_table.yank = {
 function! s:kind.action_table.yank.func(candidates) "{{{
 	let tmps = []
 	for candidate in a:candidates
-		calladd(tmps, s:find_filepath_from_depot(candidate))
+		call add(tmps, s:find_filepath_from_depot(candidate))
 	endfor
 	let @" = join(tmps, "\n")
 	let @+ = join(tmps, "\n")
