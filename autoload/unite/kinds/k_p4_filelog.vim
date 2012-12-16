@@ -27,6 +27,7 @@ functio! s:p4_print(candidates) "{{{
 		let strs = perforce#pfcmds('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
 		let file = fnamemodify(name,':t').file_numstr
 
+		tabe
 		call perforce#common#LogFile(file, 0, strs) 
 		call add(files, file)
 
@@ -54,6 +55,18 @@ let s:kind.action_table.a_p4_print = {
 			\ }
 functio! s:kind.action_table.a_p4_print.func(candidates) "{{{
 	return s:p4_print(a:candidates)
+endfunction "}}}
+
+let s:kind.action_table.a_p4_print_diff = {
+			\ 'description' : 'ファイルの表示 ( ひとつ前のファイルと一緒 )',
+			\ }
+functio! s:kind.action_table.a_p4_print_diff.func(candidates) "{{{
+	let candidates = [copy(a:candidates), copy(a:candidates)]
+	let candidates[1].action__revnum = candidates[1].action__revnum - 1
+	echo candidates
+	call input("")
+
+	return s:p4_print(candidates)
 endfunction "}}}
 
 let s:kind.action_table.preview = {
