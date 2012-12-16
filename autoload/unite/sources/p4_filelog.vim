@@ -21,17 +21,20 @@ function! s:source.gather_candidates(args, context) "{{{
 	let candidates = []
 
 	for arg in a:args 
-		let lines = perforce#pfcmds('filelog','',perforce#common#get_kk(arg)).outs
-		let candidates += map(lines, "{ 
+	 	let lines = perforce#pfcmds('filelog','',perforce#common#get_kk(arg)).outs
+		let candidates += map(filter(lines, "v:val =~ '\.\.\. #'"), "{ 
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog', 
 					\ 'action__revnum' : s:getRevisionNum(v:val),
 					\ 'action__depot' : arg,
 					\ }")
 	endfor
+"... ... branch into //depot/branch_1/mind/Test/AAA BBB/AAA BBB.txt.txt#1
 	
 	return candidates
 endfunction "}}}
+
+call unite#define_source(s:source)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
