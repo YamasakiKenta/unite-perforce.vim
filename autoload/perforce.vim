@@ -337,7 +337,8 @@ function! perforce#matomeDiffs(...) "{{{
 	for data in datas 
 		let outs += [data["files"]."\t\t".data["adds"]."\t".data["deleteds"]."\t".data["changeds"]]
 	endfor
-	call perforce#LogFile(outs)
+
+	call perforce#common#LogFile('p4log', 0, outs)
 	"}}}
 endfunction "}}}
 function! perforce#pfChange(str,...) "{{{
