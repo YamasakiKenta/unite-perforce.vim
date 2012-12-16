@@ -1,14 +1,14 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-
+let s:Tab = vital#of('unite-perforce.vim').import('Mind.Tab')
 function! unite#kinds#k_p4_filelog#define()
 	return s:kind
 endfunction
 
 functio! s:p4_print(candidates) "{{{
 	let filetype_old = &filetype
-	tabe
+	let files = []
 	for l:candidate in deepcopy(a:candidates)
 
 		let name = perforce#get_path_from_depot(candidate.action__depot)
@@ -27,13 +27,16 @@ functio! s:p4_print(candidates) "{{{
 		let strs = perforce#pfcmds('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
 		let file = fnamemodify(name,':t').file_numstr
 
-		tabe
 		call perforce#common#LogFile(file, 0, strs) 
+		call add(files, file)
 
 		" データの出力
 		exe 'setf' filetype_old
 
+		quit
+
 	endfor
+	call s:Tab.open_files(files)
 endfunction "}}}
 " ********************************************************************************
 " kind - k_p4_filelog
@@ -50,14 +53,6 @@ let s:kind.action_table.a_p4_print = {
 			\ 'is_selectable' : 1, 
 			\ }
 functio! s:kind.action_table.a_p4_print.func(candidates) "{{{
-	return s:p4_print(a:candidates)
-endfunction "}}}
-
-let s:kind.action_table.a_p4_print_diff = {
-			\ 'description' : 'ファイルの表示 ( ひとつ前のファイルと一緒 )',
-			\ 'is_selectable' : 1, 
-			\ }
-functio! s:kind.action_table.a_p4_print_diff.func(candidates) "{{{
 	return s:p4_print(a:candidates)
 endfunction "}}}
 
@@ -92,6 +87,8 @@ function! s:kind.action_table.preview.func(candidate) "{{{
 	wincmd p
 
 endfunction "}}}
+
+call unite#define_kind(s:kind)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

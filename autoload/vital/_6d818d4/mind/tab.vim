@@ -27,21 +27,23 @@ function! s:open_lines(datas) "{{{
 	tabe
 
 	" Å‰‚Ì‰æ–Ê‚ÌXV
-	"exe 'b' datas[0]
+	exe 'b' datas[0]
 
 	" 2‰æ–Ê–Ú‚©‚ç‚ÍA•ªŠ„‚·‚é
 	for lines in datas[1:]
 		sp
-		call append(0, lines)
+		append(0, lines)
 	endfor	
-endfunction "}}}
-function! s:tabcopy() "{{{
-	call s:copy_wins()
 endfunction "}}}
 function! s:copy_wins() "{{{
 	let bufnrs = []
 	windo let bufnrs += [bufnr("%")]
 	call s:open_bufrnrs(bufnrs)
+endfunction "}}}
+
+" old
+function! s:tabcopy() "{{{
+	call s:copy_wins()
 endfunction "}}}
 
 let &cpo = s:save_cpo
