@@ -22,6 +22,11 @@ function! s:open_bufnrs(bufnrs) "{{{
 		exe 'sb' bufnr
 	endfor	
 endfunction "}}}
+function! s:copy_wins() "{{{
+	let bufnrs = []
+	windo let bufnrs += [bufnr("%")]
+	call s:open_bufrnrs(bufnrs)
+endfunction "}}}
 function! s:open_lines(datas) "{{{
 	let datas = a:datas
 	tabe
@@ -32,20 +37,9 @@ function! s:open_lines(datas) "{{{
 	" 2âÊñ ñ⁄Ç©ÇÁÇÕÅAï™äÑÇ∑ÇÈ
 	for lines in datas[1:]
 		sp
-		append(0, lines)
+		call append(0, lines)
 	endfor	
-endfunction "}}}
-function! s:copy_wins() "{{{
-	let bufnrs = []
-	windo let bufnrs += [bufnr("%")]
-	call s:open_bufrnrs(bufnrs)
-endfunction "}}}
-
-" old
-function! s:tabcopy() "{{{
-	call s:copy_wins()
 endfunction "}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
-
