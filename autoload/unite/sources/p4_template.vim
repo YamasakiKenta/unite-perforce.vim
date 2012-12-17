@@ -1,9 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let g:pf_clients_template = [
-			\ { 'clname' : 'yama_tmp_2' , 'tmp' : 'temp_1' , 'ports' : ['localhost:1818']}
-			\ ]
 let g:pf_clients_template = get(g:, 'pf_clients_template', [])
 
 function! unite#sources#p4_template#define()
