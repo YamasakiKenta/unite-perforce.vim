@@ -25,7 +25,7 @@ endfunction "}}}
 function! s:copy_wins() "{{{
 	let bufnrs = []
 	windo let bufnrs += [bufnr("%")]
-	call s:open_bufrnrs(bufnrs)
+	call s:open_bufnrs(bufnrs)
 endfunction "}}}
 function! s:open_lines(datas) "{{{
 	let datas = a:datas
