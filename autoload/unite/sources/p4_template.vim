@@ -23,7 +23,7 @@ function! s:source.gather_candidates(args, context) "{{{
 			call add( candidates, {
 						\ 'word' : '-p '.port.' -c '.data.clname.' : -c '.data.tmp,
 						\ 'kind' : 'k_p4_template',
-						\ 'action__tmp' : data.tmp,
+						\ 'action__cltmp' : data.cltmp,
 						\ 'action__port' : port,
 						\ 'action__clname' : data.clname,
 						\ })
@@ -37,3 +37,7 @@ call unite#define_source(s:source_p4_template)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
+
+" memo
+" push ok
+"  - diff
