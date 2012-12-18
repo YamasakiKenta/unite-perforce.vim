@@ -32,7 +32,7 @@ function! s:open_lines(datas) "{{{
 	tabe
 
 	" Å‰‚Ì‰æ–Ê‚ÌXV
-	exe 'b' datas[0]
+	call append(0, datas[0])
 
 	" 2‰æ–Ê–Ú‚©‚ç‚ÍA•ªŠ„‚·‚é
 	for lines in datas[1:]

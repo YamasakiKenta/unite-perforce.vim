@@ -8,12 +8,12 @@ endfunction
 "kind - k_p4_template
 let s:kind = {
 	\ 'name'           : 'k_p4_template',
+	\ 'default_action' : 'a_info',
 	\ 'description'    : 'テンプレートから設定します',
 	\ 'action_table'   : {},
-	\ 'default_action' : 'info',
 	\ 'parents'        : ['common'],
 	\ }
-call unite#define_kind(s:kind) 
+"call unite#define_kind(s:kind) 
 let s:kind.action_table.update_ = {
 			\ 'is_selectable' : 1, 
 			\ 'description' : '',
@@ -28,22 +28,28 @@ function! s:kind.action_table.update_.func(candidates) "{{{
 	endfor
 endfunction "}}}
 
-let s:kind.action_table.info = {
+let s:kind.action_table.a_info = {
 	\ 'is_selectable' : 1,
 	\ 'description'   : '説明を表示します',
 	\ }
-function! s:kind.action_table.info.func(candidates) "{{{
-	let datas = []
+function! s:kind.action_table.a_info.func(candidates) "{{{
 	echo a:candidates
+
 	for candidate in a:candidates
-		let tmp    = candidate.action__cltmp
+		let datas = []
+		let cltmp  = candidate.action__cltmp
 		let clname = candidate.action__clname
 		let port   = candidate.action__port
+
 		let outs = perforce#pfcmds('info', '-p '.port.' -c '.clname).outs
 		call add(datas, outs)
-	endfor
 
-	call s:Tab.open_lines(datas)
+		let outs = perforce#pfcmds('info', '-p '.port.' -c '.cltmp).outs
+		call add(datas, outs)
+
+		call s:Tab.open_lines(datas)
+	endfor
+	
 endfunction "}}}
 
 let s:kind_p4_template = deepcopy(s:kind)

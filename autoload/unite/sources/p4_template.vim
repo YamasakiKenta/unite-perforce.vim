@@ -12,7 +12,6 @@ let s:source_p4_template = {}
 let s:source = {
 			\ 'name'           : 'p4_template',
 			\ 'description'    : '',
-			\ 'default_action' : '',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
 	let datas = deepcopy(g:pf_clients_template) 
@@ -21,7 +20,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	for data in datas
 		for port in data.ports
 			call add( candidates, {
-						\ 'word' : '-p '.port.' -c '.data.clname.' : -c '.data.tmp,
+						\ 'word' : '-p '.port.' -c '.data.clname.' : -c '.data.cltmp,
 						\ 'kind' : 'k_p4_template',
 						\ 'action__cltmp' : data.cltmp,
 						\ 'action__port' : port,
@@ -38,6 +37,3 @@ call unite#define_source(s:source_p4_template)
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
-" memo
-" push ok
-"  - diff
