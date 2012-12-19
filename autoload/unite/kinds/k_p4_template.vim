@@ -41,13 +41,15 @@ function! s:kind.action_table.a_info.func(candidates) "{{{
 		let clname = candidate.action__clname
 		let port   = candidate.action__port
 
-		let outs = perforce#pfcmds('info', '-p '.port.' -c '.clname).outs
+		let outs = perforce#pfcmds('client', '-p '.port.' -c '.clname, '-o').outs
 		call add(datas, outs)
 
-		let outs = perforce#pfcmds('info', '-p '.port.' -c '.cltmp).outs
+		let outs = perforce#pfcmds('client', '-p '.port.' -c '.cltmp, '-o').outs
 		call add(datas, outs)
 
 		call s:Tab.open_lines(datas)
+
+		windo diffthis
 	endfor
 	
 endfunction "}}}

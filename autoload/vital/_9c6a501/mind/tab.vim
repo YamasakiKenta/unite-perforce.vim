@@ -33,11 +33,13 @@ function! s:open_lines(datas) "{{{
 
 	" Å‰‚Ì‰æ–Ê‚ÌXV
 	call append(0, datas[0])
+	call cursor(0,0)
 
 	" 2‰æ–Ê–Ú‚©‚ç‚ÍA•ªŠ„‚·‚é
 	for lines in datas[1:]
-		sp
+		new
 		call append(0, lines)
+		call cursor(0,0)
 	endfor	
 endfunction "}}}
 
