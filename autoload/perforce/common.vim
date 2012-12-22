@@ -3,9 +3,6 @@
 
 let s:O = vital#of('unite-perforce.vim').import("Mind.Common")
 
-function! perforce#common#MyQuit(...)
-	return call(s:O.MyQuit, a:000)
-endfunction
 function! perforce#common#get_kk(...)
 	return call(s:O.get_kk, a:000)
 endfunction
