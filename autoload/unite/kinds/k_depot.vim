@@ -334,11 +334,9 @@ function! s:copy_file_depot(depot) "{{{
 	"--------------------------------------------------------------------------------
 	" フォルダの作成
 	call system('mkdir "'.fnamemodify(file2,':h').'"')
-	exe s:_debug.exe_line('mkdir "'.fnamemodify(file2,':h').'"')
 
 	" コピーする
 	let cmd = 'copy "'.file1.'" "'.file2.'"'
-	exe s:_debug.exe_line(cmd)
 	call system(cmd)
 
 endfunction

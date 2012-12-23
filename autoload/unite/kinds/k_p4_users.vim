@@ -30,7 +30,6 @@ function! s:kind.action_table.a_p4_user_change.func(candidates) "{{{
 	let candidate = a:candidates
 	let user = candidate.action__user
 	call system('p4 set P4User='.user)
-	exe s:_debug.exe_line()
 endfunction "}}}
 
 let &cpo = s:save_cpo

@@ -149,7 +149,6 @@ function! perforce#LogFile(str) "{{{
 	if perforce#data#get('is_out_flg', 'common') == 1
 		if perforce#data#get('is_out_echo_flg') == 1
 			echo s:_file
-			exe s:Debug.exe_line('')
 		else
 			call perforce#common#LogFile('p4log', 0, a:str)
 		endif

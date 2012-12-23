@@ -110,7 +110,6 @@ let s:kind.action_table.a_p4_change_submit = {
 function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 
 	if perforce#data#get('is_submit_flg') == 0
-		exe s:_debug.exe_line()
 	else
 		let chnums = map(copy(a:candidates), "v:val.action__chnum")
 		let outs = perforce#pfcmds('submit','',' -c '.join(chnums)).outs

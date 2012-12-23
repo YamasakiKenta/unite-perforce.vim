@@ -35,8 +35,6 @@ function! s:kind.action_table.a_p4_client_set.func(candidates) "{{{
 	call perforce#set_PFCLIENTPATH(clpath)
 	call perforce#set_PFPORT(port)
 
-	exe s:_debug.exe_line()
-
 endfunction "}}}
 
 let s:kind.action_table.a_p4_client_sync = { 
