@@ -189,30 +189,37 @@ function! perforce#get_client_data_from_info() "{{{
 	" ********************************************************************************
 	let clname = ""
 	let clpath = ""
-	let user = ""
-	let port = ""
+	let user   = ""
+	let port   = ""
 
-	let datas = split(system('p4 info'),'\n')
-	for data in  datas
-		if data =~ 'Client root: '
-			let clpath = matchstr(data, 'Client root: \zs.*')
-			let clpath = perforce#common#get_pathSrash(clpath)
-		elseif data =~ 'Client name: '
-			let clname  = matchstr(data, 'Client name: \zs.*')
-		elseif data =~ 'User name: '
-			let user  = matchstr(data, 'User name: \zs.*')
-		elseif data =~ 'Server address: '
-			let port  = matchstr(data, 'Server address: \zs.*')
-		elseif data =~ 'error'
-			break " # æ“¾‚É¸”s‚µ‚½‚çI—¹
-		endif
-	endfor 
+	let out   = system('p4 info')
 
-	" İ’è‚·‚é ( ¸”s‚µ‚½ê‡A•Ï‚É‚È‚éˆ×Å‰‚ÍC³‚µ‚È‚¢ )
-	call perforce#set_PFCLIENTNAME(clname)
-	call perforce#set_PFCLIENTPATH(clpath)
-	call perforce#set_PFPORT(port)
-	call perforce#set_PFUSER(user)
+	if out !~ 'Perforce client error:' && len(out) > 0
+		let datas = split(out,'\n')
+
+		for data in  datas
+			if data =~ 'Client root: '
+				let clpath = matchstr(data, 'Client root: \zs.*')
+				let clpath = perforce#common#get_pathSrash(clpath)
+			elseif data =~ 'Client name: '
+				let clname  = matchstr(data, 'Client name: \zs.*')
+			elseif data =~ 'User name: '
+				let user  = matchstr(data, 'User name: \zs.*')
+			elseif data =~ 'Server address: '
+				let port  = matchstr(data, 'Server address: \zs.*')
+			elseif data =~ 'error'
+				break " # æ“¾‚É¸”s‚µ‚½‚çI—¹
+			endif
+		endfor 
+
+		" İ’è‚·‚é ( ¸”s‚µ‚½ê‡A•Ï‚É‚È‚éˆ×Å‰‚ÍC³‚µ‚È‚¢ )
+		call perforce#set_PFCLIENTNAME(clname)
+		call perforce#set_PFCLIENTPATH(clpath)
+		call perforce#set_PFPORT(port)
+		call perforce#set_PFUSER(user)
+	else
+		"echo 'not find p4 server ....'
+	endif
 endfunction "}}}
 function! perforce#get_depot_from_have(str) "{{{
 	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')

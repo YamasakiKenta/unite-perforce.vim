@@ -3,7 +3,7 @@ set cpo&vim
 
 
 function! perforce#data#init() "{{{
-	let file_ = $PFDATA.'_2'
+	let file_ = expand('~/.vim-unite-perforce')
 
 	call unite_setting_ex#init('g:unite_pf_data', file_)
 	call unite_setting_ex#add_title ( 'g:unite_pf_data' , '_clients') 
