@@ -12,6 +12,7 @@ endfunction
 let s:source = {
 			\ 'name'           : 'p4_fixes',
 			\ 'description'    : '',
+			\ 'default_action' : 'a_p4change_describe',
 			\ }
 call unite#define_source(s:source)
 

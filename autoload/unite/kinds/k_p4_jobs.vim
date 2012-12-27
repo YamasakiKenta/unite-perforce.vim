@@ -36,8 +36,8 @@ function! s:kind.action_table.a_p4_fixes.func(candidates) "{{{
 	call unite#start_temporary([insert(jobs, 'p4_fixes')]) 
 endfunction "}}}
 
-let s:k_p4_jobs = deepcopy(s:kind)
-call unite#define_kind(s:k_p4_jobs) | unlet s:k_p4_jobs
+let s:k_p4_jobs = deepcopy(s:kind) | unlet s:kind
+call unite#define_kind(s:k_p4_jobs) 
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
