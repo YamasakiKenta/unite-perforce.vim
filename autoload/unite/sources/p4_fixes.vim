@@ -15,8 +15,7 @@ let s:source = {
 			\ 'default_action' : 'a_p4change_describe',
 			\ }
 call unite#define_source(s:source)
-
-function! s:source.gather_candidates(args, context)
+function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" @par       
 	" @param[in]  list  a:args  jobs name
@@ -41,6 +40,7 @@ function! s:source.gather_candidates(args, context)
 
 	return candidates
 endfunction
+"}}}
 
 let s:source_p4_fixes = deepcopy(s:source) | unlet s:source
 

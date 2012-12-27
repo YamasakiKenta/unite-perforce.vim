@@ -5,20 +5,20 @@ set cpo&vim
 function! <SID>pf_edit() "{{{
 	let file = perforce#common#get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
-		let datas = perforce#pfcmds('edit','',file).outs
-	else
-		"let datas = perforce#pfcmds('add','',file).outs
+		let datas = perforce#pfcmds_new('edit','',file)
+		let outs  = perforce#pfcmds_new_get_outs(datas)
 	endif
-	call perforce#LogFile(datas)
+	call perforce#LogFile(outs)
 endfunction "}}}
 function! <SID>pf_revert() "{{{
 	let file = perforce#common#get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
-		let datas = perforce#pfcmds('revert','',' -a '.file).outs
+		let datas = perforce#pfcmds_new('revert','',' -a '.file)
 	else
-		let datas = perforce#pfcmds('revert','',file).outs
+		let datas = perforce#pfcmds_new('revert','',file)
 	endif
-	call perforce#LogFile(datas)
+	let outs  = perforce#pfcmds_new_get_outs(datas)
+	call perforce#LogFile(outs)
 endfunction "}}}
 
 nnoremap <PLUG>(p4_edit)
@@ -35,9 +35,6 @@ nnoremap <PLUG>(p4_diff_tool)
 
 nnoremap <PLUG>(p4_echo_client_data)
 			\ :<C-u>echo " -p " . $PFPORT . " -c " . $PFCLIENTNAME . "\n" . $PFCLIENTPATH<CR>|"
-
-nnoremap <PLUG>(p4_print_info)
-			\ :<C-u>call perforce#LogFile(perforce#pfcmds('info',''))<CR>|"
 
 nnoremap <PLUG>(p4_cd_clentpath)
 			\ :<C-u>lcd $PFCLIENTPATH<CR>|"

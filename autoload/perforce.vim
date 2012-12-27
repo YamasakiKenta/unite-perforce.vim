@@ -1,11 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:_file  = expand("<sfile>")
-
-
-let s:Debug = vital#of('unite-perforce.vim').import("Mind.Debug")
-
 let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~' )
 let $PFTMPFILE = $PFTMP.'\perforce\tmpfile'
 let $PFHAVE    = $PFTMP.'\perforce\have'
@@ -145,10 +140,10 @@ function! perforce#LogFile(str) "{{{
 	" 結果の出力を行う
 	" @param[in]	str		表示する文字
 	" ********************************************************************************
-	
+
 	if perforce#data#get('is_out_flg', 'common') == 1
 		if perforce#data#get('is_out_echo_flg') == 1
-			echo s:_file
+			echo a:str
 		else
 			call perforce#common#LogFile('p4log', 0, a:str)
 		endif
@@ -200,22 +195,21 @@ function! perforce#get_client_data_from_info() "{{{
 			if data =~ 'Client root: '
 				let clpath = matchstr(data, 'Client root: \zs.*')
 				let clpath = perforce#common#get_pathSrash(clpath)
+				call perforce#set_PFCLIENTPATH(clpath)
 			elseif data =~ 'Client name: '
 				let clname  = matchstr(data, 'Client name: \zs.*')
+				call perforce#set_PFCLIENTNAME(clname)
 			elseif data =~ 'User name: '
 				let user  = matchstr(data, 'User name: \zs.*')
+				call perforce#set_PFUSER(user)
 			elseif data =~ 'Server address: '
 				let port  = matchstr(data, 'Server address: \zs.*')
+				call perforce#set_PFPORT(port)
 			elseif data =~ 'error'
 				break " # 取得に失敗したら終了
 			endif
 		endfor 
 
-		" 設定する ( 失敗した場合、変になる為最初は修正しない )
-		call perforce#set_PFCLIENTNAME(clname)
-		call perforce#set_PFCLIENTPATH(clpath)
-		call perforce#set_PFPORT(port)
-		call perforce#set_PFUSER(user)
 	else
 		"echo 'not find p4 server ....'
 	endif
@@ -635,7 +629,13 @@ function! perforce#pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 
 	return rtns
 endfunction "}}}
-
+function! perforce#pfcmds_new_get_outs(datas)
+	let outs = []
+	for data in a:datas
+		call extend(outs, get(data, 'out', []))
+	endfor
+	return outs
+endfunction
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
