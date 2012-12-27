@@ -102,6 +102,7 @@ let s:source = {
 			\ }
 let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
 function! s:source.gather_candidates(args, context) "{{{
+	" Åö jobs Ç≈çiÇËçûÇ› ? 
 	let outs = perforce#pfcmds('changes','','-s submitted').outs
 	return perforce#get_pfchanges(a:context, outs, 'k_p4_change')
 endfunction "}}}
