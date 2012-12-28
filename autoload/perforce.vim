@@ -635,7 +635,13 @@ function! perforce#pfcmds_with_clients(clients, cmd, head, tail) "{{{
 endfunction "}}}
 function! perforce#pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 	let clients = perforce#data#get('clients')
-	let rtns = perforce#pfcmds_with_clients(clients, a:cmd, a:head, a:tail)
+	return  perforce#pfcmds_with_clients_and_unite_mes(a:clients, a:cmd, a:head, a:tail)
+endfunction "}}}
+function! perforce#pfcmds_with_clients_from_arg(clients, cmd, head, tail) "{{{
+	return  perforce#pfcmds_with_clients_and_unite_mes(a:clients, a:cmd, a:head, a:tail)
+endfunction "}}}
+function! perforce#pfcmds_with_clients_and_unite_mes(clients, cmd, head, tail) "{{{
+	let rtns = perforce#pfcmds_with_clients(a:clients, a:cmd, a:head, a:tail)
 
 	for cmd in map(deepcopy(rtns), "v:val.cmd")
 		call unite#print_message('[cmd] '.cmd)
