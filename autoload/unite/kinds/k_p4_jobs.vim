@@ -22,17 +22,7 @@ let s:kind.action_table.a_p4_fixes = {
 			\ 'default_action' : 'a_p4_fixes',
 			\ }
 function! s:kind.action_table.a_p4_fixes.func(candidates) "{{{
-	let jobs = map(copy(a:candidates),"v:val.action__job")
-	let data_d = perforce#pfcmds_new('fixes','','-j '.join(jobs,'-j '))
-
-	let outs = []
-	for data in data_d
-		call extend(outs, data.outs)
-	endfor
-
-	let jobs = map(copy(outs), "matchstr(v:val, '\\w*')")
-	let jobs = perforce#common#uniq(jobs)
-
+	let jobs = map(deepcopy(a:candidates),"v:val.action__job")
 	call unite#start_temporary([insert(jobs, 'p4_fixes')]) 
 endfunction "}}}
 

@@ -4,20 +4,19 @@ set cpo&vim
 
 function! <SID>pf_edit() "{{{
 	let file = perforce#common#get_kk(expand("%"))
+	let outs = []
 	if perforce#is_p4_have(expand("%"))
-		let datas = perforce#pfcmds_new('edit','',file)
-		let outs  = perforce#pfcmds_new_get_outs(datas)
+		let outs = perforce#pfcmds_new_outs('edit','',file)
 	endif
 	call perforce#LogFile(outs)
 endfunction "}}}
 function! <SID>pf_revert() "{{{
 	let file = perforce#common#get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
-		let datas = perforce#pfcmds_new('revert','',' -a '.file)
+		let outs = perforce#pfcmds_new_outs('revert','',' -a '.file)
 	else
-		let datas = perforce#pfcmds_new('revert','',file)
+		let outs = perforce#pfcmds_new_outs('revert','',file)
 	endif
-	let outs  = perforce#pfcmds_new_get_outs(datas)
 	call perforce#LogFile(outs)
 endfunction "}}}
 

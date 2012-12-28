@@ -562,6 +562,20 @@ function! perforce#pfcmds_new(cmd, head, tail) "{{{
 
 	return rtns
 endfunction "}}}
+function! perforce#pfcmds_new_outs(cmd, head, tail) "{{{
+	let client_default_flg = perforce#data#get('use_default')
+	if client_default_flg == 1
+		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
+		let tmp.client = '-p '.perforce#get_PFPORT().' -c '.perforce#get_PFCLIENTNAME()
+		let rtns = [tmp]
+	else
+		let rtns = perforce#pfcmds_with_clients_from_data(a:cmd, a:head, a:tail)
+	endif
+
+	let rtns = perforce#pfcmds_new_get_outs(rtns)
+
+	return rtns
+endfunction "}}}
 function! perforce#pfcmds_with_client(client,cmd,head,tail) "{{{
 	return perforce#pfcmds_with_clients([a:client], a:cmd, a:head, a:tail)
 endfunction "}}}
@@ -629,13 +643,14 @@ function! perforce#pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 
 	return rtns
 endfunction "}}}
-function! perforce#pfcmds_new_get_outs(datas)
+function! perforce#pfcmds_new_get_outs(datas) "{{{
 	let outs = []
 	for data in a:datas
 		call extend(outs, get(data, 'out', []))
 	endfor
 	return outs
 endfunction
+"}}}
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
