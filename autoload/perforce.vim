@@ -411,8 +411,11 @@ function! perforce#pfChange(str,...) "{{{
 	"一時ファイルの書き出し
 	call writefile(split(tmp,'\n'),$PFTMPFILE)
 
-	"チェンジリストの作成
-	return split('more '.perforce#common#get_kk($PFTMPFILE).' | p4 change -i', '\n')
+	" チェンジリストの作成
+	" ★ client に対応する
+	let out = split(system('more '.perforce#common#get_kk($PFTMPFILE).' | p4 change -i', '\n'))
+
+	return out
 
 endfunction "}}}
 function! perforce#pfDiff(path) "{{{
