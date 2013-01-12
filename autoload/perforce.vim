@@ -174,48 +174,50 @@ endfunction "}}}
 function! perforce#get_PFUSER() "{{{
 	return $PFUSER 
 endfunction "}}}
-function! perforce#get_client_data_from_info() "{{{
-	" ********************************************************************************
-	" p4 info から情報を取得します
-	" client root
-	" client name
-	" user name
-	" ********************************************************************************
-	let clname = ""
+function! perforce#get_client_data_from_info_path() "{{{
 	let clpath = ""
-	let user   = ""
-	let port   = ""
 
 	let out   = system('p4 info')
 
 	if out !~ 'Perforce client error:' && len(out) > 0
 		let datas = split(out,'\n')
 
-		echo datas
-
 		for data in  datas
 			if data =~ 'Client root: '
 				let clpath = matchstr(data, 'Client root: \zs.*')
 				let clpath = perforce#common#get_pathSrash(clpath)
 				call perforce#set_PFCLIENTPATH(clpath, 0)
-			elseif data =~ 'Client name: '
-				let clname  = matchstr(data, 'Client name: \zs.*')
-				call perforce#set_PFCLIENTNAME(clname, 0)
-			elseif data =~ 'User name: '
-				let user  = matchstr(data, 'User name: \zs.*')
-				call perforce#set_PFUSER(user, 0)
-			elseif data =~ 'Server address: '
-				let port  = matchstr(data, 'Server address: \zs.*')
-				call perforce#set_PFPORT(port, 0)
 			elseif data =~ 'error'
 				break " # 取得に失敗したら終了
 			endif
 		endfor 
-
 	else
 		"echo 'not find p4 server ....'
 	endif
+
 endfunction "}}}
+function! perforce#get_client_data_from_set() "{{{
+	let datas = split(system('p4 set'), '\n')
+	
+	for data in datas
+		let tmp = matchstr(data, '\w*=\zs.* \ze(set)')
+		if data =~ '^P4CLIENT'
+			let clname = tmp
+		elseif data =~ '^P4PORT'
+			let port = tmp
+		elseif data =~ '^P4USER'
+			let user = tmp
+		endif
+	endfor
+
+	call perforce#set_PFCLIENTNAME(clname, 0)
+	call perforce#set_PFPORT(port, 0)
+	call perforce#set_PFUSER(user, 0)
+
+	call perforce#get_client_data_from_info_path()
+
+endfunction
+"}}}
 function! perforce#get_depot_from_have(str) "{{{
 	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')
 endfunction "}}}
@@ -304,7 +306,7 @@ endfunction "}}}
 function! perforce#init() "{{{
 
 	" クライアントデータの読み込み
-	call perforce#get_client_data_from_info()
+	call perforce#get_client_data_from_set()
 
 	" 設定の取得
 	call perforce#data#init()
