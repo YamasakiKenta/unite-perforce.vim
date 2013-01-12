@@ -43,9 +43,6 @@ function! s:get_pfclients() "{{{
 					\ }")
 	endif
 
-	echo datas
-	call input("")
-
 	let candidates = map(datas, "{
 				\ 'word' : '-p '.v:val.port.' -c '.perforce#get_ClientName_from_client(v:val.client),
 				\ 'kind' : 'k_p4_clients',
