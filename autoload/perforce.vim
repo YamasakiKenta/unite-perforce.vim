@@ -635,7 +635,7 @@ function! perforce#pfcmds_with_clients(clients, cmd, head, tail) "{{{
 endfunction "}}}
 function! perforce#pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 	let clients = perforce#data#get('clients')
-	return  perforce#pfcmds_with_clients_and_unite_mes(a:clients, a:cmd, a:head, a:tail)
+	return  perforce#pfcmds_with_clients_and_unite_mes(clients, a:cmd, a:head, a:tail)
 endfunction "}}}
 function! perforce#pfcmds_with_clients_from_arg(clients, cmd, head, tail) "{{{
 	return  perforce#pfcmds_with_clients_and_unite_mes(a:clients, a:cmd, a:head, a:tail)
