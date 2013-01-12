@@ -177,7 +177,7 @@ endfunction "}}}
 function! perforce#get_client_data_from_info_path() "{{{
 	let clpath = ""
 
-	let out   = system('p4 info')
+	let out   = s:system('p4 info')
 
 	if out !~ 'Perforce client error:' && len(out) > 0
 		let datas = split(out,'\n')
@@ -196,8 +196,17 @@ function! perforce#get_client_data_from_info_path() "{{{
 	endif
 
 endfunction "}}}
+function! s:system(cmd) "{{{
+	if exists('s:exists_vimproc')
+		let data = vimproc#system(a:cmd)
+	else
+		let data = system(a:cmd)
+	endif
+	return data
+endfunction "}}}
 function! perforce#get_client_data_from_set() "{{{
-	let datas = split(system('p4 set'), '\n')
+
+	let datas = split(s:system('p4 set'), '\n')
 	
 	for data in datas
 		let tmp = matchstr(data, '\w*=\zs.* \ze(set)')
