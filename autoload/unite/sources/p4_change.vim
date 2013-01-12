@@ -3,7 +3,11 @@ set cpo&vim
 
 
 function! unite#sources#p4_change#define()
-	return [s:source_p4_changes_pending, s:source_p4_changes_submitted, s:source_p4_changes_pending_reopen]
+	return [
+				\ s:source_p4_changes_pending,
+				\ s:source_p4_changes_submitted,
+				\ s:source_p4_changes_pending_reopen
+				\ ]
 endfunction
 " --------------------------------------------------------------------------------
 " 表示変更
@@ -72,8 +76,7 @@ function! s:source.change_candidates(args, context) "{{{
 
 endfunction "}}}
 
-let s:source_p4_changes_pending = s:source
-unlet s:source
+let s:source_p4_changes_pending = deepcopy(s:source) | unlet s:source
 
 " ********************************************************************************
 " source - p4_changes_pending_reopen
@@ -88,8 +91,7 @@ let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
 let s:source.gather_candidates = s:source_p4_changes_pending.gather_candidates
 let s:source.change_candidates = s:source_p4_changes_pending.change_candidates
 
-let s:source_p4_changes_pending_reopen = s:source
-unlet s:source 
+let s:source_p4_changes_pending_reopen = deepcopy(s:source) | unlet s:source 
 
 " ********************************************************************************
 " source - p4_changes_submitted
@@ -98,16 +100,22 @@ let s:source = {
 			\ 'name' : 'p4_changes_submitted',
 			\ 'description' : 'submit 済みチェンジリスト',
 			\ 'hooks' : {},
-			\ 'is_quit' : 0,
+			\' default_action' : 'a_p4change_describe',
 			\ }
+
+	"call unite#start_temporary([['settings_ex_list_select', tmp_d]], {'default_action' : 'a_toggle'})
 let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
 function! s:source.gather_candidates(args, context) "{{{
-	" ★ jobs で絞り込み ? 
 	let outs = perforce#pfcmds('changes','','-s submitted').outs
 	return perforce#get_pfchanges(a:context, outs, 'k_p4_change')
 endfunction "}}}
-let s:source_p4_changes_submitted = s:source
-unlet s:source 
+
+let s:source_p4_changes_submitted = deepcopy(s:source) | unlet s:source
+
+call unite#define_source(s:source_p4_changes_pending_reopen)
+call unite#define_source(s:source_p4_changes_submitted)
+call unite#define_source(s:source_p4_changes_pending)
+
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

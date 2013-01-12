@@ -125,7 +125,7 @@ let s:kind.action_table.a_p4change_describe = {
 			\ }
 function! s:kind.action_table.a_p4change_describe.func(candidates) "{{{
 	let chnums = map(copy(a:candidates),"v:val.action__chnum")
-	call unite#start([insert(chnums,'p4_describe')])
+	call unite#start_temporary([insert(chnums,'p4_describe')])
 endfunction "}}}
 
 let s:kind.action_table.a_p4_matomeDiff = { 
