@@ -191,20 +191,22 @@ function! perforce#get_client_data_from_info() "{{{
 	if out !~ 'Perforce client error:' && len(out) > 0
 		let datas = split(out,'\n')
 
+		echo datas
+
 		for data in  datas
 			if data =~ 'Client root: '
 				let clpath = matchstr(data, 'Client root: \zs.*')
 				let clpath = perforce#common#get_pathSrash(clpath)
-				call perforce#set_PFCLIENTPATH(clpath)
+				call perforce#set_PFCLIENTPATH(clpath, 0)
 			elseif data =~ 'Client name: '
 				let clname  = matchstr(data, 'Client name: \zs.*')
-				call perforce#set_PFCLIENTNAME(clname)
+				call perforce#set_PFCLIENTNAME(clname, 0)
 			elseif data =~ 'User name: '
 				let user  = matchstr(data, 'User name: \zs.*')
-				call perforce#set_PFUSER(user)
+				call perforce#set_PFUSER(user, 0)
 			elseif data =~ 'Server address: '
 				let port  = matchstr(data, 'Server address: \zs.*')
-				call perforce#set_PFPORT(port)
+				call perforce#set_PFPORT(port, 0)
 			elseif data =~ 'error'
 				break " # éÊìæÇ…é∏îsÇµÇΩÇÁèIóπ
 			endif
@@ -509,20 +511,26 @@ function! perforce#pfcmds(cmd,...) "{{{
 
 	return rtn_d
 endfunction "}}}
-function! perforce#set_PFCLIENTNAME(str) "{{{
+function! perforce#set_PFCLIENTNAME(str, ...) "{{{
 	let $PFCLIENTNAME = a:str
-	call system('p4 set P4CLIENT='.$PFCLIENTNAME) 
+	if  a:0 == 0
+		call system('p4 set P4CLIENT='.$PFCLIENTNAME) 
+	endif 
 endfunction "}}}
-function! perforce#set_PFCLIENTPATH(str) "{{{
+function! perforce#set_PFCLIENTPATH(str, ...) "{{{
 	let $PFCLIENTPATH = a:str
 endfunction "}}}
-function! perforce#set_PFPORT(str) "{{{
+function! perforce#set_PFPORT(str, ...) "{{{
 	let $PFPORT = a:str
-	call system('p4 set P4PORT='.$PFPORT)
+	if a:0 == 0
+		call system('p4 set P4PORT='.$PFPORT)
+	endif 
 endfunction "}}}
-function! perforce#set_PFUSER(str) "{{{
+function! perforce#set_PFUSER(str, ...) "{{{
 	let $PFUSER= a:str
-	call system('p4 set P4USER='.$PFUSER)
+	if a:0 == 0
+		call system('p4 set P4USER='.$PFUSER)
+	endif
 endfunction "}}}
 function! perforce#unite_args(source) "{{{
 	"********************************************************************
