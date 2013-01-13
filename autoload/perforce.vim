@@ -1,11 +1,11 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~' )
-let $PFTMPFILE = $PFTMP.'\perforce\tmpfile'
-let $PFHAVE    = $PFTMP.'\perforce\have'
-let $PFDATA    = $PFTMP.'\perforce\data'
-if !isdirectory($PFTMP.'\perforce') | call mkdir($PFMP.'\perforce') | endif
+let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~/.perforce/' )
+let $PFTMPFILE = $PFTMP.'tmpfile'
+let $PFHAVE    = $PFTMP.'have'
+let $PFDATA    = $PFTMP.'data'
+if !isdirectory($PFTMP) | call mkdir($PFTMP) | endif
 
 function! s:get_dd(str) "{{{
 	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''

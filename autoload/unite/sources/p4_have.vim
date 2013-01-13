@@ -9,9 +9,6 @@ let s:p4_have_cache = {}
 function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 	" 空白の場合は、スペースを使用する
 	let str = a:str
-	"if str == ''
-		"let str = ' '
-	"endif 
 
 	let port   = perforce#get_PFPORT()
 	let client = perforce#get_PFCLIENTNAME()
@@ -20,7 +17,7 @@ function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 	let data_ds = {}
 	if !has_key(s:p4_have_cache, key) || a:reset_flg == 0
 		echo 'loading...'
-		let datas = perforce#pfcmds_with_clients_from_data('have', '', str)
+		let datas = perforce#pfcmds_new('have', '', str)
 		let s:p4_have_cache[key] = s:get_candidates_from_pfhave(deepcopy(datas))
 		echo 'finish !!'
 	else
