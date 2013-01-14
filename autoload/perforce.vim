@@ -154,6 +154,7 @@ function! perforce#get_ChangeNum_from_changes(str) "{{{
 	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
 endfunction "}}}
 function! perforce#get_ClientName_from_client(str) "{{{
+	echo a:str
 	return matchstr(a:str,'Client \zs\S\+')
 endfunction "}}}
 function! perforce#get_ClientPathFromName(str) "{{{
@@ -510,18 +511,19 @@ function! perforce#pfcmds(cmd,...) "{{{
 	" Error
 	if len(rtn_d.outs) > 0
 		if rtn_d.outs[0] =~ "^Perforce client error:"
-			let rtn_d.outs = []
+			let rtn_d.outs = ['ERROR']
 		endif
+	else
+		let rtn_d.outs = ['ERROR']
 	endif
 
 	call unite#print_message(rtn_d.cmd)
 
 	" 非表示にするコマンド
 	if perforce#data#get('filters_flg') == 1
-		let filter_ = join ( perforce#data#get('filters'), '\|' ) 
+		let filter_ = join(perforce#data#get('filters'), '\|' ) 
 		call filter(rtn_d.outs, 'v:val !~ filter_')
 	endif
-
 
 	return rtn_d
 endfunction "}}}
@@ -572,6 +574,18 @@ function! perforce#get_path_from_depot_with_client(client, depot) "{{{
 	let out = system(cmd)
 	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')
 endfunction "}}}
+function! perforce#pfcmds_new_port_only(cmd, head, tail) "{{{
+	let client_default_flg = perforce#data#get('use_default')
+	if client_default_flg == 1
+		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
+		let tmp.client = '-p '.perforce#get_PFPORT()
+		let rtns = [tmp]
+	else
+		let rtns = perforce#pfcmds_with_clients_from_data_port_only(a:cmd, a:head, a:tail)
+	endif
+
+	return rtns
+endfunction "}}}
 function! perforce#pfcmds_new(cmd, head, tail) "{{{
 	let client_default_flg = perforce#data#get('use_default')
 	if client_default_flg == 1
@@ -613,6 +627,8 @@ function! perforce#pfcmds_with_clients(clients, cmd, head, tail) "{{{
 
 	if perforce#data#get('user_changes_only',kind) == 1 
 		let user = '-u '.perforce#get_PFUSER()
+	else 
+		let user = ''
 	endif
 
 	let rtns = []
@@ -642,8 +658,8 @@ function! perforce#pfcmds_with_clients(clients, cmd, head, tail) "{{{
 		let cmd = join(gcmds)
 
 		call add(rtns, {
-					\ 'cmd'  : cmd,
-					\ 'outs' : split(system(cmd),'\n'),
+					\ 'cmd'    : cmd,
+					\ 'outs'   : split(system(cmd),'\n'),
 					\ 'client' : client,
 					\ })
 
@@ -658,6 +674,10 @@ endfunction "}}}
 function! perforce#pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 	let clients = perforce#data#get('clients')
 	return  perforce#pfcmds_with_clients_and_unite_mes(clients, a:cmd, a:head, a:tail)
+endfunction "}}}
+function! perforce#pfcmds_with_clients_from_data_port_only(cmd,head,tail) "{{{
+	let ports = map(perforce#data#get('ports'), "'-p '.v:val")
+	return  perforce#pfcmds_with_clients_and_unite_mes(ports, a:cmd, a:head, a:tail)
 endfunction "}}}
 function! perforce#pfcmds_with_clients_from_arg(clients, cmd, head, tail) "{{{
 	return  perforce#pfcmds_with_clients_and_unite_mes(a:clients, a:cmd, a:head, a:tail)

@@ -17,38 +17,26 @@ endfunction "}}}
 let s:source_p4_clients = s:source
 
 " ================================================================================
-" SubRoutine
+" SubRoutioe
 " ================================================================================
 function! s:get_pfclients() "{{{
 	" ********************************************************************************
 	" クライアントを表示する
 	" ********************************************************************************
 
-	"ポートのクライアントを表示する
-	let datas = []
-	let ports = perforce#data#get('ports')
+	let datas = perforce#pfcmds_new_port_only('clients', '', '')
 
-	" デフォルトの追加
-	if perforce#data#get('use_default') == 0
-		for port in ports
-			let datas += map(perforce#pfcmds('clients','-p '.port).outs, "{
-						\ 'port' : port,
-						\ 'client' : v:val,
-						\ }")
-		endfor
-	else
-		let datas += map(perforce#pfcmds('clients').outs, "{
-					\ 'port' : perforce#get_PFPORT(),
-					\ 'client' : v:val,
-					\ }")
-	endif
+	let candidates = []
+	for data in datas
+		let port = data.client
+		call extend(candidates, map(deepcopy(data['outs']), "{
+					\ 'word' : port.' -c '.perforce#get_ClientName_from_client(v:val),
+					\ 'kind' : 'k_p4_clients',
+					\ 'action__clname' : perforce#get_ClientName_from_client(v:val),
+					\ 'action__port' : port,
+					\ }"))
+	endfor
 
-	let candidates = map(datas, "{
-				\ 'word' : '-p '.v:val.port.' -c '.perforce#get_ClientName_from_client(v:val.client),
-				\ 'kind' : 'k_p4_clients',
-				\ 'action__clname' : perforce#get_ClientName_from_client(v:val.client),
-				\ 'action__port' : v:val.port,
-				\ }")
 	return candidates
 endfunction "}}}
 
