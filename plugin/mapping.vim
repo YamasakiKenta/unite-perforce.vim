@@ -33,10 +33,10 @@ nnoremap <PLUG>(p4_diff_tool)
 			\ :<C-u>call perforce#pfDiff(expand("%"))<CR>|"  
 
 nnoremap <PLUG>(p4_echo_client_data)
-			\ :<C-u>echo " -p " . $PFPORT . " -c " . $PFCLIENTNAME . "\n" . $PFCLIENTPATH<CR>|"
+			\ :<C-u>echo " -p " . perforce#get_PFPORT() . " -c " . perforce#get_PFCLIENTNAME() . "\n" . perforce#get_PFCLIENTPATH()<CR>|"
 
 nnoremap <PLUG>(p4_cd_clentpath)
-			\ :<C-u>lcd $PFCLIENTPATH<CR>|"
+			\ :<C-u>lcd perforce#get_PFCLIENTPATH<CR>|"
 
 nnoremap <PLUG>(p4_filelog)
 			\ :<C-u>call perforce#unite_args('p4_filelog')<CR>|"

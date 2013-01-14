@@ -164,16 +164,16 @@ function! perforce#get_ClientPathFromName(str) "{{{
 	return path
 endfunction "}}}
 function! perforce#get_PFCLIENTNAME() "{{{
-	return $PFCLIENTNAME
+	return perforce#get_set_data('P4CLIENT')
 endfunction "}}}
 function! perforce#get_PFCLIENTPATH() "{{{
 	return $PFCLIENTPATH
 endfunction "}}}
 function! perforce#get_PFPORT() "{{{
-	return $PFPORT
+	return perforce#get_set_data('P4PORT')
 endfunction "}}}
 function! perforce#get_PFUSER() "{{{
-	return $PFUSER 
+	return perforce#get_set_data('P4USER')
 endfunction "}}}
 function! perforce#get_client_data_from_info_path() "{{{
 	let clpath = ""
@@ -187,7 +187,7 @@ function! perforce#get_client_data_from_info_path() "{{{
 			if data =~ 'Client root: '
 				let clpath = matchstr(data, 'Client root: \zs.*')
 				let clpath = perforce#common#get_pathSrash(clpath)
-				call perforce#set_PFCLIENTPATH(clpath, 0)
+				call perforce#set_PFCLIENTPATH(clpath)
 			elseif data =~ 'error'
 				break " # éÊìæÇ…é∏îsÇµÇΩÇÁèIóπ
 			endif
@@ -195,6 +195,8 @@ function! perforce#get_client_data_from_info_path() "{{{
 	else
 		"echo 'not find p4 server ....'
 	endif
+
+	return clpath
 
 endfunction "}}}
 function! s:system(cmd) "{{{
@@ -205,24 +207,14 @@ function! s:system(cmd) "{{{
 	endif
 	return data
 endfunction "}}}
+function! perforce#get_set_data(str) "{{{
+	return matchstr(s:system('p4 set '.a:str), '\w*=\zs.* \ze(set)')
+endfunction "}}}
 function! perforce#get_client_data_from_set() "{{{
 
-	let datas = split(s:system('p4 set'), '\n')
-	
-	for data in datas
-		let tmp = matchstr(data, '\w*=\zs.* \ze(set)')
-		if data =~ '^P4CLIENT'
-			let clname = tmp
-		elseif data =~ '^P4PORT'
-			let port = tmp
-		elseif data =~ '^P4USER'
-			let user = tmp
-		endif
-	endfor
-
-	call perforce#set_PFCLIENTNAME(clname, 0)
-	call perforce#set_PFPORT(port, 0)
-	call perforce#set_PFUSER(user, 0)
+	let clname = perforce#get_set_data('P4CLIENT')
+	let port   = perforce#get_set_data('P4PORT')
+	let user   = perforce#get_set_data('P4USER')
 
 	call perforce#get_client_data_from_info_path()
 
@@ -527,26 +519,17 @@ function! perforce#pfcmds(cmd,...) "{{{
 
 	return rtn_d
 endfunction "}}}
-function! perforce#set_PFCLIENTNAME(str, ...) "{{{
-	let $PFCLIENTNAME = a:str
-	if  a:0 == 0
-		call system('p4 set P4CLIENT='.$PFCLIENTNAME) 
-	endif 
+function! perforce#set_PFCLIENTNAME(str) "{{{
+	call system('p4 set P4CLIENT='.a:str)
 endfunction "}}}
-function! perforce#set_PFCLIENTPATH(str, ...) "{{{
+function! perforce#set_PFCLIENTPATH(str) "{{{
 	let $PFCLIENTPATH = a:str
 endfunction "}}}
-function! perforce#set_PFPORT(str, ...) "{{{
-	let $PFPORT = a:str
-	if a:0 == 0
-		call system('p4 set P4PORT='.$PFPORT)
-	endif 
+function! perforce#set_PFPORT(str) "{{{
+	call system('p4 set P4PORT='.a:str)
 endfunction "}}}
-function! perforce#set_PFUSER(str, ...) "{{{
-	let $PFUSER= a:str
-	if a:0 == 0
-		call system('p4 set P4USER='.$PFUSER)
-	endif
+function! perforce#set_PFUSER(str) "{{{
+	call system('p4 set P4USER='.a:str)
 endfunction "}}}
 function! perforce#unite_args(source) "{{{
 	"********************************************************************

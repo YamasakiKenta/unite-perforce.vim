@@ -17,7 +17,7 @@ function! s:pf_merge(...) "{{{
 	" ********************************************************************************
 	let path = ( a:1 == "" ) ? g:perforce_merge_default_path : a:1
 	
-	let cmd = g:perforce_merge_tool.' "'.path.'" "'.$PFCLIENTPATH.'"'
+	let cmd = g:perforce_merge_tool.' "'.path.'" "'.perforce#get_PFCLIENTPATH.'"'
 	echo cmd
 
 	exe '!start '.cmd
