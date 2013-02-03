@@ -294,13 +294,17 @@ function! s:add_uniq(datas, val) "{{{
 	" «‘Œ^‚Ì’l‚É“¯‚¶’l‚ª‚È‚¢ê‡‚ÍAæ“ª‚É’Ç‰Á‚·‚é
 	let dict_d = s:_get_dict_from_list
 
-	for val in s:Common.get_list(a:val)
+	for val in s:get_list(a:val)
 		if !exists('dict_d[val]')
 			call add(datas, val)
 		endif
 	endfor
 
 	return datas
+endfunction
+"}}}
+function! s:get_now_filename() "{{{
+	return s:get_kk(expand("%"))
 endfunction
 "}}}
 let &cpo = s:save_cpo
