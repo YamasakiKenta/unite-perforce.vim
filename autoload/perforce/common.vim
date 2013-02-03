@@ -17,6 +17,9 @@ endfunction
 function! perforce#common#uniq(...)
 	return call(s:List.uniq, a:000)
 endfunction
+function! perforce#common#get_now_filename()
+	return s:Common.get_now_filename()
+endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
