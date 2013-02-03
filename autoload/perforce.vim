@@ -677,7 +677,7 @@ endfunction "}}}
 function! perforce#pfcmds_new_get_outs(datas) "{{{
 	let outs = []
 	for data in a:datas
-		call extend(outs, get(data, 'out', []))
+		call extend(outs, get(data, 'outs', []))
 	endfor
 	return outs
 endfunction
