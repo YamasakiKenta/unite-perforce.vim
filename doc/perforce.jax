@@ -20,6 +20,12 @@ Commands					*unite-perforce-commands*
 :PfMerge {path}		*:PfMerge*
 	perforce のクライアントパスと、指定したパスと比較します。
 
+:PfEdit {filename} *:PfEdit*
+	現在のファイル、もしくは{filename}を編集状態にします。
+
+:PfAdd {filename} *:PfAdd*
+	現在のファイル、もしくは{filename}を追加もしくは、編集状態にします。
+
 ------------------------------------------------------------------------------
 Variables						*unite-perforce-variables*
 

@@ -2,14 +2,6 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-function! <SID>pf_edit() "{{{
-	let file = perforce#common#get_kk(expand("%"))
-	let outs = []
-	if perforce#is_p4_have(expand("%"))
-		let outs = perforce#pfcmds_new_outs('edit','',file)
-	endif
-	call perforce#LogFile(outs)
-endfunction "}}}
 function! <SID>pf_revert() "{{{
 	let file = perforce#common#get_kk(expand("%"))
 	if perforce#is_p4_have(expand("%"))
@@ -19,9 +11,6 @@ function! <SID>pf_revert() "{{{
 	endif
 	call perforce#LogFile(outs)
 endfunction "}}}
-
-nnoremap <PLUG>(p4_edit)
-			\ :<C-u>call <SID>pf_edit()<CR>|"
 
 nnoremap <PLUG>(p4_revert)
 			\ :<C-u>call <SID>pf_revert()<CR>|"
@@ -56,9 +45,11 @@ nmap ;cr<CR> <PLUG>(p4_cd_clentpath)
 nmap ;ff<CR> <PLUG>(p4_find)
 nmap ;pl<CR> <PLUG>(p4_filelog)
 nmap ;pd<CR> <PLUG>(p4_diff)
-nmap ;pe<CR> <PLUG>(p4_edit)
 nmap ;pr<CR> <PLUG>(p4_revert)
 nmap ;id<CR> <PLUG>(p4_get_depot)
+
+nmap ;pe<CR> :<c-u>PfEdit<CR>
+nmap ;pE<CR> :<c-u>PfAdd<CR>
 
 nnoremap ;pi<CR>  :<C-u>Unite p4_info<CR>|"
 nnoremap ;pt<CR>  :<C-u>Unite p4_clients<CR>|"
