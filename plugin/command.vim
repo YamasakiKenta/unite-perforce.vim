@@ -24,12 +24,14 @@ function! s:pf_edit_add(add_flg, ...) "{{{
 	" ********************************************************************************
 	"
 	" 編集するファイ目名の取得
-	if a:0 == 1 && a:1 == ''
+	
+	if a:0 == 0
 		let _files = [perforce#common#get_now_filename()]
 	else
 		" ファイル名が指定されている場合
 		let _files = a:000
 	endif
+
 
 	" init
 	let file_d = {
@@ -49,8 +51,6 @@ function! s:pf_edit_add(add_flg, ...) "{{{
 			endif
 		endif
 
-		echo file_d
-		echo _file
 		let file_d[cmd] = file_d[cmd].' '.perforce#common#get_kk(_file)
 	endfor
 
