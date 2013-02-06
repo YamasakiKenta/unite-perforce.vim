@@ -5,6 +5,9 @@ let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~/.perforce/' )
 let $PFTMPFILE = $PFTMP.'tmpfile'
 let $PFHAVE    = $PFTMP.'have'
 let $PFDATA    = $PFTMP.'data'
+
+let s:Common = vital#of('unite-perforce.vim').import('Mind.Common')
+
 if !isdirectory($PFTMP) | call mkdir($PFTMP) | endif
 
 function! s:get_dd(str) "{{{
@@ -106,7 +109,7 @@ function! s:pf_diff_tool(file,file2) "{{{
 		windo diffthis
 
 		" キーマップの登録
-		call common#map_diff()
+		cal s:Common.map_diff()
 	else
 		let cmd = perforce#data#get('diff_tool')
 
@@ -154,7 +157,6 @@ function! perforce#get_ChangeNum_from_changes(str) "{{{
 	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
 endfunction "}}}
 function! perforce#get_ClientName_from_client(str) "{{{
-	echo a:str
 	return matchstr(a:str,'Client \zs\S\+')
 endfunction "}}}
 function! perforce#get_ClientPathFromName(str) "{{{
@@ -471,12 +473,6 @@ function! perforce#pfcmds(cmd,...) "{{{
 		call add(gcmds, a:1)
 	endif
 
-	if a:cmd =~ 'clients' || a:cmd =~ 'changes'
-		if perforce#data#get('user_changes_only') == 1 
-			call add(gcmds, '-u '.perforce#get_PFUSER())
-		endif
-	endif 
-
 	if a:cmd =~ 'changes'
 		if perforce#data#get('client_changes_only') == 1
 			call add(gcmds, '-c '.perforce#get_PFCLIENTNAME())
@@ -484,6 +480,12 @@ function! perforce#pfcmds(cmd,...) "{{{
 	endif 
 
 	call add(gcmds, a:cmd)
+
+	if a:cmd =~ 'clients' || a:cmd =~ 'changes'
+		if perforce#data#get('user_changes_only') == 1 
+			call add(gcmds, '-u '.perforce#get_PFUSER())
+		endif
+	endif 
 
 	if perforce#data#get('show_max_flg') == 1
 		call add(gcmds, '-m '.perforce#data#get('show_max'))
