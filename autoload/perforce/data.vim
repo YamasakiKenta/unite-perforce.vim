@@ -35,7 +35,7 @@ function! perforce#data#init() "{{{
 	call unite_setting_ex#add       ( 'g:unite_pf_data' , 'g:perforce_merge_tool'         ,'マージコマンド'               , 'select'    , [[1], 'winmergeu /S']) 
 	call unite_setting_ex#add       ( 'g:unite_pf_data' , 'g:perforce_merge_default_path' ,'マージ、比較先フォルダ'       , 'select'    , [[1], 'c:\tmp']) 
 
-	call unite_setting_ex#load('g:unite_pf_data', file_)
+	call unite_setting_ex#load('g:unite_pf_data')
 
 	command! PerforceSetting call unite#start([['settings_ex', 'g:unite_pf_data']])
 

@@ -502,6 +502,15 @@ function! perforce#pfcmds(cmd,...) "{{{
 				\ 'outs' : split(system(cmd),'\n'),
 				\ }
 
+
+	if perforce#data#get('show_cmd_flg') == 1
+		if perforce#data#get('show_cmd_stop_flg') == 1
+			call input(cmd)
+		else
+			echo cmd
+		endif
+	endif
+
 	" Error
 	if len(rtn_d.outs) > 0
 		if rtn_d.outs[0] =~ "^Perforce client error:"
