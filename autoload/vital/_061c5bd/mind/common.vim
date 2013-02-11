@@ -304,7 +304,7 @@ function! s:add_uniq(datas, val) "{{{
 endfunction
 "}}}
 function! s:get_now_filename() "{{{
-	return s:get_kk(expand("%"))
+	return perforce#common#get_kk(expand("%:p"))
 endfunction
 "}}}
 let &cpo = s:save_cpo
