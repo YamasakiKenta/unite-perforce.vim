@@ -16,7 +16,7 @@ let s:kind = {
 			\ 'name' : 'k_p4_clients',
 			\ 'default_action' : 'a_p4_client',
 			\ 'action_table' : {},
-			\ 'parents' : ['k_p4'],
+			\ 'parents' : ['k_p4', 'common'],
 			\}
 call unite#define_kind(s:kind)
 
@@ -45,7 +45,7 @@ function! s:kind.action_table.a_p4_client_sync.func(candidates) "{{{
 	for l:candidate in a:candidates
 		let clname = l:candidate.action__clname
 		let port   = l:candidate.action__port
-		exe '!start p4 -P '.port.' -c '.clname.' sync'
+		exe '!start p4 '.port.' -c '.clname.' sync'
 	endfor
 endfunction "}}}
 
@@ -60,7 +60,7 @@ function! s:kind.action_table.a_p4_client_info.func(candidates) "{{{
 
 		" 各クライアントごとに表示する
 		call perforce#common#LogFile(port.'_'.clname, 0)
-		let outs = perforce#pfcmds('info', '-p '.port.' -c '.clname).outs
+		let outs = perforce#pfcmds_simple('info', port.' -c '.clname).outs
 		call append(0,outs)
 	endfor
 endfunction "}}}
@@ -76,7 +76,7 @@ function! s:kind.action_table.a_p4_client.func(candidates) "{{{
 
 		" 各クライアントごとに表示する
 		call perforce#common#LogFile(clname, 0)
-		let outs = perforce#pfcmds('client', '-p '.port, '-o '.clname).outs
+		let outs = perforce#pfcmds_simple('client', port, '-o '.clname).outs
 		call append(0,outs)
 	endfor
 endfunction "}}}

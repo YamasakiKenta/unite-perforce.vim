@@ -693,6 +693,47 @@ function! perforce#pfcmds_new_get_outs(datas) "{{{
 	return outs
 endfunction
 "}}}
+function! perforce#pfcmds_simple(cmd, ...) "{{{
+	" ********************************************************************************
+	" p4 コマンドを実行します ( 引数が設定依存しない ) 
+	" @param[in]	str		cmd		コマンド
+	" @param[in]	str		a:1		コマンドの前に挿入する
+	" @param[in]	str		a:2-	コマンドの後に挿入する
+	" ********************************************************************************
+
+	let gcmds = extend(['p4'] , insert(copy(a:000), a:cmd, 1))
+
+	echo a:000
+
+	let cmd = join(gcmds)
+	let rtn_d = {
+				\ 'cmd'  : cmd,
+				\ 'outs' : split(system(cmd),'\n'),
+				\ }
+
+
+	if perforce#data#get('show_cmd_flg') == 1
+		if perforce#data#get('show_cmd_stop_flg') == 1
+			call input(cmd)
+		else
+			echo cmd
+		endif
+	endif
+
+	" Error
+	if len(rtn_d.outs) > 0
+		if rtn_d.outs[0] =~ "^Perforce client error:"
+			let rtn_d.outs = ['ERROR']
+		endif
+	else
+		let rtn_d.outs = ['ERROR']
+	endif
+
+	call unite#print_message(rtn_d.cmd)
+
+
+	return rtn_d
+endfunction "}}}
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
