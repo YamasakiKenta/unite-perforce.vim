@@ -9,6 +9,8 @@ endfunction
 functio! s:p4_print(candidates) "{{{
 	let filetype_old = &filetype
 	let files = []
+
+	let open_flg = 0
 	for l:candidate in deepcopy(a:candidates)
 
 		let name = perforce#get_path_from_depot(candidate.action__depot)
@@ -27,17 +29,24 @@ functio! s:p4_print(candidates) "{{{
 		let strs = perforce#pfcmds('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
 		let file = fnamemodify(name,':t').file_numstr
 
-		tabe
+		if open_flg == 0
+			tabe
+		endif
+
 		call perforce#common#LogFile(file, 0, strs) 
+		call append(0, strs)
 		call add(files, file)
 
 		" データの出力
 		exe 'setf' filetype_old
 
-		quit
+		if open_flg == 0
+			wincmd w
+			quit
+		endif
 
 	endfor
-	call s:Tab.open_files(files)
+	"call s:Tab.open_files(files)
 endfunction "}}}
 " ********************************************************************************
 " kind - k_p4_filelog
