@@ -45,8 +45,7 @@ function! s:init() "{{{
 	call s:perforce_add       ( 'g:perforce_merge_default_path' ,'マージ、比較先フォルダ'       , 'select'    , [[1], 'c:\tmp']) 
 	call s:perforce_load()
 
-
-	nnoremap ;pp<CR> :PerforceSetting<CR>
+	echo 'end...'
 
 endfunction "}}}
 

@@ -26,6 +26,12 @@ Commands					*unite-perforce-commands*
 :PfAdd {filename} *:PfAdd*
 	現在のファイル、もしくは{filename}を追加もしくは、編集状態にします。
 
+:PfDiff {filename} *:PfDiff*
+	現在のファイル、もしくは{filename}の差分を表示します。
+
+:PfRevert {filename} *:PfRevert*
+	現在のファイル、もしくは{filename}の編集状態を解除します。
+
 ------------------------------------------------------------------------------
 Variables						*unite-perforce-variables*
 
