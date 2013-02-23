@@ -1,19 +1,8 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-if 1
-	let s:L = vital#of('unite-perforce.vim')
-	let s:File = s:L.import('Mind.Y_files')
-else
-	function! s:get_files(...) "{{{
-		return get(a:, 1, "") == "" ? [expand("%:p")] : a:000
-	endfunction
-	"}}}
-	let s:File = {}
-	let s:File.get_files = function('s:get_files')
-endif
-
-
+let s:L = vital#of('unite-perforce.vim')
+let s:File = s:L.import('Mind.Y_files')
 
 function! perforce_2#complate_have(A,L,P) "{{{
 	"********************************************************************************
@@ -79,9 +68,26 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 endfunction
 "}}}
 function! perforce_2#pfDiff(...) "{{{
+	" ********************************************************************************
+	" @param[in] ファイル名
+	" ********************************************************************************
 	let file_ = call(s:File.get_files, a:000)[0]
 	return perforce#pfDiff(file_)
 endfunction
+"}}}
+function! perforce_2#revert(...) "{{{
+	" ********************************************************************************
+	" @param[in] ファイル名
+	" ********************************************************************************
+	let file_ = call(s:File.get_files, a:000)[0]
+	let file_ = perforce#common#get_kk(file_)
+	if perforce#is_p4_have(file_)
+		let outs = perforce#pfcmds_new_outs('revert','',' -a '.file_)
+	else
+		let outs = perforce#pfcmds_new_outs('revert','',file_)
+	endif
+	call perforce#LogFile(outs)
+endfunction 
 "}}}
 
 let &cpo = s:save_cpo
