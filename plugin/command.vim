@@ -3,14 +3,14 @@ set cpo&vim
 
 command! -complete=customlist,perforce_2#complate_have -nargs=1 PfFind call perforce#pfFind(<f-args>)
 
-command! -nargs=+ PfMatomeDiffs call perforce#matomeDiffs(<f-args>)
-
 command! PfGetClientName call perforce#get_client_data_from_info()
+command! PfSetting call perforce#data#setting()
 
-command! -narg=* PfEdit   call perforce_2#edit_add(0, <f-args>)
-command! -narg=* PfAdd    call perforce_2#edit_add(1, <f-args>)
-command! -narg=? PfDiff   call perforce_2#pfDiff(<f-args>)
-command! -narg=? PfRevert call perforce_2#revert(<f-args>)
+command! -nargs=+ PfMatomeDiffs call perforce#matomeDiffs(<f-args>)
+command! -nargs=* PfEdit   call perforce_2#edit_add(0, <f-args>)
+command! -nargs=* PfAdd    call perforce_2#edit_add(1, <f-args>)
+command! -nargs=? PfDiff   call perforce_2#pfDiff(<f-args>)
+command! -nargs=? PfRevert call perforce_2#revert(<f-args>)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

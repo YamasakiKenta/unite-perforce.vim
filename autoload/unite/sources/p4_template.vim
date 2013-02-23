@@ -20,7 +20,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	for data in datas
 		for port in data.ports
 			call add( candidates, {
-						\ 'word' : '-p '.port.' -c '.data.clname.' : -c '.data.cltmp,
+						\ 'word' : '-p '.printf("%-20s", port).' -c '.printf("%-20s", data.cltmp).' : -c '.printf("%-20s", data.clname),
 						\ 'kind' : 'k_p4_template',
 						\ 'action__cltmp' : data.cltmp,
 						\ 'action__port' : port,

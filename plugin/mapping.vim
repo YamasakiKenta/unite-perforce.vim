@@ -22,10 +22,5 @@ nnoremap <PLUG>(p4_find)
 nnoremap <PLUG>(p4_get_depot)
 			\ :<C-u>let @+ = perforce#get_depot_from_path(expand("%:p"))<CR>|"
 
-nnoremap <PLUG>(p4_perforce_setting)
-			\ :<C-u>call unite#start([['settings_ex', 'g:unite_pf_data']])<CR>|"
-
-
 let &cpo = s:save_cpo
 unlet s:save_cpo
-
