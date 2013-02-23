@@ -1,3 +1,25 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+if 1
+	let s:L = vital#of('unite-perforce.vim')
+	let s:File = s:L.import('Mind.Y_files')
+else
+	function! s:get_files(...) "{{{
+		if get(a:, 1, "") == ""
+			let files_ = [expand("%:p")]
+		else
+			let files_ = a:000
+		endif
+		return files_
+	endfunction
+	"}}}
+	let s:File = {}
+	let s:File.get_files = function('s:get_files')
+endif
+
+
+
 function! perforce_2#complate_have(A,L,P) "{{{
 	"********************************************************************************
 	" 補完 : perforce 上に存在するファイルを表示する
@@ -15,7 +37,7 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 	" ********************************************************************************
 	"
 	" 編集するファイ目名の取得
-	
+
 	if a:0 == 0
 		let _files = [perforce#common#get_now_filename()]
 	else
@@ -35,7 +57,7 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 	for _file in _files
 		let cmd = 'null'
 		if perforce#is_p4_have(_file)
-				let cmd = 'edit'
+			let cmd = 'edit'
 		else
 			if ( a:add_flg == 1 )
 				let cmd = 'add'
@@ -61,3 +83,11 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 	call perforce#LogFile(outs)
 endfunction
 "}}}
+function! perforce_2#pfDiff(...) "{{{
+	let file_ = call(s:File.get_files, a:000)[0]
+	return perforce#pfDiff(file_)
+endfunction
+"}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo

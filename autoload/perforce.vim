@@ -7,6 +7,9 @@ let $PFHAVE    = $PFTMP.'have'
 let $PFDATA    = $PFTMP.'data'
 if !isdirectory($PFTMP) | call mkdir($PFTMP) | endif
 
+let s:L = vital#of('unite-perforce.vim')
+let s:Common = s:L.import('Mind.Common')
+
 function! s:get_dd(str) "{{{
 	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''
 endfunction "}}}
@@ -106,7 +109,7 @@ function! s:pf_diff_tool(file,file2) "{{{
 		windo diffthis
 
 		" キーマップの登録
-		call common#map_diff()
+		call s:Common.map_diff()
 	else
 		let cmd = perforce#data#get('diff_tool')
 
