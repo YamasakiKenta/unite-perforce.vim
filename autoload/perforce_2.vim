@@ -6,12 +6,7 @@ if 1
 	let s:File = s:L.import('Mind.Y_files')
 else
 	function! s:get_files(...) "{{{
-		if get(a:, 1, "") == ""
-			let files_ = [expand("%:p")]
-		else
-			let files_ = a:000
-		endif
-		return files_
+		return get(a:, 1, "") == "" ? [expand("%:p")] : a:000
 	endfunction
 	"}}}
 	let s:File = {}
