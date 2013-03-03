@@ -208,7 +208,7 @@ p4_template
 	テンプレートで管理します
 
 ==============================================================================
-KINDS						*unite-kinds*
+KINDS						*unite-perforce-kinds*
 jump_list					*unite-perforce-kind-jump_list*
 file 						*unite-perforce-kind-file*
 k_depot						*unite-perforce-kind-k_depot*
