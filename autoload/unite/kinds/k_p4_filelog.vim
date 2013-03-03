@@ -62,14 +62,14 @@ let s:kind.action_table.a_p4_print = {
 			\ 'description' : 'ファイルの表示',
 			\ 'is_selectable' : 1, 
 			\ }
-functio! s:kind.action_table.a_p4_print.func(candidates) "{{{
+function! s:kind.action_table.a_p4_print.func(candidates) "{{{
 	return s:p4_print(a:candidates)
 endfunction "}}}
 
 let s:kind.action_table.a_p4_print_diff = {
 			\ 'description' : 'ファイルの表示 ( ひとつ前のファイルと一緒 )',
 			\ }
-functio! s:kind.action_table.a_p4_print_diff.func(candidates) "{{{
+function! s:kind.action_table.a_p4_print_diff.func(candidates) "{{{
 	let candidates = [copy(a:candidates), copy(a:candidates)]
 	let candidates[1].action__revnum = candidates[1].action__revnum - 1
 	echo candidates
