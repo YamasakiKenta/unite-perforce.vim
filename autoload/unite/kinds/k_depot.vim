@@ -181,7 +181,7 @@ function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.delete = { 
-			\ 'description' : '·•ª',
+			\ 'description' : '·•ª ( delete ‚¾‚¯‚Ç ) ',
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.delete.func(candidate) "{{{
