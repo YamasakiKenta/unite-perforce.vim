@@ -14,20 +14,19 @@ function! s:common_out() "{{{
 	call unite#force_redraw()
 endfunction "}}}
 "@ main
-" kind - k_p4_settings_bool " {{{
-let s:kind = { 
+let s:k_p4_settings_bool = { 
 			\ 'name'           : 'k_p4_settings_bool',
 			\ 'default_action' : 'a_toggle',
 			\ 'action_table'   : {},
 			\ 'parents'        : ['k_p4'],
 			\ }
 "@ action
-let s:kind.action_table.a_toggle = {
+let s:k_p4_settings_bool.action_table.a_toggle = {
 			\ 'is_selectable' : 1,
 			\ 'description'   : '設定の切替',
 			\ 'is_quit'       : 0,
 			\ }
-function! s:kind.action_table.a_toggle.func(candidates) "{{{
+function! s:k_p4_settings_bool.action_table.a_toggle.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
 		let kind = candidate.action__kind
@@ -36,12 +35,12 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	" 表示の更新
 	call s:common_out()
 endfunction "}}}
-let s:kind.action_table.a_set_enable = {
+let s:k_p4_settings_bool.action_table.a_set_enable = {
 			\ 'is_selectable' : 1,
 			\ 'description'   : '有効にする',
 			\ 'is_quit'       : 0,
 			\ }
-function! s:kind.action_table.a_set_enable.func(candidates) "{{{
+function! s:k_p4_settings_bool.action_table.a_set_enable.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
 		let kind = candidate.action__kind
@@ -49,12 +48,12 @@ function! s:kind.action_table.a_set_enable.func(candidates) "{{{
 	endfor
 	call s:common_out()
 endfunction "}}}
-let s:kind.action_table.a_set_disable = {
+let s:k_p4_settings_bool.action_table.a_set_disable = {
 			\ 'is_selectable' : 1,
 			\ 'description'   : '無効にする',
 			\ 'is_quit'       : 0,
 			\ }
-function! s:kind.action_table.a_set_disable.func(candidates) "{{{
+function! s:k_p4_settings_bool.action_table.a_set_disable.func(candidates) "{{{
 	for candidate in a:candidates	
 		let name = candidate.action__valname
 		let kind = candidate.action__kind
@@ -62,23 +61,20 @@ function! s:kind.action_table.a_set_disable.func(candidates) "{{{
 	endfor
 	call s:common_out()
 endfunction "}}}
-let s:k_p4_settings_bool = s:kind
-unlet s:kind
-"}}}
-" kind - k_p4_settings_strs "{{{
-let s:kind = { 
+
+let s:k_p4_settings_strs = { 
 			\ 'name'           : 'k_p4_settings_strs',
 			\ 'default_action' : 'a_toggles',
 			\ 'action_table'   : {},
 			\ 'parents'        : ['k_p4'],
 			\ }
 " action
-let s:kind.action_table.a_toggle = {
+let s:k_p4_settings_strs.action_table.a_toggle = {
 			\ 'is_selectable' : 1,
 			\ 'description'   : '設定の切替',
 			\ 'is_quit'       : 0,
 			\ }
-function! s:kind.action_table.a_toggle.func(candidates) "{{{
+function! s:k_p4_settings_strs.action_table.a_toggle.func(candidates) "{{{
 
 	for candidate in a:candidates
 		let name = candidate.action__valname
@@ -102,11 +98,11 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 
 
 endfunction "}}}
-let s:kind.action_table.a_toggles = {
+let s:k_p4_settings_strs.action_table.a_toggles = {
 			\ 'description' : '複数選択',
 			\ 'is_quit'     : 0,
 			\ }
-function! s:kind.action_table.a_toggles.func(candidate) "{{{
+function! s:k_p4_settings_strs.action_table.a_toggles.func(candidate) "{{{
 
 	" todo : unite source で複数選択をする
 	let type = a:candidate.action__valname
@@ -116,11 +112,11 @@ function! s:kind.action_table.a_toggles.func(candidate) "{{{
 
 	" call s:common_out()
 endfunction "}}}
-let s:kind.action_table.a_set_strs = {
+let s:k_p4_settings_strs.action_table.a_set_strs = {
 			\ 'description' : '設定編集',
 			\ 'is_quit'     : 0,
 			\ }
-function! s:kind.action_table.a_set_strs.func(candidate) "{{{
+function! s:k_p4_settings_strs.action_table.a_set_strs.func(candidate) "{{{
 	let name = a:candidate.action__valname
 	let kind = a:candidate.action__kind
 	let tmp = input("",string(perforce#data#get_orig(name, kind)))
@@ -135,22 +131,19 @@ function! s:kind.action_table.a_set_strs.func(candidate) "{{{
 	call unite#force_quit_session()
 
 endfunction "}}}
-let s:k_p4_settings_strs = s:kind
-unlet s:kind
-"}}}
-" kind - k_p4_select "{{{
-let s:kind = { 
+
+let s:k_p4_select = { 
 			\ 'name'           : 'k_p4_select',
 			\ 'default_action' : 'a_toggle',
 			\ 'action_table'   : {},
 			\ 'parents'        : ['k_p4'],
 			\ }
 " action
-let s:kind.action_table.a_toggle = {
+let s:k_p4_select.action_table.a_toggle = {
 			\ 'is_selectable' : 1,
 			\ 'description' : '設定の切替',
 			\ }
-function! s:kind.action_table.a_toggle.func(candidates) "{{{
+function! s:k_p4_select.action_table.a_toggle.func(candidates) "{{{
 	let val = 0
 	for candidate in a:candidates
 		let val += candidate.action__bitnum
@@ -166,11 +159,11 @@ function! s:kind.action_table.a_toggle.func(candidates) "{{{
 	call s:common_out()
 
 endfunction "}}}
-let s:kind.action_table.delete = {
+let s:k_p4_select.action_table.delete = {
 			\ 'is_selectable' : 1,
 			\ 'description'   : 'delete',
 			\ }
-function! s:kind.action_table.delete.func(candidates) "{{{
+function! s:k_p4_select.action_table.delete.func(candidates) "{{{
 
 	" 初期化
 	let nums = []
@@ -189,11 +182,11 @@ function! s:kind.action_table.delete.func(candidates) "{{{
 	call s:common_out()
 
 endfunction "}}}
-let s:kind.action_table.add = {
+let s:k_p4_select.action_table.add = {
 			\ 'is_selectable' : 1,
 			\ 'description'   : 'add',
 			\ }
-function! s:kind.action_table.add.func(candidates) "{{{
+function! s:k_p4_select.action_table.add.func(candidates) "{{{
 	for candidate in a:candidates
 		" ********************************************************************************
 		" 新規テーブルを追加する
@@ -202,11 +195,7 @@ function! s:kind.action_table.add.func(candidates) "{{{
 		" ********************************************************************************
 	endfor
 endfunction "}}}
-let s:k_p4_select = s:kind
-unlet s:kind
-"}}}
-"
-"
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
 

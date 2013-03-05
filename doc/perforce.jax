@@ -150,6 +150,18 @@ KEY MAPPING 	*unite-perforce-mappings*
 
 ==============================================================================
 SOURCES						*unite-perforce-sources*
+p4_clients
+	クライアントを表示する
+
+p4_diff
+	差分を表示する
+
+p4_fixes
+	job と change リストの紐づけを表示する
+
+p4_info
+	設定を表示する
+
 p4_annotate			
 	各行にリビジョン番号を表示
 
@@ -183,8 +195,8 @@ p4_filelog
 p4_have
 	所有するファイル
 
-p4_have_async
-	所有するファイル ( file から取得する ) 
+p4_have_reset
+	所有するファイル ( キャッシュリセット ) 
 
 p4_help
 	ヘルプを表示
