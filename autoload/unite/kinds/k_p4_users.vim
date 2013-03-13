@@ -18,7 +18,7 @@ endfunction
 " ********************************************************************************
 let s:kind = { 
 			\ 'name' : 'k_p4_users',
-			\ 'default_action' : 'a_4_user_change',
+			\ 'default_action' : 'a_p4_user_change',
 			\ 'action_table' : {},
 			\ 'parents' : ['k_p4'],
 			\ }

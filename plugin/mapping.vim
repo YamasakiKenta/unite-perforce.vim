@@ -8,7 +8,7 @@ nnoremap <PLUG>(p4_echo_client_data)
 			\ :<C-u>echo " -p " . perforce#get_PFPORT() . " -c " . perforce#get_PFCLIENTNAME() . "\n" . perforce#get_PFCLIENTPATH()<CR>|"
 
 nnoremap <PLUG>(p4_cd_clentpath)
-			\ :<C-u>lcd perforce#get_PFCLIENTPATH<CR>|"
+			\ :<C-u>lcd <C-r>=perforce#get_PFCLIENTPATH()<CR><CR>|"
 
 nnoremap <PLUG>(p4_filelog)
 			\ :<C-u>call perforce#unite_args('p4_filelog')<CR>|"

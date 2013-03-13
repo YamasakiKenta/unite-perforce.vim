@@ -32,6 +32,17 @@ Commands					*unite-perforce-commands*
 :PfRevert {filename} *:PfRevert*
 	現在のファイル、もしくは{filename}の編集状態を解除します。
 
+:PfFind {filename} ... *PfFind*
+	{filename}を、クライアントから検索します。
+
+:PfGetClientName *PfGetClientName*
+	クライアント名を表示します
+
+:PfSetting *PfSetting*
+	設定をします。|unite-setting.vim| が必要になります
+
+	git://github.com/YamasakiKenta/unite-setting.vim.git
+
 ------------------------------------------------------------------------------
 Variables						*unite-perforce-variables*
 

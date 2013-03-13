@@ -72,6 +72,10 @@ endfunction
 "}}}
 function! s:load(name, default) "{{{
 	" ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+	if exists('g:tmp')
+		unlet g:tmp
+	endif
+
 	if filereadable(expand(a:name))
 		exe 'so '.a:name
 	endif

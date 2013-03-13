@@ -7,18 +7,9 @@ function! unite#kinds#k_p4#define()
 endfunction
 
 let s:kind = { 'name' : 'k_p4',
-			\ 'default_action' : 'a_pf_settings',
+			\ 'default_action' : 'a_add_fix',
 			\ 'action_table' : {},
 			\ }
-
-let s:kind.action_table.a_pf_settings = {
-			\ 'description' : 'İ’è',
-			\ }
-function! s:kind.action_table.a_pf_settings.func(candidate) "{{{
-
-	" İ’è‰æ–Ê‚ğ•\¦‚·‚é
-	call unite#start_temporary([['p4_settings', a:candidate.source]])
-endfunction "}}}
 
 let s:kind.action_table.a_add_fix = {
 			\ 'description' : 'add qfix ( p4 )',

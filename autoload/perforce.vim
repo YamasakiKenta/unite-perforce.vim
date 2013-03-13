@@ -9,6 +9,7 @@ if !isdirectory($PFTMP) | call mkdir($PFTMP) | endif
 
 let s:L = vital#of('unite-perforce.vim')
 let s:Common = s:L.import('Mind.Common')
+let s:Perforce = s:L.import('Mind.Perforce')
 
 function! s:get_dd(str) "{{{
 	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''
@@ -165,41 +166,17 @@ function! perforce#get_ClientPathFromName(str) "{{{
 	let path = perforce#common#get_pathSrash(path)
 	return path
 endfunction "}}}
+function! perforce#get_PFCLIENTPATH() "{{{
+	return s:Perforce.get_client_root()
+endfunction "}}}
 function! perforce#get_PFCLIENTNAME() "{{{
 	return perforce#get_set_data('P4CLIENT')
-endfunction "}}}
-function! perforce#get_PFCLIENTPATH() "{{{
-	return $PFCLIENTPATH
 endfunction "}}}
 function! perforce#get_PFPORT() "{{{
 	return perforce#get_set_data('P4PORT')
 endfunction "}}}
 function! perforce#get_PFUSER() "{{{
 	return perforce#get_set_data('P4USER')
-endfunction "}}}
-function! perforce#get_client_data_from_info_path() "{{{
-	let clpath = ""
-
-	let out   = s:system('p4 info')
-
-	if out !~ 'Perforce client error:' && len(out) > 0
-		let datas = split(out,'\n')
-
-		for data in  datas
-			if data =~ 'Client root: '
-				let clpath = matchstr(data, 'Client root: \zs.*')
-				let clpath = perforce#common#get_pathSrash(clpath)
-				call perforce#set_PFCLIENTPATH(clpath)
-			elseif data =~ 'error'
-				break " # 取得に失敗したら終了
-			endif
-		endfor 
-	else
-		"echo 'not find p4 server ....'
-	endif
-
-	return clpath
-
 endfunction "}}}
 function! s:system(cmd) "{{{
 	if exists('s:exists_vimproc')
@@ -212,16 +189,6 @@ endfunction "}}}
 function! perforce#get_set_data(str) "{{{
 	return matchstr(s:system('p4 set '.a:str), '\w*=\zs.* \ze(set)')
 endfunction "}}}
-function! perforce#get_client_data_from_set() "{{{
-
-	let clname = perforce#get_set_data('P4CLIENT')
-	let port   = perforce#get_set_data('P4PORT')
-	let user   = perforce#get_set_data('P4USER')
-
-	call perforce#get_client_data_from_info_path()
-
-endfunction
-"}}}
 function! perforce#get_depot_from_have(str) "{{{
 	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')
 endfunction "}}}
@@ -310,7 +277,7 @@ endfunction "}}}
 function! perforce#init() "{{{
 
 	" クライアントデータの読み込み
-	call perforce#get_client_data_from_set()
+	call perforce#get_PFCLIENTPATH()
 
 	" 設定の取得
 	call perforce#data#init()
@@ -523,9 +490,6 @@ function! perforce#pfcmds(cmd,...) "{{{
 endfunction "}}}
 function! perforce#set_PFCLIENTNAME(str) "{{{
 	call system('p4 set P4CLIENT='.a:str)
-endfunction "}}}
-function! perforce#set_PFCLIENTPATH(str) "{{{
-	let $PFCLIENTPATH = a:str
 endfunction "}}}
 function! perforce#set_PFPORT(str) "{{{
 	call system('p4 set P4PORT='.a:str)
