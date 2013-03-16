@@ -89,6 +89,10 @@ function! perforce_2#revert(...) "{{{
 	call perforce#LogFile(outs)
 endfunction 
 "}}}
+function! perforce_2#echo_error(message) "{{{
+  echohl WarningMsg | echo a:message | echohl None
+endfunction
+"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
