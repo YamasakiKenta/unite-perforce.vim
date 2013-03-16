@@ -147,11 +147,18 @@ function! perforce#LogFile(str) "{{{
 
 	if perforce#data#get('is_out_flg', 'common') == 1
 		if perforce#data#get('is_out_echo_flg') == 1
-			echo a:str
+
+			let strs = type(a:str) == type([]) ? a:str :[a:str]
+
+			for str in strs
+				echo str
+			endfor
+
 		else
 			call perforce#common#LogFile('p4log', 0, a:str)
 		endif
 	endif
+
 
 endfunction "}}}
 function! perforce#get_ChangeNum_from_changes(str) "{{{

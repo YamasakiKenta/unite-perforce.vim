@@ -4,6 +4,9 @@ set cpo&vim
 let s:L = vital#of('unite-perforce.vim')
 let s:File = s:L.import('Mind.Y_files')
 
+let g:perforce_merge_tool         = get(g:, 'perforce_merge_tool', 'winmergeu /S')
+let g:perforce_merge_default_path = get(g:, 'perforce_merge_default_path', 'c:\tmp')
+
 function! perforce_2#complate_have(A,L,P) "{{{
 	"********************************************************************************
 	" 補完 : perforce 上に存在するファイルを表示する
@@ -91,6 +94,20 @@ endfunction
 "}}}
 function! perforce_2#echo_error(message) "{{{
   echohl WarningMsg | echo a:message | echohl None
+endfunction
+"}}}
+function! perforce_2#pf_merge(...) "{{{
+	" ********************************************************************************
+	" 現在のクライアントと、マージします。
+	" @param[in]	path	比較するファイル
+	" @retval       NONE
+	" ********************************************************************************
+	let path = ( a:1 == "" ) ? g:perforce_merge_default_path : a:1
+	
+	let cmd = g:perforce_merge_tool.' "'.path.'" "'.perforce#get_PFCLIENTPATH().'"'
+
+	exe '!start '.cmd
+
 endfunction
 "}}}
 
