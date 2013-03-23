@@ -110,6 +110,9 @@ function! perforce_2#pf_merge(...) "{{{
 
 endfunction
 "}}}
+function! perforce_2#show_outs(str)
+	call perforce#common#LogFile('p4show', 0, a:str)
+endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

@@ -21,14 +21,15 @@ let s:kind.action_table.a_help = {
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind.action_table.a_help.func(candidates) "{{{
-	call perforce#LogFile('p4log')
 	let outs = []
 	for candidate in a:candidates
 		let str = candidate.action__cmd
-		let outs += perforce#pfcmds('help ','',str).outs
+		let outs += split(system('p4 help '.str), "\n")
 	endfor
-	call append(0, outs)
-endfunction "}}}
+
+	call perforce_2#show_outs(outs)
+endfunction 
+"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
