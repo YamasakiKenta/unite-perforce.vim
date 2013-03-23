@@ -3,7 +3,6 @@ set cpo&vim
 
 command! -complete=customlist,perforce_2#complate_have -nargs=1 PfFind call perforce#pfFind(<f-args>)
 
-command! PfGetClientName call perforce#get_client_data_from_info()
 command! PfSetting call perforce#data#setting()
 
 command! -nargs=+ PfMatomeDiffs call perforce#matomeDiffs(<f-args>)
