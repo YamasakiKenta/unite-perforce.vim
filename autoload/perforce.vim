@@ -495,14 +495,23 @@ function! perforce#pfcmds(cmd,...) "{{{
 
 	return rtn_d
 endfunction "}}}
+function! s:pf_cmd_rtn_cmd_outs(cmd) "{{{
+	" ********************************************************************************
+	" @par       コマンドと実行結果を返す
+	" @param[in] 
+	" @retval    
+	" ********************************************************************************
+	return extend([a:cmd], split(system(a:cmd), "\n"))
+endfunction
+"}}}
 function! perforce#set_PFCLIENTNAME(str) "{{{
-	call system('p4 set P4CLIENT='.a:str)
+	return s:pf_cmd_rtn_cmd_outs('p4 set P4CLIENT='.a:str)
 endfunction "}}}
 function! perforce#set_PFPORT(str) "{{{
-	call system('p4 set P4PORT='.a:str)
+	return s:pf_cmd_rtn_cmd_outs('p4 set P4PORT='.a:str)
 endfunction "}}}
 function! perforce#set_PFUSER(str) "{{{
-	call system('p4 set P4USER='.a:str)
+	return s:pf_cmd_rtn_cmd_outs('p4 set P4USER='.a:str)
 endfunction "}}}
 function! perforce#unite_args(source) "{{{
 	"********************************************************************
