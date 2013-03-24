@@ -44,13 +44,13 @@ function! s:source.gather_candidates(args, context) "{{{
 	let rtn = []
 	let rtn += map( outs, "{
 				\ 'word'           : 'default by '.v:val,
-				\ 'kind'           : 'k_p4_change',
+				\ 'kind'           : 'k_p4_change_pending',
 				\ 'action__chnum'  : 'default',
 				\ 'action__depots' : a:context.source__depots,
 				\ }")
 
 	let outs = perforce#pfcmds('changes','','-s pending').outs
-	let rtn += perforce#get_pfchanges(a:context, outs, 'k_p4_change')
+	let rtn += perforce#get_pfchanges(a:context, outs, 'k_p4_change_pending')
 	return rtn
 endfunction "}}}
 function! s:source.change_candidates(args, context) "{{{
@@ -108,7 +108,7 @@ let s:source = {
 let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
 function! s:source.gather_candidates(args, context) "{{{
 	let outs = perforce#pfcmds('changes','','-s submitted').outs
-	return perforce#get_pfchanges(a:context, outs, 'k_p4_change')
+	return perforce#get_pfchanges(a:context, outs, 'k_p4_change_submitted')
 endfunction "}}}
 
 let s:source_p4_changes_submitted = deepcopy(s:source) | unlet s:source

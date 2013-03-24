@@ -2,29 +2,28 @@ let s:save_cpo = &cpo
 set cpo&vim
 setl enc=utf8
 
-let s:_file  = expand("<sfile>")
-
-
-let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
-"
 function! unite#kinds#k_p4_change#define()
-	return [ s:kind_k_p4_change, s:kind_k_p4_change_reopen ]
+	return [ 
+				\ s:kind_k_p4_change_pending,
+				\ s:kind_k_p4_change_reopen,
+				\ s:kind_k_p4_change_submitted,
+				\ ]
 endfunction
 
 " ********************************************************************************
 " kind - k_p4_change_reopen
 " ********************************************************************************
-let s:kind = {
+let s:kind_k_p4_change_reopen = {
 			\ 'name' : 'k_p4_change_reopen',
 			\ 'default_action' : 'a_p4_change_reopen',
 			\ 'action_table' : {},
 			\ 'parents' : ['k_p4'],
 			\ }
 
-let s:kind.action_table.a_p4_change_reopen = {
+let s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen = {
 			\ 'description' : 'チェンジリストの変更 ( reopen )' ,
 			\ } 
-function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
+function! s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen.func(candidate) "{{{
 	" ********************************************************************************
 	" チェンジリストの変更
 	" action から実行した場合は、選択したファイルを変更する。
@@ -44,25 +43,23 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 
 endfunction "}}}
 
-let s:kind_k_p4_change_reopen = s:kind
-unlet s:kind
-
 " ********************************************************************************
-" kind - k_p4_change
+" kind - k_p4_change_pending
 " ********************************************************************************
-let s:kind = { 'name' : 'k_p4_change',
+let s:kind_k_p4_change_pending = { 
+			\ 'name' : 'k_p4_change_pending',
 			\ 'default_action' : 'a_p4_change_opened',
 			\ 'action_table' : {},
 			\ 'parents' : ['k_p4'],
 			\ }
 
 " 共通
-let s:kind.action_table.delete = {
+let s:kind_k_p4_change_pending.action_table.delete = {
 			\ 'description' : 'チェンジリストの削除' ,
 			\ 'is_selectable' : 1,
 			\ 'is_quit' : 0,
 			\ }
-function! s:kind.action_table.delete.func(candidates) "{{{
+function! s:kind_k_p4_change_pending.action_table.delete.func(candidates) "{{{
 	let i = 1
 	for l:candidate in a:candidates
 		let num = l:candidate.action__chnum
@@ -74,12 +71,12 @@ function! s:kind.action_table.delete.func(candidates) "{{{
 endfunction "}}}
 
 "複数選択可能
-let s:kind.action_table.a_p4_change_opened = { 
+let s:kind_k_p4_change_pending.action_table.a_p4_change_opened = { 
 			\ 'description' : 'ファイルの表示',
 			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
-function! s:kind.action_table.a_p4_change_opened.func(candidates) "{{{
+function! s:kind_k_p4_change_pending.action_table.a_p4_change_opened.func(candidates) "{{{
 
 	let chnums = []
 	for candidate in a:candidates
@@ -90,12 +87,12 @@ function! s:kind.action_table.a_p4_change_opened.func(candidates) "{{{
 	call unite#start_temporary([insert(chnums,'p4_opened')]) " # 閉じない ? 
 endfunction "}}}
 
-let s:kind.action_table.a_p4_change_info = { 
+let s:kind_k_p4_change_pending.action_table.a_p4_change_info = { 
 			\ 'description' : 'チェンジリストの情報' ,
 			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
-function! s:kind.action_table.a_p4_change_info.func(candidates) "{{{
+function! s:kind_k_p4_change_pending.action_table.a_p4_change_info.func(candidates) "{{{
 	let outs = []
 	for l:candidate in a:candidates
 		let chnum = l:candidate.action__chnum
@@ -104,11 +101,11 @@ function! s:kind.action_table.a_p4_change_info.func(candidates) "{{{
 	call perforce#LogFile(outs)
 endfunction "}}}
 
-let s:kind.action_table.a_p4_change_submit = {
+let s:kind_k_p4_change_pending.action_table.a_p4_change_submit = {
 			\ 'description' : 'サブミット' ,
 			\ 'is_selectable' : 1,
 			\ }
-function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
+function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candidates) "{{{
 
 	if perforce#data#get('is_submit_flg') == 0
 		call perforce_2#echo_error('safe mode.')
@@ -121,33 +118,35 @@ function! s:kind.action_table.a_p4_change_submit.func(candidates) "{{{
 
 endfunction "}}}
 
-let s:kind.action_table.a_p4change_describe = { 
+let s:kind_k_p4_change_pending.action_table.a_p4change_describe = { 
 			\ 'description' : '差分の表示',
 			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
-function! s:kind.action_table.a_p4change_describe.func(candidates) "{{{
+function! s:kind_k_p4_change_pending.action_table.a_p4change_describe.func(candidates) "{{{
 	let chnums = map(copy(a:candidates),"v:val.action__chnum")
+	echo chnums
+	"exe 'Unite p4_describe:'.join(chnums, ":")
 	call unite#start_temporary([insert(chnums,'p4_describe')])
 endfunction "}}}
 
-let s:kind.action_table.a_p4_matomeDiff = { 
+let s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff = { 
 			\ 'description' : '差分のまとめを表示',
 			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
-function! s:kind.action_table.a_p4_matomeDiff.func(candidates) "{{{
+function! s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff.func(candidates) "{{{
 	for l:candidate in a:candidates
 		let chnum = l:candidate.action__chnum
 		call perforce#matomeDiffs(chnum)
 	endfor
 endfunction "}}}
 "
-let s:kind.action_table.a_p4_change_reopen = {
+let s:kind_k_p4_change_pending.action_table.a_p4_change_reopen = {
 			\ 'description' : 'チェンジリストの変更' ,
 			\ 'is_quit' : 0,
 			\ } 
-function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
+function! s:kind_k_p4_change_pending.action_table.a_p4_change_reopen.func(candidate) "{{{
 	" ********************************************************************************
 	" チェンジリストの変更
 	" action から実行した場合は、選択したファイルを変更する。
@@ -167,7 +166,7 @@ function! s:kind.action_table.a_p4_change_reopen.func(candidate) "{{{
 
 endfunction "}}}
 
-let s:kind.action_table.a_p4_change_rename = {
+let s:kind_k_p4_change_pending.action_table.a_p4_change_rename = {
 			\  'description' : '名前の変更' ,
 			\ 'is_quit' : 0,
 			\ }
@@ -177,7 +176,7 @@ function! s:get_chname_from_change(str) "{{{
 	let str = substitute(str, '''$', '', '')
 	return str
 endfunction "}}}
-function! s:kind.action_table.a_p4_change_rename.func(candidate) "{{{
+function! s:kind_k_p4_change_pending.action_table.a_p4_change_rename.func(candidate) "{{{
 	let chnum = a:candidate.action__chnum
 	let chname = s:get_chname_from_change(a:candidate.word)
 	let chname = input(chname.'-> ', chname)
@@ -188,9 +187,6 @@ function! s:kind.action_table.a_p4_change_rename.func(candidate) "{{{
 		call perforce#LogFile(outs)
 	endif
 endfunction "}}}
-
-let s:kind_k_p4_change = s:kind
-unlet s:kind
 
 " ********************************************************************************
 " チェンジリストの番号の取得をする ( new の場合は、新規作成 )
@@ -214,6 +210,9 @@ function! s:make_new_changes(candidate) "{{{
 	return chnum
 endfunction "}}}
 
+let s:kind_k_p4_change_submitted = deepcopy(s:kind_k_p4_change_pending)
+let s:kind_k_p4_change_submitted.name           = 'k_p4_change_submitted'
+let s:kind_k_p4_change_submitted.default_action = 'a_p4change_describe'
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

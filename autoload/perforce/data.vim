@@ -4,6 +4,7 @@ setl enc=utf8
 
 
 function! s:init() "{{{
+	setl enc=utf8
 	if exists('s:init_flg')
 		return
 	endif
