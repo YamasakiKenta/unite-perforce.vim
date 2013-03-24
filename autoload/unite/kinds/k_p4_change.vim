@@ -109,11 +109,12 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 
 	if perforce#data#get('is_submit_flg') == 0
 		call perforce_2#echo_error('safe mode.')
+		call input("")
 	else
 		let chnums = map(copy(a:candidates), "v:val.action__chnum")
-		let tmp_d = perforce#pfcmds('submit','',' -c '.join(chnums))
+		let tmp_d = perforce#pfcmds_new('submit','',' -c '.join(chnums))
 		let outs = extend([tmp_d.cmd], tmp_d.outs)
-		call perforce#LogFile(outs)
+		call perforce_2#common_action_out(outs)
 	endif 
 
 endfunction "}}}

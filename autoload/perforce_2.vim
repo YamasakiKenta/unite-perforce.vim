@@ -8,6 +8,15 @@ let s:File = s:L.import('Mind.Y_files')
 let g:perforce_merge_tool         = get(g:, 'perforce_merge_tool', 'winmergeu /S')
 let g:perforce_merge_default_path = get(g:, 'perforce_merge_default_path', 'c:\tmp')
 
+function! perforce_2#common_action_out(outs)
+	" ********************************************************************************
+	" @par       action 終了時に呼び出す
+	" @param[in] 実行結果 ( Log で表示する文字列 ) 
+	" @retval    
+	" ********************************************************************************
+		call perforce#LogFile(a:outs)
+		"call unite#force_redraw()
+endfunction
 function! perforce_2#complate_have(A,L,P) "{{{
 	"********************************************************************************
 	" 補完 : perforce 上に存在するファイルを表示する
@@ -94,7 +103,9 @@ function! perforce_2#revert(...) "{{{
 endfunction 
 "}}}
 function! perforce_2#echo_error(message) "{{{
-  echohl WarningMsg | echo a:message | echohl None
+  echohl WarningMsg 
+  echo a:message 
+  echohl None
 endfunction
 "}}}
 function! perforce_2#pf_merge(...) "{{{
@@ -111,8 +122,8 @@ function! perforce_2#pf_merge(...) "{{{
 
 endfunction
 "}}}
-function! perforce_2#show_outs(str)
-	call perforce#common#LogFile('p4show', 0, a:str)
+function! perforce_2#show(str)
+	call perforce#common#LogFile('p4show', 1, a:str)
 endfunction
 
 let &cpo = s:save_cpo

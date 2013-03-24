@@ -121,8 +121,8 @@ let s:kind.action_table.a_p4_files = {
 function! s:kind.action_table.a_p4_files.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
 	let outs = perforce#pfcmds('files','',join(depots)).outs
-	call perforce#common#LogFile('p4_files', 0)
-	call append(0,outs)
+	call perforce_2#show(outs)
+	sp
 endfunction "}}}
 
 let s:kind.action_table.a_p4_move = {
