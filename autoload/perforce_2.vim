@@ -1,5 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
+setl enc=utf8
 
 let s:L = vital#of('unite-perforce.vim')
 let s:File = s:L.import('Mind.Y_files')
@@ -9,7 +10,7 @@ let g:perforce_merge_default_path = get(g:, 'perforce_merge_default_path', 'c:\t
 
 function! perforce_2#complate_have(A,L,P) "{{{
 	"********************************************************************************
-	" •âŠ® : perforce ã‚É‘¶İ‚·‚éƒtƒ@ƒCƒ‹‚ğ•\¦‚·‚é
+	" è£œå®Œ : perforce ä¸Šã«å­˜åœ¨ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¡¨ç¤ºã™ã‚‹
 	"********************************************************************************
 	let outs = split(system('p4 have //.../'.a:A.'...'), "\n")
 	return map( copy(outs), "
@@ -18,17 +19,17 @@ function! perforce_2#complate_have(A,L,P) "{{{
 endfunction "}}}
 function! perforce_2#edit_add(add_flg, ...) "{{{
 	" ********************************************************************************
-	" @param[in] add_flg true : ƒNƒ‰ƒCƒAƒ“ƒg‚É‘¶İ‚µ‚È‚¢ê‡‚ÍAƒtƒ@ƒCƒ‹‚ğ’Ç‰Á
-	" @param[in] a:000     {ƒtƒ@ƒCƒ‹–¼}     ’l‚ª‚È‚¢ê‡‚ÍAŒ»İ‚Ìƒtƒ@ƒCƒ‹‚ğ•ÒW‚·‚é
-	" @retval    ‚È‚µ
+	" @param[in] add_flg true : ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«å­˜åœ¨ã—ãªã„å ´åˆã¯ã€ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¿½åŠ 
+	" @param[in] a:000     {ãƒ•ã‚¡ã‚¤ãƒ«å}     å€¤ãŒãªã„å ´åˆã¯ã€ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç·¨é›†ã™ã‚‹
+	" @retval    ãªã—
 	" ********************************************************************************
 	"
-	" •ÒW‚·‚éƒtƒ@ƒC–Ú–¼‚Ìæ“¾
+	" ç·¨é›†ã™ã‚‹ãƒ•ã‚¡ã‚¤ç›®åã®å–å¾—
 
 	if a:0 == 0
 		let _files = [perforce#common#get_now_filename()]
 	else
-		" ƒtƒ@ƒCƒ‹–¼‚ªw’è‚³‚ê‚Ä‚¢‚éê‡
+		" ãƒ•ã‚¡ã‚¤ãƒ«åãŒæŒ‡å®šã•ã‚Œã¦ã„ã‚‹å ´åˆ
 		let _files = a:000
 	endif
 
@@ -40,7 +41,7 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 				\ 'null' : '',
 				\ }
 
-	" ƒtƒ@ƒCƒ‹‚ª‘¶İ‚µ‚È‚¢ê‡A’Ç‰Á‚·‚é
+	" ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ãªã„å ´åˆã€è¿½åŠ ã™ã‚‹
 	for _file in _files
 		let cmd = 'null'
 		if perforce#is_p4_have(_file)
@@ -59,7 +60,7 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 	" init 
 	let outs = []
 
-	" ƒRƒ}ƒ“ƒh‚ğÀs‚·‚é
+	" ã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œã™ã‚‹
 	for cmd in keys(file_d)
 		let _file = file_d[cmd]
 		if _file != ''
@@ -72,7 +73,7 @@ endfunction
 "}}}
 function! perforce_2#pfDiff(...) "{{{
 	" ********************************************************************************
-	" @param[in] ƒtƒ@ƒCƒ‹–¼
+	" @param[in] ãƒ•ã‚¡ã‚¤ãƒ«å
 	" ********************************************************************************
 	let file_ = call(s:File.get_files, a:000)[0]
 	return perforce#pfDiff(file_)
@@ -80,7 +81,7 @@ endfunction
 "}}}
 function! perforce_2#revert(...) "{{{
 	" ********************************************************************************
-	" @param[in] ƒtƒ@ƒCƒ‹–¼
+	" @param[in] ãƒ•ã‚¡ã‚¤ãƒ«å
 	" ********************************************************************************
 	let file_ = call(s:File.get_files, a:000)[0]
 	let file_ = perforce#common#get_kk(file_)
@@ -98,8 +99,8 @@ endfunction
 "}}}
 function! perforce_2#pf_merge(...) "{{{
 	" ********************************************************************************
-	" Œ»İ‚ÌƒNƒ‰ƒCƒAƒ“ƒg‚ÆAƒ}[ƒW‚µ‚Ü‚·B
-	" @param[in]	path	”äŠr‚·‚éƒtƒ@ƒCƒ‹
+	" ç¾åœ¨ã®ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã¨ã€ãƒãƒ¼ã‚¸ã—ã¾ã™ã€‚
+	" @param[in]	path	æ¯”è¼ƒã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«
 	" @retval       NONE
 	" ********************************************************************************
 	let path = ( a:1 == "" ) ? g:perforce_merge_default_path : a:1

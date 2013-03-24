@@ -1,5 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
+setl enc=utf8
 
 
 function! unite#kinds#k_p4#define()
@@ -17,7 +18,7 @@ let s:kind.action_table.a_add_fix = {
 			\ }
 function! s:kind.action_table.a_add_fix.func(candidates) "{{{
 
-	" ‰Šú‰»
+	" åˆæœŸåŒ–
 	cexpr ''	
 
 	for candidate in a:candidates

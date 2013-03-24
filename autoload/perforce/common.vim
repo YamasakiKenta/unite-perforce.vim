@@ -1,5 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
+setl enc=utf8
 
 let s:Vital  = vital#of('unite-perforce.vim')
 let s:Common = s:Vital.import("Mind.Common")

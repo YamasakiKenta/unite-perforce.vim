@@ -1,12 +1,13 @@
 let s:save_cpo = &cpo
 set cpo&vim
+setl enc=utf8
 
 
 function! unite#kinds#k_null#define()
 	return s:kind
 endfunction
 
-" p4_settings.vim ‚Åg—p‚·‚é
+" p4_settings.vim ã§ä½¿ç”¨ã™ã‚‹
 let s:kind = { 
 			\ 'name'           : 'k_null',
 			\ 'default_action' : 'a_null',
@@ -15,7 +16,7 @@ let s:kind = {
 			\ }
 
 let s:kind.action_table.a_null = {
-			\ 'description' : '‚È‚É‚à‚µ‚È‚¢',
+			\ 'description' : 'ãªã«ã‚‚ã—ãªã„',
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.a_null.func(candidate) "{{{

@@ -1,5 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
+setl enc=utf8
 
 let g:pf_clients_template = get(g:, 'pf_clients_template', [])
 

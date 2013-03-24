@@ -1,5 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
+setl enc=utf8
 
 
 function! unite#kinds#k_p4_jobs#define()
@@ -18,7 +19,7 @@ let s:kind = {
 
 let s:kind.action_table.a_p4_fixes = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'ƒWƒ‡ƒu‚Ìî•ñ',
+			\ 'description' : 'ã‚¸ãƒ§ãƒ–ã®æƒ…å ±',
 			\ 'default_action' : 'a_p4_fixes',
 			\ }
 function! s:kind.action_table.a_p4_fixes.func(candidates) "{{{

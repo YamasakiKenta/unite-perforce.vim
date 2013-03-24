@@ -1,5 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
+setl enc=utf8
 
 
 function! unite#sources#p4_describe#define()
@@ -8,7 +9,7 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4_describe',
-			\ 'description' : '�T�u�~�b�g�ς݂̃`�F���W���X�g�̍�����\��',
+			\ 'description' : 'サブミット済みのチェンジリストの差分を表示',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
 	let chnums = a:args

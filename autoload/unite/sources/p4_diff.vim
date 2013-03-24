@@ -1,5 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
+setl enc=utf8
 
 
 function! unite#sources#p4_diff#define()
@@ -8,11 +9,11 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4_diff',
-			\ 'description' : 'ƒtƒ@ƒCƒ‹‚Ì·•ª•\¦',
+			\ 'description' : 'ãƒ•ã‚¡ã‚¤ãƒ«ã®å·®åˆ†è¡¨ç¤º',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
 
-	" ˆø”‚ª‚È‚¢ê‡‚ÍA‹ó”’‚ğİ’è‚·‚é ( ‘SŒŸõ )
+	" å¼•æ•°ãŒãªã„å ´åˆã¯ã€ç©ºç™½ã‚’è¨­å®šã™ã‚‹ ( å…¨æ¤œç´¢ )
 	if len(a:args) > 0
 		let files = a:args
 		let all_flg = 0
@@ -25,7 +26,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	let outs = []
 	for file in files
 		if perforce#is_p4_have(file)
-			" š 
+			" â˜… 
 			if 1
 				if perforce#data#get('diff -dw', 'common') == 1
 					let outs += perforce#pfcmds('diff -dw','',perforce#common#get_kk(file)).outs
@@ -45,7 +46,7 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	let rtns += perforce#get_source_diff_from_diff(outs) 
 
-	" •\¦‚ğƒ‹[ƒv‚³‚¹‚é
+	" è¡¨ç¤ºã‚’ãƒ«ãƒ¼ãƒ—ã•ã›ã‚‹
 	if all_flg == 0
 		let nowline = line(".")
 		let cnt = 0
@@ -59,7 +60,7 @@ function! s:source.gather_candidates(args, context) "{{{
 		endfor
 	endif
 
-	" add ‚µ‚½ƒtƒ@ƒCƒ‹‚ğ’Ç‰Á‚·‚é
+	" add ã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¿½åŠ ã™ã‚‹
 	if all_flg
 		"let file = 
 		let opened_strs = perforce#pfcmds('opened','').outs

@@ -1,5 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
+setl enc=utf8
 
 let s:_file  = expand("<sfile>")
 
@@ -24,7 +25,7 @@ let s:kind = {
 			\ }
 
 let s:kind.action_table.a_p4_user_change = {
-			\ 'description' : 'ƒ†[ƒU[‚ÌØ‚è‘Ö‚¦',
+			\ 'description' : 'ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®åˆ‡ã‚Šæ›¿ãˆ',
 			\ }
 function! s:kind.action_table.a_p4_user_change.func(candidates) "{{{
 	let candidate = a:candidates
