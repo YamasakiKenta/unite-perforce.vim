@@ -1,7 +1,6 @@
 let s:_file  = expand("<sfile>")
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 "
@@ -22,16 +21,16 @@ let s:kind = {
 call unite#define_kind(s:kind)
 
 let s:kind.action_table.a_p4_client_set = {
-			\ 'description' : 'ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®å¤‰æ›´', 
+			\ 'description' : 'ƒNƒ‰ƒCƒAƒ“ƒg‚Ì•ÏX', 
 			\ }
 function! s:kind.action_table.a_p4_client_set.func(candidates) "{{{
 
-	" ä¿å­˜ã™ã‚‹åå‰ã®å–å¾—
+	" •Û‘¶‚·‚é–¼‘O‚Ìæ“¾
 	let clname = a:candidates.action__clname
 	let port   = a:candidates.action__port
 	let clpath = perforce#get_ClientPathFromName(clname)
 
-	" ä½œæˆã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®åå‰ã®ä¿å­˜ ( åˆ‡ã‚Šæ›¿ãˆ ) 
+	" ì¬‚·‚éƒtƒ@ƒCƒ‹‚Ì–¼‘O‚Ì•Û‘¶ ( Ø‚è‘Ö‚¦ ) 
 	call perforce#set_PFCLIENTNAME(clname)
 	call perforce#set_PFCLIENTPATH(clpath)
 	call perforce#set_PFPORT(port)
@@ -40,7 +39,7 @@ endfunction "}}}
 
 let s:kind.action_table.a_p4_client_sync = { 
 			\'is_selectable' : 1,
-			\'description' : 'æœ€æ–°åŒæœŸ', 
+			\'description' : 'ÅV“¯Šú', 
 			\}
 function! s:kind.action_table.a_p4_client_sync.func(candidates) "{{{
 	for l:candidate in a:candidates
@@ -52,14 +51,14 @@ endfunction "}}}
 
 let s:kind.action_table.a_p4_client_info = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®æƒ…å ± ( info ) ',
+			\ 'description' : 'ƒNƒ‰ƒCƒAƒ“ƒg‚Ìî•ñ ( info ) ',
 			\ }
 function! s:kind.action_table.a_p4_client_info.func(candidates) "{{{
 	for l:candidate in a:candidates
 		let clname = l:candidate.action__clname
 		let port   = l:candidate.action__port
 
-		" å„ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã”ã¨ã«è¡¨ç¤ºã™ã‚‹
+		" ŠeƒNƒ‰ƒCƒAƒ“ƒg‚²‚Æ‚É•\¦‚·‚é
 		call perforce#common#LogFile(port.'_'.clname, 0)
 		let outs = perforce#pfcmds('info', port.' -c '.clname).outs
 		call append(0,outs)
@@ -68,14 +67,14 @@ endfunction "}}}
 
 let s:kind.action_table.a_p4_client = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®æƒ…å ± ( client )',
+			\ 'description' : 'ƒNƒ‰ƒCƒAƒ“ƒg‚Ìî•ñ ( client )',
 			\ }
 function! s:kind.action_table.a_p4_client.func(candidates) "{{{
 	for l:candidate in a:candidates
 		let clname = l:candidate.action__clname
 		let port   = l:candidate.action__port
 
-		" å„ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã”ã¨ã«è¡¨ç¤ºã™ã‚‹
+		" ŠeƒNƒ‰ƒCƒAƒ“ƒg‚²‚Æ‚É•\¦‚·‚é
 		call perforce#common#LogFile(clname, 0)
 		let outs = perforce#pfcmds('client', port, '-o '.clname).outs
 		call append(0,outs)

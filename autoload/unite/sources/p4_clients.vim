@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 
 function! unite#sources#p4_clients#define()
@@ -10,7 +9,7 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4_clients',
-			\ 'description' : '繧ｯ繝ｩ繧､繧｢繝ｳ繝医�ｮ陦ｨ遉ｺ',
+			\ 'description' : 'クライアントの表示',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
 	return s:get_pfclients()
@@ -22,7 +21,7 @@ let s:source_p4_clients = s:source
 " ================================================================================
 function! s:get_pfclients() "{{{
 	" ********************************************************************************
-	" 繧ｯ繝ｩ繧､繧｢繝ｳ繝医ｒ陦ｨ遉ｺ縺吶ｋ
+	" クライアントを表示する
 	" ********************************************************************************
 
 	let datas = perforce#pfcmds_new_port_only('clients', '', '')

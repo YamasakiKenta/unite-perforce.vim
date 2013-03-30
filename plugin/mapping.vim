@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 nnoremap <PLUG>(unite_p4_commit)
 			\ :<C-u>Unite source -input=p4\ <CR>|"

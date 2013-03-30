@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 function! unite#kinds#k_p4_change#define()
 	return [ 
@@ -21,24 +20,24 @@ let s:kind_k_p4_change_reopen = {
 			\ }
 
 let s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen = {
-			\ 'description' : 'ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´ ( reopen )' ,
+			\ 'description' : 'ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX ( reopen )' ,
 			\ } 
 function! s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen.func(candidate) "{{{
 	" ********************************************************************************
-	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´
-	" action ã‹ã‚‰å®Ÿè¡Œã—ãŸå ´åˆã¯ã€é¸æŠã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¤‰æ›´ã™ã‚‹ã€‚
-	" source ã‹ã‚‰å®Ÿè¡Œã—ãŸå ´åˆã¯ã€é–‹ã„ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¤‰æ›´ã™ã‚‹ã€‚
+	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX
+	" action ‚©‚çÀs‚µ‚½ê‡‚ÍA‘I‘ğ‚µ‚½ƒtƒ@ƒCƒ‹‚ğ•ÏX‚·‚éB
+	" source ‚©‚çÀs‚µ‚½ê‡‚ÍAŠJ‚¢‚½ƒtƒ@ƒCƒ‹‚ğ•ÏX‚·‚éB
 	" ********************************************************************************
 
 	let reopen_depots = a:candidate.action__depots
 
-	"ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç•ªå·ã®å–å¾—
+	"ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì”Ô†‚Ìæ“¾
 	let chnum = s:make_new_changes(a:candidate)
 
-	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´
+	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX
 	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "'))).outs
 
-	" ãƒ­ã‚°ã®å‡ºåŠ›
+	" ƒƒO‚Ìo—Í
 	call perforce#LogFile(outs)
 
 endfunction "}}}
@@ -53,9 +52,9 @@ let s:kind_k_p4_change_pending = {
 			\ 'parents' : ['k_p4'],
 			\ }
 
-" å…±é€š
+" ‹¤’Ê
 let s:kind_k_p4_change_pending.action_table.delete = {
-			\ 'description' : 'ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å‰Šé™¤' ,
+			\ 'description' : 'ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìíœ' ,
 			\ 'is_selectable' : 1,
 			\ 'is_quit' : 0,
 			\ }
@@ -70,9 +69,9 @@ function! s:kind_k_p4_change_pending.action_table.delete.func(candidates) "{{{
 	endfor
 endfunction "}}}
 
-"è¤‡æ•°é¸æŠå¯èƒ½
+"•¡”‘I‘ğ‰Â”\
 let s:kind_k_p4_change_pending.action_table.a_p4_change_opened = { 
-			\ 'description' : 'ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º',
+			\ 'description' : 'ƒtƒ@ƒCƒ‹‚Ì•\¦',
 			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
@@ -80,15 +79,15 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_opened.func(candid
 
 	let chnums = []
 	for candidate in a:candidates
-		" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç•ªå·ã®å–å¾—ã‚’ã™ã‚‹
+		" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì”Ô†‚Ìæ“¾‚ğ‚·‚é
 		let chnums += [s:make_new_changes(candidate)]
 	endfor
 
-	call unite#start_temporary([insert(chnums,'p4_opened')]) " # é–‰ã˜ãªã„ ? 
+	call unite#start_temporary([insert(chnums,'p4_opened')]) " # •Â‚¶‚È‚¢ ? 
 endfunction "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_change_info = { 
-			\ 'description' : 'ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®æƒ…å ±' ,
+			\ 'description' : 'ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìî•ñ' ,
 			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
@@ -102,7 +101,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_info.func(candidat
 endfunction "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_change_submit = {
-			\ 'description' : 'ã‚µãƒ–ãƒŸãƒƒãƒˆ' ,
+			\ 'description' : 'ƒTƒuƒ~ƒbƒg' ,
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candidates) "{{{
@@ -120,7 +119,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 endfunction "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4change_describe = { 
-			\ 'description' : 'å·®åˆ†ã®è¡¨ç¤º',
+			\ 'description' : '·•ª‚Ì•\¦',
 			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
@@ -132,7 +131,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4change_describe.func(candi
 endfunction "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff = { 
-			\ 'description' : 'å·®åˆ†ã®ã¾ã¨ã‚ã‚’è¡¨ç¤º',
+			\ 'description' : '·•ª‚Ì‚Ü‚Æ‚ß‚ğ•\¦',
 			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
@@ -144,31 +143,31 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff.func(candidate
 endfunction "}}}
 "
 let s:kind_k_p4_change_pending.action_table.a_p4_change_reopen = {
-			\ 'description' : 'ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´' ,
+			\ 'description' : 'ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX' ,
 			\ 'is_quit' : 0,
 			\ } 
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_reopen.func(candidate) "{{{
 	" ********************************************************************************
-	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´
-	" action ã‹ã‚‰å®Ÿè¡Œã—ãŸå ´åˆã¯ã€é¸æŠã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¤‰æ›´ã™ã‚‹ã€‚
-	" source ã‹ã‚‰å®Ÿè¡Œã—ãŸå ´åˆã¯ã€é–‹ã„ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¤‰æ›´ã™ã‚‹ã€‚
+	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX
+	" action ‚©‚çÀs‚µ‚½ê‡‚ÍA‘I‘ğ‚µ‚½ƒtƒ@ƒCƒ‹‚ğ•ÏX‚·‚éB
+	" source ‚©‚çÀs‚µ‚½ê‡‚ÍAŠJ‚¢‚½ƒtƒ@ƒCƒ‹‚ğ•ÏX‚·‚éB
 	" ********************************************************************************
 
 	let reopen_depots = a:candidate.action__depots
 
-	"ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç•ªå·ã®å–å¾—
+	"ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì”Ô†‚Ìæ“¾
 	let chnum = s:make_new_changes(a:candidate)
 
-	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´
+	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX
 	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "'))).outs
 
-	" ãƒ­ã‚°ã®å‡ºåŠ›
+	" ƒƒO‚Ìo—Í
 	call perforce#LogFile(outs)
 
 endfunction "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_change_rename = {
-			\  'description' : 'åå‰ã®å¤‰æ›´' ,
+			\  'description' : '–¼‘O‚Ì•ÏX' ,
 			\ 'is_quit' : 0,
 			\ }
 function! s:get_chname_from_change(str) "{{{
@@ -182,7 +181,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_rename.func(candid
 	let chname = s:get_chname_from_change(a:candidate.word)
 	let chname = input(chname.'-> ', chname)
 
-	" å…¥åŠ›ãŒãªã„å ´åˆã¯ã€å®Ÿè¡Œã—ãªã„
+	" “ü—Í‚ª‚È‚¢ê‡‚ÍAÀs‚µ‚È‚¢
 	if chname =~ ""
 		let outs = perforce#pfChange(chname,chnum)
 		call perforce#LogFile(outs)
@@ -190,9 +189,9 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_rename.func(candid
 endfunction "}}}
 
 " ********************************************************************************
-" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç•ªå·ã®å–å¾—ã‚’ã™ã‚‹ ( new ã®å ´åˆã¯ã€æ–°è¦ä½œæˆ )
-" @param[in]	candidate	unite ã®ã‚ã‚Œ	
-" @retval       chnum		ç•ªå·
+" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì”Ô†‚Ìæ“¾‚ğ‚·‚é ( new ‚Ìê‡‚ÍAV‹Kì¬ )
+" @param[in]	candidate	unite ‚Ì‚ ‚ê	
+" @retval       chnum		”Ô†
 " ********************************************************************************
 function! s:make_new_changes(candidate) "{{{
 
@@ -201,10 +200,10 @@ function! s:make_new_changes(candidate) "{{{
 	if chnum == 'new'
 		let chname = a:candidate.action__chname
 
-		" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ä½œæˆ
+		" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìì¬
 		let outs = perforce#pfChange(chname)
 
-		"ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®æ–°è¦ä½œæˆã®çµæœã‹ã‚‰ç•ªå·ã‚’å–å¾—ã™ã‚‹
+		"ƒ`ƒFƒ“ƒWƒŠƒXƒg‚ÌV‹Kì¬‚ÌŒ‹‰Ê‚©‚ç”Ô†‚ğæ“¾‚·‚é
 		let chnum = perforce#get_ChangeNum_from_changes(outs[0])
 	endif
 

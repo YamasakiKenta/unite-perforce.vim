@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 
 let s:_file  = expand("<sfile>")
@@ -8,7 +7,7 @@ let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 let s:p4_have_cache = {}
 
 function! s:get_datas_from_p4_have(str, reset_flg) "{{{
-	" ç©ºç™½ã®å ´åˆã¯ã€ã‚¹ãƒšãƒ¼ã‚¹ã‚’ä½¿ç”¨ã™ã‚‹
+	" ‹ó”’‚Ìê‡‚ÍAƒXƒy[ƒX‚ğg—p‚·‚é
 	let str = a:str
 
 	let port   = perforce#get_PFPORT()
@@ -47,10 +46,10 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4_have',
-			\ 'description' : 'æ‰€æœ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«',
+			\ 'description' : 'Š—L‚·‚éƒtƒ@ƒCƒ‹',
 			\ }
 "********************************************************************************
-"@param[in]	args		perforceã‹ã‚‰æ¤œç´¢ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«å
+"@param[in]	args		perforce‚©‚çŒŸõ‚·‚éƒtƒ@ƒCƒ‹–¼
 "********************************************************************************
 function! s:source.gather_candidates(args, context) "{{{
 	return s:get_datas_from_p4_have(join(a:args), 0)
@@ -59,10 +58,10 @@ let s:souce_p4have = deepcopy(s:source)
 
 let s:source = {
 			\ 'name' : 'p4_have_reset',
-			\ 'description' : 'æ‰€æœ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ« ( ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’å‰Šé™¤ã™ã‚‹ ) ',
+			\ 'description' : 'Š—L‚·‚éƒtƒ@ƒCƒ‹ ( ƒLƒƒƒbƒVƒ…‚ğíœ‚·‚é ) ',
 			\ }
 "********************************************************************************
-"@param[in]	args		perforceã‹ã‚‰æ¤œç´¢ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«å
+"@param[in]	args		perforce‚©‚çŒŸõ‚·‚éƒtƒ@ƒCƒ‹–¼
 "********************************************************************************
 function! s:source.gather_candidates(args, context) "{{{
 	return s:get_datas_from_p4_have(join(a:args), 1)

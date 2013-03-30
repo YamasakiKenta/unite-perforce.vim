@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 
 function! unite#sources#p4_change#define()
@@ -11,10 +10,10 @@ function! unite#sources#p4_change#define()
 				\ ]
 endfunction
 " --------------------------------------------------------------------------------
-" è¡¨ç¤ºå¤‰æ›´
-" action__chname	æ–°è¦ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ã‚³ãƒ¡ãƒ³ãƒˆ
-" action__chnum		ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç•ªå·
-" action__depots	ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´ ( ç·¨é›†ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ« ) 
+" •\¦•ÏX
+" action__chname	V‹Kƒ`ƒFƒ“ƒWƒŠƒXƒg‚ÌƒRƒƒ“ƒg
+" action__chnum		ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì”Ô†
+" action__depots	ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX ( •ÒW‚·‚éƒtƒ@ƒCƒ‹ ) 
 " --------------------------------------------------------------------------------
 
 " ********************************************************************************
@@ -22,25 +21,25 @@ endfunction
 " ********************************************************************************
 let s:source = {
 			\ 'name'        : 'p4_changes_pending',
-			\ 'description' : 'ä½œæˆä¸­ã®ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆ',
+			\ 'description' : 'ì¬’†‚Ìƒ`ƒFƒ“ƒWƒŠƒXƒg',
 			\ 'hooks'       : {},
 			\ 'is_quit'     : 0,
 			\ }
 let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
 function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
-	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®è¡¨ç¤º è¡¨ç¤ºè¨­å®šé–¢æ•°
-	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´ã®å ´åˆã€é–‹ã„ãŸã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¤‰æ›´ã™ã‚‹ã‹ã€actionã§æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«
+	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•\¦ •\¦İ’èŠÖ”
+	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX‚Ìê‡AŠJ‚¢‚½‚¢‚éƒtƒ@ƒCƒ‹‚ğ•ÏX‚·‚é‚©Aaction‚Åw’è‚µ‚½ƒtƒ@ƒCƒ‹
 	" @param[in]	args				depot
 	" ********************************************************************************
 	"
-	" è¡¨ç¤ºã™ã‚‹ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆåã®å–å¾—
+	" •\¦‚·‚éƒNƒ‰ƒCƒAƒ“ƒg–¼‚Ìæ“¾
 	let outs = perforce#data#get('client_changes_only') ? 
 				\ [perforce#get_PFCLIENTNAME()] : 
 				\ perforce#pfcmds('clients','').outs
 
 				"\ 'word'           : 'default by '.perforce#get_ClientName_from_client(v:val),
-	" defaultã®è¡¨ç¤º
+	" default‚Ì•\¦
 	let rtn = []
 	let rtn += map( outs, "{
 				\ 'word'           : 'default by '.v:val,
@@ -55,14 +54,14 @@ function! s:source.gather_candidates(args, context) "{{{
 endfunction "}}}
 function! s:source.change_candidates(args, context) "{{{
 	" ********************************************************************************
-	" p4 change ã‚½ãƒ¼ã‚¹ã® å¤‰åŒ–é–¢æ•°
+	" p4 change ƒ\[ƒX‚Ì •Ï‰»ŠÖ”
 	" @param[in]	
 	" @retval       
 	" ********************************************************************************
-	" Unite ã§å…¥åŠ›ã•ã‚ŒãŸæ–‡å­—
+	" Unite ‚Å“ü—Í‚³‚ê‚½•¶š
 	let newfile = a:context.input
 
-	" å…¥åŠ›ãŒãªã„å ´åˆã¯ã€è¡¨ç¤ºã—ãªã„
+	" “ü—Í‚ª‚È‚¢ê‡‚ÍA•\¦‚µ‚È‚¢
 	if newfile != ""
 		return [{
 					\ 'word' : '[new] '.newfile,
@@ -84,7 +83,7 @@ let s:source_p4_changes_pending = deepcopy(s:source) | unlet s:source
 " ********************************************************************************
 let s:source = {
 			\ 'name' : 'p4_changes_pending_reopen',
-			\ 'description' : 'ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç§»å‹•',
+			\ 'description' : 'ƒ`ƒFƒ“ƒWƒŠƒXƒg‚ÌˆÚ“®',
 			\ 'hooks' : {},
 			\ 'default_action' : 'a_p4_change_reopen',
 			\ }
@@ -99,7 +98,7 @@ let s:source_p4_changes_pending_reopen = deepcopy(s:source) | unlet s:source
 " ********************************************************************************
 let s:source = {
 			\ 'name' : 'p4_changes_submitted',
-			\ 'description' : 'submit æ¸ˆã¿ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆ',
+			\ 'description' : 'submit Ï‚İƒ`ƒFƒ“ƒWƒŠƒXƒg',
 			\ 'hooks' : {},
 			\' default_action' : 'a_p4change_describe',
 			\ }

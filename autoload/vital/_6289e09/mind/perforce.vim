@@ -3,7 +3,7 @@ set cpo+=vim
 
 function! s:get_client_root(...) "{{{
 	if get(a:, '1', 0) != 0 || !exists('g:get_client_root_cache')
-		" å¤±æ•—æ™‚ã®ç‚ºã«ã€åˆæœŸåŒ–ã™ã‚‹
+		" ¸”s‚Ìˆ×‚ÉA‰Šú‰»‚·‚é
 		let g:get_client_root_cache = ""
 		let lines = split(system('p4 info'), "\n")
 		let word = '^Client root: '

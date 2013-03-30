@@ -1,13 +1,12 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 let s:_file  = expand("<sfile>")
 
 let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
 
 " ********************************************************************************
-" depotã§æ“ä½œã§ãã‚‹ã‚‚ã®
+" depot‚Å‘€ì‚Å‚«‚é‚à‚Ì
 " ********************************************************************************
 "
 function! unite#kinds#k_depot#define()
@@ -16,10 +15,10 @@ endfunction
 
 function! s:setPfcmd(kind,cmd,des) "{{{
 	" ********************************************************************************
-	" ãƒ•ã‚¡ã‚¤ãƒ«åã‚’æ¸¡ã™ã ã‘ã®ã‚³ãƒãƒ³ãƒ‰ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ä½œæˆ
+	" ƒtƒ@ƒCƒ‹–¼‚ğ“n‚·‚¾‚¯‚ÌƒRƒ}ƒ“ƒh‚ÌƒAƒNƒVƒ‡ƒ“ì¬
 	" @param[in]	kind		unite kind	
-	" @param[in]	cmd			p4 ã‚³ãƒãƒ³ãƒ‰
-	" @param[in]	des			èª¬æ˜æ–‡
+	" @param[in]	cmd			p4 ƒRƒ}ƒ“ƒh
+	" @param[in]	des			à–¾•¶
 	" ********************************************************************************
 	"
 	let action = {
@@ -27,15 +26,15 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 				\ 'description' : a:des,
 				\ }
 
-	" Uniteã«ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®è¿½åŠ 
+	" Unite‚ÉƒAƒNƒVƒ‡ƒ“‚Ì’Ç‰Á
 	call unite#custom_action(a:kind, 'a_p4_'.a:cmd, action)
 
-	" ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒ‘ã‚¹
+	" ƒAƒNƒVƒ‡ƒ“ƒpƒX
 	let kind = {
 				\ 'k_depot' : 'depot'
 				\ }
 
-	" å¼•æ•°ã‚’ã‚³ãƒãƒ³ãƒ‰ã«ã™ã‚‹ "{{{
+	" ˆø”‚ğƒRƒ}ƒ“ƒh‚É‚·‚é "{{{
 	execute "
 			\ function! action.func(candidates) \n
 				\ let outs = [] \n
@@ -49,20 +48,20 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 	unlet action
 endfunction "}}}
 
-call s:setPfcmd('jump_list' , 'add'       , 'è¿½åŠ '               ) 
-call s:setPfcmd('jump_list' , 'edit'      , 'ç·¨é›†'               ) 
-call s:setPfcmd('file'      , 'add'       , 'è¿½åŠ '               ) 
-call s:setPfcmd('file'      , 'edit'      , 'ç·¨é›†'               ) 
-call s:setPfcmd('k_depot'   , 'edit'      , 'ç·¨é›†'               ) 
-call s:setPfcmd('k_depot'   , 'delete'    , 'å‰Šé™¤'               ) 
-call s:setPfcmd('k_depot'   , 'revert -a' , 'å…ƒã«æˆ»ã™'           ) 
-call s:setPfcmd('k_depot'   , 'revert'    , 'å…ƒã«æˆ»ã™ [ å¼·åˆ¶ ] ' ) 
+call s:setPfcmd('jump_list' , 'add'       , '’Ç‰Á'               ) 
+call s:setPfcmd('jump_list' , 'edit'      , '•ÒW'               ) 
+call s:setPfcmd('file'      , 'add'       , '’Ç‰Á'               ) 
+call s:setPfcmd('file'      , 'edit'      , '•ÒW'               ) 
+call s:setPfcmd('k_depot'   , 'edit'      , '•ÒW'               ) 
+call s:setPfcmd('k_depot'   , 'delete'    , 'íœ'               ) 
+call s:setPfcmd('k_depot'   , 'revert -a' , 'Œ³‚É–ß‚·'           ) 
+call s:setPfcmd('k_depot'   , 'revert'    , 'Œ³‚É–ß‚· [ ‹­§ ] ' ) 
 
 function! s:find_filepath_from_depot(candidate) "{{{
 	" ********************************************************************************
-	" ç·¨é›†ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å–å¾—ã™ã‚‹ 
-	" @param[in]	candidate		unite action ã®å¼•æ•°
-	" @retval       path			ç·¨é›†ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«å
+	" •ÒW‚·‚éƒtƒ@ƒCƒ‹–¼‚ğæ“¾‚·‚é 
+	" @param[in]	candidate		unite action ‚Ìˆø”
+	" @retval       path			•ÒW‚·‚éƒtƒ@ƒCƒ‹–¼
 	" ********************************************************************************
 	let depot     = a:candidate.action__depot
 	if exists( 'a:candidate.action__client' )
@@ -85,7 +84,7 @@ let s:kind = {
 call unite#define_kind(s:kind)
 
 let s:kind.action_table.a_open = {
-			\ 'description' : 'é–‹ã',
+			\ 'description' : 'ŠJ‚­',
 			\ }
 function! s:kind.action_table.a_open.func(candidate) "{{{
 	exe 'edit '.s:find_filepath_from_depot(a:candidate)
@@ -115,7 +114,7 @@ endfunction "}}}
 
 let s:kind.action_table.a_p4_files = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'ãƒ•ã‚¡ã‚¤ãƒ«ã®æƒ…å ±',
+			\ 'description' : 'ƒtƒ@ƒCƒ‹‚Ìî•ñ',
 			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind.action_table.a_p4_files.func(candidates) "{{{
@@ -127,21 +126,21 @@ endfunction "}}}
 
 let s:kind.action_table.a_p4_move = {
 			\ 'is_selectable' : 1 ,
-			\ 'description' : 'ç§»å‹• ( åå‰ã®å¤‰æ›´ )' ,
+			\ 'description' : 'ˆÚ“® ( –¼‘O‚Ì•ÏX )' ,
 			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 	" ********************************************************************************
-	" perforceã§åå‰ã®å¤‰æ›´ã‚’è¡Œã†
-	" ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«ãŒä¿å­˜ã•ã‚ŒãŸã‚‰ã€å€¤ã‚’æ›´æ–°ã™ã‚‹
-	" @param[in]	g:pfmove_oris		å…ƒã®åå‰ ( ãƒ­ãƒ¼ã‚«ãƒ«ãƒ‘ã‚¹ )
-	" @param[in]	g:pfmove_tmpfile	å¤‰æ›´å¾Œã®åå‰ãŒä¿å­˜ã•ã‚Œã‚‹
+	" perforce‚Å–¼‘O‚Ì•ÏX‚ğs‚¤
+	" ˆêƒtƒ@ƒCƒ‹‚ª•Û‘¶‚³‚ê‚½‚çA’l‚ğXV‚·‚é
+	" @param[in]	g:pfmove_oris		Œ³‚Ì–¼‘O ( ƒ[ƒJƒ‹ƒpƒX )
+	" @param[in]	g:pfmove_tmpfile	•ÏXŒã‚Ì–¼‘O‚ª•Û‘¶‚³‚ê‚é
 	" ********************************************************************************
 	"
-	" é¸æŠã—ã¦ã„ã‚‹ã‚‚ã®ãŒã‚ã‚Œã°ã€ 
+	" ‘I‘ğ‚µ‚Ä‚¢‚é‚à‚Ì‚ª‚ ‚ê‚ÎA 
 	"if len(a:candidates) == 1 
 	if 0
-		" ä¸€ã¤ã ã‘ã®å ´åˆ "{{{
+		" ˆê‚Â‚¾‚¯‚Ìê‡ "{{{
 		let l:candidate  = a:candidates[0]
 		let depot        = l:candidate.action__depot
 		let path         = perforce#get_path_from_depot(depot)
@@ -156,11 +155,11 @@ function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 		endif
 		"}}}
 	else 
-		" è¤‡æ•°é¸æŠã®å ´åˆ "{{{
+		" •¡”‘I‘ğ‚Ìê‡ "{{{
 
 		let g:pfmove_tmpfile = copy($PFTMPFILE)
 		"
-		" å…ƒã®ãƒ‘ã‚¹ã®ç™»éŒ²ã¨åˆæœŸã®ãƒ•ã‚¡ã‚¤ãƒ«åã®å–å¾— "{{{
+		" Œ³‚ÌƒpƒX‚Ì“o˜^‚Æ‰Šú‚Ìƒtƒ@ƒCƒ‹–¼‚Ìæ“¾ "{{{
 		let names = []
 		let g:pfmove_oris = []
 
@@ -168,11 +167,11 @@ function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 			let depot          = candidate.action__depot
 			let path           = perforce#get_path_from_depot(depot)
 			let g:pfmove_oris += [path]
-			let names         += [substitute(fnamemodify(path,":t"),'\n','','')] " # ãƒ•ã‚¡ã‚¤ãƒ«åã®ã¿å–å¾—
+			let names         += [substitute(fnamemodify(path,":t"),'\n','','')] " # ƒtƒ@ƒCƒ‹–¼‚Ì‚İæ“¾
 		endfor
 		"}}}
 		"
-		" åˆæœŸã®åå‰ã®æ›¸ãå‡ºã—
+		" ‰Šú‚Ì–¼‘O‚Ì‘‚«o‚µ
 		call common#event_save_file(g:pfmove_tmpfile,names,'common#do_move(g:pfmove_oris, g:pfmove_tmpfile)')
 
 		"}}}
@@ -182,7 +181,7 @@ function! s:kind.action_table.a_p4_move.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.delete = { 
-			\ 'description' : 'å·®åˆ† ( delete ã ã‘ã© ) ',
+			\ 'description' : '·•ª ( delete ‚¾‚¯‚Ç ) ',
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind.action_table.delete.func(candidate) "{{{
@@ -196,7 +195,7 @@ endfunction "}}}
 
 let s:kind.action_table.a_p4_diff = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'å·®åˆ†',
+			\ 'description' : '·•ª',
 			\ }
 function! s:kind.action_table.a_p4_diff.func(candidates) "{{{
 	let args = map(copy(a:candidates),"v:val.action__depot")
@@ -205,7 +204,7 @@ endfunction "}}}
 
 let s:kind.action_table.a_p4_diff_tool = {
 			\ 'is_selectable' : 1 ,  
-			\ 'description' : 'å·®åˆ† ( TOOL )' ,
+			\ 'description' : '·•ª ( TOOL )' ,
 			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind.action_table.a_p4_diff_tool.func(candidates) "{{{
@@ -217,22 +216,22 @@ endfunction "}}}
 
 let s:kind.action_table.a_p4_reopen = {
 			\ 'is_selectable' : 1 ,
-			\ 'description' : 'ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´' ,
+			\ 'description' : 'ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX' ,
 			\ }
 function! s:kind.action_table.a_p4_reopen.func(candidates) "{{{
-	let reopen_depots= [] " # åˆæœŸåŒ–
+	let reopen_depots= [] " # ‰Šú‰»
 	for l:candidate in a:candidates
-		call add(reopen_depots, l:candidate.action__depot) " # ä¿å­˜
+		call add(reopen_depots, l:candidate.action__depot) " # •Û‘¶
 	endfor
 
-	" å¤‰æ›´å…ˆã‚’æ±ºã‚ã‚‹
+	" •ÏXæ‚ğŒˆ‚ß‚é
 	" [ ] defoult_action
 	call unite#start_temporary([insert(reopen_depots,'p4_changes_pending_reopen')])
 endfunction "}}}
 
 let s:kind.action_table.a_p4_filelog = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'å±¥æ­´',
+			\ 'description' : '—š—ğ',
 			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind.action_table.a_p4_filelog.func(candidates) "{{{
@@ -242,7 +241,7 @@ endfunction "}}}
 
 let s:kind.action_table.a_p4_sync = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'ãƒ•ã‚¡ã‚¤ãƒ«ã®æœ€æ–°åŒæœŸ',
+			\ 'description' : 'ƒtƒ@ƒCƒ‹‚ÌÅV“¯Šú',
 			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind.action_table.a_p4_sync.func(candidates) "{{{
@@ -252,7 +251,7 @@ function! s:kind.action_table.a_p4_sync.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.a_p4_dir_copy = {
-	\ 'description' : 'dirã§ã‚³ãƒ”ãƒ¼ã™ã‚‹',
+	\ 'description' : 'dir‚ÅƒRƒs[‚·‚é',
 	\ 'is_selectable' : 1,
 	\ 'is_quit' : 0 ,
 	\ }
@@ -267,39 +266,39 @@ function! s:copyFileDir(file) "{{{
 	" / -> \
 	let file1 = substitute(a:file, '/','\','g')
 
-	" ç©ºç™½ã¨å¼•æ•°ãŒãªã„å ´åˆã¯ã€defaultã‚’è¨­å®šã™ã‚‹
+	" ‹ó”’‚Æˆø”‚ª‚È‚¢ê‡‚ÍAdefault‚ğİ’è‚·‚é
 	let root2 = perforce#data#get('g:perforce_merge_default_path')[0]
 	let root2 = substitute(root2, '/', '\','g')
 
-	" æœ«å°¾ã® \ ã‚’å‰Šé™¤ã™ã‚‹
+	" ––”ö‚Ì \ ‚ğíœ‚·‚é
 	let root2 = substitute(root2,'\\$','','')
 
-	" ClientPathã‚’å‰Šé™¤ã™ã‚‹
+	" ClientPath‚ğíœ‚·‚é
 	let root1  = perforce#get_PFCLIENTPATH()
 	let root1  = substitute(root1, '/', '\','g')
 
-	" ç½®æ›ã™ã‚‹ãŸã‚ã€ã‚¹ãƒšãƒ¼ã‚¹ã¯ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã™ã‚‹
+	" ’uŠ·‚·‚é‚½‚ßAƒXƒy[ƒX‚ÍƒGƒXƒP[ƒv‚·‚é
 	let root1 = escape(root1,'\')
 
-	" ãƒ«ãƒ¼ãƒˆã®å‰Šé™¤
+	" ƒ‹[ƒg‚Ìíœ
 	let path1 = substitute(file1, root1,'','')
 
-	" ã‚³ãƒ”ãƒ¼å…ˆ
+	" ƒRƒs[æ
 	let file2 = root2.''.path1
 
 	"--------------------------------------------------------------------------------
-	" å®Ÿè¡Œã™ã‚‹
+	" Às‚·‚é
 	"--------------------------------------------------------------------------------
-	" ãƒ•ã‚©ãƒ«ãƒ€ã®ä½œæˆ
+	" ƒtƒHƒ‹ƒ_‚Ìì¬
 	call system('mkdir "'.fnamemodify(file2,':h').'"')
 
-	" ã‚³ãƒ”ãƒ¼ã™ã‚‹
+	" ƒRƒs[‚·‚é
 	call system('copy "'.file1.'" "'.file2.'"')
 
 endfunction
 "}}}
 let s:kind.action_table.a_p4_depot_copy = {
-	\ 'description' : 'depotã§ã‚³ãƒ”ãƒ¼ã™ã‚‹',
+	\ 'description' : 'depot‚ÅƒRƒs[‚·‚é',
 	\ 'is_selectable' : 1,
 	\ 'is_quit' : 0 ,
 	\ }
@@ -317,26 +316,26 @@ function! s:copy_file_depot(depot) "{{{
 	let depot = substitute(depot, '/','\','g')
 	let file1 = substitute(file1, '/','\','g')
 
-	" ç©ºç™½ã¨å¼•æ•°ãŒãªã„å ´åˆã¯ã€defaultã‚’è¨­å®šã™ã‚‹
+	" ‹ó”’‚Æˆø”‚ª‚È‚¢ê‡‚ÍAdefault‚ğİ’è‚·‚é
 	let root2 = perforce#data#get('g:perforce_merge_default_path')[0]
 	let root2 = substitute(root2, '/', '\','g')
 
-	" æœ«å°¾ã® \ ã‚’å‰Šé™¤ã™ã‚‹
+	" ––”ö‚Ì \ ‚ğíœ‚·‚é
 	let root2 = substitute(root2,'\\$','','')
 
-	" å…ˆé ­ã®\\ã‚’å‰Šé™¤ã™ã‚‹
+	" æ“ª‚Ì\\‚ğíœ‚·‚é
 	let depot = substitute(depot, '\\\\','\','')
 
-	" ã‚³ãƒ”ãƒ¼å…ˆ
+	" ƒRƒs[æ
 	let file2 = root2.''.depot
 
 	"--------------------------------------------------------------------------------
-	" å®Ÿè¡Œã™ã‚‹
+	" Às‚·‚é
 	"--------------------------------------------------------------------------------
-	" ãƒ•ã‚©ãƒ«ãƒ€ã®ä½œæˆ
+	" ƒtƒHƒ‹ƒ_‚Ìì¬
 	call system('mkdir "'.fnamemodify(file2,':h').'"')
 
-	" ã‚³ãƒ”ãƒ¼ã™ã‚‹
+	" ƒRƒs[‚·‚é
 	let cmd = 'copy "'.file1.'" "'.file2.'"'
 	call system(cmd)
 

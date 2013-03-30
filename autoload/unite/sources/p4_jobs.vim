@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 
 function! unite#sources#p4_jobs#define()
@@ -9,7 +8,7 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4_jobs',
-			\ 'description' : 'ã‚¸ãƒ§ãƒ–ã®è¡¨ç¤º',
+			\ 'description' : 'ƒWƒ‡ƒu‚Ì•\¦',
 			\ }
 function! s:get_job_from_jobs(str) "{{{
 	return substitute(a:str,'\(\S*\).*','\1','')

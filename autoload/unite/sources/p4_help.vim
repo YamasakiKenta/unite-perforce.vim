@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 
 function! unite#sources#p4_help#define()
@@ -9,7 +8,7 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4_help',
-			\ 'description' : 'ãƒ˜ãƒ«ãƒ—ã‚’è¡¨ç¤º',
+			\ 'description' : 'ƒwƒ‹ƒv‚ð•\Ž¦',
 			\ }
 function! s:get_pfcmd_from_help(str) "{{{
 	return substitute(a:str,'\t\(\w\+\) .*','\1','')

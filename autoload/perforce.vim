@@ -1,11 +1,8 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~/.perforce/' )
 let $PFTMPFILE = $PFTMP.'tmpfile'
-let $PFHAVE    = $PFTMP.'have'
-let $PFDATA    = $PFTMP.'data'
 if !isdirectory($PFTMP) | call mkdir($PFTMP) | endif
 
 let s:L = vital#of('unite-perforce.vim')
@@ -20,8 +17,8 @@ function! s:get_depot_from_where(str) "{{{
 endfunction "}}}
 function! s:get_depots(args, path) "{{{
 	" ********************************************************************************
-	" depots ã‚’å–å¾—ã™ã‚‹
-	" @param[in]	args	ãƒ•ã‚¡ã‚¤ãƒ«å
+	" depots ‚ğæ“¾‚·‚é
+	" @param[in]	args	ƒtƒ@ƒCƒ‹–¼
 	" @param[in]	context
 	" ********************************************************************************
 	if len(a:args) > 0
@@ -33,13 +30,13 @@ function! s:get_depots(args, path) "{{{
 endfunction "}}}
 function! s:get_lnum_from_diff(str,lnum,snum) "{{{
 	" ********************************************************************************
-	" è¡Œç•ªå·ã‚’æ›´æ–°ã™ã‚‹
-	" @param[in]	str		ç•ªå·ã®æ›´æ–°ã‚’æ±ºã‚ã‚‹æ–‡å­—åˆ—
-	" @param[in]	lnum	ç¾åœ¨ã®ç•ªå·
-	" @param[in]	snum	åˆæœŸå€¤
+	" s”Ô†‚ğXV‚·‚é
+	" @param[in]	str		”Ô†‚ÌXV‚ğŒˆ‚ß‚é•¶š—ñ
+	" @param[in]	lnum	Œ»İ‚Ì”Ô†
+	" @param[in]	snum	‰Šú’l
 	"
-	" @retval       lnum	è¡Œç•ªå·
-	" @retval       snum	åˆæœŸå€¤
+	" @retval       lnum	s”Ô†
+	" @retval       snum	‰Šú’l
 	" ********************************************************************************
 	let str = a:str
 	let num = { 'lnum' : a:lnum , 'snum' : a:snum }
@@ -55,11 +52,11 @@ function! s:get_lnum_from_diff(str,lnum,snum) "{{{
 		let tmpnum = tmp[2] - 1
 		let num.lnum = tmpnum
 		let num.snum = tmpnum
-		" æœ€åˆã®è¡¨ç¤ºã§ã¯ã€æ›´æ–°ã—ãªã„
-	elseif str =~ '^[<>]' " # ç•ªå·ã®æ›´æ–° 
+		" Å‰‚Ì•\¦‚Å‚ÍAXV‚µ‚È‚¢
+	elseif str =~ '^[<>]' " # ”Ô†‚ÌXV 
 		let num.lnum = a:lnum + 1
 	elseif str =~ '---'
-		" ç•ªå·ã®åˆæœŸåŒ–
+		" ”Ô†‚Ì‰Šú‰»
 		let num.lnum = a:snum
 	endif
 	return num
@@ -80,9 +77,9 @@ function! s:get_path_from_where(str) "{{{
 	return matchstr(a:str, '.\{-}\zs\w*:.*\ze\n.*')
 endfunction "}}}
 function! s:get_paths_from_fname(str) "{{{
-	" ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ¤œç´¢
-	let outs = perforce#pfcmds('have','',s:get_dd(a:str)).outs " # ãƒ•ã‚¡ã‚¤ãƒ«åã®å–å¾—
-	return s:get_paths_from_haves(outs)                   " # ãƒ’ãƒƒãƒˆã—ãŸå ´åˆ
+	" ƒtƒ@ƒCƒ‹‚ğŒŸõ
+	let outs = perforce#pfcmds('have','',s:get_dd(a:str)).outs " # ƒtƒ@ƒCƒ‹–¼‚Ìæ“¾
+	return s:get_paths_from_haves(outs)                   " # ƒqƒbƒg‚µ‚½ê‡
 endfunction "}}}
 function! s:get_paths_from_haves(strs) "{{{
 	return map(a:strs,"s:get_path_from_have(v:val)")
@@ -103,14 +100,14 @@ function! s:is_p4_have_from_have(str) "{{{
 endfunction "}}}
 function! s:pf_diff_tool(file,file2) "{{{
 	if perforce#data#get('is_vimdiff_flg')
-		" ã‚¿ãƒ–ã§æ–°ã—ã„ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã
+		" ƒ^ƒu‚ÅV‚µ‚¢ƒtƒ@ƒCƒ‹‚ğŠJ‚­
 		exe 'tabe' a:file2
 		exe 'vs' a:file
 
-		" diffã®é–‹å§‹
+		" diff‚ÌŠJn
 		windo diffthis
 
-		" ã‚­ãƒ¼ãƒãƒƒãƒ—ã®ç™»éŒ²
+		" ƒL[ƒ}ƒbƒv‚Ì“o˜^
 		call s:Common.map_diff()
 	else
 		let cmd = perforce#data#get('diff_tool')
@@ -125,11 +122,11 @@ function! s:pf_diff_tool(file,file2) "{{{
 endfunction "}}}
 function! s:pfdiff_from_fname(fname) "{{{
 	" ********************************************************************************
-	" perforceãªã„ã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰æ¤œç´¢ã—ã¦ã€å…¨ã¦æ¯”è¼ƒ
-	" @param[in]	fname	æ¯”è¼ƒã—ãŸã„ãƒ•ã‚¡ã‚¤ãƒ«å
+	" perforce‚È‚¢‚©‚çƒtƒ@ƒCƒ‹–¼‚©‚çŒŸõ‚µ‚ÄA‘S‚Ä”äŠr
+	" @param[in]	fname	”äŠr‚µ‚½‚¢ƒtƒ@ƒCƒ‹–¼
 	" ********************************************************************************
 	"
-	" ãƒ•ã‚¡ã‚¤ãƒ«åã®ã¿ã®å–å‡ºã—
+	" ƒtƒ@ƒCƒ‹–¼‚Ì‚İ‚Ìæo‚µ
 	let file = fnamemodify(a:fname,":t")
 
 	let paths = s:get_paths_from_fname(file)
@@ -142,8 +139,8 @@ endfunction "}}}
 
 function! perforce#LogFile(str) "{{{
 	" ********************************************************************************
-	" çµæœã®å‡ºåŠ›ã‚’è¡Œã†
-	" @param[in]	str		è¡¨ç¤ºã™ã‚‹æ–‡å­—
+	" Œ‹‰Ê‚Ìo—Í‚ğs‚¤
+	" @param[in]	str		•\¦‚·‚é•¶š
 	" ********************************************************************************
 
 	if perforce#data#get('is_out_flg', 'common') == 1
@@ -169,7 +166,7 @@ function! perforce#get_ClientName_from_client(str) "{{{
 	return matchstr(a:str,'Client \zs\S\+')
 endfunction "}}}
 function! perforce#get_ClientPathFromName(str) "{{{
-	let str = system('p4 clients | grep '.a:str) " # ref ç›´æ¥ãƒ‡ãƒ¼ã‚¿ã‚’ã‚‚ã‚‰ã†æ–¹æ³•ã¯ãªã„ã‹ãª
+	let str = system('p4 clients | grep '.a:str) " # ref ’¼Úƒf[ƒ^‚ğ‚à‚ç‚¤•û–@‚Í‚È‚¢‚©‚È
 	let path = matchstr(str,'.* \d\d\d\d/\d\d/\d\d root \zs\S*')
 	let path = perforce#common#get_pathSrash(path)
 	return path
@@ -201,7 +198,7 @@ function! perforce#get_depot_from_have(str) "{{{
 	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')
 endfunction "}}}
 function! perforce#get_depot_from_opened(str) "{{{
-	return substitute(a:str,'#.*','','')   " # ãƒªãƒ“ã‚¸ãƒ§ãƒ³ç•ªå·ã®å‰Šé™¤
+	return substitute(a:str,'#.*','','')   " # ƒŠƒrƒWƒ‡ƒ“”Ô†‚Ìíœ
 endfunction "}}}
 function! perforce#get_depot_from_path(str) "{{{
 	let out = split(system('p4 where "'.a:str.'"'), "\n")[0]
@@ -209,7 +206,7 @@ function! perforce#get_depot_from_path(str) "{{{
 	return depot 
 endfunction "}}}
 function! perforce#get_filename_for_unite(args, context) "{{{
-	" ãƒ•ã‚¡ã‚¤ãƒ«åã®å–å¾—
+	" ƒtƒ@ƒCƒ‹–¼‚Ìæ“¾
 	let a:context.source__path = expand('%:p')
 	let a:context.source__linenr = line('.')
 	let a:context.source__depots = s:get_depots(a:args, a:context.source__path)
@@ -222,7 +219,7 @@ function! perforce#get_path_from_depot(depot) "{{{
 endfunction "}}}
 function! perforce#get_pfchanges(context,outs,kind) "{{{
 	" ********************************************************************************
-	" p4_changes Untie ç”¨ã® è¿”ã‚Šå€¤ã‚’è¿”ã™
+	" p4_changes Untie —p‚Ì •Ô‚è’l‚ğ•Ô‚·
 	" @param(in)	context	
 	" @param(in)	outs
 	" @param(in)	kind	
@@ -240,8 +237,8 @@ function! perforce#get_pfchanges(context,outs,kind) "{{{
 endfunction "}}}
 function! perforce#get_source_diff_from_diff(outs) "{{{
 	" ********************************************************************************
-	" å·®åˆ†ã®å‡ºåŠ›ã‚’ã€Uniteã®jump_liståŒ–ã‘ã™ã‚‹
-	" @param[in]	outs		å·®åˆ†ã®ãƒ‡ãƒ¼ã‚¿
+	" ·•ª‚Ìo—Í‚ğAUnite‚Ìjump_list‰»‚¯‚·‚é
+	" @param[in]	outs		·•ª‚Ìƒf[ƒ^
 	" ********************************************************************************
 	let outs = a:outs
 	let candidates = []
@@ -263,8 +260,8 @@ function! perforce#get_source_diff_from_diff(outs) "{{{
 endfunction "}}}
 function! perforce#get_source_file_from_path(path) "{{{
 	" ********************************************************************************
-	" å·®åˆ†ã®å‡ºåŠ›ã‚’ã€Uniteã®jump_liståŒ–ã‘ã™ã‚‹
-	" @param[in]	outs		å·®åˆ†ã®ãƒ‡ãƒ¼ã‚¿
+	" ·•ª‚Ìo—Í‚ğAUnite‚Ìjump_list‰»‚¯‚·‚é
+	" @param[in]	outs		·•ª‚Ìƒf[ƒ^
 	" ********************************************************************************
 	let path = a:path
 	let lines = readfile(path)
@@ -284,33 +281,33 @@ function! perforce#get_source_file_from_path(path) "{{{
 endfunction "}}}
 function! perforce#init() "{{{
 
-	" ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿
+	" ƒNƒ‰ƒCƒAƒ“ƒgƒf[ƒ^‚Ì“Ç‚İ‚İ
 	call perforce#get_PFCLIENTPATH()
 
-	" è¨­å®šã®å–å¾—
+	" İ’è‚Ìæ“¾
 	call perforce#data#init()
 endfunction "}}}
 function! perforce#is_p4_have(str) "{{{
 	" ********************************************************************************
-	" ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚‹ã‹èª¿ã¹ã‚‹
-	" @param[in]	str				ãƒ•ã‚¡ã‚¤ãƒ«å , have ã®è¿”ã‚Šå€¤
-	" @retval       flg		TRUE 	å­˜åœ¨ã™ã‚‹
-	" @retval       flg		FLASE 	å­˜åœ¨ã—ãªã„
+	" ƒNƒ‰ƒCƒAƒ“ƒg‚Éƒtƒ@ƒCƒ‹‚ª‚ ‚é‚©’²‚×‚é
+	" @param[in]	str				ƒtƒ@ƒCƒ‹–¼ , have ‚Ì•Ô‚è’l
+	" @retval       flg		TRUE 	‘¶İ‚·‚é
+	" @retval       flg		FLASE 	‘¶İ‚µ‚È‚¢
 	" ********************************************************************************
 	let str = system('p4 have '.perforce#common#get_kk(a:str))
 	let flg = s:is_p4_have_from_have(str)
 	return flg
 endfunction "}}}
 function! perforce#matomeDiffs(...) "{{{
-	" new file ç”¨ã«ã“ã“ã§åˆæœŸåŒ–
+	" new file —p‚É‚±‚±‚Å‰Šú‰»
 	let datas = []
 
 	echo a:000
 	for chnum in a:000
-		" ãƒ‡ãƒ¼ã‚¿ã®å–å¾— {{{
+		" ƒf[ƒ^‚Ìæ“¾ {{{
 		let outs = perforce#pfcmds('describe -ds','',chnum).outs
 
-		" ä½œæ¥­ä¸­ã®ãƒ•ã‚¡ã‚¤ãƒ«
+		" ì‹Æ’†‚Ìƒtƒ@ƒCƒ‹
 		if outs[0] =~ '\*pending\*' || chnum == 'default'
 			let files = perforce#pfcmds('opened','','-c '.chnum).outs
 			call map(files, "perforce#get_depot_from_opened(v:val)")
@@ -350,7 +347,7 @@ function! perforce#matomeDiffs(...) "{{{
 	endfor
 	"}}}
 	"
-	"ãƒ‡ãƒ¼ã‚¿ã®å‡ºåŠ› {{{
+	"ƒf[ƒ^‚Ìo—Í {{{
 	let outs = []
 	for data in datas 
 		let outs += [data["files"]."\t\t".data["adds"]."\t".data["deleteds"]."\t".data["changeds"]]
@@ -361,28 +358,28 @@ function! perforce#matomeDiffs(...) "{{{
 endfunction "}}}
 function! perforce#pfChange(str,...) "{{{
 	"********************************************************************************
-	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ä½œæˆ
-	" @param[in]	str		ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ã‚³ãƒ¡ãƒ³ãƒˆ
-	" @param[in]	...		ç·¨é›†ã™ã‚‹ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆç•ªå·
+	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìì¬
+	" @param[in]	str		ƒ`ƒFƒ“ƒWƒŠƒXƒg‚ÌƒRƒƒ“ƒg
+	" @param[in]	...		•ÒW‚·‚éƒ`ƒFƒ“ƒWƒŠƒXƒg”Ô†
 	"********************************************************************************
 	"
-	"ãƒã‚§ãƒ³ã‚¸ç•ªå·ã®ã‚»ãƒƒãƒˆ ( å¼•æ•°ãŒã‚ã‚‹ã‹ )
+	"ƒ`ƒFƒ“ƒW”Ô†‚ÌƒZƒbƒg ( ˆø”‚ª‚ ‚é‚© )
 	let chnum     = get(a:,'1','')
 
-	"ChangeListã®è¨­å®šãƒ‡ãƒ¼ã‚¿ã‚’ä¸€æ™‚ä¿å­˜ã™ã‚‹
+	"ChangeList‚Ìİ’èƒf[ƒ^‚ğˆê•Û‘¶‚·‚é
 	let tmp = system('p4 change -o '.chnum)                          
 
-	"ã‚³ãƒ¡ãƒ³ãƒˆã®ç·¨é›†
+	"ƒRƒƒ“ƒg‚Ì•ÒW
 	let tmp = substitute(tmp,'\nDescription:\zs\_.*\ze\(\nFiles:\)\?','\t'.a:str.'\n','') 
 
-	" æ–°è¦ä½œæˆã®å ´åˆã¯ã€ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å«ã¾ãªã„
+	" V‹Kì¬‚Ìê‡‚ÍAƒtƒ@ƒCƒ‹‚ğŠÜ‚Ü‚È‚¢
 	if chnum == "" | let tmp = substitute(tmp,'\nFiles:\zs\_.*','','') | endif
 
-	"ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«ã®æ›¸ãå‡ºã—
+	"ˆêƒtƒ@ƒCƒ‹‚Ì‘‚«o‚µ
 	call writefile(split(tmp,'\n'),$PFTMPFILE)
 
-	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ä½œæˆ
-	" â˜… client ã«å¯¾å¿œã™ã‚‹
+	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìì¬
+	" š client ‚É‘Î‰‚·‚é
 	let out = split(system('more '.perforce#common#get_kk($PFTMPFILE).' | p4 change -i', '\n'))
 
 	return out
@@ -390,38 +387,38 @@ function! perforce#pfChange(str,...) "{{{
 endfunction "}}}
 function! perforce#pfDiff(path) "{{{
 	" ********************************************************************************
-	" ãƒ•ã‚¡ã‚¤ãƒ«ã‚’TOOLã‚’ä½¿ç”¨ã—ã¦æ¯”è¼ƒã—ã¾ã™
-	" @param[in]	path		æ¯”è¼ƒã™ã‚‹ãƒ‘ã‚¹ ( path or depot )
+	" ƒtƒ@ƒCƒ‹‚ğTOOL‚ğg—p‚µ‚Ä”äŠr‚µ‚Ü‚·
+	" @param[in]	path		”äŠr‚·‚éƒpƒX ( path or depot )
 	" ********************************************************************************
 
-	" ãƒ•ã‚¡ã‚¤ãƒ«ã®æ¯”è¼ƒ
+	" ƒtƒ@ƒCƒ‹‚Ì”äŠr
 	let path = a:path
 
-	" æœ€æ–° REV ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®å–å¾— "{{{
+	" ÅV REV ‚Ìƒtƒ@ƒCƒ‹‚Ìæ“¾ "{{{
 	let outs = perforce#pfcmds('print','',' -q '.perforce#common#get_kk(path)).outs
 
-	" ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ãŸã‚‰ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ¤œç´¢ã—ã¦ã€ã™ã¹ã¦ã¨æ¯”è¼ƒ ( å†å¸° )
+	" ƒGƒ‰[‚ª”­¶‚µ‚½‚çƒtƒ@ƒCƒ‹‚ğŒŸõ‚µ‚ÄA‚·‚×‚Ä‚Æ”äŠr ( Ä‹A )
 	if outs[0] =~ "is not under client's root "
 		call s:pfdiff_from_fname(path)
 		return
 	endif
 
-	"tmpãƒ•ã‚¡ã‚¤ãƒ«ã®æ›¸ãå‡ºã—
+	"tmpƒtƒ@ƒCƒ‹‚Ì‘‚«o‚µ
 	call writefile(outs,$PFTMPFILE)
 	"}}}
 
-	" æ”¹è¡ŒãŒä¸€è‡´ã—ãªã„ã®ã§ä¿å­˜ã—ç›´ã™ "{{{
+	" ‰üs‚ªˆê’v‚µ‚È‚¢‚Ì‚Å•Û‘¶‚µ’¼‚· "{{{
 	exe 'sp' $PFTMPFILE
 	set ff=dos
 	wq
 	"}}}
 
-	" depotãªã‚‰pathã«å¤‰æ›
+	" depot‚È‚çpath‚É•ÏŠ·
 	if path =~ "^//depot.*"
 		let path = perforce#get_path_from_depot(path)
 	endif
 
-	" å®Ÿéš›ã«æ¯”è¼ƒ 
+	" ÀÛ‚É”äŠr 
 	call s:pf_diff_tool($PFTMPFILE,path)
 
 endfunction "}}}
@@ -437,10 +434,10 @@ function! perforce#pfFind(...) "{{{
 endfunction "}}}
 function! perforce#pfcmds(cmd,...) "{{{
 	" ********************************************************************************
-	" p4 ã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œã—ã¾ã™
-	" @param[in]	str		cmd		ã‚³ãƒãƒ³ãƒ‰
-	" @param[in]	str		head	ã‚³ãƒãƒ³ãƒ‰ã®å‰ã«æŒ¿å…¥ã™ã‚‹
-	" @param[in]	str		a:000	ã‚³ãƒãƒ³ãƒ‰ã®å¾Œã«æŒ¿å…¥ã™ã‚‹
+	" p4 ƒRƒ}ƒ“ƒh‚ğÀs‚µ‚Ü‚·
+	" @param[in]	str		cmd		ƒRƒ}ƒ“ƒh
+	" @param[in]	str		head	ƒRƒ}ƒ“ƒh‚Ì‘O‚É‘}“ü‚·‚é
+	" @param[in]	str		a:000	ƒRƒ}ƒ“ƒh‚ÌŒã‚É‘}“ü‚·‚é
 	" ********************************************************************************
 
 	let gcmds = ['p4']
@@ -488,7 +485,7 @@ function! perforce#pfcmds(cmd,...) "{{{
 
 	call unite#print_message(rtn_d.cmd)
 
-	" éè¡¨ç¤ºã«ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰
+	" ”ñ•\¦‚É‚·‚éƒRƒ}ƒ“ƒh
 	if perforce#data#get('filters_flg') == 1
 		let filter_ = join(perforce#data#get('filters'), '\|' ) 
 		call filter(rtn_d.outs, 'v:val !~ filter_')
@@ -498,7 +495,7 @@ function! perforce#pfcmds(cmd,...) "{{{
 endfunction "}}}
 function! s:pf_cmd_rtn_cmd_outs(cmd) "{{{
 	" ********************************************************************************
-	" @par       ã‚³ãƒãƒ³ãƒ‰ã¨å®Ÿè¡Œçµæœã‚’è¿”ã™
+	" @par       ƒRƒ}ƒ“ƒh‚ÆÀsŒ‹‰Ê‚ğ•Ô‚·
 	" @param[in] 
 	" @retval    
 	" ********************************************************************************
@@ -516,15 +513,15 @@ function! perforce#set_PFUSER(str) "{{{
 endfunction "}}}
 function! perforce#unite_args(source) "{{{
 	"********************************************************************
-	" ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«åã‚’ Unite ã«å¼•æ•°ã«æ¸¡ã—ã¾ã™ã€‚
-	" @param[in]	source	ã‚³ãƒãƒ³ãƒ‰
+	" Œ»İ‚Ìƒtƒ@ƒCƒ‹–¼‚ğ Unite ‚Éˆø”‚É“n‚µ‚Ü‚·B
+	" @param[in]	source	ƒRƒ}ƒ“ƒh
 	"********************************************************************
 
 	if 0
 		exe 'Unite '.a:source.':'.s:get_dd(expand("%:t"))
 	else
-		" ã‚¹ãƒšãƒ¼ã‚¹å¯¾ç­–
-		" [ ] p4_diff ãªã©ã«ä¿®æ­£ãŒå¿…è¦
+		" ƒXƒy[ƒX‘Îô
+		" [ ] p4_diff ‚È‚Ç‚ÉC³‚ª•K—v
 		let tmp = a:source.':'.perforce#common#get_pathSrash(expand("%"))
 		let tmp = substitute(tmp, ' ','\\ ', 'g')
 		let tmp = 'Unite '.tmp

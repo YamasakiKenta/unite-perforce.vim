@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 let s:Tab = vital#of('unite-perforce.vim').import('Mind.Tab')
 function! unite#kinds#k_p4_filelog#define()
@@ -17,7 +16,7 @@ functio! s:p4_print(candidates) "{{{
 		let name = perforce#get_path_from_depot(candidate.action__depot)
 		
 
-		" è¡¨ç¤ºã™ã‚‹ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹
+		" •\¦‚·‚éƒo[ƒWƒ‡ƒ“‚ğæ“¾‚·‚é
 		if exists('candidate.action__revnum')
 			let file_numstr = '\#'.candidate.action__revnum
 			let numstr      =  '#'.candidate.action__revnum
@@ -26,7 +25,7 @@ functio! s:p4_print(candidates) "{{{
 			let numstr      =  '@'.candidate.action__chnum
 		endif
 
-		" ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡ºåŠ›ã™ã‚‹
+		" ƒtƒ@ƒCƒ‹‚ğo—Í‚·‚é
 		let strs = perforce#pfcmds('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
 		let file = fnamemodify(name,':t').file_numstr
 
@@ -38,7 +37,7 @@ functio! s:p4_print(candidates) "{{{
 		call append(0, strs)
 		call add(files, file)
 
-		" ãƒ‡ãƒ¼ã‚¿ã®å‡ºåŠ›
+		" ƒf[ƒ^‚Ìo—Í
 		exe 'setf' filetype_old
 
 		if open_flg == 0
@@ -60,7 +59,7 @@ let s:kind = {
 			\ }
 
 let s:kind.action_table.a_p4_print = {
-			\ 'description' : 'ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º',
+			\ 'description' : 'ƒtƒ@ƒCƒ‹‚Ì•\¦',
 			\ 'is_selectable' : 1, 
 			\ }
 function! s:kind.action_table.a_p4_print.func(candidates) "{{{
@@ -68,7 +67,7 @@ function! s:kind.action_table.a_p4_print.func(candidates) "{{{
 endfunction "}}}
 
 let s:kind.action_table.a_p4_print_diff = {
-			\ 'description' : 'ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º ( ã²ã¨ã¤å‰ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¨ä¸€ç·’ )',
+			\ 'description' : 'ƒtƒ@ƒCƒ‹‚Ì•\¦ ( ‚Ğ‚Æ‚Â‘O‚Ìƒtƒ@ƒCƒ‹‚Æˆê )',
 			\ }
 function! s:kind.action_table.a_p4_print_diff.func(candidates) "{{{
 	let candidates = [copy(a:candidates), copy(a:candidates)]
@@ -90,7 +89,7 @@ function! s:kind.action_table.preview.func(candidate) "{{{
 
 	let filetype_old = &filetype
 
-	" è¡¨ç¤ºã™ã‚‹ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹
+	" •\¦‚·‚éƒo[ƒWƒ‡ƒ“‚ğæ“¾‚·‚é
 	if exists('candidate.action__revnum')
 		let file_numstr = '\#'.candidate.action__revnum
 		let numstr      =  '#'.candidate.action__revnum
@@ -99,13 +98,13 @@ function! s:kind.action_table.preview.func(candidate) "{{{
 		let numstr      =  '@'.candidate.action__chnum
 	endif
 
-	" ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡ºåŠ›ã™ã‚‹
+	" ƒtƒ@ƒCƒ‹‚ğo—Í‚·‚é
 	let strs = perforce#pfcmds('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
 	let file = fnamemodify(name,':t').file_numstr
 
 	call perforce#common#LogFile(file, 0, strs) 
 
-	" ãƒ‡ãƒ¼ã‚¿ã®å‡ºåŠ›
+	" ƒf[ƒ^‚Ìo—Í
 	"exe 'setf' filetype_old
 	wincmd p
 

@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 function! unite#sources#p4_opened#define()
 	return s:source_p4_opened
@@ -8,18 +7,18 @@ endfunction
 
 " ********************************************************************************
 " source - p4_opened 
-" @param[in]	args		è¡¨ç¤ºã™ã‚‹ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆ
+" @param[in]	args		•\¦‚·‚éƒ`ƒFƒ“ƒWƒŠƒXƒg
 " ********************************************************************************
 let s:source = {
 			\ 'name' : 'p4_opened',
-			\ 'description' : 'ç·¨é›†ã—ã¦ã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º ( ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆç•ªå· )',
+			\ 'description' : '•ÒW‚µ‚Ä‚¢‚éƒtƒ@ƒCƒ‹‚Ì•\¦ ( ƒ`ƒFƒ“ƒWƒŠƒXƒg”Ô† )',
 			\ 'is_quit' : 0,
 			\ }
 
 
 function! s:source.gather_candidates(args, context) "{{{
 
-	" å¼•æ•°ã®è¨­å®š
+	" ˆø”‚Ìİ’è
 	if len(a:args) > 0
 		let datas = map(a:args, "'-c '.v:val")
 	else 
@@ -31,7 +30,7 @@ function! s:source.gather_candidates(args, context) "{{{
 		call extend(tmps, perforce#pfcmds_new('opened', '', arg))
 	endfor
 
-	" è¿½åŠ ãƒ•ã‚¡ã‚¤ãƒ«ã ã¨å•é¡ŒãŒç™ºç”Ÿã™ã‚‹
+	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é
 	let candidates = []
 	for tmp in tmps
 

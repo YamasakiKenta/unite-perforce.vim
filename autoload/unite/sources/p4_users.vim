@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 
 function! unite#sources#p4_users#define()
@@ -10,7 +9,7 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4_users',
-			\ 'description' : 'ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®åˆ‡ã‚Šæ›¿ãˆ',
+			\ 'description' : 'ƒ†[ƒU[‚ÌØ‚è‘Ö‚¦',
 			\ }
 function! s:get_UserName_from_users(str) "{{{
 	return substitute(a:str,'\(.\{-}\) <.*','\1','')

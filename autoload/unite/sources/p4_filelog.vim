@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 
 function! unite#sources#p4_filelog#define()
@@ -9,15 +8,15 @@ endfunction
 
 let s:source = { 
 			\ 'name' : 'p4_filelog',
-			\ 'description' : '螻･豁ｴ',
+			\ 'description' : '履歴',
 			\ }
 function! s:getRevisionNum(str) "{{{
 	return substitute(copy(a:str), '.\{-}#\(\d\+\).*', '\1','g')
 endfunction "}}}
 function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
-	" 繝輔ぃ繧､繝ｫ縺ｮ螻･豁ｴ繧定｡ｨ遉ｺ縺吶ｋ
-	" @param[in]	arg		陦ｨ遉ｺ縺吶ｋ螻･豁ｴ縺ｮdepot
+	" ファイルの履歴を表示する
+	" @param[in]	arg		表示する履歴のdepot
 	" ********************************************************************************
 	let candidates = []
 

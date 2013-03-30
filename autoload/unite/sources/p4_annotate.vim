@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 function! unite#sources#p4_annotate#define()
 	return [ 
@@ -24,7 +23,7 @@ endfunction "}}}
 
 let s:source = {
 			\ 'name' : 'p4_annotate',
-			\ 'description' : '蜷�陦後↓繝ｪ繝薙ず繝ｧ繝ｳ逡ｪ蜿ｷ繧定｡ｨ遉ｺ',
+			\ 'description' : '各行にリビジョン番号を表示',
 			\ 'hooks' : {},
 			\ }
 let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
@@ -53,7 +52,7 @@ let s:source__p4_annotate = deepcopy(s:source)
 
 let s:source = {
 			\ 'name' : 'p4_annotate_ai',
-			\ 'description' : '蜷�陦後↓繝√ぉ繝ｳ繧ｸ繝ｪ繧ｹ繝育分蜿ｷ繧定｡ｨ遉ｺ ( 蜈ｨ縺ｦ )',
+			\ 'description' : '各行にチェンジリスト番号を表示 ( 全て )',
 			\ 'hooks' : {},
 			\ }
 let s:source.hooks.on_init = function('perforce#get_filename_for_unite')

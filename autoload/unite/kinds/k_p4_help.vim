@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 function! unite#kinds#k_p4_help#define()
 	return s:kind
@@ -17,7 +16,7 @@ let s:kind = {
 			\ }
 
 let s:kind.action_table.a_help = {
-			\ 'description' : 'è©³ã—ã„æƒ…å ±ã‚’è¡¨ç¤º',
+			\ 'description' : 'Ú‚µ‚¢î•ñ‚ğ•\¦',
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind.action_table.a_help.func(candidates) "{{{

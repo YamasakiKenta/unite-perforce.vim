@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 function! s:get_chnum_from_fixes(str)
 	return matchstr(a:str, 'change \zs\d\+')
 endfunction

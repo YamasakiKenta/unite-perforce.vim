@@ -1,6 +1,5 @@
 let s:save_cpo = &cpo
 set cpo&vim
-setl enc=utf8
 
 let s:Tab = vital#of('unite-perforce.vim').import('Mind.Tab')
 function! unite#kinds#k_p4_template#define()
@@ -10,7 +9,7 @@ endfunction
 let s:kind = {
 	\ 'name'           : 'k_p4_template',
 	\ 'default_action' : 'a_info',
-	\ 'description'    : 'ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‹ã‚‰è¨­å®šã—ã¾ã™',
+	\ 'description'    : 'ƒeƒ“ƒvƒŒ[ƒg‚©‚çİ’è‚µ‚Ü‚·',
 	\ 'action_table'   : {},
 	\ 'parents'        : ['common'],
 	\ }
@@ -31,7 +30,7 @@ endfunction "}}}
 
 let s:kind.action_table.a_info = {
 	\ 'is_selectable' : 1,
-	\ 'description'   : 'èª¬æ˜ã‚’è¡¨ç¤ºã—ã¾ã™',
+	\ 'description'   : 'à–¾‚ğ•\¦‚µ‚Ü‚·',
 	\ }
 function! s:kind.action_table.a_info.func(candidates) "{{{
 	echo a:candidates
