@@ -6,13 +6,15 @@ function! unite#sources#p4_filelog#define()
 	return s:source
 endfunction
 
+function! s:revision_num(str) "{{{
+	return matchstr(a:str, '#\zs\d*')
+endfunction 
+"}}}
+
 let s:source = { 
 			\ 'name' : 'p4_filelog',
 			\ 'description' : '履歴',
 			\ }
-function! s:get_revision_num(str) "{{{
-	return matchstr(a:str, '#\zs\d*')
-endfunction "}}}
 function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" @par ファイルの履歴を表示する
@@ -27,7 +29,7 @@ function! s:source.gather_candidates(args, context) "{{{
 		let candidates += map(filter(lines, "v:val =~ '\.\.\. #'"), "{ 
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog', 
-					\ 'action__revnum' : perforce#get#file#revision_num(v:val),
+					\ 'action__revnum' : s:revision_num(v:val),
 					\ 'action__depot' : arg,
 					\ }")
 	endfor
@@ -37,7 +39,7 @@ endfunction
 "}}}
 
 if 1
-call unite#define_source(s:source)
+	call unite#define_source(s:source)
 endif
 
 let &cpo = s:save_cpo

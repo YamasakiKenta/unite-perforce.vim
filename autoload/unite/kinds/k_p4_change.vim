@@ -103,6 +103,7 @@ endfunction "}}}
 let s:kind_k_p4_change_pending.action_table.a_p4_change_submit = {
 			\ 'description' : 'サブミット' ,
 			\ 'is_selectable' : 1,
+			\ 'is_quit' : 0,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candidates) "{{{
 
@@ -111,8 +112,13 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 		call input("")
 	else
 		let chnums = map(copy(a:candidates), "v:val.action__chnum")
-		let tmp_d = perforce#pfcmds_new('submit','',' -c '.join(chnums))
-		let outs = extend([tmp_d.cmd], tmp_d.outs)
+		let tmp_ds = perforce#pfcmds_new('submit','',' -c '.join(chnums))
+		let outs = []
+		for tmp_d in tmp_ds
+			call add(outs, tmp_d.cmd)
+			call extend(outs, tmp_d.outs)
+		endfor
+
 		call perforce_2#common_action_out(outs)
 	endif 
 
@@ -125,9 +131,7 @@ let s:kind_k_p4_change_pending.action_table.a_p4change_describe = {
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4change_describe.func(candidates) "{{{
 	let chnums = map(copy(a:candidates),"v:val.action__chnum")
-	echo chnums
-	"exe 'Unite p4_describe:'.join(chnums, ":")
-	call unite#start_temporary([insert(chnums,'p4_describe')])
+ 	call unite#start_temporary([insert(chnums,'p4_describe')])
 endfunction "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff = { 
@@ -213,6 +217,12 @@ endfunction "}}}
 let s:kind_k_p4_change_submitted = deepcopy(s:kind_k_p4_change_pending)
 let s:kind_k_p4_change_submitted.name           = 'k_p4_change_submitted'
 let s:kind_k_p4_change_submitted.default_action = 'a_p4change_describe'
+
+if 1
+	call unite#define_kind(s:kind_k_p4_change_pending)
+	call unite#define_kind(s:kind_k_p4_change_reopen)
+	call unite#define_kind(s:kind_k_p4_change_submitted)
+endif
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

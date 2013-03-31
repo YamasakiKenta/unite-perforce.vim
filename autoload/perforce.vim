@@ -6,7 +6,7 @@ let $PFTMPFILE = $PFTMP.'tmpfile'
 if !isdirectory($PFTMP) | call mkdir($PFTMP) | endif
 
 let s:L = vital#of('unite-perforce.vim')
-let s:Common = s:L.import('Mind.Common')
+let s:Common   = s:L.import('Mind.Common')
 let s:Perforce = s:L.import('Mind.Perforce')
 
 function! s:get_dd(str) "{{{
@@ -27,46 +27,6 @@ function! s:get_depots(args, path) "{{{
 		let depots = [a:path]
 	endif
 	return depots
-endfunction "}}}
-function! s:get_lnum_from_diff(str,lnum,snum) "{{{
-	" ********************************************************************************
-	" 行番号を更新する
-	" @param[in]	str		番号の更新を決める文字列
-	" @param[in]	lnum	現在の番号
-	" @param[in]	snum	初期値
-	"
-	" @retval       lnum	行番号
-	" @retval       snum	初期値
-	" ********************************************************************************
-	let str = a:str
-	let num = { 'lnum' : a:lnum , 'snum' : a:snum }
-
-	let find = '[acd]'
-	if str =~ '^\d\+'.find.'\d\+'
-		let tmp = split(substitute(str,find,',',''),',')
-		let tmpnum = tmp[1] - 1
-		let num.lnum = tmpnum
-		let num.snum = tmpnum
-	elseif str =~ '^\d\+,\d\+'.find.'\d\+'
-		let tmp = split(substitute(str,find,',',''),',')
-		let tmpnum = tmp[2] - 1
-		let num.lnum = tmpnum
-		let num.snum = tmpnum
-		" 最初の表示では、更新しない
-	elseif str =~ '^[<>]' " # 番号の更新 
-		let num.lnum = a:lnum + 1
-	elseif str =~ '---'
-		" 番号の初期化
-		let num.lnum = a:snum
-	endif
-	return num
-endfunction "}}}
-function! s:get_path_from_diff(out,path) "{{{
-	let path = a:path
-	if a:out =~ '^===='
-		let path = substitute(a:out,'^====.*#.\{-} - \(.*\) ====','\1','')
-	endif 
-	return path
 endfunction "}}}
 function! s:get_path_from_have(str) "{{{
 	let rtn = matchstr(a:str,'.\{-}#\d\+ - \zs.*')
@@ -233,29 +193,6 @@ function! perforce#get_pfchanges(context,outs,kind) "{{{
 				\ }")
 
 
-	return candidates
-endfunction "}}}
-function! perforce#get_source_diff_from_diff(outs) "{{{
-	" ********************************************************************************
-	" 差分の出力を、Uniteのjump_list化けする
-	" @param[in]	outs		差分のデータ
-	" ********************************************************************************
-	let outs = a:outs
-	let candidates = []
-	let num = { 'lnum' : 1 , 'snum' : 1 }
-	let path = ''
-	for out in outs
-		let num = s:get_lnum_from_diff(out, num.lnum, num.snum)
-		let lnum = num.lnum
-		let path = s:get_path_from_diff(out,path)
-		let candidates += [{
-					\ 'word' : lnum.' : '.out,
-					\ 'kind' : 'jump_list',
-					\ 'action__line' : lnum,
-					\ 'action__path' : path,
-					\ 'action__text' : substitute(out,'^[<>] ','',''),
-					\ }]
-	endfor
 	return candidates
 endfunction "}}}
 function! perforce#get_source_file_from_path(path) "{{{
@@ -662,6 +599,11 @@ function! perforce#pfcmds_new_get_outs(datas) "{{{
 	return outs
 endfunction
 "}}}
+
+" rapper
+function! perforce#get_source_diff_from_diff(...) 
+	return call('perforce#get#file#source_diff', a:000)
+endfunction 
 let &cpo = s:save_cpo
 unlet s:save_cpo
 

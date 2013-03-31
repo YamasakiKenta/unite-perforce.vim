@@ -6,11 +6,11 @@ function! unite#sources#p4_diff#define()
 	return s:source
 endfunction
 
-let s:source = {
+let s:source_diff = {
 			\ 'name' : 'p4_diff',
 			\ 'description' : 'ファイルの差分表示',
 			\ }
-function! s:source.gather_candidates(args, context) "{{{
+function! s:source_diff.gather_candidates(args, context) "{{{
 
 	" 引数がない場合は、空白を設定する ( 全検索 )
 	if len(a:args) > 0
@@ -43,7 +43,7 @@ function! s:source.gather_candidates(args, context) "{{{
 		endif
 	endfor
 
-	let rtns += perforce#get_source_diff_from_diff(outs) 
+	let rtns += perforce#get#file#source_diff(outs) 
 
 	" 表示をループさせる
 	if all_flg == 0
@@ -84,6 +84,10 @@ function! s:source.gather_candidates(args, context) "{{{
 	endif
 	return rtns
 endfunction "}}}
+
+if 1
+	call unite#define_source(s:source_diff)
+endif
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
