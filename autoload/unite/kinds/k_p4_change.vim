@@ -103,7 +103,6 @@ endfunction "}}}
 let s:kind_k_p4_change_pending.action_table.a_p4_change_submit = {
 			\ 'description' : 'サブミット' ,
 			\ 'is_selectable' : 1,
-			\ 'is_quit' : 0,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candidates) "{{{
 
@@ -148,7 +147,6 @@ endfunction "}}}
 "
 let s:kind_k_p4_change_pending.action_table.a_p4_change_reopen = {
 			\ 'description' : 'チェンジリストの変更' ,
-			\ 'is_quit' : 0,
 			\ } 
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_reopen.func(candidate) "{{{
 	" ********************************************************************************
