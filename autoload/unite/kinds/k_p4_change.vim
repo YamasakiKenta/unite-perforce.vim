@@ -216,7 +216,7 @@ let s:kind_k_p4_change_submitted = deepcopy(s:kind_k_p4_change_pending)
 let s:kind_k_p4_change_submitted.name           = 'k_p4_change_submitted'
 let s:kind_k_p4_change_submitted.default_action = 'a_p4change_describe'
 
-if 1
+if 0
 	call unite#define_kind(s:kind_k_p4_change_pending)
 	call unite#define_kind(s:kind_k_p4_change_reopen)
 	call unite#define_kind(s:kind_k_p4_change_submitted)
