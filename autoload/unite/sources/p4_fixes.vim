@@ -5,37 +5,43 @@ function! s:get_chnum_from_fixes(str)
 endfunction
 
 function! unite#sources#p4_fixes#define()
-	"return s:source_p4_fixes
-	return []
+	return s:source_p4_fixes
 endfunction
 
 "source - p4_fixes
-let s:source = {
+let s:source_p4_fixes = {
 			\ 'name'           : 'p4_fixes',
 			\ 'description'    : '',
 			\ 'default_action' : 'a_p4change_describe',
 			\ }
-function! s:source.gather_candidates(args, context) "{{{
+function! s:source_p4_fixes.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" @par       
 	" @param[in]  list  a:args  jobs name
 	" @retval      unite data
 	" ********************************************************************************
 	let jobs = copy(a:args)
-	let hut = join(map(jobs, "'-j '.v:val"))
 
-	let data_d = perforce#pfcmds_new('fixes', '', hut)
+	if len(a:args) > 0
+		let jobs = copy(a:args)
+	else
+		call input("job name -> ")
+	endif
+
+	let data_ds = []
+	for job in jobs
+		call extend(data_ds, perforce#pfcmds_new('fixes', '', '-j '.job))
+	endfor
 
 	let candidates = []
-
-	for data in data_d
+	for data in data_ds
 		let client = data.client
-		let candidates = map( data.outs, "{
+		call extend(candidates, map( data.outs, "{
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_change',
 					\ 'action__chnum' : s:get_chnum_from_fixes(v:val),
 					\ 'action__client' : client,
-					\ }")
+					\ }"))
 
 	endfor
 
@@ -43,9 +49,9 @@ function! s:source.gather_candidates(args, context) "{{{
 endfunction
 "}}}
 
-let s:source_p4_fixes = deepcopy(s:source) | unlet s:source
-
-call unite#define_source(s:source_p4_fixes)
+if 1
+	call unite#define_source(s:source_p4_fixes)
+endif
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

@@ -3,18 +3,17 @@ set cpo&vim
 
 
 function! unite#sources#p4_jobs#define()
-	return s:source
+	return s:source_jobs
 endfunction
 
-let s:source = {
+let s:source_jobs = {
 			\ 'name' : 'p4_jobs',
 			\ 'description' : 'ƒWƒ‡ƒu‚Ì•\Ž¦',
 			\ }
 function! s:get_job_from_jobs(str) "{{{
-	return substitute(a:str,'\(\S*\).*','\1','')
-	
+	return matchstr(a:str, '\S*')
 endfunction "}}}
-function! s:source.gather_candidates(args, context) "{{{
+function! s:source_jobs.gather_candidates(args, context) "{{{
 	let datas = perforce#pfcmds('jobs','').outs
 	let candidates = map( datas, "{
 				\ 'word' : v:val,
@@ -23,6 +22,10 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ }")
 	return candidates
 endfunction "}}}
+
+if 1
+	call unite#define_source(s:source_jobs)
+endif
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
