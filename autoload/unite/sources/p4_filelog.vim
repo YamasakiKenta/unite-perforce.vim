@@ -27,7 +27,7 @@ function! s:source.gather_candidates(args, context) "{{{
 		let candidates += map(filter(lines, "v:val =~ '\.\.\. #'"), "{ 
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog', 
-					\ 'action__revnum' : s:get_revision_num(v:val),
+					\ 'action__revnum' : perforce#get#file#revision_num(v:val),
 					\ 'action__depot' : arg,
 					\ }")
 	endfor
