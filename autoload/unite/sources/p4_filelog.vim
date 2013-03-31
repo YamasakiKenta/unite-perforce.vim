@@ -10,13 +10,15 @@ let s:source = {
 			\ 'name' : 'p4_filelog',
 			\ 'description' : '履歴',
 			\ }
-function! s:getRevisionNum(str) "{{{
-	return substitute(copy(a:str), '.\{-}#\(\d\+\).*', '\1','g')
+function! s:get_revision_num(str) "{{{
+	return matchstr(a:str, '#\zs\d*')
 endfunction "}}}
 function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
-	" ファイルの履歴を表示する
+	" @par ファイルの履歴を表示する
 	" @param[in]	arg		表示する履歴のdepot
+	" @par
+	" "... ... branch into //depot/branch_1/mind/Test/AAA BBB/AAA BBB.txt.txt#1
 	" ********************************************************************************
 	let candidates = []
 
@@ -25,16 +27,18 @@ function! s:source.gather_candidates(args, context) "{{{
 		let candidates += map(filter(lines, "v:val =~ '\.\.\. #'"), "{ 
 					\ 'word' : v:val,
 					\ 'kind' : 'k_p4_filelog', 
-					\ 'action__revnum' : s:getRevisionNum(v:val),
+					\ 'action__revnum' : s:get_revision_num(v:val),
 					\ 'action__depot' : arg,
 					\ }")
 	endfor
-"... ... branch into //depot/branch_1/mind/Test/AAA BBB/AAA BBB.txt.txt#1
 	
 	return candidates
-endfunction "}}}
+endfunction 
+"}}}
 
+if 1
 call unite#define_source(s:source)
+endif
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
