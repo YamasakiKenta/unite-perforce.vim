@@ -3,7 +3,7 @@ set cpo&vim
 
 
 function! unite#sources#p4_diff#define()
-	return s:source
+	return s:source_diff
 endfunction
 
 let s:source_diff = {
@@ -85,7 +85,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 	return rtns
 endfunction "}}}
 
-if 1
+if 0
 	call unite#define_source(s:source_diff)
 endif
 
