@@ -131,8 +131,8 @@ function! perforce#get_ClientPathFromName(str) "{{{
 	let path = perforce#common#get_pathSrash(path)
 	return path
 endfunction "}}}
-function! perforce#get_PFCLIENTPATH(a:000) "{{{
-	return call(s:Perforce.get_client_root, ...)
+function! perforce#get_PFCLIENTPATH(...) "{{{
+	return call(s:Perforce.get_client_root, a:000)
 endfunction "}}}
 function! perforce#get_PFCLIENTNAME() "{{{
 	return perforce#get_set_data('P4CLIENT')
