@@ -57,7 +57,7 @@ let s:kind_clients.action_table.a_p4_client_info = {
 function! s:kind_clients.action_table.a_p4_client_info.func(candidates) "{{{
 	for l:candidate in a:candidates
 		let clname = l:candidate.action__clname
-		let port   = l:candidate.action__port
+		let port   = matchstr(l:candidate.action__port, '\(-p\s*\)*\zs.*')
 
 		" 各クライアントごとに表示する
 		call perforce#common#LogFile(port.'_'.clname, 0)
