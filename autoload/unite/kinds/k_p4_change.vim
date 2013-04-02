@@ -202,7 +202,11 @@ function! s:make_new_changes(candidate) "{{{
 		let outs = perforce#pfChange(chname)
 
 		"チェンジリストの新規作成の結果から番号を取得する
-		let chnum = perforce#get_ChangeNum_from_changes(outs[0])
+		let chnum = outs[1]
+
+		echo chnum
+		echo outs
+		call input("")
 	endif
 
 	return chnum
@@ -212,7 +216,7 @@ let s:kind_k_p4_change_submitted = deepcopy(s:kind_k_p4_change_pending)
 let s:kind_k_p4_change_submitted.name           = 'k_p4_change_submitted'
 let s:kind_k_p4_change_submitted.default_action = 'a_p4change_describe'
 
-if 0
+if 1
 	call unite#define_kind(s:kind_k_p4_change_pending)
 	call unite#define_kind(s:kind_k_p4_change_reopen)
 	call unite#define_kind(s:kind_k_p4_change_submitted)

@@ -119,7 +119,7 @@ function! perforce#LogFile(str) "{{{
 
 
 endfunction "}}}
-function! perforce#get_ChangeNum_from_changes(str) "{{{
+function! s:get_ChangeNum_from_changes(str) "{{{
 	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
 endfunction "}}}
 function! perforce#get_ClientName_from_client(str) "{{{
@@ -188,7 +188,7 @@ function! perforce#get_pfchanges(context,outs,kind) "{{{
 	let candidates = map( outs, "{
 				\ 'word' : v:val,
 				\ 'kind' : a:kind,
-				\ 'action__chnum' : perforce#get_ChangeNum_from_changes(v:val),
+				\ 'action__chnum' : s:get_ChangeNum_from_changes(v:val),
 				\ 'action__depots' : a:context.source__depots,
 				\ }")
 

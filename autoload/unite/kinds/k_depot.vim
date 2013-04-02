@@ -175,7 +175,7 @@ endfunction "}}}
 
 let s:kind_depot.action_table.delete = { 
 			\ 'description' : '·•ª ( delete ‚¾‚¯‚Ç ) ',
-			\ 'is_quit' : 0,
+			\ 'is_quit' : 0, " OK
 			\ }
 function! s:kind_depot.action_table.delete.func(candidate) "{{{
 	let depot = a:candidate.action__depot
