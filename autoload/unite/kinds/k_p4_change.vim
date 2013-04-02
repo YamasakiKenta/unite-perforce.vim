@@ -56,7 +56,6 @@ let s:kind_k_p4_change_pending = {
 let s:kind_k_p4_change_pending.action_table.delete = {
 			\ 'description' : 'チェンジリストの削除' ,
 			\ 'is_selectable' : 1,
-			\ 'is_quit' : 0,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.delete.func(candidates) "{{{
 	let i = 1
@@ -89,7 +88,6 @@ endfunction "}}}
 let s:kind_k_p4_change_pending.action_table.a_p4_change_info = { 
 			\ 'description' : 'チェンジリストの情報' ,
 			\ 'is_selectable' : 1, 
-			\ 'is_quit' : 0,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_info.func(candidates) "{{{
 	let outs = []
@@ -136,7 +134,6 @@ endfunction "}}}
 let s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff = { 
 			\ 'description' : '差分のまとめを表示',
 			\ 'is_selectable' : 1, 
-			\ 'is_quit' : 0,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff.func(candidates) "{{{
 	for l:candidate in a:candidates
@@ -170,7 +167,6 @@ endfunction "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_change_rename = {
 			\  'description' : '名前の変更' ,
-			\ 'is_quit' : 0,
 			\ }
 function! s:get_chname_from_change(str) "{{{
 	let str = a:str

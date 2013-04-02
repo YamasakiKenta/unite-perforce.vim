@@ -1,10 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:_file  = expand("<sfile>")
-
-let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
-
 " ********************************************************************************
 " depotで操作できるもの
 " ********************************************************************************
@@ -104,7 +100,7 @@ endfunction "}}}
 
 let s:kind_depot.action_table.preview = {
 			\ 'description' : 'preview' , 
-			\ 'is_quit' : 0, 
+			\ 'is_quit' : 0,
 			\ }
 function! s:kind_depot.action_table.preview.func(candidate) "{{{
 	let path = s:find_filepath_from_depot(a:candidate) 
@@ -114,7 +110,6 @@ endfunction "}}}
 let s:kind_depot.action_table.a_p4_files = { 
 			\ 'is_selectable' : 1, 
 			\ 'description' : 'ファイルの情報',
-			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind_depot.action_table.a_p4_files.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
@@ -126,7 +121,6 @@ endfunction "}}}
 let s:kind_depot.action_table.a_p4_move = {
 			\ 'is_selectable' : 1 ,
 			\ 'description' : '移動 ( 名前の変更 )' ,
-			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind_depot.action_table.a_p4_move.func(candidates) "{{{
 	" ********************************************************************************
@@ -184,11 +178,8 @@ let s:kind_depot.action_table.delete = {
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind_depot.action_table.delete.func(candidate) "{{{
-	"let wnum = winnr()
 	let depot = a:candidate.action__depot
-
-	call perforce#common#LogFile('diff', 1, perforce#pfcmds('diff','',depot)).outs
-
+	call perforce#common#LogFile('diff', 1, perforce#pfcmds('diff','',depot).outs)
 	wincmd p
 endfunction "}}}
 
@@ -204,7 +195,6 @@ endfunction "}}}
 let s:kind_depot.action_table.a_p4_diff_tool = {
 			\ 'is_selectable' : 1 ,  
 			\ 'description' : '差分 ( TOOL )' ,
-			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind_depot.action_table.a_p4_diff_tool.func(candidates) "{{{
 	for l:candidate in a:candidates
@@ -217,7 +207,6 @@ let s:kind_depot.action_table.a_p4_reopen = {
 			\ 'description' : 'チェンジリストの変更' ,
 			\ 'is_selectable' : 1 ,
 			\ }
-			 "\ 'is_quit' : 0,
 function! s:kind_depot.action_table.a_p4_reopen.func(candidates) "{{{
 	let reopen_depots= [] " # 初期化
 	for l:candidate in a:candidates
@@ -230,7 +219,6 @@ endfunction "}}}
 let s:kind_depot.action_table.a_p4_filelog = { 
 			\ 'is_selectable' : 1, 
 			\ 'description' : '履歴',
-			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind_depot.action_table.a_p4_filelog.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
@@ -240,7 +228,6 @@ endfunction "}}}
 let s:kind_depot.action_table.a_p4_sync = { 
 			\ 'is_selectable' : 1, 
 			\ 'description' : 'ファイルの最新同期',
-			\ 'is_quit' : 0 ,
 			\ }
 function! s:kind_depot.action_table.a_p4_sync.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
@@ -251,7 +238,6 @@ endfunction "}}}
 let s:kind_depot.action_table.a_p4_dir_copy = {
 	\ 'description' : 'dirでコピーする',
 	\ 'is_selectable' : 1,
-	\ 'is_quit' : 0 ,
 	\ }
 function! s:kind_depot.action_table.a_p4_dir_copy.func(candidates) "{{{
 	for candidate in a:candidates
@@ -298,7 +284,6 @@ endfunction
 let s:kind_depot.action_table.a_p4_depot_copy = {
 	\ 'description' : 'depotでコピーする',
 	\ 'is_selectable' : 1,
-	\ 'is_quit' : 0 ,
 	\ }
 function! s:kind_depot.action_table.a_p4_depot_copy.func(candidates) "{{{
 	for candidate in a:candidates
@@ -331,16 +316,21 @@ function! s:copy_file_depot(depot) "{{{
 	" 実行する
 	"--------------------------------------------------------------------------------
 	" フォルダの作成
-	call system('mkdir "'.fnamemodify(file2,':h').'"')
+	let cmd = 'mkdir "'.fnamemodify(file2,':h').'"'
+	echo cmd
+	call system(cmd)
 
 	" コピーする
 	let cmd = 'copy "'.file1.'" "'.file2.'"'
+	echo cmd
 	call system(cmd)
 
 endfunction
 "}}}
 "
-call unite#define_kind(s:kind_depot)
+if 1
+	call unite#define_kind(s:kind_depot)
+endif
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
