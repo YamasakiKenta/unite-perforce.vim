@@ -297,25 +297,25 @@ function! s:copy_file_depot(depot) "{{{
 	let depot = a:depot
 	let file1 = perforce#get_path_from_depot(depot)
 
-	let depot = substitute(depot, '/','\','g')
-	let file1 = substitute(file1, '/','\','g')
 
 	" 空白と引数がない場合は、defaultを設定する
-	let root2 = perforce#data#get('g:perforce_merge_default_path')[0]
-	let root2 = substitute(root2, '/', '\','g')
+	let root2 = perforce#data#get('g:perforce_merge_default_path')
+
 
 	" 末尾の \ を削除する
-	let root2 = substitute(root2,'\\$','','')
+	let root2 = substitute(root2,'/$','','')
 
 	" 先頭の\\を削除する
-	let depot = substitute(depot, '\\\\','\','')
+	let depot = substitute(depot, '//','\','')
 
 	" コピー先
-	let file2 = root2.''.depot
+	" ★ port を保存する
+	let file2 = root2.'new/'.depot 
 
-	"--------------------------------------------------------------------------------
-	" 実行する
-	"--------------------------------------------------------------------------------
+	" 変換
+	let file1 = substitute(file1, '/','\','g')
+	let file2 = substitute(file2, '/','\','g')
+
 	" フォルダの作成
 	let cmd = 'mkdir "'.fnamemodify(file2,':h').'"'
 	echo cmd
