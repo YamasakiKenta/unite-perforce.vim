@@ -382,12 +382,6 @@ function! perforce#pfcmds(cmd,...) "{{{
 		call add(gcmds, a:1)
 	endif
 
-	if a:cmd =~ 'clients' || a:cmd =~ 'changes'
-		if perforce#data#get('user_changes_only') == 1 
-			call add(gcmds, '-u '.perforce#get_PFUSER())
-		endif
-	endif 
-
 	if a:cmd =~ 'changes'
 		if perforce#data#get('client_changes_only') == 1
 			call add(gcmds, '-c '.perforce#get_PFCLIENTNAME())
@@ -395,6 +389,13 @@ function! perforce#pfcmds(cmd,...) "{{{
 	endif 
 
 	call add(gcmds, a:cmd)
+
+	if a:cmd =~ 'clients' || a:cmd =~ 'changes'
+		if perforce#data#get('user_changes_only') == 1 
+			call add(gcmds, '-u '.perforce#get_PFUSER())
+		endif
+	endif 
+
 
 	if perforce#data#get('show_max_flg') == 1
 		call add(gcmds, '-m '.perforce#data#get('show_max'))
