@@ -4,7 +4,8 @@ set cpo&vim
 " ********************************************************************************
 " depot‚Å‘€ì‚Å‚«‚é‚à‚Ì
 " ********************************************************************************
-"
+let s:L = vital#of('unite-perforce.vim')
+let s:Common = s:L.import('Mind.Common')
 function! unite#kinds#k_depot#define()
 	return s:kind_depot
 endfunction
@@ -165,7 +166,7 @@ function! s:kind_depot.action_table.a_p4_move.func(candidates) "{{{
 		"}}}
 		"
 		" ‰Šú‚Ì–¼‘O‚Ì‘‚«o‚µ
-		call common#event_save_file(g:pfmove_tmpfile,names,'common#do_move(g:pfmove_oris, g:pfmove_tmpfile)')
+		call s:Common.event_save_file(g:pfmove_tmpfile, names, 'common#do_move(g:pfmove_oris, g:pfmove_tmpfile)')
 
 		"}}}
 	endif 
@@ -175,7 +176,7 @@ endfunction "}}}
 
 let s:kind_depot.action_table.delete = { 
 			\ 'description' : '·•ª ( delete ‚¾‚¯‚Ç ) ',
-			\ 'is_quit' : 0, " OK
+			\ 'is_quit' : 0, 
 			\ }
 function! s:kind_depot.action_table.delete.func(candidate) "{{{
 	let depot = a:candidate.action__depot

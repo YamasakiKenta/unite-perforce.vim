@@ -6,19 +6,10 @@ function! unite#sources#p4_clients#define()
 	return s:source_p4_clients
 endfunction
 
-
-let s:source = {
+let s:source_p4_clients = {
 			\ 'name' : 'p4_clients',
 			\ 'description' : 'クライアントの表示',
 			\ }
-function! s:source.gather_candidates(args, context) "{{{
-	return s:get_pfclients()
-endfunction "}}}
-let s:source_p4_clients = s:source
-
-" ================================================================================
-" SubRoutioe
-" ================================================================================
 function! s:get_pfclients() "{{{
 	" ********************************************************************************
 	" クライアントを表示する
@@ -38,7 +29,13 @@ function! s:get_pfclients() "{{{
 	endfor
 
 	return candidates
-endfunction "}}}
+endfunction 
+"}}}
+function! s:source_p4_clients.gather_candidates(args, context) "{{{
+	return s:get_pfclients()
+endfunction 
+"}}}
+
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

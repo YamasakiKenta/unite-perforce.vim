@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~/.perforce/' )
-let $PFTMPFILE = $PFTMP.'tmpfile'
+let $PFTMPFILE = $PFTMP.'/tmpfile'
 if !isdirectory($PFTMP) | call mkdir($PFTMP) | endif
 
 let s:L = vital#of('unite-perforce.vim')
