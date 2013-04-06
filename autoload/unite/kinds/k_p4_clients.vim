@@ -2,8 +2,8 @@ let s:_file  = expand("<sfile>")
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:L = vital#of('Unite-perforce.vim')
-let s:Perforce = s:L.import('Mind.Perforce')
+let s:V = vital#of('Unite-perforce.vim')
+let s:Perforce = s:V.import('Mind.Perforce')
 "
 "
 function! unite#kinds#k_p4_clients#define()

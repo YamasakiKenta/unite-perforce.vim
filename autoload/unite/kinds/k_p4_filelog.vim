@@ -1,7 +1,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:L = vital#of('unite-perforce.vim')
+let s:V = vital#of('unite-perforce.vim')
 
 function! unite#kinds#k_p4_filelog#define()
 	return s:kind_filelog

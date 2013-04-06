@@ -5,10 +5,6 @@ let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~/.perforce/' )
 let $PFTMPFILE = $PFTMP.'/tmpfile'
 if !isdirectory($PFTMP) | call mkdir($PFTMP) | endif
 
-let s:L = vital#of('unite-perforce.vim')
-let s:Common   = s:L.import('Mind.Common')
-let s:Perforce = s:L.import('Mind.Perforce')
-
 function! s:get_dd(str) "{{{
 	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''
 endfunction "}}}
@@ -68,7 +64,7 @@ function! s:pf_diff_tool(file,file2) "{{{
 		windo diffthis
 
 		" キーマップの登録
-		call s:Common.map_diff()
+		call perforce#util#map_diff()
 	else
 		let cmd = perforce#data#get('diff_tool')
 
@@ -131,9 +127,9 @@ function! perforce#get_ClientPathFromName(str) "{{{
 	let path = perforce#common#get_pathSrash(path)
 	return path
 endfunction "}}}
-function! perforce#get_PFCLIENTPATH(...) "{{{
-	return call(s:Perforce.get_client_root, a:000)
-endfunction "}}}
+function! perforce#get_PFCLIENTPATH(...) 
+	return call(perforce#util#get_client_root, a:000)
+endfunction 
 function! perforce#get_PFCLIENTNAME() "{{{
 	return perforce#get_set_data('P4CLIENT')
 endfunction "}}}

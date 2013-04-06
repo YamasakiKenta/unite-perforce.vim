@@ -1,9 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:L = vital#of('unite-perforce.vim')
-let s:File = s:L.import('Mind.Y_files')
-
 let g:perforce_merge_tool         = get(g:, 'perforce_merge_tool', 'winmergeu /S')
 let g:perforce_merge_default_path = get(g:, 'perforce_merge_default_path', 'c:\tmp')
 
@@ -83,7 +80,7 @@ function! perforce_2#pfDiff(...) "{{{
 	" ********************************************************************************
 	" @param[in] ファイル名
 	" ********************************************************************************
-	let file_ = call(s:File.get_files, a:000)[0]
+	let file_ = call(perforce#util#get_files, a:000)[0]
 	return perforce#pfDiff(file_)
 endfunction
 "}}}
@@ -91,7 +88,7 @@ function! perforce_2#revert(...) "{{{
 	" ********************************************************************************
 	" @param[in] ファイル名
 	" ********************************************************************************
-	let file_ = call(s:File.get_files, a:000)[0]
+	let file_ = call(perforce#util#get_files, a:000)[0]
 	let file_ = perforce#common#get_kk(file_)
 	if perforce#is_p4_have(file_)
 		let outs = perforce#pfcmds_new_outs('revert','',' -a '.file_)
