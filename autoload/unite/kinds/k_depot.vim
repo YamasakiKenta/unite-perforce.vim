@@ -4,8 +4,6 @@ set cpo&vim
 " ********************************************************************************
 " depotで操作できるもの
 " ********************************************************************************
-let s:L = vital#of('unite-perforce.vim')
-let s:Common = s:L.import('Mind.Common')
 function! unite#kinds#k_depot#define()
 	return s:kind_depot
 endfunction
@@ -166,7 +164,7 @@ function! s:kind_depot.action_table.a_p4_move.func(candidates) "{{{
 		"}}}
 		"
 		" 初期の名前の書き出し
-		call s:Common.event_save_file(g:pfmove_tmpfile, names, 'common#do_move(g:pfmove_oris, g:pfmove_tmpfile)')
+		call perforce#util#event_save_file(g:pfmove_tmpfile, names, 'common#do_move(g:pfmove_oris, g:pfmove_tmpfile)')
 
 		"}}}
 	endif 
@@ -236,67 +234,12 @@ function! s:kind_depot.action_table.a_p4_sync.func(candidates) "{{{
 	call perforce#LogFile(outs)
 endfunction "}}}
 
-let s:kind_depot.action_table.a_p4_dir_copy = {
-	\ 'description' : 'dirでコピーする',
-	\ 'is_selectable' : 1,
-	\ }
-function! s:kind_depot.action_table.a_p4_dir_copy.func(candidates) "{{{
-	for candidate in a:candidates
-		let path = perforce#get_path_from_depot(candidate.action__depot)
-		call s:copyFileDir(path)
-	endfor
-endfunction "}}}
-function! s:copyFileDir(file) "{{{
+function! s:copy_file(depot, client, root) "{{{
 
-	" / -> \
-	let file1 = substitute(a:file, '/','\','g')
-
-	" 空白と引数がない場合は、defaultを設定する
-	let root2 = perforce#data#get('g:perforce_merge_default_path')[0]
-	let root2 = substitute(root2, '/', '\','g')
-
-	" 末尾の \ を削除する
-	let root2 = substitute(root2,'\\$','','')
-
-	" ClientPathを削除する
-	let root1  = perforce#get_PFCLIENTPATH()
-	let root1  = substitute(root1, '/', '\','g')
-
-	" 置換するため、スペースはエスケープする
-	let root1 = escape(root1,'\')
-
-	" ルートの削除
-	let path1 = substitute(file1, root1,'','')
-
-	" コピー先
-	let file2 = root2.''.path1
-
-	"--------------------------------------------------------------------------------
-	" 実行する
-	"--------------------------------------------------------------------------------
-	" フォルダの作成
-	call system('mkdir "'.fnamemodify(file2,':h').'"')
-
-	" コピーする
-	call system('copy "'.file1.'" "'.file2.'"')
-
-endfunction
-"}}}
-let s:kind_depot.action_table.a_p4_depot_copy = {
-	\ 'description' : 'depotでコピーする',
-	\ 'is_selectable' : 1,
-	\ }
-function! s:kind_depot.action_table.a_p4_depot_copy.func(candidates) "{{{
-	for candidate in a:candidates
-		call s:copy_file_depot(candidate.action__depot)
-	endfor
-endfunction "}}}
-function! s:copy_file_depot(depot) "{{{
-
-	" / -> \
-	let depot = a:depot
-	let file1 = perforce#get_path_from_depot(depot)
-
+	let depot  = a:depot
+	let file1  = perforce#get_path_from_depot(depot)
+	let port   = matchstr(a:client, '-p\s\+\zs\S*')
+	let port   = substitute(port, ':', '', 'g')
 
 	" 空白と引数がない場合は、defaultを設定する
 	let root2 = perforce#data#get('g:perforce_merge_default_path')
@@ -306,11 +249,20 @@ function! s:copy_file_depot(depot) "{{{
 	let root2 = substitute(root2,'/$','','')
 
 	" 先頭の\\を削除する
-	let depot = substitute(depot, '//','\','')
+	let depot = substitute(depot, '//','','')
+	
+	" ClientPathを削除する
+	let root1  = a:root
+	let root1  = substitute(root1, '/', '\','g')
+
+	" 置換するため、スペースはエスケープする
+	let root1 = escape(root1,'\')
+
+	" ルートの削除
+	let path1 = substitute(file1, root1,'','')
 
 	" コピー先
-	" ★ port を保存する
-	let file2 = root2.'new/'.depot 
+	let file2 = root2.'/new/'.port.'/'.depot 
 
 	" 変換
 	let file1 = substitute(file1, '/','\','g')
@@ -328,6 +280,30 @@ function! s:copy_file_depot(depot) "{{{
 
 endfunction
 "}}}
+"
+let s:kind_depot.action_table.a_p4_dir_copy = {
+	\ 'description' : 'dirでコピーする',
+	\ 'is_selectable' : 1,
+	\ }
+
+function! s:kind_depot.action_table.a_p4_dir_copy.func(candidates) "{{{
+	for candidate in a:candidates
+		let path = perforce#get_path_from_depot(candidate.action__depot)
+		let port = matchstr(candidate.action__client, '-p\s\+\zs\S*')
+		call s:copy_file(path, candidate.action__client, root)
+	endfor
+endfunction "}}}
+
+let s:kind_depot.action_table.a_p4_depot_copy = {
+	\ 'description' : 'depotでコピーする',
+	\ 'is_selectable' : 1,
+	\ }
+function! s:kind_depot.action_table.a_p4_depot_copy.func(candidates) "{{{
+	for candidate in a:candidates
+		let port = matchstr(candidate.action__client, '-p\s\+\zs\S*')
+		call s:copy_file(candidate.action__depot, candidate.action__client, '')
+	endfor
+endfunction "}}}
 "
 if 1
 	call unite#define_kind(s:kind_depot)

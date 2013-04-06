@@ -17,6 +17,16 @@ function! s:get_client_root(...) "{{{
 	return g:get_client_root_cache
 endfunction
 "}}}
-"
+function! s:get_client_root_from_client(client) "{{{
+	let outs = filter(split(system('p4 '.a:client.' client -o'),"\n"), "v:val =~ '^Root:'")
+	let rtn_d = {
+				\ 'root'   : matchstr(outs[0], '^Root:\t\zs.*'),
+				\ 'client' : matchstr(substitute(a:client, '\s\+', ' ', 'g'), '^\s*\zs\S.\{-}\ze\s*$')
+				\ }
+	return rtn_d
+endfunction
+"}}}
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
+
