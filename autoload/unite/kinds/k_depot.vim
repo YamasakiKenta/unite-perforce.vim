@@ -164,7 +164,7 @@ function! s:kind_depot.action_table.a_p4_move.func(candidates) "{{{
 		"}}}
 		"
 		" ‰Šú‚Ì–¼‘O‚Ì‘‚«o‚µ
-		call perforce#util#event_save_file(g:pfmove_tmpfile, names, 'common#do_move(g:pfmove_oris, g:pfmove_tmpfile)')
+		call perforce#util#event_save_file(g:pfmove_tmpfile, names, 'common#do_move', [g:pfmove_oris, g:pfmove_tmpfile])
 
 		"}}}
 	endif 
