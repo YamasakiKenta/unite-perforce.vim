@@ -128,7 +128,7 @@ function! perforce#get_ClientPathFromName(str) "{{{
 	return path
 endfunction "}}}
 function! perforce#get_PFCLIENTPATH(...) 
-	return call(perforce#util#get_client_root, a:000)
+	return call('perforce#util#get_client_root', a:000)
 endfunction 
 function! perforce#get_PFCLIENTNAME() "{{{
 	return perforce#get_set_data('P4CLIENT')
@@ -378,13 +378,13 @@ function! perforce#pfcmds(cmd,...) "{{{
 		call add(gcmds, a:1)
 	endif
 
+	call add(gcmds, a:cmd)
+
 	if a:cmd =~ 'changes'
 		if perforce#data#get('client_changes_only') == 1
 			call add(gcmds, '-c '.perforce#get_PFCLIENTNAME())
 		endif
 	endif 
-
-	call add(gcmds, a:cmd)
 
 	if a:cmd =~ 'clients' || a:cmd =~ 'changes'
 		if perforce#data#get('user_changes_only') == 1 
