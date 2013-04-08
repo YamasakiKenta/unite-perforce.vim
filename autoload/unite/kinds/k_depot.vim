@@ -287,6 +287,7 @@ let s:kind_depot.action_table.a_p4_dir_copy = {
 	\ }
 
 function! s:kind_depot.action_table.a_p4_dir_copy.func(candidates) "{{{
+	" Åö
 	for candidate in a:candidates
 		let path = perforce#get_path_from_depot(candidate.action__depot)
 		let port = matchstr(candidate.action__client, '-p\s\+\zs\S*')
