@@ -185,6 +185,7 @@ endfunction "}}}
 let s:kind_depot.action_table.a_p4_diff = { 
 			\ 'is_selectable' : 1, 
 			\ 'description' : 'ç∑ï™',
+			\ 'is_quit' : 0,
 			\ }
 function! s:kind_depot.action_table.a_p4_diff.func(candidates) "{{{
 	let args = map(copy(a:candidates),"v:val.action__depot")
@@ -287,11 +288,13 @@ let s:kind_depot.action_table.a_p4_dir_copy = {
 	\ }
 
 function! s:kind_depot.action_table.a_p4_dir_copy.func(candidates) "{{{
-	" Åö
+	let root_cache = {}
 	for candidate in a:candidates
-		let path = perforce#get_path_from_depot(candidate.action__depot)
-		let port = matchstr(candidate.action__client, '-p\s\+\zs\S*')
-		call s:copy_file(path, candidate.action__client, root)
+		let client = candidate.action__client
+		if !exists('root_cache[client]')
+			let root_cache[client] = perforce#util#get_client_root_from_client(client)
+		endif
+		call s:copy_file(candidate.action__depot, client, root_cache[client].root)
 	endfor
 endfunction "}}}
 
@@ -301,8 +304,8 @@ let s:kind_depot.action_table.a_p4_depot_copy = {
 	\ }
 function! s:kind_depot.action_table.a_p4_depot_copy.func(candidates) "{{{
 	for candidate in a:candidates
-		let port = matchstr(candidate.action__client, '-p\s\+\zs\S*')
-		call s:copy_file(candidate.action__depot, candidate.action__client, '')
+		let client = candidate.action__client
+		call s:copy_file(candidate.action__depot, client, '')
 	endfor
 endfunction "}}}
 "
