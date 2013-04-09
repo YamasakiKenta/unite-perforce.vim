@@ -19,8 +19,8 @@ functio! s:p4_print(candidates) "{{{
 			let file_numstr = '\#'.candidate.action__revnum
 			let numstr      =  '#'.candidate.action__revnum
 		elseif exists('candidate.action__chnum')
-			let file_numstr =  '@'.candidate.action__chnum
-			let numstr      =  '@'.candidate.action__chnum
+			let file_numstr =  '@'.candidate.action__chnum.low
+			let numstr      =  '@'.candidate.action__chnum.low
 		endif
 
 		" ファイルを出力する
