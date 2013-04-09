@@ -88,7 +88,7 @@ function! perforce_2#revert(...) "{{{
 	" ********************************************************************************
 	" @param[in] ƒtƒ@ƒCƒ‹–¼
 	" ********************************************************************************
-	let file_ = call(perforce#util#get_files, a:000)[0]
+	let file_ = call('perforce#util#get_files', a:000)[0]
 	let file_ = perforce#common#get_kk(file_)
 	if perforce#is_p4_have(file_)
 		let outs = perforce#pfcmds_new_outs('revert','',' -a '.file_)
