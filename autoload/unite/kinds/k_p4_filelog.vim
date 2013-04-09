@@ -28,7 +28,6 @@ functio! s:p4_print(candidates) "{{{
 		let file = fnamemodify(name,':t').file_numstr
 
 		call perforce#common#LogFile(file, 0, strs) 
-		call append(0, strs)
 
 		" データの出力
 		exe 'setf' filetype_old
