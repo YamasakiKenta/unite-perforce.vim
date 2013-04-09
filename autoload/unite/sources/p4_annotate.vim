@@ -8,9 +8,10 @@ function! unite#sources#p4_annotate#define()
 				\ ]
 endfunction
 
-function! s:getRevisionNumFromAnnotate(str) "{{{
+function! s:get_revnum_from_annotate(str) "{{{
 	return substitute(a:str,'^\(\d\+\).*','\1','')
-endfunction "}}}
+endfunction 
+"}}}
 function! s:get_chnum_from_annotate(str) "{{{
 	let low  = substitute(a:str, '\(\d\+\)-\(\d\+\):.*', '\1', '')
 	let high = substitute(a:str, '\(\d\+\)-\(\d\+\):.*', '\2', '')
@@ -19,7 +20,8 @@ function! s:get_chnum_from_annotate(str) "{{{
 				\ 'low' : low,
 				\ 'high' : high,
 				\ }
-endfunction "}}}
+endfunction 
+"}}}
 
 let s:source = {
 			\ 'name' : 'p4_annotate',
@@ -41,7 +43,7 @@ function! s:source.gather_candidates(args, context) "{{{
 					\ 'word' : lnum.' : '.v:val,
 					\ 'kind' : 'k_p4_filelog',
 					\ 'action__depot' : depot,
-					\ 'action__revnum' : s:getRevisionNumFromAnnotate(v:val),
+					\ 'action__revnum' : s:get_revnum_from_annotate(v:val),
 					\ }")
 		let lnum += 1
 	endfor
