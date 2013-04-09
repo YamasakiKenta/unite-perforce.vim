@@ -478,7 +478,7 @@ function! perforce#pfcmds_new_port_only(cmd, head, tail) "{{{
 		let tmp.client = '-p '.perforce#get_PFPORT()
 		let rtns = [tmp]
 	else
-		let rtns = perforce#pfcmds_with_clients_from_data_port_only(a:cmd, a:head, a:tail)
+		let rtns = s:pfcmds_with_clients_from_data_port_only(a:cmd, a:head, a:tail)
 	endif
 
 	return rtns
@@ -572,8 +572,15 @@ function! perforce#pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 	let clients = perforce#data#get('clients')
 	return  perforce#pfcmds_with_clients_and_unite_mes(clients, a:cmd, a:head, a:tail)
 endfunction "}}}
-function! perforce#pfcmds_with_clients_from_data_port_only(cmd,head,tail) "{{{
-	let ports = map(perforce#data#get('ports'), "'-p '.v:val")
+function! s:pfcmds_with_clients_from_data_port_only(cmd,head,tail) "{{{
+	let clients = perforce#data#get('clients')
+	let ports = []
+	for client in clients
+		let port = matchstr(client, '-p\s*\S*')
+		if len(port)
+			call add(ports, port)
+		endif
+	endfor
 	return  perforce#pfcmds_with_clients_and_unite_mes(ports, a:cmd, a:head, a:tail)
 endfunction "}}}
 function! perforce#pfcmds_with_clients_from_arg(clients, cmd, head, tail) "{{{

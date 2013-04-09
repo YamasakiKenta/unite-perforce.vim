@@ -18,8 +18,6 @@ function! s:init() "{{{
 	call s:perforce_add       ( 'use_default'                   ,''                             , 'bool'      , 1)
 	call s:perforce_add       ( 'diff -dw'                      ,'空白を無視する'               , 'bool'      , 1)
 	call s:perforce_add       ( 'clients'                       ,'perforce clients'             , 'list_ex'   , [[1,2], '-p localhost:1818 -c main_1', '-p localhost:1668 -c main_1']) 
-	call s:perforce_add       ( 'ports'                         ,'perforce ports'               , 'list_ex'   , [[1,2], 'localhost:1668', 'localhost:1818']) 
-	call s:perforce_add       ( 'users'                         ,'perforce user'                , 'list_ex'   , [[1], 'yamasaki']) 
 	call s:perforce_add_title ( '_フィルタ') 
 	call s:perforce_add       ( 'user_changes_only'             ,'ユーザー名でフィルタ'         , 'bool'      , 1) 
 	call s:perforce_add       ( 'client_changes_only'           ,'クライアントでフィルタ'       , 'bool'      , 1) 
