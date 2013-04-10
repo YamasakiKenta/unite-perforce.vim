@@ -1,21 +1,10 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:_file  = expand("<sfile>")
-
-
-let s:_debug = vital#of('unite-perforce.vim').import("Mind.Debug")
-"
-function! unite#kinds#k_p4_clients#define()
-	return s:kind
-endfunction
 function! unite#kinds#k_p4_users#define()
 	return s:kind
 endfunction
 
-" ********************************************************************************
-" kind - k_p4_users
-" ********************************************************************************
 let s:kind = { 
 			\ 'name' : 'k_p4_users',
 			\ 'default_action' : 'a_p4_user_change',
