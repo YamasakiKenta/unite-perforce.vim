@@ -1,9 +1,12 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let $PFTMP     = expand( exists('$PFTMP') ? $PFTMP : '~/.perforce/' )
-let $PFTMPFILE = $PFTMP.'/tmpfile'
-if !isdirectory($PFTMP) | call mkdir($PFTMP) | endif
+let g:perforce_tmp_dir     = get(g:, 'perforce_tmp_dir', '~/.perforce/' )
+let g:perforce_tmp_file    = g:perforce_tmp_dir.'/tmpfile'
+
+if !isdirectory(g:perforce_tmp_dir)
+	call mkdir($PFTMP)
+endif
 
 function! s:get_dd(str) "{{{
 	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''
@@ -127,9 +130,6 @@ function! perforce#get_ClientPathFromName(str) "{{{
 	let path = perforce#common#get_pathSrash(path)
 	return path
 endfunction "}}}
-function! perforce#get_PFCLIENTPATH(...) 
-	return call('perforce#util#get_client_root', a:000)
-endfunction 
 function! perforce#get_PFCLIENTNAME() "{{{
 	return perforce#get_set_data('P4CLIENT')
 endfunction "}}}
@@ -309,11 +309,11 @@ function! perforce#pfChange(str,...) "{{{
 	if chnum == "" | let tmp = substitute(tmp,'\nFiles:\zs\_.*','','') | endif
 
 	"一時ファイルの書き出し
-	call writefile(split(tmp,'\n'),$PFTMPFILE)
+	call writefile(split(tmp,'\n'),g:perforce_tmp_file)
 
 	" チェンジリストの作成
 	" ★ client に対応する
-	let out = split(system('more '.perforce#common#get_kk($PFTMPFILE).' | p4 change -i', '\n'))
+	let out = split(system('more '.perforce#common#get_kk(g:perforce_tmp_file).' | p4 change -i', '\n'))
 
 	return out
 
@@ -337,11 +337,11 @@ function! perforce#pfDiff(path) "{{{
 	endif
 
 	"tmpファイルの書き出し
-	call writefile(outs,$PFTMPFILE)
+	call writefile(outs,g:perforce_tmp_file)
 	"}}}
 
 	" 改行が一致しないので保存し直す "{{{
-	exe 'sp' $PFTMPFILE
+	exe 'sp' g:perforce_tmp_file
 	set ff=dos
 	wq
 	"}}}
@@ -352,7 +352,7 @@ function! perforce#pfDiff(path) "{{{
 	endif
 
 	" 実際に比較 
-	call s:pf_diff_tool($PFTMPFILE,path)
+	call s:pf_diff_tool(g:perforce_tmp_file,path)
 
 endfunction "}}}
 function! perforce#pfFind(...) "{{{
