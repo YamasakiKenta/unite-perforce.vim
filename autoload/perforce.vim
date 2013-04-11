@@ -95,6 +95,9 @@ function! s:pfdiff_from_fname(fname) "{{{
 		call perforce#pfDiff(path)
 	endfor
 endfunction "}}}
+function! s:get_ChangeNum_from_changes(str) "{{{
+	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
+endfunction "}}}
 
 function! perforce#LogFile(str) "{{{
 	" ********************************************************************************
@@ -118,9 +121,6 @@ function! perforce#LogFile(str) "{{{
 
 
 endfunction "}}}
-function! s:get_ChangeNum_from_changes(str) "{{{
-	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
-endfunction "}}}
 function! perforce#get_ClientName_from_client(str) "{{{
 	return matchstr(a:str,'Client \zs\S\+')
 endfunction "}}}
@@ -129,26 +129,6 @@ function! perforce#get_ClientPathFromName(str) "{{{
 	let path = matchstr(str,'.* \d\d\d\d/\d\d/\d\d root \zs\S*')
 	let path = perforce#common#get_pathSrash(path)
 	return path
-endfunction "}}}
-function! perforce#get_PFCLIENTNAME() "{{{
-	return perforce#get_set_data('P4CLIENT')
-endfunction "}}}
-function! perforce#get_PFPORT() "{{{
-	return perforce#get_set_data('P4PORT')
-endfunction "}}}
-function! perforce#get_PFUSER() "{{{
-	return perforce#get_set_data('P4USER')
-endfunction "}}}
-function! s:system(cmd) "{{{
-	if exists('s:exists_vimproc')
-		let data = vimproc#system(a:cmd)
-	else
-		let data = system(a:cmd)
-	endif
-	return data
-endfunction "}}}
-function! perforce#get_set_data(str) "{{{
-	return matchstr(s:system('p4 set '.a:str), '\w*=\zs.* \ze(set)')
 endfunction "}}}
 function! perforce#get_depot_from_have(str) "{{{
 	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')
@@ -215,7 +195,7 @@ endfunction "}}}
 function! perforce#init() "{{{
 
 	" クライアントデータの読み込み
-	call perforce#get_PFCLIENTPATH()
+	call perforce#get#PFCLIENTPATH()
 
 	" 設定の取得
 	call perforce#data#init()
@@ -382,13 +362,13 @@ function! perforce#pfcmds(cmd,...) "{{{
 
 	if a:cmd =~ 'changes'
 		if perforce#data#get('client_changes_only') == 1
-			call add(gcmds, '-c '.perforce#get_PFCLIENTNAME())
+			call add(gcmds, '-c '.perforce#get#PFCLIENTNAME())
 		endif
 	endif 
 
 	if a:cmd =~ 'clients' || a:cmd =~ 'changes'
 		if perforce#data#get('user_changes_only') == 1 
-			call add(gcmds, '-u '.perforce#get_PFUSER())
+			call add(gcmds, '-u '.perforce#get#PFUSER())
 		endif
 	endif 
 
@@ -459,7 +439,7 @@ function! s:pfcmds_with_clients(clients, cmd, head, tail) "{{{
 	endif 
 
 	if perforce#data#get('user_changes_only',kind) == 1 
-		let user = '-u '.perforce#get_PFUSER()
+		let user = '-u '.perforce#get#PFUSER()
 	else 
 		let user = ''
 	endif
@@ -546,7 +526,7 @@ function! perforce#pfcmds_new_port_only(cmd, head, tail) "{{{
 	let client_default_flg = perforce#data#get('use_default')
 	if client_default_flg == 1
 		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get_PFPORT()
+		let tmp.client = '-p '.perforce#get#PFPORT()
 		let rtns = [tmp]
 	else
 		let rtns = s:pfcmds_with_clients_from_data_port_only(a:cmd, a:head, a:tail)
@@ -558,7 +538,7 @@ function! perforce#pfcmds_new_outs(cmd, head, tail) "{{{
 	let client_default_flg = perforce#data#get('use_default')
 	if client_default_flg == 1
 		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get_PFPORT().' -c '.perforce#get_PFCLIENTNAME()
+		let tmp.client = '-p '.perforce#get#PFPORT().' -c '.perforce#get#PFCLIENTNAME()
 		let rtns = [tmp]
 	else
 		let rtns = s:pfcmds_with_clients_from_data(a:cmd, a:head, a:tail)
@@ -572,7 +552,7 @@ function! perforce#pfcmds_new(cmd, head, tail) "{{{
 	let client_default_flg = perforce#data#get('use_default')
 	if client_default_flg == 1
 		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get_PFPORT().' -c '.perforce#get_PFCLIENTNAME()
+		let tmp.client = '-p '.perforce#get#PFPORT().' -c '.perforce#get#PFCLIENTNAME()
 		let rtns = [tmp]
 	else
 		let rtns = s:pfcmds_with_clients_from_data(a:cmd, a:head, a:tail)

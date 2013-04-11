@@ -10,8 +10,8 @@ function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 	" 空白の場合は、スペースを使用する
 	let str = a:str
 
-	let port   = perforce#get_PFPORT()
-	let client = perforce#get_PFCLIENTNAME()
+	let port   = perforce#get#PFPORT()
+	let client = perforce#get#PFCLIENTNAME()
 	let key    = port.'_'.client.'_'.str
 
 	let data_ds = {}

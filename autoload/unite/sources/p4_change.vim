@@ -35,7 +35,7 @@ function! s:source_p4_changes_pending.gather_candidates(args, context) "{{{
 	"
 	" 表示するクライアント名の取得
 	let outs = perforce#data#get('client_changes_only') ? 
-				\ [perforce#get_PFCLIENTNAME()] : 
+				\ [perforce#get#PFCLIENTNAME()] : 
 				\ perforce#pfcmds('clients','').outs
 
 				"\ 'word'           : 'default by '.perforce#get_ClientName_from_client(v:val),

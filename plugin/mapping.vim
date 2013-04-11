@@ -5,10 +5,10 @@ nnoremap <PLUG>(unite_p4_commit)
 			\ :<C-u>Unite source -input=p4\ <CR>|"
 
 nnoremap <PLUG>(p4_echo_client_data)
-			\ :<C-u>echo " -p " . perforce#get_PFPORT() . " -c " . perforce#get_PFCLIENTNAME() . "\n" . perforce#get_PFCLIENTPATH()<CR>|"
+			\ :<C-u>echo " -p " . perforce#get#PFPORT() . " -c " . perforce#get#PFCLIENTNAME() . "\n" . perforce#get#PFCLIENTPATH()<CR>|"
 
 nnoremap <PLUG>(p4_cd_clentpath)
-			\ :<C-u>lcd <C-r>=perforce#get_PFCLIENTPATH()<CR><CR>|"
+			\ :<C-u>lcd <C-r>=perforce#get#PFCLIENTPATH()<CR><CR>|"
 
 nnoremap <PLUG>(p4_filelog)
 			\ :<C-u>call perforce#unite_args('p4_filelog')<CR>|"
