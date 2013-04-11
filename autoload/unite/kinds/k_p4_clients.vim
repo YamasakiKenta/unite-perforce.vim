@@ -32,8 +32,8 @@ function! s:kind_clients.action_table.a_p4_client_set.func(candidates) "{{{
 	let clpath = perforce#get_ClientPathFromName(clname)
 
 	" 作成するファイルの名前の保存 ( 切り替え ) 
-	call perforce#set_PFCLIENTNAME(clname)
-	call perforce#set_PFPORT(port)
+	call perforce#set#PFCLIENTNAME(clname)
+	call perforce#set#PFPORT(port)
 	call s:Perforce.get_client_root(1)
 
 endfunction "}}}

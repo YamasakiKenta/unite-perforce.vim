@@ -427,24 +427,6 @@ function! perforce#pfcmds(cmd,...) "{{{
 
 	return rtn_d
 endfunction "}}}
-function! s:pf_cmd_rtn_cmd_outs(cmd) "{{{
-	" ********************************************************************************
-	" @par       コマンドと実行結果を返す
-	" @param[in] 
-	" @retval    
-	" ********************************************************************************
-	return extend([a:cmd], split(system(a:cmd), "\n"))
-endfunction
-"}}}
-function! perforce#set_PFCLIENTNAME(str) "{{{
-	return s:pf_cmd_rtn_cmd_outs('p4 set P4CLIENT='.a:str)
-endfunction "}}}
-function! perforce#set_PFPORT(str) "{{{
-	return s:pf_cmd_rtn_cmd_outs('p4 set P4PORT='.a:str)
-endfunction "}}}
-function! perforce#set_PFUSER(str) "{{{
-	return s:pf_cmd_rtn_cmd_outs('p4 set P4USER='.a:str)
-endfunction "}}}
 function! perforce#unite_args(source) "{{{
 	"********************************************************************
 	" 現在のファイル名を Unite に引数に渡します。
@@ -466,53 +448,7 @@ endfunction "}}}
 
 "********************************************************************************
 "new
-function! perforce#get_path_from_depot_with_client(client, depot) "{{{
-	let cmd = 'p4 '.a:client.' where "'.a:depot.'"'
-	let out = system(cmd)
-	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')
-endfunction "}}}
-function! perforce#pfcmds_new_port_only(cmd, head, tail) "{{{
-	let client_default_flg = perforce#data#get('use_default')
-	if client_default_flg == 1
-		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get_PFPORT()
-		let rtns = [tmp]
-	else
-		let rtns = s:pfcmds_with_clients_from_data_port_only(a:cmd, a:head, a:tail)
-	endif
-
-	return rtns
-endfunction "}}}
-function! perforce#pfcmds_new(cmd, head, tail) "{{{
-	let client_default_flg = perforce#data#get('use_default')
-	if client_default_flg == 1
-		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get_PFPORT().' -c '.perforce#get_PFCLIENTNAME()
-		let rtns = [tmp]
-	else
-		let rtns = perforce#pfcmds_with_clients_from_data(a:cmd, a:head, a:tail)
-	endif
-
-	return rtns
-endfunction "}}}
-function! perforce#pfcmds_new_outs(cmd, head, tail) "{{{
-	let client_default_flg = perforce#data#get('use_default')
-	if client_default_flg == 1
-		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get_PFPORT().' -c '.perforce#get_PFCLIENTNAME()
-		let rtns = [tmp]
-	else
-		let rtns = perforce#pfcmds_with_clients_from_data(a:cmd, a:head, a:tail)
-	endif
-
-	let rtns = perforce#pfcmds_new_get_outs(rtns)
-
-	return rtns
-endfunction "}}}
-function! perforce#pfcmds_with_client(client,cmd,head,tail) "{{{
-	return perforce#pfcmds_with_clients([a:client], a:cmd, a:head, a:tail)
-endfunction "}}}
-function! perforce#pfcmds_with_clients(clients, cmd, head, tail) "{{{
+function! s:pfcmds_with_clients(clients, cmd, head, tail) "{{{
 
 	let kind = '__common'
 
@@ -568,9 +504,14 @@ function! perforce#pfcmds_with_clients(clients, cmd, head, tail) "{{{
 
 	return rtns
 endfunction "}}}
-function! perforce#pfcmds_with_clients_from_data(cmd,head,tail) "{{{
-	let clients = perforce#data#get('clients')
-	return  perforce#pfcmds_with_clients_and_unite_mes(clients, a:cmd, a:head, a:tail)
+function! s:pfcmds_with_clients_and_unite_mes(clients, cmd, head, tail) "{{{
+	let rtns = s:pfcmds_with_clients(a:clients, a:cmd, a:head, a:tail)
+
+	for cmd in map(deepcopy(rtns), "v:val.cmd")
+		call unite#print_message('[cmd] '.cmd)
+	endfor
+
+	return rtns
 endfunction "}}}
 function! s:pfcmds_with_clients_from_data_port_only(cmd,head,tail) "{{{
 	let clients = perforce#data#get('clients')
@@ -581,21 +522,13 @@ function! s:pfcmds_with_clients_from_data_port_only(cmd,head,tail) "{{{
 			call add(ports, port)
 		endif
 	endfor
-	return  perforce#pfcmds_with_clients_and_unite_mes(ports, a:cmd, a:head, a:tail)
+	return  s:pfcmds_with_clients_and_unite_mes(ports, a:cmd, a:head, a:tail)
 endfunction "}}}
-function! perforce#pfcmds_with_clients_from_arg(clients, cmd, head, tail) "{{{
-	return  perforce#pfcmds_with_clients_and_unite_mes(a:clients, a:cmd, a:head, a:tail)
+function! s:pfcmds_with_clients_from_data(cmd,head,tail) "{{{
+	let clients = perforce#data#get('clients')
+	return  s:pfcmds_with_clients_and_unite_mes(clients, a:cmd, a:head, a:tail)
 endfunction "}}}
-function! perforce#pfcmds_with_clients_and_unite_mes(clients, cmd, head, tail) "{{{
-	let rtns = perforce#pfcmds_with_clients(a:clients, a:cmd, a:head, a:tail)
-
-	for cmd in map(deepcopy(rtns), "v:val.cmd")
-		call unite#print_message('[cmd] '.cmd)
-	endfor
-
-	return rtns
-endfunction "}}}
-function! perforce#pfcmds_new_get_outs(datas) "{{{
+function! s:pfcmds_new_get_outs(datas) "{{{
 	let outs = []
 	for data in a:datas
 		call extend(outs, get(data, 'outs', []))
@@ -603,6 +536,50 @@ function! perforce#pfcmds_new_get_outs(datas) "{{{
 	return outs
 endfunction
 "}}}
+"
+function! perforce#get_path_from_depot_with_client(client, depot) "{{{
+	let cmd = 'p4 '.a:client.' where "'.a:depot.'"'
+	let out = system(cmd)
+	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')
+endfunction "}}}
+function! perforce#pfcmds_new_port_only(cmd, head, tail) "{{{
+	let client_default_flg = perforce#data#get('use_default')
+	if client_default_flg == 1
+		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
+		let tmp.client = '-p '.perforce#get_PFPORT()
+		let rtns = [tmp]
+	else
+		let rtns = s:pfcmds_with_clients_from_data_port_only(a:cmd, a:head, a:tail)
+	endif
+
+	return rtns
+endfunction "}}}
+function! perforce#pfcmds_new_outs(cmd, head, tail) "{{{
+	let client_default_flg = perforce#data#get('use_default')
+	if client_default_flg == 1
+		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
+		let tmp.client = '-p '.perforce#get_PFPORT().' -c '.perforce#get_PFCLIENTNAME()
+		let rtns = [tmp]
+	else
+		let rtns = s:pfcmds_with_clients_from_data(a:cmd, a:head, a:tail)
+	endif
+
+	let rtns = s:pfcmds_new_get_outs(rtns)
+
+	return rtns
+endfunction "}}}
+function! perforce#pfcmds_new(cmd, head, tail) "{{{
+	let client_default_flg = perforce#data#get('use_default')
+	if client_default_flg == 1
+		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
+		let tmp.client = '-p '.perforce#get_PFPORT().' -c '.perforce#get_PFCLIENTNAME()
+		let rtns = [tmp]
+	else
+		let rtns = s:pfcmds_with_clients_from_data(a:cmd, a:head, a:tail)
+	endif
+
+	return rtns
+endfunction "}}}
 
 " rapper
 function! perforce#get_source_diff_from_diff(...) 
