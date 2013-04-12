@@ -30,7 +30,7 @@ function! s:source_p4_fixes.gather_candidates(args, context) "{{{
 
 	let data_ds = []
 	for job in jobs
-		call extend(data_ds, perforce#pfcmds_new('fixes', '', '-j '.job))
+		call extend(data_ds, perforce#cmd#new('fixes', '', '-j '.job))
 	endfor
 
 	let candidates = []

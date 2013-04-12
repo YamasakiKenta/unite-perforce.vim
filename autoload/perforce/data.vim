@@ -34,8 +34,6 @@ function! s:init() "{{{
 	call s:perforce_add_title ( '_DIFF') 
 	call s:perforce_add       ( 'is_vimdiff_flg'                ,'vimdiff を使用する'           , 'bool'      , 0) 
 	call s:perforce_add       ( 'diff_tool'                     ,'Diff で使用するツール'        , 'select'    , [[1], 'WinMergeU']) 
-	call s:perforce_add_title ( '_ClientMove') 
-	call s:perforce_add       ( 'ClientMove_recursive_flg'      ,'ClientMoveで再帰検索をするか' , 'bool'      , 0) 
 	call s:perforce_add_title ( '_Ohter') 
 	call s:perforce_add       ( 'is_submit_flg'                 ,'サブミットを許可'             , 'bool'      , 0) 
 	call s:perforce_add_title ( 'ファイル操作')

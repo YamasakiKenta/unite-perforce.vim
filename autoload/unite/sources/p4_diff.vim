@@ -28,7 +28,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 			" Åö 
 			if 1
 				if perforce#data#get('diff -dw', 'common') == 1
-					let outs += perforce#pfcmds('diff -dw','',perforce#common#get_kk(file)).outs
+					let outs += perforce#cmd#base('diff -dw','',perforce#common#get_kk(file)).outs
 				endif
 			endif
 		else
@@ -62,7 +62,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 	" add ÇµÇΩÉtÉ@ÉCÉãÇí«â¡Ç∑ÇÈ
 	if all_flg
 		"let file = 
-		let opened_strs = perforce#pfcmds('opened','').outs
+		let opened_strs = perforce#cmd#base('opened','').outs
 
 		for str in opened_strs
 			if str =~ '.*#\d\+ - add change'

@@ -24,7 +24,7 @@ functio! s:p4_print(candidates) "{{{
 		endif
 
 		" ファイルを出力する
-		let strs = perforce#pfcmds('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
+		let strs = perforce#cmd#base('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
 		let file = fnamemodify(name,':t').file_numstr
 
 		call perforce#common#LogFile(file, 0, strs) 
@@ -85,7 +85,7 @@ function! s:kind_filelog.action_table.preview.func(candidate) "{{{
 	endif
 
 	" ファイルを出力する
-	let strs = perforce#pfcmds('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
+	let strs = perforce#cmd#base('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
 	let file = fnamemodify(name,':t').file_numstr
 
 	call perforce#common#LogFile(file, 0, strs) 

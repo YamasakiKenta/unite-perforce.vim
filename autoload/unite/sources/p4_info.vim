@@ -13,7 +13,7 @@ let s:source_p4_info = {
 			\ }
 "\ 'default_action' : '',
 function! s:source_p4_info.gather_candidates(args, context) "{{{
-	let datas = perforce#pfcmds('info','').outs
+	let datas = perforce#cmd#base('info','').outs
 	let candidates = map( datas, "{
 				\ 'word' : v:val,
 				\ }")

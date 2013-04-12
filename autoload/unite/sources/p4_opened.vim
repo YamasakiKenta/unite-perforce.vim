@@ -27,7 +27,7 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	let tmps = []
 	for arg in datas
-		call extend(tmps, perforce#pfcmds_new('opened', '', arg))
+		call extend(tmps, perforce#cmd#new('opened', '', arg))
 	endfor
 
 	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é

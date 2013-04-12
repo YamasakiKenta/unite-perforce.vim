@@ -36,7 +36,7 @@ function! s:source_p4_changes_pending.gather_candidates(args, context) "{{{
 	" 表示するクライアント名の取得
 	let outs = perforce#data#get('client_changes_only') ? 
 				\ [perforce#get#PFCLIENTNAME()] : 
-				\ perforce#pfcmds('clients','').outs
+				\ perforce#cmd#base('clients','').outs
 
 				"\ 'word'           : 'default by '.perforce#get_ClientName_from_client(v:val),
 	" defaultの表示
@@ -48,7 +48,7 @@ function! s:source_p4_changes_pending.gather_candidates(args, context) "{{{
 				\ 'action__depots' : a:context.source__depots,
 				\ }")
 
-	let outs = perforce#pfcmds('changes','','-s pending').outs
+	let outs = perforce#cmd#base('changes','','-s pending').outs
 	let rtn += perforce#get_pfchanges(a:context, outs, 'k_p4_change_pending')
 	return rtn
 endfunction "}}}
@@ -102,7 +102,7 @@ let s:source_p4_changes_submitted = {
 	"call unite#start_temporary([['settings_ex_list_select', tmp_d]], {'default_action' : 'a_toggle'})
 let s:source_p4_changes_submitted.hooks.on_init = function('perforce#get_filename_for_unite')
 function! s:source_p4_changes_submitted.gather_candidates(args, context) "{{{
-	let outs = perforce#pfcmds('changes','','-s submitted').outs
+	let outs = perforce#cmd#base('changes','','-s submitted').outs
 	return perforce#get_pfchanges(a:context, outs, 'k_p4_change_submitted')
 endfunction "}}}
 

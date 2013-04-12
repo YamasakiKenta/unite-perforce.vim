@@ -23,20 +23,20 @@ function! s:get_chnum_from_annotate(str) "{{{
 endfunction 
 "}}}
 
-let s:source = {
+let s:source__p4_annotate = {
 			\ 'name' : 'p4_annotate',
 			\ 'description' : '各行にリビジョン番号を表示',
 			\ 'hooks' : {},
 			\ }
-let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
-function! s:source.gather_candidates(args, context) "{{{
+let s:source__p4_annotate.hooks.on_init = function('perforce#get_filename_for_unite')
+function! s:source__p4_annotate.gather_candidates(args, context) "{{{
 
 	let depots = a:context.source__depots
 
 	let candidates = []
-	let lnum = 1
+	let lnum = 0
 	for depot in depots 
-		let outs = perforce#pfcmds('annotate','',perforce#common#get_kk(depot)).outs
+		let outs = perforce#cmd#base('annotate','',perforce#common#get_kk(depot)).outs
 
 		for out in outs
 		let candidates += map( [out], "{
@@ -50,22 +50,21 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	return candidates
 endfunction "}}}
-let s:source__p4_annotate = deepcopy(s:source)
 
-let s:source = {
+let s:source__p4_annotate_ai = {
 			\ 'name' : 'p4_annotate_ai',
 			\ 'description' : '各行にチェンジリスト番号を表示 ( 全て )',
 			\ 'hooks' : {},
 			\ }
-let s:source.hooks.on_init = function('perforce#get_filename_for_unite')
-function! s:source.gather_candidates(args, context) "{{{
+let s:source__p4_annotate_ai.hooks.on_init = function('perforce#get_filename_for_unite')
+function! s:source__p4_annotate_ai.gather_candidates(args, context) "{{{
 
 	let depots = a:context.source__depots
 
 	let candidates = []
 	for depot in depots 
 
-		let outs = perforce#pfcmds('annotate','','-ai '.perforce#common#get_kk(depot)).outs
+		let outs = perforce#cmd#base('annotate','','-ai '.perforce#common#get_kk(depot)).outs
 
 		let candidates += map( outs, "{
 					\ 'word' : v:val,
@@ -77,7 +76,11 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	return candidates
 endfunction "}}}
-let s:source__p4_annotate_ai = deepcopy(s:source)
+
+if 1
+	call unite#define_source(s:source__p4_annotate_ai)
+	call unite#define_source(s:source__p4_annotate)
+endif
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

@@ -14,7 +14,7 @@ function! s:get_pfcmd_from_help(str) "{{{
 	return substitute(a:str,'\t\(\w\+\) .*','\1','')
 endfunction "}}}
 function! s:source.gather_candidates(args, context) "{{{
-	let datas = perforce#pfcmds('help','','commands').outs
+	let datas = perforce#cmd#base('help','','commands').outs
 	unlet datas[0:1]
 	let candidates = map( datas, "{
 				\ 'word' : substitute(v:val,'\t','',''),

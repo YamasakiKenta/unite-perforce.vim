@@ -61,7 +61,7 @@ function! s:kind_clients.action_table.a_p4_client_info.func(candidates) "{{{
 
 		" 各クライアントごとに表示する
 		call perforce#common#LogFile(port.'_'.clname, 0)
-		let outs = perforce#pfcmds('info', port.' -c '.clname).outs
+		let outs = perforce#cmd#base('info', port.' -c '.clname).outs
 		call append(0,outs)
 	endfor
 endfunction "}}}
@@ -77,7 +77,7 @@ function! s:kind_clients.action_table.a_p4_client.func(candidates) "{{{
 
 		" 各クライアントごとに表示する
 		call perforce#common#LogFile(clname, 0)
-		let outs = perforce#pfcmds('client', port, '-o '.clname).outs
+		let outs = perforce#cmd#base('client', port, '-o '.clname).outs
 		call append(0,outs)
 	endfor
 endfunction "}}}

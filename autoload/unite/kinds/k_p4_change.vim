@@ -35,7 +35,7 @@ function! s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen.func(candida
 	let chnum = s:make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "'))).outs
+	let outs = perforce#cmd#base('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "'))).outs
 
 	" ログの出力
 	call perforce#LogFile(outs)
@@ -109,7 +109,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 		call input("")
 	else
 		let chnums = map(copy(a:candidates), "v:val.action__chnum")
-		let tmp_ds = perforce#pfcmds_new('submit','',' -c '.join(chnums))
+		let tmp_ds = perforce#cmd#new('submit','',' -c '.join(chnums))
 		let outs = []
 		for tmp_d in tmp_ds
 			call add(outs, tmp_d.cmd)
@@ -158,7 +158,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_reopen.func(candid
 	let chnum = s:make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#pfcmds('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "'))).outs
+	let outs = perforce#cmd#base('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "'))).outs
 
 	" ログの出力
 	call perforce#LogFile(outs)

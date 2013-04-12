@@ -12,7 +12,7 @@ let s:source_describe = {
 			\ }
 function! s:source_describe.gather_candidates(args, context) "{{{
 	let chnums = a:args
-	let outs = perforce#pfcmds('describe','',join(chnums)).outs
+	let outs = perforce#cmd#base('describe','',join(chnums)).outs
 	return perforce#get#file#source_describe(outs) 
 endfunction "}}}
 

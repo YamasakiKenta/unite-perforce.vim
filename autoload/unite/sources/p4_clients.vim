@@ -15,7 +15,7 @@ function! s:get_pfclients() "{{{
 	" クライアントを表示する
 	" ********************************************************************************
 
-	let datas = perforce#pfcmds_new_port_only('clients', '', '')
+	let datas = perforce#cmd#new_port_only('clients', '', '')
 
 	let candidates = []
 	for data in datas

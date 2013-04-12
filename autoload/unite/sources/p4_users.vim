@@ -15,7 +15,7 @@ function! s:get_UserName_from_users(str) "{{{
 	return substitute(a:str,'\(.\{-}\) <.*','\1','')
 endfunction "}}}
 function! s:source.gather_candidates(args, context) "{{{
-	let datas = perforce#pfcmds('users','').outs
+	let datas = perforce#cmd#base('users','').outs
 	let candidates = map( datas, "{
 				\ 'word' : v:val,
 				\ 'kind' : 'k_p4_users',

@@ -34,7 +34,7 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 			\ function! action.func(candidates) \n
 				\ let outs = [] \n
 				\ for l:candidate in a:candidates \n
-					\ let outs += perforce#pfcmds('". a:cmd ."','',perforce#common#get_kk(l:candidate.action__". get(kind,a:kind,"path") .")).outs \n
+					\ let outs += perforce#cmd#base('". a:cmd ."','',perforce#common#get_kk(l:candidate.action__". get(kind,a:kind,"path") .")).outs \n
 				\ endfor \n
 				\ call perforce#LogFile(outs) \n
 			\ endfunction 
@@ -112,7 +112,7 @@ let s:kind_depot.action_table.a_p4_files = {
 			\ }
 function! s:kind_depot.action_table.a_p4_files.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
-	let outs = perforce#pfcmds('files','',join(depots)).outs
+	let outs = perforce#cmd#base('files','',join(depots)).outs
 	call perforce_2#show(outs)
 	sp
 endfunction "}}}
@@ -141,8 +141,8 @@ function! s:kind_depot.action_table.a_p4_move.func(candidates) "{{{
 		let new          = input(file.' -> ')
 		if new != ''
 			let outs = []
-			let outs += perforce#pfcmds('edit','',path).outs
-			let outs += perforce#pfcmds('move','',path.' '.dir.'/'.new).outs
+			let outs += perforce#cmd#base('edit','',path).outs
+			let outs += perforce#cmd#base('move','',path.' '.dir.'/'.new).outs
 			call perforce#LogFile(outs)
 		endif
 		"}}}
@@ -178,7 +178,7 @@ let s:kind_depot.action_table.delete = {
 			\ }
 function! s:kind_depot.action_table.delete.func(candidate) "{{{
 	let depot = a:candidate.action__depot
-	call perforce#common#LogFile('diff', 1, perforce#pfcmds('diff','',depot).outs)
+	call perforce#common#LogFile('diff', 1, perforce#cmd#base('diff','',depot).outs)
 	wincmd p
 endfunction "}}}
 
@@ -231,7 +231,7 @@ let s:kind_depot.action_table.a_p4_sync = {
 			\ }
 function! s:kind_depot.action_table.a_p4_sync.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
-	let outs = perforce#pfcmds('sync','',join(depots)).outs
+	let outs = perforce#cmd#base('sync','',join(depots)).outs
 	call perforce#LogFile(outs)
 endfunction "}}}
 

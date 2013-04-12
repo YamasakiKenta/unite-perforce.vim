@@ -27,7 +27,7 @@ function! perforce#get#PFPORT()
 	return s:get_set_data('P4PORT')
 endfunction 
 
-function! perforce#get_PFUSER() 
+function! perforce#get#PFUSER() 
 	return s:get_set_data('P4USER')
 endfunction 
 

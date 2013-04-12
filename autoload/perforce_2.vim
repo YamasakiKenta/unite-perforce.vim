@@ -69,7 +69,7 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 	for cmd in keys(file_d)
 		let _file = file_d[cmd]
 		if _file != ''
-			call extend(outs, perforce#pfcmds_new_outs(cmd, '', _file))
+			call extend(outs, perforce#cmd#new_outs(cmd, '', _file))
 		endif
 	endfor
 
@@ -91,9 +91,9 @@ function! perforce_2#revert(...) "{{{
 	let file_ = call('perforce#util#get_files', a:000)[0]
 	let file_ = perforce#common#get_kk(file_)
 	if perforce#is_p4_have(file_)
-		let outs = perforce#pfcmds_new_outs('revert','',' -a '.file_)
+		let outs = perforce#cmd#new_outs('revert','',' -a '.file_)
 	else
-		let outs = perforce#pfcmds_new_outs('revert','',file_)
+		let outs = perforce#cmd#new_outs('revert','',file_)
 	endif
 	call perforce#LogFile(outs)
 endfunction 
