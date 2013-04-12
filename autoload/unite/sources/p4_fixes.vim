@@ -38,7 +38,7 @@ function! s:source_p4_fixes.gather_candidates(args, context) "{{{
 		let client = data.client
 		call extend(candidates, map( data.outs, "{
 					\ 'word' : v:val,
-					\ 'kind' : 'k_p4_change',
+					\ 'kind' : 'k_p4_change_pending',
 					\ 'action__chnum' : s:get_chnum_from_fixes(v:val),
 					\ 'action__client' : client,
 					\ }"))
