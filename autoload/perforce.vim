@@ -5,7 +5,7 @@ let g:perforce_tmp_dir     = get(g:, 'perforce_tmp_dir', '~/.perforce/' )
 let g:perforce_tmp_file    = g:perforce_tmp_dir.'/tmpfile'
 
 if !isdirectory(g:perforce_tmp_dir)
-	call mkdir($PFTMP)
+	call mkdir(g:perforce_tmp_dir)
 endif
 
 function! s:get_dd(str) "{{{
@@ -37,7 +37,7 @@ function! s:get_path_from_where(str) "{{{
 endfunction "}}}
 function! s:get_paths_from_fname(str) "{{{
 	" ファイルを検索
-	let outs = perforce#pfcmds('have','',s:get_dd(a:str)).outs " # ファイル名の取得
+	let outs = perforce#cmd#base('have','',s:get_dd(a:str)).outs " # ファイル名の取得
 	return s:get_paths_from_haves(outs)                   " # ヒットした場合
 endfunction "}}}
 function! s:get_paths_from_haves(strs) "{{{
@@ -218,16 +218,16 @@ function! perforce#matomeDiffs(...) "{{{
 	echo a:000
 	for chnum in a:000
 		" データの取得 {{{
-		let outs = perforce#pfcmds('describe -ds','',chnum).outs
+		let outs = perforce#cmd#base('describe -ds','',chnum).outs
 
 		" 作業中のファイル
 		if outs[0] =~ '\*pending\*' || chnum == 'default'
-			let files = perforce#pfcmds('opened','','-c '.chnum).outs
+			let files = perforce#cmd#base('opened','','-c '.chnum).outs
 			call map(files, "perforce#get_depot_from_opened(v:val)")
 
 			let outs = []
 			for file in files 
-				let list_tmps = perforce#pfcmds('diff -ds','',file).outs
+				let list_tmps = perforce#cmd#base('diff -ds','',file).outs
 
 				for list_tmp in list_tmps
 					if list_tmp =~ '- file(s) not opened for edit.'
@@ -308,7 +308,7 @@ function! perforce#pfDiff(path) "{{{
 	let path = a:path
 
 	" 最新 REV のファイルの取得 "{{{
-	let outs = perforce#pfcmds('print','',' -q '.perforce#common#get_kk(path)).outs
+	let outs = perforce#cmd#base('print','',' -q '.perforce#common#get_kk(path)).outs
 
 	" エラーが発生したらファイルを検索して、すべてと比較 ( 再帰 )
 	if outs[0] =~ "is not under client's root "
@@ -345,7 +345,7 @@ function! perforce#pfFind(...) "{{{
 		call unite#start([insert(map(split(str),"s:get_dd(v:val)"),'p4_have')])
 	endif
 endfunction "}}}
-function! perforce#pfcmds(cmd,...) "{{{
+function! perforce#cmd#base(cmd,...) "{{{
 	" ********************************************************************************
 	" p4 コマンドを実行します
 	" @param[in]	str		cmd		コマンド
@@ -493,17 +493,6 @@ function! s:pfcmds_with_clients_and_unite_mes(clients, cmd, head, tail) "{{{
 
 	return rtns
 endfunction "}}}
-function! s:pfcmds_with_clients_from_data_port_only(cmd,head,tail) "{{{
-	let clients = perforce#data#get('clients')
-	let ports = []
-	for client in clients
-		let port = matchstr(client, '-p\s*\S*')
-		if len(port)
-			call add(ports, port)
-		endif
-	endfor
-	return  s:pfcmds_with_clients_and_unite_mes(ports, a:cmd, a:head, a:tail)
-endfunction "}}}
 function! s:pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 	let clients = perforce#data#get('clients')
 	return  s:pfcmds_with_clients_and_unite_mes(clients, a:cmd, a:head, a:tail)
@@ -521,44 +510,6 @@ function! perforce#get_path_from_depot_with_client(client, depot) "{{{
 	let cmd = 'p4 '.a:client.' where "'.a:depot.'"'
 	let out = system(cmd)
 	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')
-endfunction "}}}
-function! perforce#pfcmds_new_port_only(cmd, head, tail) "{{{
-	let client_default_flg = perforce#data#get('use_default')
-	if client_default_flg == 1
-		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get#PFPORT()
-		let rtns = [tmp]
-	else
-		let rtns = s:pfcmds_with_clients_from_data_port_only(a:cmd, a:head, a:tail)
-	endif
-
-	return rtns
-endfunction "}}}
-function! perforce#pfcmds_new_outs(cmd, head, tail) "{{{
-	let client_default_flg = perforce#data#get('use_default')
-	if client_default_flg == 1
-		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get#PFPORT().' -c '.perforce#get#PFCLIENTNAME()
-		let rtns = [tmp]
-	else
-		let rtns = s:pfcmds_with_clients_from_data(a:cmd, a:head, a:tail)
-	endif
-
-	let rtns = s:pfcmds_new_get_outs(rtns)
-
-	return rtns
-endfunction "}}}
-function! perforce#pfcmds_new(cmd, head, tail) "{{{
-	let client_default_flg = perforce#data#get('use_default')
-	if client_default_flg == 1
-		let tmp = perforce#pfcmds(a:cmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get#PFPORT().' -c '.perforce#get#PFCLIENTNAME()
-		let rtns = [tmp]
-	else
-		let rtns = s:pfcmds_with_clients_from_data(a:cmd, a:head, a:tail)
-	endif
-
-	return rtns
 endfunction "}}}
 
 " rapper
