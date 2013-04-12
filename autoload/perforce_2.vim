@@ -111,7 +111,13 @@ function! perforce_2#pf_merge(...) "{{{
 	" @retval       NONE
 	" ********************************************************************************
 	let path = ( a:1 == "" ) ? g:perforce_merge_default_path : a:1
+
+	" ★ デフォルトになっているが、複数ある場合はどうするか
+	" ★ 自動で追加するフラグを設定する
+	let port = substitute(perforce#get#PFPORT(), ':', '', 'g')
 	
+	let path = path.'/new/'.port
+
 	let cmd = g:perforce_merge_tool.' "'.path.'" "'.perforce#get#PFCLIENTPATH().'"'
 
 	exe '!start '.cmd
