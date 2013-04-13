@@ -12,7 +12,8 @@ let s:source_jobs = {
 			\ }
 function! s:get_job_from_jobs(str) "{{{
 	return matchstr(a:str, '\S*')
-endfunction "}}}
+endfunction
+"}}}
 function! s:source_jobs.gather_candidates(args, context) "{{{
 	let datas = perforce#cmd#base('jobs','').outs
 	let candidates = map( datas, "{
@@ -21,7 +22,8 @@ function! s:source_jobs.gather_candidates(args, context) "{{{
 				\ 'action__job' : s:get_job_from_jobs(v:val),
 				\ }")
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 
 if 1
 	call unite#define_source(s:source_jobs)

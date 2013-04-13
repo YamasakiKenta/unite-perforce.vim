@@ -27,7 +27,8 @@ function! s:kind.action_table.a_add_fix.func(candidates) "{{{
 		caddexpr path.':1:1'
 	endfor
 
-endfunction "}}}
+endfunction
+"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

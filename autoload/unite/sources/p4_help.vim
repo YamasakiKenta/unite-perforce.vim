@@ -12,7 +12,8 @@ let s:source = {
 			\ }
 function! s:get_pfcmd_from_help(str) "{{{
 	return substitute(a:str,'\t\(\w\+\) .*','\1','')
-endfunction "}}}
+endfunction
+"}}}
 function! s:source.gather_candidates(args, context) "{{{
 	let datas = perforce#cmd#base('help','','commands').outs
 	unlet datas[0:1]
@@ -22,7 +23,8 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ 'action__cmd' : s:get_pfcmd_from_help(v:val),
 				\ }")
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

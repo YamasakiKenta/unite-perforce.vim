@@ -25,20 +25,22 @@ function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 	endif
 
 	return s:p4_have_cache[key]
-endfunction "}}}
+endfunction
+"}}}
 function! s:get_candidates_from_pfhave(datas) "{{{
 	let candidates = []
 	for data in a:datas
 		let client = data.client
 		call extend(candidates, map( data.outs, "{
-					\ 'word' : client.' : '.perforce#get_depot_from_have(v:val),
+					\ 'word' : client.' : '.perforce#get#depot#from_have(v:val),
 					\ 'kind' : 'k_depot',
-					\ 'action__depot'  : perforce#get_depot_from_have(v:val),
+					\ 'action__depot'  : perforce#get#depot#from_have(v:val),
 					\ 'action__client' : client,
 					\ }"))
 	endfor
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 
 function! unite#sources#p4_have#define()
 	return [s:souce_p4have, s:souce_p4have_reset]
@@ -53,7 +55,8 @@ let s:source = {
 "********************************************************************************
 function! s:source.gather_candidates(args, context) "{{{
 	return s:get_datas_from_p4_have(join(a:args), 0)
-endfunction "}}}
+endfunction
+"}}}
 let s:souce_p4have = deepcopy(s:source)
 
 let s:source = {
@@ -65,7 +68,8 @@ let s:source = {
 "********************************************************************************
 function! s:source.gather_candidates(args, context) "{{{
 	return s:get_datas_from_p4_have(join(a:args), 1)
-endfunction "}}}
+endfunction
+"}}}
 let s:souce_p4have_reset = deepcopy(s:source)
 
 

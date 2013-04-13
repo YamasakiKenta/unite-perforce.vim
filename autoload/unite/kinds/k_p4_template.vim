@@ -26,7 +26,8 @@ function! s:kind.action_table.update_.func(candidates) "{{{
 		let cmd = 'p4 -p '.port.' client -o -t '.tmp.' '.clname.' | p4 client -i'
 		call system(cmd)
 	endfor
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind.action_table.a_info = {
 	\ 'is_selectable' : 1,
@@ -52,7 +53,8 @@ function! s:kind.action_table.a_info.func(candidates) "{{{
 		windo diffthis
 	endfor
 	
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_p4_template = deepcopy(s:kind)
 call unite#define_kind(s:kind_p4_template)

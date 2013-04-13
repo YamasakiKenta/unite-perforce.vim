@@ -40,7 +40,8 @@ function! s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen.func(candida
 	" ログの出力
 	call perforce#LogFile(outs)
 
-endfunction "}}}
+endfunction
+"}}}
 
 " ********************************************************************************
 " kind - k_p4_change_pending
@@ -66,7 +67,8 @@ function! s:kind_k_p4_change_pending.action_table.delete.func(candidates) "{{{
 		call perforce#LogFile(outs)
 		let i += len(outs)
 	endfor
-endfunction "}}}
+endfunction
+"}}}
 
 "複数選択可能
 let s:kind_k_p4_change_pending.action_table.a_p4_change_opened = { 
@@ -83,7 +85,8 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_opened.func(candid
 	endfor
 
 	call unite#start_temporary([insert(chnums,'p4_opened')]) " # 閉じない ? 
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_change_info = { 
 			\ 'description' : 'チェンジリストの情報' ,
@@ -96,7 +99,8 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_info.func(candidat
 		let outs += split(system('P4 change -o '.chnum),'\n')
 	endfor
 	call perforce#LogFile(outs)
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_change_submit = {
 			\ 'description' : 'サブミット' ,
@@ -119,7 +123,8 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 		call perforce_2#common_action_out(outs)
 	endif 
 
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4change_describe = { 
 			\ 'description' : '差分の表示',
@@ -129,7 +134,8 @@ let s:kind_k_p4_change_pending.action_table.a_p4change_describe = {
 function! s:kind_k_p4_change_pending.action_table.a_p4change_describe.func(candidates) "{{{
 	let chnums = map(copy(a:candidates),"v:val.action__chnum")
  	call unite#start_temporary([insert(chnums,'p4_describe')])
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff = { 
 			\ 'description' : '差分のまとめを表示',
@@ -140,7 +146,8 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff.func(candidate
 		let chnum = l:candidate.action__chnum
 		call perforce#matomeDiffs(chnum)
 	endfor
-endfunction "}}}
+endfunction
+"}}}
 "
 let s:kind_k_p4_change_pending.action_table.a_p4_change_reopen = {
 			\ 'description' : 'チェンジリストの変更' ,
@@ -163,7 +170,8 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_reopen.func(candid
 	" ログの出力
 	call perforce#LogFile(outs)
 
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_change_rename = {
 			\  'description' : '名前の変更' ,
@@ -173,7 +181,8 @@ function! s:get_chname_from_change(str) "{{{
 	let str = substitute(str, '.\{-}''', '', '')
 	let str = substitute(str, '''$', '', '')
 	return str
-endfunction "}}}
+endfunction
+"}}}
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_rename.func(candidate) "{{{
 	let chnum = a:candidate.action__chnum
 	let chname = s:get_chname_from_change(a:candidate.word)
@@ -184,7 +193,8 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_rename.func(candid
 		let outs = perforce#pfChange(chname,chnum)
 		call perforce#LogFile(outs)
 	endif
-endfunction "}}}
+endfunction
+"}}}
 
 " ********************************************************************************
 " チェンジリストの番号の取得をする ( new の場合は、新規作成 )
@@ -210,7 +220,8 @@ function! s:make_new_changes(candidate) "{{{
 	endif
 
 	return chnum
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_k_p4_change_submitted = deepcopy(s:kind_k_p4_change_pending)
 let s:kind_k_p4_change_submitted.name           = 'k_p4_change_submitted'

@@ -36,7 +36,8 @@ function! s:kind_clients.action_table.a_p4_client_set.func(candidates) "{{{
 	call perforce#set#PFPORT(port)
 	call s:Perforce.get_client_root(1)
 
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_clients.action_table.a_p4_client_sync = { 
 			\'is_selectable' : 1,
@@ -48,7 +49,8 @@ function! s:kind_clients.action_table.a_p4_client_sync.func(candidates) "{{{
 		let port   = l:candidate.action__port
 		exe '!start p4 '.port.' -c '.clname.' sync'
 	endfor
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_clients.action_table.a_p4_client_info = { 
 			\ 'is_selectable' : 1, 
@@ -64,7 +66,8 @@ function! s:kind_clients.action_table.a_p4_client_info.func(candidates) "{{{
 		let outs = perforce#cmd#base('info', port.' -c '.clname).outs
 		call append(0,outs)
 	endfor
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_clients.action_table.a_p4_client = { 
 			\ 'is_selectable' : 1, 
@@ -80,7 +83,8 @@ function! s:kind_clients.action_table.a_p4_client.func(candidates) "{{{
 		let outs = perforce#cmd#base('client', port, '-o '.clname).outs
 		call append(0,outs)
 	endfor
-endfunction "}}}
+endfunction
+"}}}
 
 if 1
 	call unite#define_kind(s:kind_clients)

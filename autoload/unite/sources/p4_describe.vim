@@ -14,7 +14,8 @@ function! s:source_describe.gather_candidates(args, context) "{{{
 	let chnums = a:args
 	let outs = perforce#cmd#base('describe','',join(chnums)).outs
 	return perforce#get#file#source_describe(outs) 
-endfunction "}}}
+endfunction
+"}}}
 
 if 1
 	call unite#define_source(s:source_describe)

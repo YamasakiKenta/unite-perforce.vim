@@ -20,7 +20,8 @@ function! s:kind.action_table.a_p4_user_change.func(candidates) "{{{
 	let user = candidate.action__user
 	let outs = perforce#set#PFUSER(user)
 	call perforce#LogFile(outs)
-endfunction "}}}
+endfunction
+"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

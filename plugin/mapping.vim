@@ -20,7 +20,7 @@ nnoremap <PLUG>(p4_find)
 			\ :<C-u>call perforce#pfFind()<CR>|"
 
 nnoremap <PLUG>(p4_get_depot)
-			\ :<C-u>let @+ = perforce#get_depot_from_path(expand("%:p"))<CR>|"
+			\ :<C-u>let @+ = perforce#get#depot#from_path(expand("%:p"))<CR>|"
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

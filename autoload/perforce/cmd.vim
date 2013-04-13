@@ -56,7 +56,8 @@ function! s:pfcmds_with_clients(clients, cmd, head, tail) "{{{
 	endfor 
 
 	return rtns
-endfunction "}}}
+endfunction
+"}}}
 function! s:pfcmds_new_get_outs(datas) "{{{
 	let outs = []
 	for data in a:datas
@@ -68,7 +69,8 @@ endfunction
 function! s:pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 	let clients = perforce#data#get('clients')
 	return  s:pfcmds_with_clients_and_unite_mes(clients, a:cmd, a:head, a:tail)
-endfunction "}}}
+endfunction
+"}}}
 function! s:pfcmds_with_clients_and_unite_mes(clients, cmd, head, tail) "{{{
 	let rtns = s:pfcmds_with_clients(a:clients, a:cmd, a:head, a:tail)
 
@@ -77,7 +79,8 @@ function! s:pfcmds_with_clients_and_unite_mes(clients, cmd, head, tail) "{{{
 	endfor
 
 	return rtns
-endfunction "}}}
+endfunction
+"}}}
 function! s:pfcmds_with_clients_from_data_port_only(cmd,head,tail) "{{{
 	let clients = perforce#data#get('clients')
 	let ports = []
@@ -88,7 +91,8 @@ function! s:pfcmds_with_clients_from_data_port_only(cmd,head,tail) "{{{
 		endif
 	endfor
 	return  s:pfcmds_with_clients_and_unite_mes(ports, a:cmd, a:head, a:tail)
-endfunction "}}}
+endfunction
+"}}}
 
 function! perforce#cmd#new_port_only(cmd, head, tail) "{{{
 	let client_default_flg = perforce#data#get('use_default')
@@ -101,7 +105,8 @@ function! perforce#cmd#new_port_only(cmd, head, tail) "{{{
 	endif
 
 	return rtns
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#cmd#new_outs(cmd, head, tail) "{{{
 	let client_default_flg = perforce#data#get('use_default')
 	if client_default_flg == 1
@@ -115,7 +120,8 @@ function! perforce#cmd#new_outs(cmd, head, tail) "{{{
 	let rtns = s:pfcmds_new_get_outs(rtns)
 
 	return rtns
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#cmd#new(cmd, head, tail) "{{{
 	let client_default_flg = perforce#data#get('use_default')
 	if client_default_flg == 1
@@ -127,7 +133,8 @@ function! perforce#cmd#new(cmd, head, tail) "{{{
 	endif
 
 	return rtns
-endfunction "}}}
+endfunction
+"}}}
 
 function! perforce#cmd#base(cmd,...) "{{{
 	" ********************************************************************************
@@ -190,7 +197,8 @@ function! perforce#cmd#base(cmd,...) "{{{
 	endif
 
 	return rtn_d
-endfunction "}}}
+endfunction
+"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

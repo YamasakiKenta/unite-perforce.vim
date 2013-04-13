@@ -33,7 +33,8 @@ functio! s:p4_print(candidates) "{{{
 		exe 'setf' filetype_old
 
 	endfor
-endfunction "}}}
+endfunction
+"}}}
 " ********************************************************************************
 " kind - k_p4_filelog
 " ********************************************************************************
@@ -50,7 +51,8 @@ let s:kind_filelog.action_table.a_p4_print = {
 			\ }
 function! s:kind_filelog.action_table.a_p4_print.func(candidates) "{{{
 	return s:p4_print(a:candidates)
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_filelog.action_table.a_p4_print_diff = {
 			\ 'description' : 'ファイルの表示 ( ひとつ前のファイルと一緒 )',
@@ -62,7 +64,8 @@ function! s:kind_filelog.action_table.a_p4_print_diff.func(candidates) "{{{
 	call input("")
 
 	return s:p4_print(candidates)
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_filelog.action_table.preview = {
 			\ 'description' : 'preview' , 
@@ -94,7 +97,8 @@ function! s:kind_filelog.action_table.preview.func(candidate) "{{{
 	"exe 'setf' filetype_old
 	wincmd p
 
-endfunction "}}}
+endfunction
+"}}}
 
 if 1
 	call unite#define_kind(s:kind_filelog)

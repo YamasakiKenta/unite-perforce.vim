@@ -11,7 +11,8 @@ endfunction
 
 function! s:get_list(tmp) "{{{
 	return (type(a:tmp) == type([])) ? a:tmp : [a:tmp]
-endfunction "}}}
+endfunction
+"}}}
 function! s:set_dict_extend(dict1, dict2) "{{{
 	" 同じキーがある場合は、リストで結合して返す
 	
@@ -85,11 +86,13 @@ endfunction
 "}}}
 function! s:get_pathSrash(path) "{{{
 	return substitute(a:path,'\','/','g') " # / マークに統一
-endfunction "}}}
+endfunction
+"}}}
 
 function! s:MyQuit() "{{{
 	map <buffer> q :q<CR>
-endfunction "}}}
+endfunction
+"}}}
 function! s:LogFile(name, deleteFlg, ...) "{{{
 	" ********************************************************************************
 	" 新しいファイルを開いて書き込み禁止にする 
@@ -127,13 +130,16 @@ function! s:LogFile(name, deleteFlg, ...) "{{{
 	endif
 	cal cursor(1,1) " # 一行目に移動する
 
-endfunction "}}}
+endfunction
+"}}}
 function! s:Get_cmds(cmd) "{{{
 	return split(system(a:cmd),'\n')
-endfunction "}}}
+endfunction
+"}}}
 function! s:get_kk(str) "{{{
 	return len(a:str) ? '"'.a:str.'"' : ''
-endfunction "}}}
+endfunction
+"}}}
 function! s:is_different(path,path2) "{{{
 	" ********************************************************************************
 	" 差分を調べる
@@ -148,16 +154,19 @@ function! s:is_different(path,path2) "{{{
 		let flg = 0
 	endif
 	return flg
-endfunction "}}}
+endfunction
+"}}}
 function! s:get_pathEn(path) "{{{
 	return substitute(a:path,'/','\','g') " # / マークに統一
-endfunction "}}}
+endfunction
+"}}}
 function! s:GetFileNameForUnite(args, context) "{{{
 	" ファイル名の取得
 	let a:context.source__path = expand('%:p')
 	let a:context.source__linenr = line('.')
 	call unite#print_message('[line] Target: ' . a:context.source__path)
-endfunction "}}}
+endfunction
+"}}}
 function! s:selectEdit_write(args) "{{{
 "********************************************************************************
 " Select Edit の保存
@@ -194,7 +203,8 @@ function! s:selectEdit_write(args) "{{{
 	" tmpfileに戻す
 	exe nowbufnr 'buffer'
 
-endfunction "}}}
+endfunction
+"}}}
 function! s:event_save_file(tmpfile,strs,func,args) "{{{
 " ********************************************************************************
 " ファイルを保存したときに、関数を実行します
@@ -224,7 +234,8 @@ function! s:event_save_file(tmpfile,strs,func,args) "{{{
 
 	call s:event_save_file_autocmd(a:func,a:args)
 
-endfunction "}}}
+endfunction
+"}}}
 function! s:event_save_file_autocmd(func,args) "{{{
 
 	aug okazu_event_save_file
@@ -232,7 +243,8 @@ function! s:event_save_file_autocmd(func,args) "{{{
 		exe 'autocmd BufWriteCmd <buffer> nested call '.a:func.'('.string(a:args).')'
 	aug END
 
-endfunction "}}}
+endfunction
+"}}}
 function! s:change_extension(exts) "{{{
 " ********************************************************************************
 " ファイルの切り替え ( C 言語 ) 
@@ -243,7 +255,8 @@ function! s:change_extension(exts) "{{{
 		exe 'e %:r.'.a:exts[extension]
 	endif
 
-endfunction "}}}
+endfunction
+"}}}
 function! s:change_unite() "{{{
 " ********************************************************************************
 " ファイルの切り替え ( unite ) 
@@ -260,26 +273,30 @@ function! s:change_unite() "{{{
 		exe 'e '.root.'/kinds/k_'.file
 	endif
 
-endfunction "}}}
+endfunction
+"}}}
 function! s:map_diff_reset() "{{{
 	map <buffer> <A-up> <A-up>
 	map <buffer> <A-down> <A-down>
 	map <buffer> <A-left> <A-left>
 	map <buffer> <A-right> <A-right>
-endfunction "}}}
+endfunction
+"}}}
 function! s:map_diff_tab() "{{{
 	"********************************************************************************
 	" タブ切り替え時に処理を追加するため作成した
 	"********************************************************************************
 	wincmd w
-endfunction "}}}
+endfunction
+"}}}
 function! s:map_diff() "{{{
 	map <buffer> <A-up> [c
 	map <buffer> <A-down> ]c
 	map <buffer> <A-left>  :diffget<CR>:<C-u>diffupdate<CR>|"
 	map <buffer> <A-right> :diffget<CR>:<C-u>diffupdate<CR>|"
 	map <buffer> <tab> :<C-u>call s:map_diff_tab()<CR>|"
-endfunction "}}}
+endfunction
+"}}}
 
 "=== new ===
 function! s:_get_dict_from_list(datas) "{{{

@@ -29,7 +29,8 @@ function! s:source.gather_candidates(args, context) "{{{
 		endfor
 	endfor
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 let s:source_p4_template = deepcopy(s:source)
 
 call unite#define_source(s:source_p4_template)

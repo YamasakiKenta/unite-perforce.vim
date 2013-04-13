@@ -51,7 +51,8 @@ function! s:source_p4_changes_pending.gather_candidates(args, context) "{{{
 	let outs = perforce#cmd#base('changes','','-s pending').outs
 	let rtn += perforce#get_pfchanges(a:context, outs, 'k_p4_change_pending')
 	return rtn
-endfunction "}}}
+endfunction
+"}}}
 function! s:source_p4_changes_pending.change_candidates(args, context) "{{{
 	" ********************************************************************************
 	" p4 change É\Å[ÉXÇÃ ïœâªä÷êî
@@ -74,7 +75,8 @@ function! s:source_p4_changes_pending.change_candidates(args, context) "{{{
 		return []
 	endif
 
-endfunction "}}}
+endfunction
+"}}}
 
 " ********************************************************************************
 " source - p4_changes_pending_reopen
@@ -104,7 +106,8 @@ let s:source_p4_changes_submitted.hooks.on_init = function('perforce#get_filenam
 function! s:source_p4_changes_submitted.gather_candidates(args, context) "{{{
 	let outs = perforce#cmd#base('changes','','-s submitted').outs
 	return perforce#get_pfchanges(a:context, outs, 'k_p4_change_submitted')
-endfunction "}}}
+endfunction
+"}}}
 
 call unite#define_source(s:source_p4_changes_pending_reopen)
 call unite#define_source(s:source_p4_changes_submitted)

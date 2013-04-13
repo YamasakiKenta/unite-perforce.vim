@@ -21,7 +21,8 @@ function! perforce_2#complate_have(A,L,P) "{{{
 	return map( copy(outs), "
 				\ matchstr(v:val, '.*/\\zs.\\{-}\\ze\\#')
 				\ ")
-endfunction "}}}
+endfunction
+"}}}
 function! perforce_2#edit_add(add_flg, ...) "{{{
 	" ********************************************************************************
 	" @param[in] add_flg true : クライアントに存在しない場合は、ファイルを追加

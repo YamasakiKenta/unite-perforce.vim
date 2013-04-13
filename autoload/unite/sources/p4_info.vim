@@ -18,7 +18,8 @@ function! s:source_p4_info.gather_candidates(args, context) "{{{
 				\ 'word' : v:val,
 				\ }")
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 
 if 1
 	call unite#define_source( s:source_p4_info )

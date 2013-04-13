@@ -10,15 +10,17 @@ endif
 
 function! s:get_dd(str) "{{{
 	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''
-endfunction "}}}
-function! s:get_depot_from_where(str) "{{{
-	return s:get_split_from_where(a:str, 1)
-endfunction "}}}
+endfunction
+"}}}
 function! s:get_depots(args, path) "{{{
 	" ********************************************************************************
-	" depots を取得する
+	" @par          depots を取得する
 	" @param[in]	args	ファイル名
 	" @param[in]	context
+	"
+	" @par USED
+	" perforce#get_filename_for_unite
+	"
 	" ********************************************************************************
 	if len(a:args) > 0
 		let depots = a:args
@@ -26,26 +28,28 @@ function! s:get_depots(args, path) "{{{
 		let depots = [a:path]
 	endif
 	return depots
-endfunction "}}}
+endfunction
+"}}}
 function! s:get_path_from_have(str) "{{{
 	let rtn = matchstr(a:str,'.\{-}#\d\+ - \zs.*')
 	let rtn = substitute(rtn, '\\', '/', 'g')
 	return rtn
-endfunction "}}}
+endfunction
+"}}}
 function! s:get_path_from_where(str) "{{{
 	return matchstr(a:str, '.\{-}\zs\w*:.*\ze\n.*')
-endfunction "}}}
+endfunction
+"}}}
+function! s:get_paths_from_haves(strs) "{{{
+	return map(a:strs,"s:get_path_from_have(v:val)")
+endfunction
+"}}}
 function! s:get_paths_from_fname(str) "{{{
 	" ファイルを検索
 	let outs = perforce#cmd#base('have','',s:get_dd(a:str)).outs " # ファイル名の取得
 	return s:get_paths_from_haves(outs)                   " # ヒットした場合
-endfunction "}}}
-function! s:get_paths_from_haves(strs) "{{{
-	return map(a:strs,"s:get_path_from_have(v:val)")
-endfunction "}}}
-function! s:get_split_from_where(str,...) "{{{
-	return split(a:str, '[^\\]\zs ')[1]
-endfunction "}}}
+endfunction
+"}}}
 function! s:is_p4_have_from_have(str) "{{{
 
 	if a:str =~ '- file(s) not on client.'
@@ -56,7 +60,8 @@ function! s:is_p4_have_from_have(str) "{{{
 
 	return flg
 
-endfunction "}}}
+endfunction
+"}}}
 function! s:pf_diff_tool(file,file2) "{{{
 	if perforce#data#get('is_vimdiff_flg')
 		" タブで新しいファイルを開く
@@ -78,7 +83,8 @@ function! s:pf_diff_tool(file,file2) "{{{
 			call system(cmd.' '.perforce#common#get_kk(a:file).' '.perforce#common#get_kk(a:file2))
 		endif
 	endif
-endfunction "}}}
+endfunction
+"}}}
 function! s:pfdiff_from_fname(fname) "{{{
 	" ********************************************************************************
 	" perforceないからファイル名から検索して、全て比較
@@ -94,10 +100,12 @@ function! s:pfdiff_from_fname(fname) "{{{
 	for path in paths 
 		call perforce#pfDiff(path)
 	endfor
-endfunction "}}}
+endfunction
+"}}}
 function! s:get_ChangeNum_from_changes(str) "{{{
 	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
-endfunction "}}}
+endfunction
+"}}}
 
 function! perforce#LogFile(str) "{{{
 	" ********************************************************************************
@@ -120,39 +128,33 @@ function! perforce#LogFile(str) "{{{
 	endif
 
 
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#get_ClientName_from_client(str) "{{{
 	return matchstr(a:str,'Client \zs\S\+')
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#get_ClientPathFromName(str) "{{{
 	let str = system('p4 clients | grep '.a:str) " # ref 直接データをもらう方法はないかな
 	let path = matchstr(str,'.* \d\d\d\d/\d\d/\d\d root \zs\S*')
 	let path = perforce#common#get_pathSrash(path)
 	return path
-endfunction "}}}
-function! perforce#get_depot_from_have(str) "{{{
-	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')
-endfunction "}}}
-function! perforce#get_depot_from_opened(str) "{{{
-	return substitute(a:str,'#.*','','')   " # リビジョン番号の削除
-endfunction "}}}
-function! perforce#get_depot_from_path(str) "{{{
-	let out = split(system('p4 where "'.a:str.'"'), "\n")[0]
-	let depot =  s:get_depot_from_where(out)
-	return depot 
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#get_filename_for_unite(args, context) "{{{
 	" ファイル名の取得
 	let a:context.source__path = expand('%:p')
 	let a:context.source__linenr = line('.')
 	let a:context.source__depots = s:get_depots(a:args, a:context.source__path)
 	call unite#print_message('[line] Target: ' . a:context.source__path)
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#get_path_from_depot(depot) "{{{
 	let out = system('p4 where "'.a:depot.'"')
 	let path = s:get_path_from_where(out)
 	return path
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#get_pfchanges(context,outs,kind) "{{{
 	" ********************************************************************************
 	" p4_changes Untie 用の 返り値を返す
@@ -170,7 +172,8 @@ function! perforce#get_pfchanges(context,outs,kind) "{{{
 
 
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#get_source_file_from_path(path) "{{{
 	" ********************************************************************************
 	" 差分の出力を、Uniteのjump_list化けする
@@ -191,7 +194,8 @@ function! perforce#get_source_file_from_path(path) "{{{
 		let lnum += 1
 	endfor
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#init() "{{{
 
 	" クライアントデータの読み込み
@@ -199,7 +203,8 @@ function! perforce#init() "{{{
 
 	" 設定の取得
 	call perforce#data#init()
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#is_p4_have(str) "{{{
 	" ********************************************************************************
 	" クライアントにファイルがあるか調べる
@@ -210,7 +215,8 @@ function! perforce#is_p4_have(str) "{{{
 	let str = system('p4 have '.perforce#common#get_kk(a:str))
 	let flg = s:is_p4_have_from_have(str)
 	return flg
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#matomeDiffs(...) "{{{
 	" new file 用にここで初期化
 	let datas = []
@@ -223,7 +229,7 @@ function! perforce#matomeDiffs(...) "{{{
 		" 作業中のファイル
 		if outs[0] =~ '\*pending\*' || chnum == 'default'
 			let files = perforce#cmd#base('opened','','-c '.chnum).outs
-			call map(files, "perforce#get_depot_from_opened(v:val)")
+			call map(files, "perforce#get#depot#from_opened(v:val)")
 
 			let outs = []
 			for file in files 
@@ -268,7 +274,8 @@ function! perforce#matomeDiffs(...) "{{{
 
 	call perforce#common#LogFile('p4log', 0, outs)
 	"}}}
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#pfChange(str,...) "{{{
 	"********************************************************************************
 	" チェンジリストの作成
@@ -297,7 +304,8 @@ function! perforce#pfChange(str,...) "{{{
 
 	return out
 
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#pfDiff(path) "{{{
 	" ********************************************************************************
 	" ファイルをTOOLを使用して比較します
@@ -334,7 +342,8 @@ function! perforce#pfDiff(path) "{{{
 	" 実際に比較 
 	call s:pf_diff_tool(g:perforce_tmp_file,path)
 
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#pfFind(...) "{{{
 	if a:0 == 0
 		let str  = input('Find : ')
@@ -344,7 +353,8 @@ function! perforce#pfFind(...) "{{{
 	if str !=# ""
 		call unite#start([insert(map(split(str),"s:get_dd(v:val)"),'p4_have')])
 	endif
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#cmd#base(cmd,...) "{{{
 	" ********************************************************************************
 	" p4 コマンドを実行します
@@ -406,10 +416,11 @@ function! perforce#cmd#base(cmd,...) "{{{
 	endif
 
 	return rtn_d
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#unite_args(source) "{{{
 	"********************************************************************
-	" 現在のファイル名を Unite に引数に渡します。
+	" @par          現在のファイル名を Unite に引数に渡します。
 	" @param[in]	source	コマンド
 	"********************************************************************
 
@@ -424,7 +435,8 @@ function! perforce#unite_args(source) "{{{
 		exe tmp
 	endif
 
-endfunction "}}}
+endfunction
+"}}}
 
 "********************************************************************************
 "new
@@ -483,7 +495,8 @@ function! s:pfcmds_with_clients(clients, cmd, head, tail) "{{{
 	endfor 
 
 	return rtns
-endfunction "}}}
+endfunction
+"}}}
 function! s:pfcmds_with_clients_and_unite_mes(clients, cmd, head, tail) "{{{
 	let rtns = s:pfcmds_with_clients(a:clients, a:cmd, a:head, a:tail)
 
@@ -492,11 +505,13 @@ function! s:pfcmds_with_clients_and_unite_mes(clients, cmd, head, tail) "{{{
 	endfor
 
 	return rtns
-endfunction "}}}
+endfunction
+"}}}
 function! s:pfcmds_with_clients_from_data(cmd,head,tail) "{{{
 	let clients = perforce#data#get('clients')
 	return  s:pfcmds_with_clients_and_unite_mes(clients, a:cmd, a:head, a:tail)
-endfunction "}}}
+endfunction
+"}}}
 function! s:pfcmds_new_get_outs(datas) "{{{
 	let outs = []
 	for data in a:datas
@@ -510,7 +525,8 @@ function! perforce#get_path_from_depot_with_client(client, depot) "{{{
 	let cmd = 'p4 '.a:client.' where "'.a:depot.'"'
 	let out = system(cmd)
 	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')
-endfunction "}}}
+endfunction
+"}}}
 
 " rapper
 function! perforce#get_source_diff_from_diff(...) 

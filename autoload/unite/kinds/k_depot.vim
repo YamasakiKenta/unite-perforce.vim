@@ -41,7 +41,8 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 			\ "
 	"}}}
 	unlet action
-endfunction "}}}
+endfunction
+"}}}
 
 call s:setPfcmd('jump_list' , 'add'       , '追加'               ) 
 call s:setPfcmd('jump_list' , 'edit'      , '編集'               ) 
@@ -67,7 +68,8 @@ function! s:find_filepath_from_depot(candidate) "{{{
 	endif
 
 	return path
-endfunction "}}}
+endfunction
+"}}}
 
 "p4 k_depot 
 let s:kind_depot = {
@@ -82,7 +84,8 @@ let s:kind_depot.action_table.a_open = {
 			\ }
 function! s:kind_depot.action_table.a_open.func(candidate) "{{{
 	exe 'edit '.s:find_filepath_from_depot(a:candidate)
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_depot.action_table.yank = {
 			\ 'description' : '',
@@ -95,7 +98,8 @@ function! s:kind_depot.action_table.yank.func(candidates) "{{{
 	endfor
 	let @" = join(tmps, "\n")
 	let @+ = join(tmps, "\n")
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_depot.action_table.preview = {
 			\ 'description' : 'preview' , 
@@ -104,7 +108,8 @@ let s:kind_depot.action_table.preview = {
 function! s:kind_depot.action_table.preview.func(candidate) "{{{
 	let path = s:find_filepath_from_depot(a:candidate) 
 	exe 'pedit' path
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_depot.action_table.a_p4_files = { 
 			\ 'is_selectable' : 1, 
@@ -115,7 +120,8 @@ function! s:kind_depot.action_table.a_p4_files.func(candidates) "{{{
 	let outs = perforce#cmd#base('files','',join(depots)).outs
 	call perforce_2#show(outs)
 	sp
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_depot.action_table.a_p4_move = {
 			\ 'is_selectable' : 1 ,
@@ -170,7 +176,8 @@ function! s:kind_depot.action_table.a_p4_move.func(candidates) "{{{
 	endif 
 
 
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_depot.action_table.delete = { 
 			\ 'description' : '差分 ( delete だけど ) ',
@@ -180,7 +187,8 @@ function! s:kind_depot.action_table.delete.func(candidate) "{{{
 	let depot = a:candidate.action__depot
 	call perforce#common#LogFile('diff', 1, perforce#cmd#base('diff','',depot).outs)
 	wincmd p
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_depot.action_table.a_p4_diff = { 
 			\ 'is_selectable' : 1, 
@@ -190,7 +198,8 @@ let s:kind_depot.action_table.a_p4_diff = {
 function! s:kind_depot.action_table.a_p4_diff.func(candidates) "{{{
 	let args = map(copy(a:candidates),"v:val.action__depot")
 	call unite#start_temporary([insert(args,'p4_diff')]) 
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_depot.action_table.a_p4_diff_tool = {
 			\ 'is_selectable' : 1 ,  
@@ -201,7 +210,8 @@ function! s:kind_depot.action_table.a_p4_diff_tool.func(candidates) "{{{
 		let depot = l:candidate.action__depot
 		call perforce#pfDiff(depot)
 	endfor
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_depot.action_table.a_p4_reopen = {
 			\ 'description' : 'チェンジリストの変更' ,
@@ -214,7 +224,8 @@ function! s:kind_depot.action_table.a_p4_reopen.func(candidates) "{{{
 	endfor
 
 	call unite#start_temporary([insert(reopen_depots,'p4_changes_pending_reopen')])
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_depot.action_table.a_p4_filelog = { 
 			\ 'is_selectable' : 1, 
@@ -223,7 +234,8 @@ let s:kind_depot.action_table.a_p4_filelog = {
 function! s:kind_depot.action_table.a_p4_filelog.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
 	call unite#start([insert(depots, 'p4_filelog')])
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_depot.action_table.a_p4_sync = { 
 			\ 'is_selectable' : 1, 
@@ -233,7 +245,8 @@ function! s:kind_depot.action_table.a_p4_sync.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
 	let outs = perforce#cmd#base('sync','',join(depots)).outs
 	call perforce#LogFile(outs)
-endfunction "}}}
+endfunction
+"}}}
 
 function! s:copy_file(depot, client, root) "{{{
 
@@ -296,7 +309,8 @@ function! s:kind_depot.action_table.a_p4_dir_copy.func(candidates) "{{{
 		endif
 		call s:copy_file(candidate.action__depot, client, root_cache[client].root)
 	endfor
-endfunction "}}}
+endfunction
+"}}}
 
 let s:kind_depot.action_table.a_p4_depot_copy = {
 	\ 'description' : 'depotでコピーする',
@@ -307,7 +321,8 @@ function! s:kind_depot.action_table.a_p4_depot_copy.func(candidates) "{{{
 		let client = candidate.action__client
 		call s:copy_file(candidate.action__depot, client, '')
 	endfor
-endfunction "}}}
+endfunction
+"}}}
 "
 if 1
 	call unite#define_kind(s:kind_depot)

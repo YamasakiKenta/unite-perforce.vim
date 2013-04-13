@@ -49,7 +49,8 @@ function! s:source__p4_annotate.gather_candidates(args, context) "{{{
 	endfor
 
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 
 let s:source__p4_annotate_ai = {
 			\ 'name' : 'p4_annotate_ai',
@@ -75,7 +76,8 @@ function! s:source__p4_annotate_ai.gather_candidates(args, context) "{{{
 	endfor
 
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 
 if 1
 	call unite#define_source(s:source__p4_annotate_ai)

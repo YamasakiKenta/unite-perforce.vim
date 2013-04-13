@@ -24,7 +24,8 @@ let s:k_p4_jobs.action_table.a_p4_fixes = {
 function! s:k_p4_jobs.action_table.a_p4_fixes.func(candidates) "{{{
 	let jobs = map(deepcopy(a:candidates),"v:val.action__job")
 	call unite#start_temporary([insert(jobs, 'p4_fixes')]) 
-endfunction "}}}
+endfunction
+"}}}
 
 if 1
 	call unite#define_kind(s:k_p4_jobs) 

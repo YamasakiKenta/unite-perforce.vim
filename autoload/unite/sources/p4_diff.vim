@@ -66,7 +66,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 
 		for str in opened_strs
 			if str =~ '.*#\d\+ - add change'
-				let depot = perforce#get_depot_from_opened(str)
+				let depot = perforce#get#depot#from_opened(str)
 				let path = perforce#get_path_from_depot(depot)
 
 				let rtns += [{
@@ -83,7 +83,8 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 
 	endif
 	return rtns
-endfunction "}}}
+endfunction
+"}}}
 
 if 0
 	call unite#define_source(s:source_diff)

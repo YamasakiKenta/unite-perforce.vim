@@ -33,7 +33,8 @@ function! s:get_lnum_from_diff_describe(str,lnum,snum) "{{{
 		let num.lnum = a:snum
 	endif
 	return num
-endfunction "}}}
+endfunction
+"}}}
 function! s:get_path_from_diff(data_d, out) "{{{
 	" ==== //depot/mind/unite-perforce.vim/autoload/perforce.vim#11 - C:\Users\yamasaki.mac\Dropbox\vim\mind\unite-perforce.vim\autoload\perforce.vim ====
 	"
@@ -44,7 +45,8 @@ function! s:get_path_from_diff(data_d, out) "{{{
 		let data_d.revnum = matchstr(a:out, '==== .*#\zs\d*')
 	endif 
 	return data_d
-endfunction "}}}
+endfunction
+"}}}
 
 function! perforce#get#file#source_diff(outs) "{{{
 	" ********************************************************************************
@@ -71,7 +73,8 @@ function! perforce#get#file#source_diff(outs) "{{{
 					\ }]
 	endfor
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#get#file#source_describe(outs) "{{{
 	" ********************************************************************************
 	" ç∑ï™ÇÃèoóÕÇÅAUniteÇÃjump_listâªÇØÇ∑ÇÈ
@@ -99,7 +102,8 @@ function! perforce#get#file#source_describe(outs) "{{{
 					\ }]
 	endfor
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

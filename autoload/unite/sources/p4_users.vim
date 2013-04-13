@@ -13,7 +13,8 @@ let s:source = {
 			\ }
 function! s:get_UserName_from_users(str) "{{{
 	return substitute(a:str,'\(.\{-}\) <.*','\1','')
-endfunction "}}}
+endfunction
+"}}}
 function! s:source.gather_candidates(args, context) "{{{
 	let datas = perforce#cmd#base('users','').outs
 	let candidates = map( datas, "{
@@ -22,7 +23,8 @@ function! s:source.gather_candidates(args, context) "{{{
 				\ 'action__user' : s:get_UserName_from_users(v:val),
 				\ }")
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

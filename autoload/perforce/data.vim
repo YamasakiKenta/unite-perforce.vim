@@ -43,7 +43,8 @@ function! s:init() "{{{
 
 	echo 'end...'
 
-endfunction "}}}
+endfunction
+"}}}
 
 function! s:perforce_add_title(...) "{{{
 	return call('unite_setting_ex#add_title' , extend(['g:unite_pf_data'] , a:000))
@@ -66,7 +67,8 @@ function! perforce#data#get(valname, ...) "{{{
 	call s:init()
 	let kind = '__common'
 	return unite_setting_ex#get('g:unite_pf_data', a:valname, kind)
-endfunction "}}}
+endfunction
+"}}}
 function! perforce#data#setting() "{{{
 	call s:init()
 	call unite#start([['settings_ex', 'g:unite_pf_data']])

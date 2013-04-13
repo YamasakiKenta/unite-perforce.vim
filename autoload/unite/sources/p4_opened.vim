@@ -38,7 +38,7 @@ function! s:source.gather_candidates(args, context) "{{{
 		let tmps = map(tmp.outs, "{
 					\ 'word'           : ''.client.' : '.v:val,
 					\ 'kind'           : 'k_depot',
-					\ 'action__depot'  : perforce#get_depot_from_opened(v:val),
+					\ 'action__depot'  : perforce#get#depot#from_opened(v:val),
 					\ 'action__client' : client,
 					\ }")
 		call extend(candidates , tmps)
@@ -46,7 +46,8 @@ function! s:source.gather_candidates(args, context) "{{{
 
 
 	return candidates
-endfunction "}}}
+endfunction
+"}}}
 let s:source_p4_opened = deepcopy(s:source)
 
 call unite#define_source(s:source_p4_opened) 
