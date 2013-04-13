@@ -130,13 +130,6 @@ function! perforce#LogFile(str) "{{{
 
 endfunction
 "}}}
-function! perforce#get_ClientPathFromName(str) "{{{
-	let str = system('p4 clients | grep '.a:str) " # ref 直接データをもらう方法はないかな
-	let path = matchstr(str,'.* \d\d\d\d/\d\d/\d\d root \zs\S*')
-	let path = perforce#common#get_pathSrash(path)
-	return path
-endfunction
-"}}}
 function! perforce#get_filename_for_unite(args, context) "{{{
 	" ファイル名の取得
 	let a:context.source__path = expand('%:p')

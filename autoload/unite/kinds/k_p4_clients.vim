@@ -10,6 +10,13 @@ function! unite#kinds#k_p4_clients#define()
 	return s:kind_clients
 endfunction
 
+function! s:get_client_path_from_name(str) 
+	let str  = system('p4 clients | grep '.a:str) " # ref 直接データをもらう方法はないかな
+	let path = matchstr(str,'.* \d\d\d\d/\d\d/\d\d root \zs\S*')
+	let path = perforce#common#get_pathSrash(path)
+	return path
+endfunction
+
 " ********************************************************************************
 " kind - k_p4_clients
 " ********************************************************************************
@@ -29,7 +36,7 @@ function! s:kind_clients.action_table.a_p4_client_set.func(candidates) "{{{
 	" 保存する名前の取得
 	let clname = a:candidates.action__clname
 	let port   = matchstr(a:candidates.action__port, '\(-p\s*\)*\zs.*')
-	let clpath = perforce#get_ClientPathFromName(clname)
+	let clpath = s:get_client_path_from_name(clname)
 
 	" 作成するファイルの名前の保存 ( 切り替え ) 
 	call perforce#set#PFCLIENTNAME(clname)
