@@ -1,8 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let g:perforce_tmp_dir     = get(g:, 'perforce_tmp_dir', '~/.perforce/' )
-let g:perforce_tmp_file    = g:perforce_tmp_dir.'/tmpfile'
 
 if !isdirectory(g:perforce_tmp_dir)
 	call mkdir(g:perforce_tmp_dir)
@@ -53,6 +51,17 @@ function! s:get_ChangeNum_from_changes(str) "{{{
 endfunction
 "}}}
 
+function! perforce#get_tmp_file() "{{{
+	let g:perforce_tmp_dir  = get(g:, 'perforce_tmp_dir', '~/.perforce/' )
+	let fname               = g:perforce_tmp_dir.'/tmpfile'
+
+	if !isdirectory(g:perforce_tmp_dir)
+		call mkdir(g:perforce_tmp_dir)
+	endif
+
+	return fname
+endfunction
+"}}}
 function! perforce#get_dd(str) "{{{
 	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''
 endfunction
@@ -221,11 +230,11 @@ function! perforce#pfChange(str,...) "{{{
 	if chnum == "" | let tmp = substitute(tmp,'\nFiles:\zs\_.*','','') | endif
 
 	"一時ファイルの書き出し
-	call writefile(split(tmp,'\n'),g:perforce_tmp_file)
+	call writefile(split(tmp,'\n'),perforce#get_tmp_file())
 
 	" チェンジリストの作成
 	" ★ client に対応する
-	let out = split(system('more '.perforce#common#get_kk(g:perforce_tmp_file).' | p4 change -i', '\n'))
+	let out = split(system('more '.perforce#common#get_kk(perforce#get_tmp_file()).' | p4 change -i', '\n'))
 
 	return out
 

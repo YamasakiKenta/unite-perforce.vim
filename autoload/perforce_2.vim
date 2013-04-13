@@ -77,14 +77,6 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 	call perforce#LogFile(outs)
 endfunction
 "}}}
-function! perforce_2#pfDiff(...) "{{{
-	" ********************************************************************************
-	" @param[in] ファイル名
-	" ********************************************************************************
-	let file_ = call('perforce#util#get_files', a:000)[0]
-	return perforce#diff#main(file_)
-endfunction
-"}}}
 function! perforce_2#revert(...) "{{{
 	" ********************************************************************************
 	" @param[in] ファイル名

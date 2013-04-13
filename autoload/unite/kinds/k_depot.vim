@@ -155,7 +155,7 @@ function! s:kind_depot.action_table.a_p4_move.func(candidates) "{{{
 	else 
 		" 複数選択の場合 "{{{
 
-		let g:pfmove_tmpfile = copy(g:perforce_tmp_file)
+		let g:pfmove_tmpfile = copy(perforce#get_tmp_file())
 		"
 		" 元のパスの登録と初期のファイル名の取得 "{{{
 		let names = []
