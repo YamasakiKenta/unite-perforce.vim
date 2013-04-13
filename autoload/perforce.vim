@@ -40,10 +40,6 @@ function! s:pf_diff_tool(file,file2) "{{{
 	endif
 endfunction
 "}}}
-function! s:get_ChangeNum_from_changes(str) "{{{
-	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
-endfunction
-"}}}
 
 function! perforce#get_tmp_file() "{{{
 	let g:perforce_tmp_dir  = get(g:, 'perforce_tmp_dir', '~/.perforce/' )
@@ -81,25 +77,6 @@ function! perforce#LogFile(str) "{{{
 	endif
 
 
-endfunction
-"}}}
-function! perforce#get_pfchanges(context,outs,kind) "{{{
-	" ********************************************************************************
-	" p4_changes Untie —p‚Ì •Ô‚è’l‚ð•Ô‚·
-	" @param(in)	context	
-	" @param(in)	outs
-	" @param(in)	kind	
-	" ********************************************************************************
-	let outs = a:outs
-	let candidates = map( outs, "{
-				\ 'word' : v:val,
-				\ 'kind' : a:kind,
-				\ 'action__chnum' : s:get_ChangeNum_from_changes(v:val),
-				\ 'action__depots' : a:context.source__depots,
-				\ }")
-
-
-	return candidates
 endfunction
 "}}}
 function! perforce#get_source_file_from_path(path) "{{{

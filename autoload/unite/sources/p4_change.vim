@@ -15,6 +15,28 @@ endfunction
 " action__chnum		チェンジリストの番号
 " action__depots	チェンジリストの変更 ( 編集するファイル ) 
 " --------------------------------------------------------------------------------
+"
+function! s:get_ChangeNum_from_changes(str) 
+	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
+endfunction
+function! s:get_pfchanges(context,outs,kind) "{{{
+	" ********************************************************************************
+	" @par          p4_changes Untie 用の 返り値を返す
+	" @param[in]	context
+	" @param[in]	outs
+	" @param[in]	kind	
+	" ********************************************************************************
+	let outs = a:outs
+	let candidates = map( outs, "{
+				\ 'word'           : v:val,
+				\ 'kind'           : a:kind,
+				\ 'action__chnum'  : s:get_ChangeNum_from_changes(v:val),
+				\ 'action__depots' : a:context.source__depots,
+				\ }")
+
+	return candidates
+endfunction
+"}}}
 
 " ********************************************************************************
 " source - p4_changes_pending
@@ -48,7 +70,7 @@ function! s:source_p4_changes_pending.gather_candidates(args, context) "{{{
 				\ }")
 
 	let outs = perforce#cmd#base('changes','','-s pending').outs
-	let rtn += perforce#get_pfchanges(a:context, outs, 'k_p4_change_pending')
+	let rtn += s:get_pfchanges(a:context, outs, 'k_p4_change_pending')
 	return rtn
 endfunction
 "}}}
@@ -104,7 +126,7 @@ let s:source_p4_changes_submitted = {
 let s:source_p4_changes_submitted.hooks.on_init = function('perforce#get#fname#for_unite')
 function! s:source_p4_changes_submitted.gather_candidates(args, context) "{{{
 	let outs = perforce#cmd#base('changes','','-s submitted').outs
-	return perforce#get_pfchanges(a:context, outs, 'k_p4_change_submitted')
+	return s:get_pfchanges(a:context, outs, 'k_p4_change_submitted')
 endfunction
 "}}}
 
