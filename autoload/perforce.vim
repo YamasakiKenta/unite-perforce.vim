@@ -17,29 +17,6 @@ function! s:is_p4_have_from_have(str) "{{{
 
 endfunction
 "}}}
-function! s:pf_diff_tool(file,file2) "{{{
-	if perforce#data#get('is_vimdiff_flg')
-		" タブで新しいファイルを開く
-		exe 'tabe' a:file2
-		exe 'vs' a:file
-
-		" diffの開始
-		windo diffthis
-
-		" キーマップの登録
-		call perforce#util#map_diff()
-	else
-		let cmd = perforce#data#get('diff_tool')
-
-		if cmd =~ 'kdiff3'
-			call system(cmd.' '.perforce#common#get_kk(a:file).' '.perforce#common#get_kk(a:file2).' -o '.perforce#common#Get_kk(a:file2))
-		else
-			" winmergeu
-			call system(cmd.' '.perforce#common#get_kk(a:file).' '.perforce#common#get_kk(a:file2))
-		endif
-	endif
-endfunction
-"}}}
 
 function! perforce#get_tmp_file() "{{{
 	let g:perforce_tmp_dir  = get(g:, 'perforce_tmp_dir', '~/.perforce/' )
