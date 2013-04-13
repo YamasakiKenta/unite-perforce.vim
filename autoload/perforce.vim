@@ -12,24 +12,6 @@ function! s:get_dd(str) "{{{
 	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''
 endfunction
 "}}}
-function! s:get_depots(args, path) "{{{
-	" ********************************************************************************
-	" @par          depots を取得する
-	" @param[in]	args	ファイル名
-	" @param[in]	context
-	"
-	" @par USED
-	" perforce#get_filename_for_unite
-	"
-	" ********************************************************************************
-	if len(a:args) > 0
-		let depots = a:args
-	else
-		let depots = [a:path]
-	endif
-	return depots
-endfunction
-"}}}
 function! s:get_path_from_have(str) "{{{
 	let rtn = matchstr(a:str,'.\{-}#\d\+ - \zs.*')
 	let rtn = substitute(rtn, '\\', '/', 'g')
@@ -128,14 +110,6 @@ function! perforce#LogFile(str) "{{{
 	endif
 
 
-endfunction
-"}}}
-function! perforce#get_filename_for_unite(args, context) "{{{
-	" ファイル名の取得
-	let a:context.source__path = expand('%:p')
-	let a:context.source__linenr = line('.')
-	let a:context.source__depots = s:get_depots(a:args, a:context.source__path)
-	call unite#print_message('[line] Target: ' . a:context.source__path)
 endfunction
 "}}}
 function! perforce#get_pfchanges(context,outs,kind) "{{{
@@ -504,13 +478,6 @@ function! s:pfcmds_new_get_outs(datas) "{{{
 endfunction
 "}}}
 "
-function! perforce#get#path#from_depot_with_client(client, depot) "{{{
-	let cmd = 'p4 '.a:client.' where "'.a:depot.'"'
-	let out = system(cmd)
-	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')
-endfunction
-"}}}
-
 " rapper
 function! perforce#get_source_diff_from_diff(...) 
 	return call('perforce#get#file#source_diff', a:000)

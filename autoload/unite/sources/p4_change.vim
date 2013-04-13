@@ -25,7 +25,7 @@ let s:source_p4_changes_pending = {
 			\ 'hooks'       : {},
 			\ 'is_quit'     : 0,
 			\ }
-let s:source_p4_changes_pending.hooks.on_init = function('perforce#get_filename_for_unite')
+let s:source_p4_changes_pending.hooks.on_init = function('perforce#get#fname#for_unite')
 function! s:source_p4_changes_pending.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" チェンジリストの表示 表示設定関数
@@ -86,7 +86,7 @@ let s:source_p4_changes_pending_reopen = {
 			\ 'hooks' : {},
 			\ 'default_action' : 'a_p4_change_reopen',
 			\ }
-let s:source_p4_changes_pending_reopen.hooks.on_init = function('perforce#get_filename_for_unite')
+let s:source_p4_changes_pending_reopen.hooks.on_init = function('perforce#get#fname#for_unite')
 let s:source_p4_changes_pending_reopen.gather_candidates = s:source_p4_changes_pending.gather_candidates
 let s:source_p4_changes_pending_reopen.change_candidates = s:source_p4_changes_pending.change_candidates
 
@@ -101,7 +101,7 @@ let s:source_p4_changes_submitted = {
 			\ }
 
 	"call unite#start_temporary([['settings_ex_list_select', tmp_d]], {'default_action' : 'a_toggle'})
-let s:source_p4_changes_submitted.hooks.on_init = function('perforce#get_filename_for_unite')
+let s:source_p4_changes_submitted.hooks.on_init = function('perforce#get#fname#for_unite')
 function! s:source_p4_changes_submitted.gather_candidates(args, context) "{{{
 	let outs = perforce#cmd#base('changes','','-s submitted').outs
 	return perforce#get_pfchanges(a:context, outs, 'k_p4_change_submitted')

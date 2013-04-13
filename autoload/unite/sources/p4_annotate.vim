@@ -28,7 +28,7 @@ let s:source__p4_annotate = {
 			\ 'description' : '各行にリビジョン番号を表示',
 			\ 'hooks' : {},
 			\ }
-let s:source__p4_annotate.hooks.on_init = function('perforce#get_filename_for_unite')
+let s:source__p4_annotate.hooks.on_init = function('perforce#get#fname#for_unite')
 function! s:source__p4_annotate.gather_candidates(args, context) "{{{
 
 	let depots = a:context.source__depots
@@ -57,7 +57,7 @@ let s:source__p4_annotate_ai = {
 			\ 'description' : '各行にチェンジリスト番号を表示 ( 全て )',
 			\ 'hooks' : {},
 			\ }
-let s:source__p4_annotate_ai.hooks.on_init = function('perforce#get_filename_for_unite')
+let s:source__p4_annotate_ai.hooks.on_init = function('perforce#get#fname#for_unite')
 function! s:source__p4_annotate_ai.gather_candidates(args, context) "{{{
 
 	let depots = a:context.source__depots

@@ -7,5 +7,11 @@ function! perforce#get#path#from_depot(depot)
 	return path
 endfunction
 
+function! perforce#get#path#from_depot_with_client(client, depot)
+	let cmd = 'p4 '.a:client.' where "'.a:depot.'"'
+	let out = system(cmd)
+	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')
+endfunction
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
