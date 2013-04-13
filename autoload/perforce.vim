@@ -1,12 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-
-if !isdirectory(g:perforce_tmp_dir)
-	call mkdir(g:perforce_tmp_dir)
-endif
-
-
 function! s:get_path_from_where(str) "{{{
 	return matchstr(a:str, '.\{-}\zs\w*:.*\ze\n.*')
 endfunction
@@ -271,93 +265,6 @@ function! perforce#unite_args(source) "{{{
 endfunction
 "}}}
 
-"********************************************************************************
-"new
-function! s:pfcmds_with_clients(clients, cmd, head, tail) "{{{
-
-	let kind = '__common'
-
-	if perforce#data#get('show_max_flg', kind) == 1
-		let max = '-m '.perforce#data#get('show_max', kind)
-	else 
-		let max = ''
-	endif 
-
-	if perforce#data#get('user_changes_only',kind) == 1 
-		let user = '-u '.perforce#get#PFUSER()
-	else 
-		let user = ''
-	endif
-
-	let rtns = []
-
-	for client in a:clients
-
-		let gcmds = ['p4']
-		call add(gcmds, a:head)
-		call add(gcmds, client)
-
-		call add(gcmds, a:cmd)
-		call add(gcmds, max)
-
-		if a:cmd =~ 'clients' || a:cmd =~ 'changes'
-			call add(gcmds, user)
-
-		endif 
-
-		if a:cmd =~ 'changes'
-			if perforce#data#get('client_changes_only',kind) == 1
-				call add(gcmds, '-c '.a:client)
-			endif
-		endif 
-
-		call add(gcmds, a:tail)
-
-		let cmd = join(gcmds)
-
-		call add(rtns, {
-					\ 'cmd'    : cmd,
-					\ 'outs'   : split(system(cmd),'\n'),
-					\ 'client' : client,
-					\ })
-
-		if perforce#data#get('filters_flg',kind) == 1
-			let filter_ = join( perforce#data#get('filters',kind), '\|' ) 
-			call filter(rtns[-1].outs, 'v:val !~ filter_')
-		endif
-	endfor 
-
-	return rtns
-endfunction
-"}}}
-function! s:pfcmds_with_clients_and_unite_mes(clients, cmd, head, tail) "{{{
-	let rtns = s:pfcmds_with_clients(a:clients, a:cmd, a:head, a:tail)
-
-	for cmd in map(deepcopy(rtns), "v:val.cmd")
-		call unite#print_message('[cmd] '.cmd)
-	endfor
-
-	return rtns
-endfunction
-"}}}
-function! s:pfcmds_with_clients_from_data(cmd,head,tail) "{{{
-	let clients = perforce#data#get('clients')
-	return  s:pfcmds_with_clients_and_unite_mes(clients, a:cmd, a:head, a:tail)
-endfunction
-"}}}
-function! s:pfcmds_new_get_outs(datas) "{{{
-	let outs = []
-	for data in a:datas
-		call extend(outs, get(data, 'outs', []))
-	endfor
-	return outs
-endfunction
-"}}}
-"
-" rapper
-function! perforce#get_source_diff_from_diff(...) 
-	return call('perforce#get#file#source_diff', a:000)
-endfunction 
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
