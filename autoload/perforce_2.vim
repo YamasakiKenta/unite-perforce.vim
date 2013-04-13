@@ -82,7 +82,7 @@ function! perforce_2#pfDiff(...) "{{{
 	" @param[in] ƒtƒ@ƒCƒ‹–¼
 	" ********************************************************************************
 	let file_ = call('perforce#util#get_files', a:000)[0]
-	return perforce#pfDiff(file_)
+	return perforce#diff#main(file_)
 endfunction
 "}}}
 function! perforce_2#revert(...) "{{{

@@ -8,28 +8,9 @@ if !isdirectory(g:perforce_tmp_dir)
 	call mkdir(g:perforce_tmp_dir)
 endif
 
-function! s:get_dd(str) "{{{
-	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''
-endfunction
-"}}}
-function! s:get_path_from_have(str) "{{{
-	let rtn = matchstr(a:str,'.\{-}#\d\+ - \zs.*')
-	let rtn = substitute(rtn, '\\', '/', 'g')
-	return rtn
-endfunction
-"}}}
+
 function! s:get_path_from_where(str) "{{{
 	return matchstr(a:str, '.\{-}\zs\w*:.*\ze\n.*')
-endfunction
-"}}}
-function! s:get_paths_from_haves(strs) "{{{
-	return map(a:strs,"s:get_path_from_have(v:val)")
-endfunction
-"}}}
-function! s:get_paths_from_fname(str) "{{{
-	" ファイルを検索
-	let outs = perforce#cmd#base('have','',s:get_dd(a:str)).outs " # ファイル名の取得
-	return s:get_paths_from_haves(outs)                   " # ヒットした場合
 endfunction
 "}}}
 function! s:is_p4_have_from_have(str) "{{{
@@ -67,28 +48,15 @@ function! s:pf_diff_tool(file,file2) "{{{
 	endif
 endfunction
 "}}}
-function! s:pfdiff_from_fname(fname) "{{{
-	" ********************************************************************************
-	" perforceないからファイル名から検索して、全て比較
-	" @param[in]	fname	比較したいファイル名
-	" ********************************************************************************
-	"
-	" ファイル名のみの取出し
-	let file = fnamemodify(a:fname,":t")
-
-	let paths = s:get_paths_from_fname(file)
-
-	call perforce#LogFile(paths)
-	for path in paths 
-		call perforce#pfDiff(path)
-	endfor
-endfunction
-"}}}
 function! s:get_ChangeNum_from_changes(str) "{{{
 	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
 endfunction
 "}}}
 
+function! perforce#get_dd(str) "{{{
+	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''
+endfunction
+"}}}
 function! perforce#LogFile(str) "{{{
 	" ********************************************************************************
 	" 結果の出力を行う
@@ -263,44 +231,6 @@ function! perforce#pfChange(str,...) "{{{
 
 endfunction
 "}}}
-function! perforce#pfDiff(path) "{{{
-	" ********************************************************************************
-	" ファイルをTOOLを使用して比較します
-	" @param[in]	path		比較するパス ( path or depot )
-	" ********************************************************************************
-
-	" ファイルの比較
-	let path = a:path
-
-	" 最新 REV のファイルの取得 "{{{
-	let outs = perforce#cmd#base('print','',' -q '.perforce#common#get_kk(path)).outs
-
-	" エラーが発生したらファイルを検索して、すべてと比較 ( 再帰 )
-	if outs[0] =~ "is not under client's root "
-		call s:pfdiff_from_fname(path)
-		return
-	endif
-
-	"tmpファイルの書き出し
-	call writefile(outs,g:perforce_tmp_file)
-	"}}}
-
-	" 改行が一致しないので保存し直す "{{{
-	exe 'sp' g:perforce_tmp_file
-	set ff=dos
-	wq
-	"}}}
-
-	" depotならpathに変換
-	if path =~ "^//depot.*"
-		let path = perforce#get#path#from_depot(path)
-	endif
-
-	" 実際に比較 
-	call s:pf_diff_tool(g:perforce_tmp_file,path)
-
-endfunction
-"}}}
 function! perforce#pfFind(...) "{{{
 	if a:0 == 0
 		let str  = input('Find : ')
@@ -308,7 +238,7 @@ function! perforce#pfFind(...) "{{{
 		let str = a:1
 	endif 
 	if str !=# ""
-		call unite#start([insert(map(split(str),"s:get_dd(v:val)"),'p4_have')])
+		call unite#start([insert(map(split(str),"perforce#get_dd(v:val)"),'p4_have')])
 	endif
 endfunction
 "}}}
@@ -319,7 +249,7 @@ function! perforce#unite_args(source) "{{{
 	"********************************************************************
 
 	if 0
-		exe 'Unite '.a:source.':'.s:get_dd(expand("%:t"))
+		exe 'Unite '.a:source.':'.perforce#get_dd(expand("%:t"))
 	else
 		" スペース対策
 		" [ ] p4_diff などに修正が必要
