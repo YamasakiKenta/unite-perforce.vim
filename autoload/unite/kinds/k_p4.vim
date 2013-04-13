@@ -22,7 +22,7 @@ function! s:kind.action_table.a_add_fix.func(candidates) "{{{
 
 	for candidate in a:candidates
 		let depot = candidate.action__depot
-		let path  = perforce#get_path_from_depot(depot)
+		let path  = perforce#get#path#from_depot(depot)
 
 		caddexpr path.':1:1'
 	endfor

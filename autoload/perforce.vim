@@ -138,12 +138,6 @@ function! perforce#get_filename_for_unite(args, context) "{{{
 	call unite#print_message('[line] Target: ' . a:context.source__path)
 endfunction
 "}}}
-function! perforce#get_path_from_depot(depot) "{{{
-	let out = system('p4 where "'.a:depot.'"')
-	let path = s:get_path_from_where(out)
-	return path
-endfunction
-"}}}
 function! perforce#get_pfchanges(context,outs,kind) "{{{
 	" ********************************************************************************
 	" p4_changes Untie ópÇÃ ï‘ÇËílÇï‘Ç∑
@@ -227,7 +221,7 @@ function! perforce#matomeDiffs(...) "{{{
 				for list_tmp in list_tmps
 					if list_tmp =~ '- file(s) not opened for edit.'
 						let file_tmp = substitute(file, '.*[\/]','','')
-						let path = perforce#get_path_from_depot(file)
+						let path = perforce#get#path#from_depot(file)
 						let datas += [{'files' : file_tmp, 'adds' : len(readfile(path)), 'changeds' : 0, 'deleteds' : 0, }]
 					else
 						let outs += [list_tmp]
@@ -325,7 +319,7 @@ function! perforce#pfDiff(path) "{{{
 
 	" depotÇ»ÇÁpathÇ…ïœä∑
 	if path =~ "^//depot.*"
-		let path = perforce#get_path_from_depot(path)
+		let path = perforce#get#path#from_depot(path)
 	endif
 
 	" é¿ç€Ç…î‰är 
@@ -510,7 +504,7 @@ function! s:pfcmds_new_get_outs(datas) "{{{
 endfunction
 "}}}
 "
-function! perforce#get_path_from_depot_with_client(client, depot) "{{{
+function! perforce#get#path#from_depot_with_client(client, depot) "{{{
 	let cmd = 'p4 '.a:client.' where "'.a:depot.'"'
 	let out = system(cmd)
 	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')

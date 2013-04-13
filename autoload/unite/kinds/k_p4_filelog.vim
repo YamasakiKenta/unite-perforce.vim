@@ -12,7 +12,7 @@ functio! s:p4_print(candidates) "{{{
 
 	for l:candidate in deepcopy(a:candidates)
 
-		let name = perforce#get_path_from_depot(candidate.action__depot)
+		let name = perforce#get#path#from_depot(candidate.action__depot)
 
 		" 表示するバージョンを取得する
 		if exists('candidate.action__revnum')
@@ -74,7 +74,7 @@ let s:kind_filelog.action_table.preview = {
 function! s:kind_filelog.action_table.preview.func(candidate) "{{{
 	let l:candidate = a:candidate
 
-	let name = perforce#get_path_from_depot(candidate.action__depot)
+	let name = perforce#get#path#from_depot(candidate.action__depot)
 
 	let filetype_old = &filetype
 
