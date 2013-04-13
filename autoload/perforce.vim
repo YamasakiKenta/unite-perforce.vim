@@ -79,28 +79,6 @@ function! perforce#LogFile(str) "{{{
 
 endfunction
 "}}}
-function! perforce#get_source_file_from_path(path) "{{{
-	" ********************************************************************************
-	" 差分の出力を、Uniteのjump_list化けする
-	" @param[in]	outs		差分のデータ
-	" ********************************************************************************
-	let path = a:path
-	let lines = readfile(path)
-	let candidates = []
-	let lnum = 1
-	for line in lines
-		let candidates += [{
-					\ 'word' : lnum.' : '.line,
-					\ 'kind' : 'jump_list',
-					\ 'action__line' : lnum,
-					\ 'action__path' : path,
-					\ 'action__text' : line,
-					\ }]
-		let lnum += 1
-	endfor
-	return candidates
-endfunction
-"}}}
 function! perforce#init() "{{{
 
 	" クライアントデータの読み込み

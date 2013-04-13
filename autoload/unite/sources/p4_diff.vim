@@ -6,6 +6,29 @@ function! unite#sources#p4_diff#define()
 	return s:source_diff
 endfunction
 
+function! s:get_source_file_from_path(path) "{{{
+	" ********************************************************************************
+	" 差分の出力を、Uniteのjump_list化けする
+	" @param[in]	outs		差分のデータ
+	" ********************************************************************************
+	let path = a:path
+	let lines = readfile(path)
+	let candidates = []
+	let lnum = 1
+	for line in lines
+		let candidates += [{
+					\ 'word' : lnum.' : '.line,
+					\ 'kind' : 'jump_list',
+					\ 'action__line' : lnum,
+					\ 'action__path' : path,
+					\ 'action__text' : line,
+					\ }]
+		let lnum += 1
+	endfor
+	return candidates
+endfunction
+"}}}
+
 let s:source_diff = {
 			\ 'name' : 'p4_diff',
 			\ 'description' : 'ファイルの差分表示',
@@ -39,7 +62,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 						\ 'action__path' : file,
 						\ 'action__text' : 0,
 						\ }]
-			let rtns += perforce#get_source_file_from_path(file)
+			let rtns += s:get_source_file_from_path(file)
 		endif
 	endfor
 
@@ -77,7 +100,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 							\ 'action__text' : 0,
 							\ }]
 
-				let rtns += perforce#get_source_file_from_path(path)
+				let rtns += s:get_source_file_from_path(path)
 			endif
 		endfor
 
