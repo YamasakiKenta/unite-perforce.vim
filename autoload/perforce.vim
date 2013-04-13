@@ -312,69 +312,6 @@ function! perforce#pfFind(...) "{{{
 	endif
 endfunction
 "}}}
-function! perforce#cmd#base(cmd,...) "{{{
-	" ********************************************************************************
-	" p4 コマンドを実行します
-	" @param[in]	str		cmd		コマンド
-	" @param[in]	str		head	コマンドの前に挿入する
-	" @param[in]	str		a:000	コマンドの後に挿入する
-	" ********************************************************************************
-
-	let gcmds = ['p4']
-	if a:0 > 0 
-		call add(gcmds, a:1)
-	endif
-
-	call add(gcmds, a:cmd)
-
-	if a:cmd =~ 'changes'
-		if perforce#data#get('client_changes_only') == 1
-			call add(gcmds, '-c '.perforce#get#PFCLIENTNAME())
-		endif
-	endif 
-
-	if a:cmd =~ 'clients' || a:cmd =~ 'changes'
-		if perforce#data#get('user_changes_only') == 1 
-			call add(gcmds, '-u '.perforce#get#PFUSER())
-		endif
-	endif 
-
-
-	if perforce#data#get('show_max_flg') == 1
-		call add(gcmds, '-m '.perforce#data#get('show_max'))
-	endif 
-
-
-	if a:0 > 1
-		call add(gcmds, join(a:000[1:]))
-	endif
-
-	let cmd = join(gcmds)
-	let rtn_d = {
-				\ 'cmd'  : cmd,
-				\ 'outs' : split(system(cmd),'\n'),
-				\ }
-
-	" Error
-	if len(rtn_d.outs) > 0
-		if rtn_d.outs[0] =~ "^Perforce client error:"
-			let rtn_d.outs = ['ERROR']
-		endif
-	else
-		let rtn_d.outs = ['ERROR']
-	endif
-
-	call unite#print_message(rtn_d.cmd)
-
-	" 非表示にするコマンド
-	if perforce#data#get('filters_flg') == 1
-		let filter_ = join(perforce#data#get('filters'), '\|' ) 
-		call filter(rtn_d.outs, 'v:val !~ filter_')
-	endif
-
-	return rtn_d
-endfunction
-"}}}
 function! perforce#unite_args(source) "{{{
 	"********************************************************************
 	" @par          現在のファイル名を Unite に引数に渡します。
