@@ -130,10 +130,6 @@ function! perforce#LogFile(str) "{{{
 
 endfunction
 "}}}
-function! perforce#get_ClientName_from_client(str) "{{{
-	return matchstr(a:str,'Client \zs\S\+')
-endfunction
-"}}}
 function! perforce#get_ClientPathFromName(str) "{{{
 	let str = system('p4 clients | grep '.a:str) " # ref 直接データをもらう方法はないかな
 	let path = matchstr(str,'.* \d\d\d\d/\d\d/\d\d root \zs\S*')

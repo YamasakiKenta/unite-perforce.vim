@@ -38,7 +38,6 @@ function! s:source_p4_changes_pending.gather_candidates(args, context) "{{{
 				\ [perforce#get#PFCLIENTNAME()] : 
 				\ perforce#cmd#base('clients','').outs
 
-				"\ 'word'           : 'default by '.perforce#get_ClientName_from_client(v:val),
 	" default‚Ì•\Ž¦
 	let rtn = []
 	let rtn += map( outs, "{
