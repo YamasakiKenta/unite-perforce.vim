@@ -25,55 +25,39 @@ endfunction
 "}}}
 function! perforce_2#edit_add(add_flg, ...) "{{{
 	" ********************************************************************************
-	" @param[in] add_flg true : クライアントに存在しない場合は、ファイルを追加
+	" 編集状態、もしくは追加状態にする
+	" @param[in] a:add_flg = 1 - TREUE : クライアントに存在しない場合は、ファイルを追加
 	" @param[in] a:000     {ファイル名}     値がない場合は、現在のファイルを編集する
-	" @retval    なし
 	" ********************************************************************************
 	"
 	" 編集するファイ目名の取得
-
-	if a:0 == 0
-		let _files = [perforce#common#get_now_filename()]
-	else
-		" ファイル名が指定されている場合
-		let _files = a:000
-	endif
-
+	let _files = call('perforce#util#get_files', a:000)
 
 	" init
-	let file_d = {
-				\ 'add' : '',
-				\ 'edit' : '',
-				\ 'null' : '',
+	let files_d = {
+				\ 'add'  : [],
+				\ 'edit' : [],
 				\ }
 
-	" ファイルが存在しない場合、追加する
-	for _file in _files
-		let cmd = 'null'
-		if perforce#is_p4_have(_file)
-			let cmd = 'edit'
-		else
-			if ( a:add_flg == 1 )
-				let cmd = 'add'
-			endif
-		endif
+	" グループの分類
+	let data_d = perforce#is_p4_haves(_files)
 
-		let file_d[cmd] = file_d[cmd].' '.perforce#common#get_kk(_file)
-	endfor
+	let files_d['edit']  = data_d.true
 
-	unlet file_d['null']
-
-	" init 
-	let outs = []
+	if ( a:add_flg == 1 )
+		let files_d['add']   = data_d.false
+	endif
 
 	" コマンドを実行する
-	for cmd in keys(file_d)
-		let _file = file_d[cmd]
-		if _file != ''
-			call extend(outs, perforce#cmd#new_outs(cmd, '', _file))
+	let outs = []
+	for cmd in keys(files_d)
+		let files_ = files_d[cmd]
+		if len(files_) > 0
+			call extend(outs, perforce#cmd#files_outs(cmd, files_))
 		endif
 	endfor
 
+	" ログの表示
 	call perforce#LogFile(outs)
 endfunction
 "}}}
@@ -81,13 +65,15 @@ function! perforce_2#revert(...) "{{{
 	" ********************************************************************************
 	" @param[in] ファイル名
 	" ********************************************************************************
-	let file_ = call('perforce#util#get_files', a:000)[0]
-	let file_ = perforce#common#get_kk(file_)
-	if perforce#is_p4_have(file_)
-		let outs = perforce#cmd#new_outs('revert','',' -a '.file_)
-	else
-		let outs = perforce#cmd#new_outs('revert','',file_)
-	endif
+	let files_ = call('perforce#util#get_files', a:000)
+
+	" ★ edit ,add をまねる
+
+	let data_d = perforce#is_p4_haves(files_)
+	" ★まとめる
+	let outs = perforce#cmd#files_outs('revert -a','',data_d.true)
+	let outs = perforce#cmd#files_outs('revert','',data_d.false)
+
 	call perforce#LogFile(outs)
 endfunction 
 "}}}

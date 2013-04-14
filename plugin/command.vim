@@ -11,7 +11,7 @@ command! -nargs=* PfEdit   call perforce_2#edit_add(0, <f-args>)
 
 command! -nargs=* PfAdd    call perforce_2#edit_add(1, <f-args>)
 
-command! -nargs=? PfDiff   call perforce#diff#files(<f-args>)
+command! -nargs=? PfDiff   call perforce#diff#file(<f-args>)
 
 command! -nargs=? PfRevert call perforce_2#revert(<f-args>)
 

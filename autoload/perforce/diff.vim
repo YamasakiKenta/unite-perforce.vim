@@ -1,22 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:get_path_from_have(str) 
-	let rtn = matchstr(a:str,'.\{-}#\d\+ - \zs.*')
-	let rtn = substitute(rtn, '\\', '/', 'g')
-	return rtn
-endfunction
-
-function! s:get_paths_from_haves(strs) 
-	return map(a:strs,"s:get_path_from_have(v:val)")
-endfunction
-
-function! s:get_paths_from_fname(str) 
-	" ファイルを検索
-	let outs = perforce#cmd#base('have','',perforce#get_dd(a:str)).outs " # ファイル名の取得
-	return s:get_paths_from_haves(outs)                   " # ヒットした場合
-endfunction
-
 function! s:pf_diff_tool(file,file2) "{{{
 	if perforce#data#get('is_vimdiff_flg')
 		" タブで新しいファイルを開く
@@ -42,24 +26,6 @@ function! s:pf_diff_tool(file,file2) "{{{
 endfunction
 "}}}
 
-function! s:pfdiff_from_fname(fname) "{{{
-	" ********************************************************************************
-	" perforceないからファイル名から検索して、全て比較
-	" @param[in]	fname	比較したいファイル名
-	" ********************************************************************************
-	"
-	" ファイル名のみの取出し
-	let file = fnamemodify(a:fname,":t")
-
-	let paths = s:get_paths_from_fname(file)
-
-	call perforce#LogFile(paths)
-	for path in paths 
-		call perforce#diff#main(path)
-	endfor
-endfunction
-"}}}
-
 function! perforce#diff#main(path) "{{{
 	" ********************************************************************************
 	" ファイルをTOOLを使用して比較します
@@ -69,24 +35,28 @@ function! perforce#diff#main(path) "{{{
 	" ファイルの比較
 	let path = a:path
 
-	" 最新 REV のファイルの取得 "{{{
-	let outs = perforce#cmd#base('print','',' -q '.perforce#common#get_kk(path)).outs
+	" ファイル名があるか
+	if len(path) == ''
+		call perforce_2#echo_error("no file")
+		return 
+	endif
 
-	" エラーが発生したらファイルを検索して、すべてと比較 ( 再帰 )
+	" 最新 REV のファイルの取得
+	let outs = perforce#cmd#files_outs('print -q', [path])
+
+	" ERROR
 	if outs[0] =~ "is not under client's root "
-		call s:pfdiff_from_fname(path)
+		call perforce_2#echo_error("is not under client's root")
 		return
 	endif
 
 	"tmpファイルの書き出し
-	call writefile(outs,perforce#get_tmp_file())
-	"}}}
+	call writefile(outs, perforce#get_tmp_file())
 
 	" 改行が一致しないので保存し直す
 	exe 'sp' perforce#get_tmp_file()
 	set ff=dos
 	wq
-	"
 
 	" depotならpathに変換
 	if path =~ "^//depot.*"
@@ -94,17 +64,17 @@ function! perforce#diff#main(path) "{{{
 	endif
 
 	" 実際に比較 
-	call s:pf_diff_tool(perforce#get_tmp_file(),path)
+	call s:pf_diff_tool(perforce#get_tmp_file(), path)
 
 endfunction
 "}}}
 "
-function! perforce#diff#files(...) "{{{
+function! perforce#diff#file(...) "{{{
 	" ********************************************************************************
-	" @param[in] ファイル名
+	" @param[in] a:000 ファイル名
 	" ********************************************************************************
 	let file_ = call('perforce#util#get_files', a:000)[0]
-	return perforce#diff#main(file_)
+	call perforce#diff#main(file_)
 endfunction
 "}}}
 

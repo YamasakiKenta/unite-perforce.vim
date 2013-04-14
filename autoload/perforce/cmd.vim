@@ -364,8 +364,8 @@ function! perforce#cmd#files(pfcmd, files) "{{{
 	" @param[in]   a:pfcmd    = 'diff'
 	" @param[in]   a:files[]  = ''
 	"
-	" @return      datas  
-	" .cmd     = 'p4 diff'
+	" @return      
+	" .cmd     = 'p4 edit'
 	" .outs[]  = ''
 	" ********************************************************************************
 	"
@@ -374,7 +374,50 @@ function! perforce#cmd#files(pfcmd, files) "{{{
 		endif
 	endif
 
-	return datas
+	if a:pfcmd == 'edit' || a:pfcmd == 'add'
+	endif
+	return perforce#cmd#new(a:pfcmd, '', join(a:files))
+endfunction
+"}}}
+function! perforce#cmd#files_outs(pfcmd, files) "{{{
+	" ********************************************************************************
+	" @param[in]   a:pfcmd    = 'diff'
+	" @param[in]   a:files[]  = ''
+	"
+	" @return      
+	" .cmd     = 'p4 edit'
+	" .outs[]  = ''
+	" ********************************************************************************
+	let pfcmd = a:pfcmd
+
+	let pfcmds = [
+				\ 'diff'
+				\ ]
+	if a:pfcmd == join(pfcmds, '\|')
+		if perforce#data#get('diff -dw', 'common') == 1
+			let pfcmd = 'diff -dw'
+		endif
+	endif
+
+	let pfcmds = [
+				\ 'edit',
+				\ 'add',
+				\ 'revert -a',
+				\ 'revert',
+				\ 'print -q',
+				\ ]
+	if a:pfcmd == join(pfcmds, '\|')
+		" DO NOTHING
+	endif
+
+	if len(a:files) > 0
+		let outs = perforce#cmd#new_outs(pfcmd, '', join(a:files))
+	else
+		let outs = []
+	endif
+
+	return outs
+
 endfunction
 "}}}
 " now making

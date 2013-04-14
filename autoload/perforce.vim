@@ -65,18 +65,6 @@ function! perforce#init() "{{{
 	call perforce#data#init()
 endfunction
 "}}}
-function! perforce#is_p4_have(str) "{{{
-	" ********************************************************************************
-	" クライアントにファイルがあるか調べる
-	" @param[in]	str				ファイル名 , have の返り値
-	" @retval       flg		TRUE 	存在する
-	" @retval       flg		FLASE 	存在しない
-	" ********************************************************************************
-	let str = system('p4 have '.perforce#common#get_kk(a:str))
-	let flg = s:is_p4_have_from_have(str)
-	return flg
-endfunction
-"}}}
 function! perforce#matomeDiffs(...) "{{{
 	" new file 用にここで初期化
 	let datas = []
@@ -194,6 +182,48 @@ function! perforce#unite_args(source) "{{{
 		exe tmp
 	endif
 
+endfunction
+"}}}
+
+function! perforce#is_p4_have(str) "{{{
+	" ********************************************************************************
+	" クライアントにファイルがあるか調べる
+	" @param[in]	str				ファイル名 , have の返り値
+	" @retval       flg		TRUE 	存在する
+	" @retval       flg		FLASE 	存在しない
+	" ********************************************************************************
+	" ★ perforce#is_p4_haves をまとめる
+	let str = system('p4 have '.perforce#common#get_kk(a:str))
+	let flg = s:is_p4_have_from_have(str)
+	return flg
+endfunction
+"}}}
+function! perforce#is_p4_haves(files) "{{{
+	" ********************************************************************************
+	" クライアントにファイルがあるか調べる
+	" @param[in]	files[] = '' - file name
+	"
+	" @return rtns_d
+	" .true[]  = '' - have file name 
+	" .false[] = '' - not have file name
+	" ********************************************************************************
+	" ★ クライアントを変更する
+	let rtns_d = {
+				\ 'true'  : [],
+				\ 'false' : [],
+				\ }
+	for file_ in a:files
+		let str = system('p4 have '.perforce#common#get_kk(file_))
+		let flg = s:is_p4_have_from_have(str)
+		if flg == 1
+			let type = 'true'
+		else
+			let type = 'false'
+		endif
+		call add(rtns_d[type], file_)
+	endfor
+
+	return rtns_d
 endfunction
 "}}}
 
