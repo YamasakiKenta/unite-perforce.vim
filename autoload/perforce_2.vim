@@ -71,8 +71,8 @@ function! perforce_2#revert(...) "{{{
 
 	let data_d = perforce#is_p4_haves(files_)
 	" ÅöÇ‹Ç∆ÇﬂÇÈ
-	let outs = perforce#cmd#files_outs('revert -a','',data_d.true)
-	let outs = perforce#cmd#files_outs('revert','',data_d.false)
+	let outs = perforce#cmd#files_outs('revert -a', data_d.true)
+	let outs = perforce#cmd#files_outs('revert', data_d.false)
 
 	call perforce#LogFile(outs)
 endfunction 
