@@ -17,7 +17,7 @@ function! s:init() "{{{
 	call s:perforce_add_title ( '_clients') 
 	call s:perforce_add       ( 'use_default'                   ,''                             , 'bool'          , 1)
 	call s:perforce_add       ( 'diff -dw'                      ,'空白を無視する'               , 'bool'          , 1)
-	call s:perforce_add       ( 'clients'                       ,'perforce clients'             , 'const_list_ex' , [[1,2], '-p localhost:1818 -c main_1', '-p localhost:1668 -c main_1']) 
+	call s:perforce_add       ( 'clients'                       ,'perforce clients'             , 'list_ex'       , [[1,2], '-p localhost:1818 -c main_1', '-p localhost:1668 -c main_1']) 
 	call s:perforce_add_title ( '_フィルタ') 
 	call s:perforce_add       ( 'user_changes_only'             ,'ユーザー名でフィルタ'         , 'bool'          , 1) 
 	call s:perforce_add       ( 'client_changes_only'           ,'クライアントでフィルタ'       , 'bool'          , 1) 
@@ -37,7 +37,7 @@ function! s:init() "{{{
 	call s:perforce_add_title ( '_Ohter') 
 	call s:perforce_add       ( 'is_submit_flg'                 ,'サブミットを許可'             , 'bool'          , 0) 
 	call s:perforce_add_title ( 'ファイル操作')
-	call s:perforce_add       ( 'g:perforce_merge_tool'         ,'マージコマンド'               , 'const_select'  , [[1], 'winmergeu /S']) 
+	call s:perforce_add       ( 'g:perforce_merge_tool'         ,'マージコマンド'               , 'select'        , [[1], 'winmergeu /S']) 
 	call s:perforce_add       ( 'g:perforce_merge_default_path' ,'マージ、比較先フォルダ'       , 'select'        , [[1], 'c:\tmp']) 
 	call s:perforce_load()
 
