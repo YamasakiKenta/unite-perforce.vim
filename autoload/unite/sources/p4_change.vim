@@ -56,7 +56,7 @@ function! s:source_p4_changes_pending.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	"
 	" 表示するクライアント名の取得
-	let outs = perforce#data#get('client_changes_only') ? 
+	let outs = perforce#data#get('g:unite_perforce_client_changes_only') ? 
 				\ [perforce#get#PFCLIENTNAME()] : 
 				\ perforce#cmd#base('clients','').outs
 

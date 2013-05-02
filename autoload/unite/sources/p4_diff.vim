@@ -78,8 +78,8 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 		if perforce#is_p4_have(file)
 			" Åö 
 			if 1
-				if perforce#data#get('diff -dw', 'common') == 1
-					let outs += perforce#cmd#base('diff -dw','',perforce#common#get_kk(file)).outs
+				if perforce#data#get('g:unite_perforce_diff_dw', 'common') == 1
+					let outs += perforce#cmd#base('g:unite_perforce_diff_dw','',perforce#common#get_kk(file)).outs
 				else
 					let outs += perforce#cmd#base('diff','',perforce#common#get_kk(file)).outs
 				endif

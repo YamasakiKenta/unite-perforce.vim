@@ -108,7 +108,7 @@ let s:kind_k_p4_change_pending.action_table.a_p4_change_submit = {
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candidates) "{{{
 
-	if perforce#data#get('is_submit_flg') == 0
+	if perforce#data#get('g:unite_perforce_is_submit_flg') == 0
 		call perforce_2#echo_error('safe mode.')
 		call input("")
 	else

@@ -31,7 +31,7 @@ function! s:pfcmds_port_only(pfcmd, head, tail) "{{{
 	" .outs[]  = ''  - cmd outputs
 	" ********************************************************************************
 	
-	let client_default_flg = perforce#data#get('use_default')
+	let client_default_flg = perforce#data#get('g:unite_perforce_use_default')
 	if client_default_flg == 1
 		let tmp = perforce#cmd#base(a:pfcmd, a:head, a:tail)
 		let tmp.client = '-p '.perforce#get#PFPORT().'-c '.perforce#get#PFCLIENTNAME()
@@ -75,7 +75,7 @@ function! s:pfcmds_with_clients_from_data(pfcmd, head, tail) "{{{
 	" .cmd     = 'p4 opened'
 	" .outs[]  = ''  - cmd outputs
 	" ********************************************************************************
-	let clients = perforce#data#get('clients')
+	let clients = perforce#data#get('g:unite_perforce_clients')
 	return  s:pfcmds_with_clients_and_unite_mes(clients, a:pfcmd, a:head, a:tail)
 endfunction
 "}}}
@@ -90,7 +90,7 @@ function! perforce#cmd#new_outs(pfcmd, head, tail) "{{{
 	" .cmd     = 'p4 opened'
 	" .outs[]  = ''  - cmd outputs
 	" ********************************************************************************
-	let client_default_flg = perforce#data#get('use_default')
+	let client_default_flg = perforce#data#get('g:unite_perforce_use_default')
 	if client_default_flg == 1
 		let tmp = perforce#cmd#base(a:pfcmd, a:head, a:tail)
 		let tmp.client = '-p '.perforce#get#PFPORT().' -c '.perforce#get#PFCLIENTNAME()
@@ -116,7 +116,7 @@ function! perforce#cmd#new(pfcmd, head, tail) "{{{
 	" .outs[]  = ''  - cmd outputs
 	" ********************************************************************************
 
-	let client_default_flg = perforce#data#get('use_default')
+	let client_default_flg = perforce#data#get('g:unite_perforce_use_default')
 	if client_default_flg == 1
 		let tmp = perforce#cmd#base(a:pfcmd, a:head, a:tail)
 		let tmp.client = '-p '.perforce#get#PFPORT().' -c '.perforce#get#PFCLIENTNAME()
@@ -148,20 +148,21 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 	call add(gcmds, a:pfcmd)
 
 	if a:pfcmd =~ 'changes'
-		if perforce#data#get('client_changes_only') == 1
+		if perforce#data#get('g:unite_perforce_client_changes_only') == 1
 			call add(gcmds, '-c '.perforce#get#PFCLIENTNAME())
 		endif
 	endif 
 
 	if a:pfcmd =~ 'clients' || a:pfcmd =~ 'changes'
-		if perforce#data#get('user_changes_only') == 1 
+		if perforce#data#get('g:unite_perforce_user_changes_only') == 1 
 			call add(gcmds, '-u '.perforce#get#PFUSER())
 		endif
 	endif 
 
 
-	if perforce#data#get('show_max_flg') == 1
-		call add(gcmds, '-m '.perforce#data#get('show_max'))
+	let max_ = perforce#data#get('g:unite_perforce_show_max')
+	if max_ > 0
+		call add(gcmds, '-m '.max_)
 	endif 
 
 
@@ -182,8 +183,9 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 	call unite#print_message(rtn_d.cmd)
 
 	" 非表示にするコマンド
-	if perforce#data#get('filters_flg') == 1
-		let filter_ = join(perforce#data#get('filters'), '\|' ) 
+	let filters_ = perforce#data#get('g:unite_perforce_filters')
+	if len(join(filters_) > 0
+		let filter_ = join(filters, '\|' ) 
 		call filter(rtn_d.outs, 'v:val !~ filter_')
 	endif
 
@@ -223,8 +225,9 @@ function! s:get_outs(cmd) "{{{
 	echo 's:get_outs -> ' a:cmd
 	let outs = split(system(a:cmd),'\n')
 
-	if perforce#data#get('filters_flg',kind) == 1
-		let filter_ = join( perforce#data#get('filters',kind), '\|' ) 
+	let filters_ = perforce#data#get('g:unite_perforce_filters',kind)
+	if len(join(filters_)) > 0
+		let filter_ = join( filters_, '\|' ) 
 		call filter(outs, 'v:val !~ filter_')
 	endif
 
@@ -305,17 +308,17 @@ function! s:pfcmds_with_clients(clients, pfcmd, head, tail) "{{{
 
 
 
-	if perforce#data#get('show_max_flg', kind) == 1
-		foot_d.max = '-m '.perforce#data#get('show_max', kind)
-	else 
+	let max_ = perforce#data#get('g:unite_perforce_show_max', kind)
+	if max_ > 0
+		foot_d.max = '-m '.max_
 	endif 
 
-	if perforce#data#get('user_changes_only',kind) == 1 
+	if perforce#data#get('g:unite_perforce_user_changes_only',kind) == 1 
 		let foot_d.user = '-u '.perforce#get#PFUSER()
 	endif
 
 	let rtns = []
-	if perforce#data#get('client_changes_only',kind) == 1
+	if perforce#data#get('g:unite_perforce_client_changes_only',kind) == 1
 		for client in a:clients
 		 	let foot_d.client = '-c '.client " 差分
 			call add(rtns, s:pfcmds_with_client(a:pfcmd, client, foot_d))
@@ -340,7 +343,7 @@ function! s:pfcmds_with_clients_from_data_port_only(pfcmd,head,tail) "{{{
 	" [].cmd      =  ''  - p4 opened
 	" [].outs     =  []  - cmd outputs
 	" ********************************************************************************
-	let clients = perforce#data#get('clients')
+	let clients = perforce#data#get('g:unite_perforce_clients')
 	let port_d  = {}
 	for client in clients
 		let port = matchstr(client, '-p\s*\S*')
@@ -379,7 +382,7 @@ function! perforce#cmd#files(pfcmd, files) "{{{
 	" ********************************************************************************
 	"
 	if a:pfcmd == 'diff'
-		if perforce#data#get('diff -dw', 'common') == 1
+		if perforce#data#get('g:unite_perforce_diff_dw', 'common') == 1
 		endif
 	endif
 
@@ -403,7 +406,7 @@ function! perforce#cmd#files_outs(pfcmd, files) "{{{
 				\ 'diff'
 				\ ]
 	if a:pfcmd =~ join(pfcmds, '\|')
-		if perforce#data#get('diff -dw', 'common') == 1
+		if perforce#data#get('g:unite_perforce_diff_dw', 'common') == 1
 			let pfcmd = 'diff -dw'
 		endif
 	endif

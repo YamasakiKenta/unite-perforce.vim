@@ -39,18 +39,16 @@ function! perforce#LogFile(str) "{{{
 	" @param[in]	str		•\Ž¦‚·‚é•¶Žš
 	" ********************************************************************************
 
-	if perforce#data#get('is_out_flg', 'common') == 1
-		if perforce#data#get('is_out_echo_flg') == 1
+	let cmd_ = perforce#data#get('g:unite_perforce_is_out_echo_flg', 'common')
+	if cmd_ == 'echo'
+		let strs = (type(a:str) == type([])) ? a:str :[a:str]
 
-			let strs = type(a:str) == type([]) ? a:str :[a:str]
+		for str in strs
+			echo str
+		endfor
 
-			for str in strs
-				echo str
-			endfor
-
-		else
-			call perforce#common#LogFile('p4log', 0, a:str)
-		endif
+	elseif cmd_ == 'log'
+		call perforce#common#LogFile('p4log', 0, a:str)
 	endif
 
 
