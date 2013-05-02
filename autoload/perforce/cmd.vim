@@ -170,6 +170,7 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 	endif
 
 	let cmd = join(gcmds)
+	echo 'perforce#cmd#base -> ' cmd
 	let rtn_d = {
 				\ 'cmd'  : cmd,
 				\ 'outs' : split(system(cmd),'\n'),
@@ -219,6 +220,7 @@ function! s:get_outs(cmd) "{{{
 	" ********************************************************************************
 	" @par filter ‚ðœ‚¢‚½’l‚ð•Ô‚µ‚Ü‚·
 	let kind = '__common'
+	echo 's:get_outs -> ' a:cmd
 	let outs = split(system(a:cmd),'\n')
 
 	if perforce#data#get('filters_flg',kind) == 1
@@ -246,14 +248,18 @@ function! s:get_foot(pfcmd, foot_d) "{{{
 	let max     = get(a:foot_d, 'max',    '')
 	let user    = get(a:foot_d, 'user',   '')
 	let client  = get(a:foot_d, 'client', '')
+	let base    = get(a:foot_d, 'base', '')
 
-	let foots = [max]
+	let foots = []
+	call add(foots, max)
 	if a:pfcmd == 'clients'
 		call add(foots, user)
 	elseif a:pfcmd == 'changes'
 		call add(foots, user)
 		call add(foots, client)
 	endif 
+
+	call add(foots, base)
 
 	return join(foots)
 endfunction
@@ -295,6 +301,9 @@ function! s:pfcmds_with_clients(clients, pfcmd, head, tail) "{{{
 
 	let kind = '__common'
 	let foot_d = {}
+	let foot_d.base = a:tail
+
+
 
 	if perforce#data#get('show_max_flg', kind) == 1
 		foot_d.max = '-m '.perforce#data#get('show_max', kind)
@@ -393,7 +402,7 @@ function! perforce#cmd#files_outs(pfcmd, files) "{{{
 	let pfcmds = [
 				\ 'diff'
 				\ ]
-	if a:pfcmd == join(pfcmds, '\|')
+	if a:pfcmd =~ join(pfcmds, '\|')
 		if perforce#data#get('diff -dw', 'common') == 1
 			let pfcmd = 'diff -dw'
 		endif
@@ -406,7 +415,7 @@ function! perforce#cmd#files_outs(pfcmd, files) "{{{
 				\ 'revert',
 				\ 'print -q',
 				\ ]
-	if a:pfcmd == join(pfcmds, '\|')
+	if a:pfcmd =~ join(pfcmds, '\|')
 		" DO NOTHING
 	endif
 
@@ -418,18 +427,6 @@ function! perforce#cmd#files_outs(pfcmd, files) "{{{
 
 	return outs
 
-endfunction
-"}}}
-" now making
-function! perforce#cmd#clients(pfcmd, clints) "{{{
-	" ********************************************************************************
-	" @param[in]   a:pfcmd    = 'diff'
-	" @param[in]   a:files[]  = ''
-	"
-	" @return      datas  
-	" .cmd     = 'p4 diff'
-	" .outs[]  = ''
-	" ********************************************************************************
 endfunction
 "}}}
 

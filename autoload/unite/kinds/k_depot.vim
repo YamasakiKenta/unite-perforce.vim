@@ -8,7 +8,7 @@ function! unite#kinds#k_depot#define()
 	return s:kind_depot
 endfunction
 
-function! s:setPfcmd(kind,cmd,des) "{{{
+function! s:setPfcmd(kind, cmd, des) "{{{
 	" ********************************************************************************
 	" ファイル名を渡すだけのコマンドのアクション作成
 	" @param[in]	kind		unite kind	
@@ -34,7 +34,7 @@ function! s:setPfcmd(kind,cmd,des) "{{{
 			\ function! action.func(candidates) \n
 				\ let outs = [] \n
 				\ for l:candidate in a:candidates \n
-					\ let outs += perforce#cmd#base('". a:cmd ."','',perforce#common#get_kk(l:candidate.action__". get(kind,a:kind,"path") .")).outs \n
+					\ let outs += perforce#cmd#base('". a:cmd ."','',perforce#common#get_kk(l:candidate.action__". get(kind, a:kind, "path") .")).outs \n
 				\ endfor \n
 				\ call perforce#LogFile(outs) \n
 			\ endfunction 
