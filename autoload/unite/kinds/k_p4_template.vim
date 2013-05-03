@@ -34,7 +34,6 @@ let s:kind.action_table.a_info = {
 	\ 'description'   : 'à–¾‚ğ•\¦‚µ‚Ü‚·',
 	\ }
 function! s:kind.action_table.a_info.func(candidates) "{{{
-	echo a:candidates
 
 	for candidate in a:candidates
 		let datas = []

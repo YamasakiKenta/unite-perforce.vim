@@ -184,8 +184,8 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 
 	" 非表示にするコマンド
 	let filters_ = perforce#data#get('g:unite_perforce_filters')
-	if len(join(filters_) > 0
-		let filter_ = join(filters, '\|' ) 
+	if len(join(filters_)) > 0
+		let filter_ = join(filters_, '\|' ) 
 		call filter(rtn_d.outs, 'v:val !~ filter_')
 	endif
 

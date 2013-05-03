@@ -223,7 +223,8 @@ function! s:kind_depot.action_table.a_p4_reopen.func(candidates) "{{{
 		call add(reopen_depots, l:candidate.action__depot) " # 保存
 	endfor
 
-	call unite#start_temporary([insert(reopen_depots,'p4_changes_pending_reopen')])
+	" call unite#start_temporary([insert(reopen_depots,'p4_changes_pending_reopen')])
+	call unite#start([insert(reopen_depots,'p4_changes_pending_reopen')])
 endfunction
 "}}}
 
@@ -284,12 +285,12 @@ function! s:copy_file(depot, client, root) "{{{
 
 	" フォルダの作成
 	let cmd = 'mkdir "'.fnamemodify(file2,':h').'"'
-	echo cmd
+	echo 's:copy_file ->' string(cmd)
 	call system(cmd)
 
 	" コピーする
 	let cmd = 'copy "'.file1.'" "'.file2.'"'
-	echo cmd
+	echo 's:copy_file ->' string(cmd)
 	call system(cmd)
 
 endfunction

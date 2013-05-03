@@ -93,7 +93,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 							\ 'action__path' : file,
 							\ 'action__text' : 0,
 							\ }]
-				echo file
+				echo 's:source_diff.gather_candidates ->' string(file)
 				let rtns += s:get_source_file_from_path(file)
 			endif
 		endif
@@ -133,7 +133,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 							\ 'action__text' : 0,
 							\ }]
 
-				echo path
+				echo "s:source_diff.gather_candidates" string(path)
 				call input("")
 				let rtns += s:get_source_file_from_path(path)
 			endif

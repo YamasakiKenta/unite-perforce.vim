@@ -213,10 +213,6 @@ function! s:make_new_changes(candidate) "{{{
 
 		"チェンジリストの新規作成の結果から番号を取得する
 		let chnum = outs[1]
-
-		echo chnum
-		echo outs
-		call input("")
 	endif
 
 	return chnum

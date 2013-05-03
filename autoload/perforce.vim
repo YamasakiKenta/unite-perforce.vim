@@ -40,6 +40,7 @@ function! perforce#LogFile(str) "{{{
 	" ********************************************************************************
 
 	let cmd_ = perforce#data#get('g:unite_perforce_is_out_echo_flg', 'common')
+	echo 'perforce#LogFile >>>>'
 	if cmd_ == 'echo'
 		let strs = (type(a:str) == type([])) ? a:str :[a:str]
 
@@ -50,6 +51,7 @@ function! perforce#LogFile(str) "{{{
 	elseif cmd_ == 'log'
 		call perforce#common#LogFile('p4log', 0, a:str)
 	endif
+	echo 'perforce#LogFile <<<<'
 
 
 endfunction
@@ -67,7 +69,7 @@ function! perforce#matomeDiffs(...) "{{{
 	" new file 用にここで初期化
 	let datas = []
 
-	echo a:000
+	echo 'perforce#matomeDiffs -> ' string(a:000)
 	for chnum in a:000
 		" データの取得 {{{
 		let outs = perforce#cmd#base('describe -ds','',chnum).outs

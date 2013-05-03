@@ -60,8 +60,6 @@ let s:kind_filelog.action_table.a_p4_print_diff = {
 function! s:kind_filelog.action_table.a_p4_print_diff.func(candidates) "{{{
 	let candidates = [copy(a:candidates), copy(a:candidates)]
 	let candidates[1].action__revnum = candidates[1].action__revnum - 1
-	echo candidates
-	call input("")
 
 	return s:p4_print(candidates)
 endfunction
