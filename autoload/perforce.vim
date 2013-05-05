@@ -239,13 +239,8 @@ function! perforce#is_p4_haves_client(files) "{{{
 	" @par  2013/05/05
 	" ********************************************************************************
 	"
-	let clients = perforce#data#get('g:unite_perforce_clients')
+	let clients = perforce#get#clients()
 	let rtn_client_d = {}
-
-	" 初期状態の場合
-	if len(clients) < 1
-		let clients = [' ']
-	endif
 
 	for client in clients
 		let rtns_d = {
@@ -266,7 +261,6 @@ function! perforce#is_p4_haves_client(files) "{{{
 
 		" クライアント名をキーに設定する
 		let rtn_client_d[client] = rtns_d
-
 	endfor
 
 	return rtn_client_d

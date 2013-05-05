@@ -42,9 +42,8 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 	" グループの分類
 	let data_client_d = perforce#is_p4_haves_client(_files)
 
-	let outs = []
+	let all_outs = []
 
-	echo data_client_d
 	for client in keys(data_client_d)
 		let data_d = data_client_d[client]
 		let files_d['edit']  = data_d.true
@@ -57,13 +56,14 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 		for cmd in keys(files_d)
 			let files_ = files_d[cmd]
 			if len(files_) > 0
-				call extend(outs, perforce#cmd#clients#files_outs([client], cmd, files_))
+				let tmp_data_d = perforce#cmd#clients#files([client], cmd, files_)
+				call extend(all_outs, perforce#get#outs(tmp_data_d))
 			endif
 		endfor
 	endfor
 
 	" ログの表示
-	call perforce#LogFile(outs)
+	call perforce#LogFile(all_outs)
 endfunction
 "}}}
 function! perforce_2#revert(...) "{{{
@@ -111,6 +111,7 @@ endfunction
 function! perforce_2#show(str)
 	call perforce#common#LogFile('p4show', 1, a:str)
 endfunction
+
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

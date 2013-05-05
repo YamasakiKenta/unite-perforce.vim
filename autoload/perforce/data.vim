@@ -14,7 +14,7 @@ function! s:init() "{{{
 	let file_ = expand('~/.vim-unite-perforce')
 
 	call s:perforce_init(file_)
-	call s:perforce_add       ( 'g:unite_perforce_use_default'                   ,''                             , 'bool'          , 1)
+	" call s:perforce_add       ( 'g:unite_perforce_use_default'                   ,''                             , 'bool'          , 1)
 	call s:perforce_add       ( 'g:unite_perforce_clients'                       ,'perforce clients'             , 'list_ex'       , {'nums' : [0,1], 'items' : ['-p localhost:1819']}) 
 	call s:perforce_add       ( 'g:unite_perforce_diff_dw'                       ,'空白を無視する'               , 'bool'          , 1)
 	call s:perforce_add       ( 'g:unite_perforce_user_changes_only'             ,'ユーザー名でフィルタ'         , 'bool'          , 1) 

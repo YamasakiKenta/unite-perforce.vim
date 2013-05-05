@@ -38,8 +38,11 @@ function! perforce#diff#main(path) "{{{
 		return 
 	endif
 
+
 	" 最新 REV のファイルの取得
 	let outs = perforce#cmd#files_outs('print -q', [path])
+
+	echo outs
 
 	" ERROR
 	if outs[0] =~ "is not under client's root "
