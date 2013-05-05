@@ -48,6 +48,8 @@ function! perforce_2#revert(...) "{{{
 
 	let data_ds = []
 	call extend(data_ds, perforce#cmd#files('revert -a', files_))
+
+	" ★ クライアント環境で変える
 	" call add(data_ds, perforce#cmd#files('revert',    files_))
 
 	let outs = perforce#get#outs(data_ds)

@@ -185,17 +185,15 @@ function! perforce#unite_args(source) "{{{
 endfunction
 "}}}
 
-function! perforce#is_p4_have(str) "{{{
+function! s:is_p4_have(str) "{{{
 	" ********************************************************************************
 	" クライアントにファイルがあるか調べる
 	" @param[in]	str				ファイル名 , have の返り値
 	" @retval       flg		TRUE 	存在する
 	" @retval       flg		FLASE 	存在しない
 	" ********************************************************************************
-	" ★ perforce#is_p4_haves をまとめる
 	let str = system('p4 have '.perforce#common#get_kk(a:str))
-	let flg = s:is_p4_have_from_have(str)
-	return flg
+	return s:is_p4_have_from_have(str)
 endfunction
 "}}}
 function! perforce#is_p4_haves(files) "{{{
@@ -207,20 +205,13 @@ function! perforce#is_p4_haves(files) "{{{
 	" .true[]  = '' - have file name 
 	" .false[] = '' - not have file name
 	" ********************************************************************************
-	" ★ クライアントを変更する
 	let rtns_d = {
 				\ 'true'  : [],
 				\ 'false' : [],
 				\ }
 
 	for file_ in a:files
-		let str = system('p4 have '.perforce#common#get_kk(file_))
-		let flg = s:is_p4_have_from_have(str)
-		if flg == 1
-			let type = 'true'
-		else
-			let type = 'false'
-		endif
+		let type = ( s:is_p4_have(file_) == 1 ) ? 'true' : 'false'
 		call add(rtns_d[type], file_)
 	endfor
 

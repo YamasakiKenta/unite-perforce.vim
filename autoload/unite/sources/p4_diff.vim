@@ -64,59 +64,27 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 
 	" 引数がない場合は、空白を設定する ( 全検索 )
 	if len(a:args) > 0
-		let files   = a:args
+		let files_   = a:args
 		let all_flg = 0
 	else
-		let files   = ['']
-		let all_flg = 1
+		let files_   = ['']
+		let all_flg  = 1
 	endif
 
 	let rtns = []
 	let outs = []
-	" {{{
-	for file in files
-		if perforce#is_p4_have(file)
-			" ★ 
-			if 1
-				if perforce#data#get('g:unite_perforce_diff_dw', 'common') == 1
-					let outs += perforce#cmd#base('g:unite_perforce_diff_dw','',perforce#common#get_kk(file)).outs
-				else
-					let outs += perforce#cmd#base('diff','',perforce#common#get_kk(file)).outs
-				endif
-			endif
-		else
-			if 0
-				let rtns += [{
-							\ 'word' : file,
-							\ 'kind' : 'jump_list',
-							\ 'action__line' : 0,
-							\ 'action__path' : file,
-							\ 'action__text' : 0,
-							\ }]
-				echo 's:source_diff.gather_candidates ->' string(file)
-				let rtns += s:get_source_file_from_path(file)
-			endif
-		endif
+
+	let pfcmd  = ( perforce#data#get('g:unite_perforce_diff_dw', 'common') == 1 ? 'diff -dw' : 'diff' ) 
+
+	let data_d = perforce#is_p4_haves(files_)
+
+	for file in data_d.true
+		let outs += perforce#cmd#base(pfcmd, '', perforce#common#get_kk(file)).outs
 	endfor
-	"}}}
 
 	let rtns += s:perforce_get_file_source_diff(outs) 
 
-	" 表示をループさせる
-	if all_flg == 0
-		let nowline = line(".")
-		let cnt = 0
-		for rtn in rtns
-			let line = rtn.action__line
-			if line >= nowline
-				exe 'let rtns = rtns['.cnt.':-1]  + rtns[0:'.cnt.']'
-				break
-			endif
-			let cnt += 1
-		endfor
-	endif
-
-	" add したファイルを追加する
+	" add したファイルを追加する "{{{
 	if all_flg
 		let opened_strs = perforce#cmd#base('opened','').outs
 
@@ -133,13 +101,12 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 							\ 'action__text' : 0,
 							\ }]
 
-				echo "s:source_diff.gather_candidates" string(path)
-				call input("")
 				let rtns += s:get_source_file_from_path(path)
 			endif
 		endfor
 
 	endif
+	"}}}
 	return rtns
 endfunction
 "}}}

@@ -446,7 +446,12 @@ function! perforce#cmd#files(pfcmd, files) "{{{
 		" DO NOTHING
 	endif
 
-	return perforce#cmd#new(pfcmd, '', join(a:files))
+	let data_d = perforce#is_p4_haves_client(a:files)
+
+	for client in keys(data_d)
+		let files = data_d[client].true
+		return perforce#cmd#clients#files(client, pfcmd, files)
+	endfor
 
 endfunction
 "}}}
