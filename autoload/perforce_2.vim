@@ -40,21 +40,26 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 				\ }
 
 	" グループの分類
-	let data_d = perforce#is_p4_haves(_files)
+	let data_client_d = perforce#is_p4_haves_client(_files)
 
-	let files_d['edit']  = data_d.true
-
-	if ( a:add_flg == 1 )
-		let files_d['add']   = data_d.false
-	endif
-
-	" コマンドを実行する
 	let outs = []
-	for cmd in keys(files_d)
-		let files_ = files_d[cmd]
-		if len(files_) > 0
-			call extend(outs, perforce#cmd#files_outs(cmd, files_))
+
+	echo data_client_d
+	for client in keys(data_client_d)
+		let data_d = data_client_d[client]
+		let files_d['edit']  = data_d.true
+
+		if ( a:add_flg == 1 )
+			let files_d['add']   = data_d.false
 		endif
+
+		" コマンドを実行する
+		for cmd in keys(files_d)
+			let files_ = files_d[cmd]
+			if len(files_) > 0
+				call extend(outs, perforce#cmd#clients#files_outs([client], cmd, files_))
+			endif
+		endfor
 	endfor
 
 	" ログの表示

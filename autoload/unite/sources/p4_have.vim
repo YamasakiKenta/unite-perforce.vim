@@ -43,7 +43,10 @@ endfunction
 "}}}
 
 function! unite#sources#p4_have#define()
-	return [s:souce_p4have, s:souce_p4have_reset]
+	return [
+				\ s:souce_p4have,
+				\ s:souce_p4have_reset
+				\ ]
 endfunction
 
 let s:source = {

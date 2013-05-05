@@ -212,6 +212,7 @@ function! perforce#is_p4_haves(files) "{{{
 				\ 'true'  : [],
 				\ 'false' : [],
 				\ }
+
 	for file_ in a:files
 		let str = system('p4 have '.perforce#common#get_kk(file_))
 		let flg = s:is_p4_have_from_have(str)
@@ -224,6 +225,52 @@ function! perforce#is_p4_haves(files) "{{{
 	endfor
 
 	return rtns_d
+endfunction
+"}}}
+function! perforce#is_p4_haves_client(files) "{{{
+	" ********************************************************************************
+	" クライアントにファイルがあるか調べる
+	" @param[in]	files[] = '' - file name
+	"
+	" @return rtns_d
+	" {client}.true[]    = '' -     have file name 
+	" {client}.false[]   = '' - not have file name
+	"
+	" @par  2013/05/05
+	" ********************************************************************************
+	"
+	let clients = perforce#data#get('g:unite_perforce_clients')
+	let rtn_client_d = {}
+
+	" 初期状態の場合
+	if len(clients) < 1
+		let clients = [' ']
+	endif
+
+	for client in clients
+		let rtns_d = {
+					\ 'true'  : [],
+					\ 'false' : [],
+					\ }
+
+		for file_ in a:files
+			let str = system('p4 have '.perforce#common#get_kk(file_))
+			let flg = s:is_p4_have_from_have(str)
+			if flg == 1
+				let type = 'true'
+			else
+				let type = 'false'
+			endif
+			call add(rtns_d[type], file_)
+		endfor
+
+		" クライアント名をキーに設定する
+		let rtn_client_d[client] = rtns_d
+
+	endfor
+
+	return rtn_client_d
+
 endfunction
 "}}}
 
