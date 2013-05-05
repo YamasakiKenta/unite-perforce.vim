@@ -24,8 +24,6 @@ function! s:init() "{{{
 	call s:perforce_add       ( 'g:unite_perforce_is_out_echo_flg'               ,'実行結果を出力する'           , 'select'        , {'num'  : 0,     'items' : ['echo', 'log', 'none'],      'consts' : [0, 1, 2]})
 	call s:perforce_add       ( 'g:unite_perforce_show_cmd'                      ,'p4 コマンドを表示する'        , 'select'        , {'num'  : 0,     'items' : ['false', 'true', 'stop'],    'consts' : [0, 1, 2]}) 
 	call s:perforce_add       ( 'g:unite_perforce_diff_tool'                     ,'Diff で使用するツール'        , 'select'        , {'num'  : 0,     'items' : ['vimdiff', 'WinMergeU'],     'consts' : [0]}) 
-	call s:perforce_add       ( 'g:perforce_merge_tool'                          ,'マージコマンド'               , 'select'        , {'num'  : 0,     'items' : ['winmergeu /S']}) 
-	call s:perforce_add       ( 'g:perforce_merge_default_path'                  ,'マージ、比較先フォルダ'       , 'select'        , {'num'  : 0,     'items' : ['c:\tmp']}) 
 	call s:perforce_add       ( 'g:unite_perforce_is_submit_flg'                 ,'サブミットを許可'             , 'bool'          , 0) 
 	call s:perforce_load()
 

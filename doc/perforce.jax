@@ -17,9 +17,6 @@ Actions    |unite-perforce-actions|
 ==============================================================================
 Commands					*unite-perforce-commands*
 
-:PfMerge {path}		*:PfMerge*
-	perforce のクライアントパスと、指定したパスと比較します。
-
 :PfEdit {filename} *:PfEdit*
 	現在のファイル、もしくは{filename}を編集状態にします。
 
@@ -45,12 +42,6 @@ Commands					*unite-perforce-commands*
 
 ------------------------------------------------------------------------------
 Variables						*unite-perforce-variables*
-
-g:perforce_merge_tool *g:perforce_merge_tool*
-	|:PfMerge|で使用するツール
-
-g:perforce_merge_default_path *g:perforce_merge_default_path*
-	|:PfMerge|のデフォルトルート
 
 g:pf_setting.bool.user_changes_only.value	*g:pf_setting.bool.user_changes_only.value*
 		user name で changelist を filter する

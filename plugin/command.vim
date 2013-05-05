@@ -15,8 +15,6 @@ command! -nargs=? PfDiff   call perforce#diff#file(<f-args>)
 
 command! -nargs=? PfRevert call perforce_2#revert(<f-args>)
 
-command! -nargs=? PfMerge call perforce_2#pf_merge(<q-args>)
-
 let &cpo = s:save_cpo
 unlet s:save_cpo
 

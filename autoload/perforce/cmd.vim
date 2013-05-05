@@ -415,6 +415,41 @@ function! perforce#cmd#files_outs(pfcmd, files) "{{{
 
 endfunction
 "}}}
+function! perforce#cmd#files(pfcmd, files) "{{{
+	" ********************************************************************************
+	" @param[in]   a:pfcmd    = 'diff'
+	" @param[in]   a:files[]  = ''
+	"
+	" @return      
+	" .cmd     = 'p4 edit'
+	" .outs[]  = ''
+	" ********************************************************************************
+	let pfcmd = a:pfcmd
+
+	let pfcmds = [
+				\ 'diff'
+				\ ]
+	if a:pfcmd =~ join(pfcmds, '\|')
+		if perforce#data#get('g:unite_perforce_diff_dw', 'common') == 1
+			let pfcmd = 'diff -dw'
+		endif
+	endif
+
+	let pfcmds = [
+				\ 'edit',
+				\ 'add',
+				\ 'revert -a',
+				\ 'revert',
+				\ 'print -q',
+				\ ]
+	if a:pfcmd =~ join(pfcmds, '\|')
+		" DO NOTHING
+	endif
+
+	return perforce#cmd#new(pfcmd, '', join(a:files))
+
+endfunction
+"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
