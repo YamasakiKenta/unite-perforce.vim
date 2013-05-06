@@ -8,7 +8,8 @@ function! s:perforce_cmd_clients_main(clients, pfcmd, ...) "{{{
 	let data_ds = []
 
 	" ない場合は、空白をセットする
-	let clients = len(a:clients) ? [' '] : a:clients
+	
+	let clients = len(a:clients) ? a:clients : [' ']
 
 	for client in clients 
 		let header = client.' '.header_base

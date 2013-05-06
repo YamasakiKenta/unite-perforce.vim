@@ -377,7 +377,7 @@ function! perforce#cmd#files(pfcmd, files, have_flg) "{{{
 	for have_type in have_types
 		for client in keys(data_d[have_type])
 			let files = data_d.true[client]
-			call extend(rtn_ds, perforce#cmd#clients#files(client, pfcmd, files))
+			call extend(rtn_ds, perforce#cmd#clients#files([client], pfcmd, files))
 		endfor
 	endfor
 
