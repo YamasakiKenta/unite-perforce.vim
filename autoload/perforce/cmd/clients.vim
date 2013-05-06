@@ -28,9 +28,13 @@ function! perforce#cmd#clients#files(clients, pfcmd, files) "{{{
 	" [].outs     =  []  - cmd outputs
 	" ********************************************************************************
 	"
-	let header = ''
-	let footer = '"'.join(a:files, '" "').'"'
-	return s:perforce_cmd_clients_main(a:clients, a:pfcmd, header, footer)
+	let rtn_d = [{ 'cmd' : '', 'outs' : [] }]
+	if len(a:files)
+		let header = ''
+		let footer = '"'.join(a:files, '" "').'"'
+		let rtn_d = s:perforce_cmd_clients_main(a:clients, a:pfcmd, header, footer)
+	endif
+	return rtn_d
 endfunction
 "}}}
 

@@ -61,31 +61,7 @@ function! s:pfcmds_with_clients_from_data(pfcmd, head, tail) "{{{
 	return  s:pfcmds_with_clients_and_unite_mes(clients, a:pfcmd, a:head, a:tail)
 endfunction
 "}}}
-function! perforce#cmd#new_outs(pfcmd, head, tail) "{{{
-	" ********************************************************************************
-	" @param[in]    a:pfcmd  = 'opened'
-	" @param[in]    a:head   = ''
-	" @param[in]    a:tail   = ''
-	"
-	" @return       rtns[]
-	" .client' = '-p localhost:1818 -c origin' 
-	" .cmd     = 'p4 opened'
-	" .outs[]  = ''  - cmd outputs
-	" ********************************************************************************
-	let client_default_flg = 0 " perforce#data#get('g:unite_perforce_use_default')
-	if client_default_flg == 1
-		let tmp = perforce#cmd#base(a:pfcmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get#PFPORT().' -c '.perforce#get#PFCLIENTNAME()
-		let rtns = [tmp]
-	else
-		let rtns = s:pfcmds_with_clients_from_data(a:pfcmd, a:head, a:tail)
-	endif
 
-	let rtns = perforce#get#outs(rtns)
-
-	return rtns
-endfunction
-"}}}
 function! perforce#cmd#new(pfcmd, head, tail) "{{{
 	" ********************************************************************************
 	" @param[in]      a:pfcmd = ''
@@ -353,50 +329,6 @@ function! perforce#cmd#main(pfcmd) "{{{
 endfunction
 "}}}
 " now making
-function! perforce#cmd#files_outs(pfcmd, files) "{{{
-	" ********************************************************************************
-	" @param[in]   a:pfcmd    = 'diff'
-	" @param[in]   a:files[]  = ''
-	"
-	" @return      
-	" .cmd     = 'p4 edit'
-	" .outs[]  = ''
-	" ********************************************************************************
-	let pfcmd = a:pfcmd
-
-	let pfcmds = [
-				\ 'diff'
-				\ ]
-	if a:pfcmd =~ join(pfcmds, '\|')
-		if perforce#data#get('g:unite_perforce_diff_dw', 'common') == 1
-			let pfcmd = 'diff -dw'
-		endif
-	endif
-
-	let pfcmds = [
-				\ 'edit',
-				\ 'add',
-				\ 'revert -a',
-				\ 'revert',
-				\ 'print -q',
-				\ ]
-	if a:pfcmd =~ join(pfcmds, '\|')
-		" DO NOTHING
-	endif
-
-	echo pfcmd
-	echo a:files
-
-	if len(a:files) > 0
-		let outs = perforce#cmd#new_outs(pfcmd, '', join(a:files))
-	else
-		let outs = []
-	endif
-
-	return outs
-
-endfunction
-"}}}
 function! perforce#cmd#files(pfcmd, files, have_flg) "{{{
 	" ********************************************************************************
 	" @param[in]   a:pfcmd       = 'diff'
@@ -431,7 +363,6 @@ function! perforce#cmd#files(pfcmd, files, have_flg) "{{{
 		" DO NOTHING
 	endif
 
-	let data_d = perforce#is_p4_haves_client2(a:files)
 	let rtn_ds = []
 
 	if a:have_flg == 1
@@ -442,6 +373,7 @@ function! perforce#cmd#files(pfcmd, files, have_flg) "{{{
 		let have_types = ['true', 'false']
 	endif
 
+	let data_d = perforce#is_p4_haves_client2(a:files)
 	for have_type in have_types
 		for client in keys(data_d[have_type])
 			let files = data_d.true[client]

@@ -44,8 +44,6 @@ function! perforce_2#revert(...) "{{{
 	" ********************************************************************************
 	" @param[in] ƒtƒ@ƒCƒ‹–¼
 	" ********************************************************************************
-	" let have_d = perforce#is_p4_haves(files_)
-	"
 	let files_ = call('perforce#util#get_files', a:000)
 
 	let data_ds = []

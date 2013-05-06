@@ -231,6 +231,7 @@ function! perforce#is_p4_haves_client2(files) "{{{
 	" ********************************************************************************
 	"
 	let clients = perforce#get#clients()
+	echo "perforce#is_p4_haves_client2 ->" clients
 	let rtn_client_d = {}
 
 	let rtns_d = {
@@ -243,7 +244,7 @@ function! perforce#is_p4_haves_client2(files) "{{{
 		let rtns_d.false[client] = []
 
 		for file_ in a:files
-			let str = system('p4 have '.perforce#common#get_kk(file_))
+			let str = system('p4 '.client.' have '.perforce#common#get_kk(file_))
 			if s:is_p4_have_from_have(str) == 1
 				let type = 'true'
 			else

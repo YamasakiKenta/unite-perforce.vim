@@ -74,13 +74,9 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 	let rtns = []
 	let outs = []
 
-	let pfcmd  = ( perforce#data#get('g:unite_perforce_diff_dw', 'common') == 1 ? 'diff -dw' : 'diff' ) 
+	let files_d = perforce#cmd#files('diff', files_, 1)
 
-	let data_d = perforce#is_p4_haves(files_)
-
-	for file in data_d.true
-		let outs += perforce#cmd#base(pfcmd, '', perforce#common#get_kk(file)).outs
-	endfor
+	let outs    = perforce#get#outs(files_d)
 
 	let rtns += s:perforce_get_file_source_diff(outs) 
 
