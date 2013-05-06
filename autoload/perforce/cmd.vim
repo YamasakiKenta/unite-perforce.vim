@@ -1,24 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:pfcmds_new_get_outs(datas) "{{{
-	" ********************************************************************************
-	" @param[in]  datas
-	" .cmd      = 'p4 opened'
-	" .client   = '-p localhost:1818 -c origin'
-	" .outs[]   = ''
-	"
-	" @return    outs[] = '' - èoóÕåãâ ÇÇ‹Ç∆ÇﬂÇÈ
-	" ********************************************************************************
-	let outs = []
-	for data in a:datas
-		call extend(outs, get(data, 'outs', []))
-	endfor
-
-	return outs
-endfunction
-"}}}
-
 function! s:pfcmds_port_only(pfcmd, head, tail) "{{{
 	" ********************************************************************************
 	" @param[in]     a:pfcmd      = 'opened'
@@ -99,7 +81,7 @@ function! perforce#cmd#new_outs(pfcmd, head, tail) "{{{
 		let rtns = s:pfcmds_with_clients_from_data(a:pfcmd, a:head, a:tail)
 	endif
 
-	let rtns = s:pfcmds_new_get_outs(rtns)
+	let rtns = perforce#get#outs(rtns)
 
 	return rtns
 endfunction
@@ -415,14 +397,17 @@ function! perforce#cmd#files_outs(pfcmd, files) "{{{
 
 endfunction
 "}}}
-function! perforce#cmd#files(pfcmd, files) "{{{
+function! perforce#cmd#files(pfcmd, files, have_flg) "{{{
 	" ********************************************************************************
-	" @param[in]   a:pfcmd    = 'diff'
-	" @param[in]   a:files[]  = ''
+	" @param[in]   a:pfcmd       = 'diff'
+	" @param[in]   a:files[]     = ''
+	" @param[in]   a:have_flg[]  = 1 ot 0 - (1:true, 0:false, -1:true and false)
 	"
 	" @return      
-	" .cmd     = 'p4 edit'
-	" .outs[]  = ''
+	" [].cmd     = 'p4 edit'
+	" [].outs[]  = '' - cmd output line
+	"
+	" @par 2013/05/06
 	" ********************************************************************************
 	let pfcmd = a:pfcmd
 
@@ -446,13 +431,25 @@ function! perforce#cmd#files(pfcmd, files) "{{{
 		" DO NOTHING
 	endif
 
-	let data_d = perforce#is_p4_haves_client(a:files)
+	let data_d = perforce#is_p4_haves_client2(a:files)
+	let rtn_ds = []
 
-	for client in keys(data_d)
-		let files = data_d[client].true
-		return perforce#cmd#clients#files(client, pfcmd, files)
+	if a:have_flg == 1
+		let have_types = ['true']
+	elseif a:have_flg == 0
+		let have_types = ['false']
+	else
+		let have_types = ['true', 'false']
+	endif
+
+	for have_type in have_types
+		for client in keys(data_d[have_type])
+			let files = data_d.true[client]
+			call extend(rtn_ds, perforce#cmd#clients#files(client, pfcmd, files))
+		endfor
 	endfor
 
+	return rtn_ds
 endfunction
 "}}}
 

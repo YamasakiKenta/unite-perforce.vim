@@ -39,6 +39,14 @@ function! perforce#get#PFUSER()
 endfunction 
 
 function! perforce#get#outs(data_ds)
+	" ********************************************************************************
+	" @param[in]  datas
+	" .cmd      = 'p4 opened'
+	" .client   = '-p localhost:1818 -c origin'
+	" .outs[]   = ''
+	"
+	" @return    outs[] = '' - o—ÍŒ‹‰Ê‚ğ‚Ü‚Æ‚ß‚é
+	" ********************************************************************************
 	let outs = []
 	for data_d in a:data_ds
 		call extend(outs, get(data_d, 'outs', []))

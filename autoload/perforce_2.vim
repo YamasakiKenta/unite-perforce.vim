@@ -30,9 +30,11 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 	let files_ = call('perforce#util#get_files', a:000)
 
 	let data_ds = []
-	call extend(data_ds, perforce#cmd#files('edit', files_))
+	let data_d = perforce#cmd#files('edit', files_, 1)
+	call extend(data_ds, data_d)
 	if ( a:add_flg == 1 )
-		call extend(data_ds, perforce#cmd#files('add', files_))
+		let data_d = perforce#cmd#files('add', files_, 0)
+		call extend(data_ds, data_d)
 	endif
 
 	let outs = perforce#get#outs(data_ds)
@@ -47,10 +49,10 @@ function! perforce_2#revert(...) "{{{
 	let files_ = call('perforce#util#get_files', a:000)
 
 	let data_ds = []
-	call extend(data_ds, perforce#cmd#files('revert -a', files_))
+	call extend(data_ds, perforce#cmd#files('revert -a', files_, 1))
 
 	" ★ クライアント環境で変える
-	" call add(data_ds, perforce#cmd#files('revert',    files_))
+	call extend(data_ds, perforce#cmd#files('revert', files_, 0))
 
 	let outs = perforce#get#outs(data_ds)
 

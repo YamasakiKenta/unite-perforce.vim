@@ -218,14 +218,14 @@ function! perforce#is_p4_haves(files) "{{{
 	return rtns_d
 endfunction
 "}}}
-function! perforce#is_p4_haves_client(files) "{{{
+function! perforce#is_p4_haves_client2(files) "{{{
 	" ********************************************************************************
 	" クライアントにファイルがあるか調べる
 	" @param[in]	files[] = '' - file name
 	"
 	" @return rtns_d
-	" {client}.true[]    = '' -     have file name 
-	" {client}.false[]   = '' - not have file name
+	" true.{client}[]    = '' -     have file name 
+	" false.{client}[]   = '' - not have file name
 	"
 	" @par  2013/05/05
 	" ********************************************************************************
@@ -233,28 +233,28 @@ function! perforce#is_p4_haves_client(files) "{{{
 	let clients = perforce#get#clients()
 	let rtn_client_d = {}
 
+	let rtns_d = {
+				\ 'true'  : {},
+				\ 'false' : {},
+				\ }
 	for client in clients
-		let rtns_d = {
-					\ 'true'  : [],
-					\ 'false' : [],
-					\ }
+
+		let rtns_d.true[client]  = []
+		let rtns_d.false[client] = []
 
 		for file_ in a:files
 			let str = system('p4 have '.perforce#common#get_kk(file_))
-			let flg = s:is_p4_have_from_have(str)
-			if flg == 1
+			if s:is_p4_have_from_have(str) == 1
 				let type = 'true'
 			else
 				let type = 'false'
 			endif
-			call add(rtns_d[type], file_)
+			call add(rtns_d[type][client], file_)
 		endfor
 
-		" クライアント名をキーに設定する
-		let rtn_client_d[client] = rtns_d
 	endfor
 
-	return rtn_client_d
+	return rtns_d
 
 endfunction
 "}}}
