@@ -74,7 +74,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 	let rtns = []
 	let outs = []
 
-	let files_d = perforce#cmd#files('diff', files_, 1)
+	let files_d = perforce#cmd#files('diff', files_, 1, 1)
 
 	let outs    = perforce#get#outs(files_d)
 

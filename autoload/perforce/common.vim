@@ -14,9 +14,6 @@ endfunction
 function! perforce#common#get_pathSrash(...)
 	return call(s:Common.get_pathSrash, a:000)
 endfunction
-function! perforce#common#uniq(...)
-	return call(s:List.uniq, a:000)
-endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

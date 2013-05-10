@@ -40,10 +40,13 @@ function! perforce#diff#main(path) "{{{
 
 
 	" 最新 REV のファイルの取得
-	let outs = perforce#cmd#files('print -q', [path], 1)[0].outs
+	let outs = perforce#cmd#files('print -q', [path], 1, 1)[0].outs
 
 	" ERROR
-	if outs[0] =~ "is not under client's root "
+	if !exists('outs[0]')
+		echo 'not find'
+		return 
+	elseif outs[0] =~ "is not under client's root "
 		call perforce_2#echo_error("is not under client's root")
 		return
 	endif

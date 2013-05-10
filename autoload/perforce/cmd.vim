@@ -329,11 +329,13 @@ function! perforce#cmd#main(pfcmd) "{{{
 endfunction
 "}}}
 " now making
-function! perforce#cmd#files(pfcmd, files, have_flg) "{{{
+function! perforce#cmd#files(pfcmd, files, have_flg, onetime) "{{{
 	" ********************************************************************************
 	" @param[in]   a:pfcmd       = 'diff'
 	" @param[in]   a:files[]     = ''
-	" @param[in]   a:have_flg[]  = 1 ot 0 - (1:true, 0:false, -1:true and false)
+	" @param[in]   a:have_flg[]  = true / false 
+	" @param[in]   a:onetime[]   = true / false 
+	"                              最初に見つかったファイルのみ実行する
 	"
 	" @return      
 	" [].cmd     = 'p4 edit'
@@ -374,10 +376,20 @@ function! perforce#cmd#files(pfcmd, files, have_flg) "{{{
 	endif
 
 	let data_d = perforce#is_p4_haves_client2(a:files)
+
+	echo data_d
 	for have_type in have_types
 		for client in keys(data_d[have_type])
-			let files = data_d.true[client]
-			call extend(rtn_ds, perforce#cmd#clients#files([client], pfcmd, files))
+			let files = data_d[have_type][client]
+			echo 'fiels -> '.string(files)
+			let tmp_ds = perforce#cmd#clients#files([client], pfcmd, files)
+
+			" ★ 上の関数で行う
+			for tmp_d in tmp_ds
+				if len(tmp_d.cmd)
+					call add(rtn_ds, tmp_d)
+				endif
+			endfor
 		endfor
 	endfor
 
