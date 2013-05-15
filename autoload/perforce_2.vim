@@ -65,6 +65,17 @@ function! perforce_2#show(str)
 	call perforce#common#LogFile('p4show', 1, a:str)
 endfunction
 
+"new
+function! perforce_2#get_args(default_key, args)
+	if len(a:args) == 0
+		let data_ds = [{}]
+	elseif type({}) == type(a:args[0])
+		let data_ds = a:args
+	else
+		let data_ds = map(a:args, "{ default_key : v:val }")
+	endif
+	return data_ds
+endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

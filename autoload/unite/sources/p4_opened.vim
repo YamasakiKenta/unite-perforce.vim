@@ -21,16 +21,9 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 	" @param[in]     a:args[] = NULL,
 	"                           0,
 	"                           {'chnum' : 1, 'client' : '-p localhost:1818' }:
-	" @return        <`3`> = <`4`>
 	" ********************************************************************************
 	" ˆø”‚Ìİ’è
-	if len(a:args) == 0
-		let data_ds = [{}]
-	elseif type({}) == type(a:args[0])
-		let data_ds = a:args
-	else
-		let data_ds = map(a:args, "{'chnum': v:val}")
-	endif
+	let data_ds = perforce_2#get_args('chnum', a:args)
 
 	let tmps = []
 	for data_d in data_ds
