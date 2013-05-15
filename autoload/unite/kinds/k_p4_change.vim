@@ -61,9 +61,10 @@ let s:kind_k_p4_change_pending.action_table.delete = {
 function! s:kind_k_p4_change_pending.action_table.delete.func(candidates) "{{{
 	let i = 1
 	for l:candidate in a:candidates
-		let num = l:candidate.action__chnum
-		let out = system('p4 change -d '.num)
-		let outs = split(out,'\n')
+		let num    = l:candidate.action__chnum
+		let client = l:candidate.action__client
+		let out    = system('p4 '.client.' change -d '.num)
+		let outs   = split(out,'\n')
 		call perforce#LogFile(outs)
 		let i += len(outs)
 	endfor
@@ -78,13 +79,19 @@ let s:kind_k_p4_change_pending.action_table.a_p4_change_opened = {
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_opened.func(candidates) "{{{
 
-	let chnums = []
+	let data_ds = []
 	for candidate in a:candidates
 		" チェンジリストの番号の取得をする
-		let chnums += [s:make_new_changes(candidate)]
+		let data_d= {
+					\ 'chnum'  : s:make_new_changes(candidate),
+					\ 'client' : candidate.action__client,
+					\ }
+		call add(data_ds, data_d)
 	endfor
 
-	call unite#start_temporary([insert(chnums,'p4_opened')]) " # 閉じない ? 
+	echo 's:kind_k_p4_change_pending.action_table.a_p4_change_opened.func - ' string(data_ds)
+
+	call unite#start_temporary([insert(data_ds, 'p4_opened')]) " # 閉じない ? 
 endfunction
 "}}}
 

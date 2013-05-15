@@ -9,31 +9,47 @@ endfunction
 " source - p4_opened 
 " @param[in]	args		表示するチェンジリスト
 " ********************************************************************************
-let s:source = {
+let s:source_p4_opened = {
 			\ 'name' : 'p4_opened',
 			\ 'description' : '編集しているファイルの表示 ( チェンジリスト番号 )',
 			\ 'is_quit' : 0,
 			\ }
 
 
-function! s:source.gather_candidates(args, context) "{{{
-
+function! s:source_p4_opened.gather_candidates(args, context) "{{{
+	" ********************************************************************************
+	" @param[in]     a:args[] = NULL,
+	"                           0,
+	"                           {'chnum' : 1, 'client' : '-p localhost:1818' }:
+	" @return        <`3`> = <`4`>
+	" ********************************************************************************
 	" 引数の設定
-	if len(a:args) > 0
-		let datas = map(a:args, "'-c '.v:val")
-	else 
-		let datas = [""]
+	if len(a:args) == 0
+		let data_ds = [{}]
+	elseif type({}) == type(a:args[0])
+		let data_ds = a:args
+	else
+		let data_ds = map(a:args, "{'chnum': v:val}")
 	endif
 
 	let tmps = []
-	for arg in datas
-		call extend(tmps, perforce#cmd#new('opened', '', arg))
+	for data_d in data_ds
+		if exists('data_d.chnum')
+			let chnum = '-c '.data_d['chnum']
+		else
+			let chnum = ''
+		endif
+
+		if exists('data_d.client')
+			call extend(tmps, perforce#cmd#clients([data_d.client], 'opened', '', chnum))
+		else
+			call extend(tmps, perforce#cmd#new('opened', '', chnum))
+		endif
 	endfor
 
 	" 追加ファイルだと問題が発生する
 	let candidates = []
 	for tmp in tmps
-
 		let client = tmp.client
 		let tmps = map(tmp.outs, "{
 					\ 'word'           : ''.client.' : '.v:val,
@@ -48,7 +64,6 @@ function! s:source.gather_candidates(args, context) "{{{
 	return candidates
 endfunction
 "}}}
-let s:source_p4_opened = deepcopy(s:source)
 
 call unite#define_source(s:source_p4_opened) 
 

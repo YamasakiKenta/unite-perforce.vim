@@ -150,6 +150,10 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 	return rtn_d
 endfunction
 "}}}
+"
+function! perforce#cmd#clients(...)
+	return call('s:pfcmds_with_clients', a:000)
+endfunction
 " ----
 "  NEW
 " ----

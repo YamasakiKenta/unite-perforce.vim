@@ -37,6 +37,9 @@ function! s:get_pfchanges(context,outs,kind) "{{{
 	return candidates
 endfunction
 "}}}
+function! s:get_client_from_clients_cmd(str)
+	return ''
+endfunction
 
 " ********************************************************************************
 " source - p4_changes_pending
@@ -56,16 +59,23 @@ function! s:source_p4_changes_pending.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	"
 	" 表示するクライアント名の取得
-	let outs = perforce#data#get('g:unite_perforce_client_changes_only') ? 
-				\ [perforce#get#PFCLIENTNAME()] : 
-				\ perforce#cmd#base('clients','').outs
+	let origin_clients = perforce#data#get('g:unite_perforce_clients')
+
+	if perforce#data#get('g:unite_perforce_client_changes_only') == 1
+		let clients = origin_clients
+	else
+		let port = map(cpy(clients), 'matchstr('-p\s\+\w*')
+	endif
+
+	echo clients 
 
 	" defaultの表示
 	let rtn = []
-	let rtn += map( outs, "{
+	let rtn += map( clients, "{
 				\ 'word'           : 'default by '.v:val,
 				\ 'kind'           : 'k_p4_change_pending',
 				\ 'action__chnum'  : 'default',
+				\ 'action__client' : v:val,
 				\ 'action__depots' : a:context.source__depots,
 				\ }")
 

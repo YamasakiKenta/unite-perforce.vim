@@ -47,8 +47,8 @@ function! perforce_2#revert(...) "{{{
 	let files_ = call('perforce#util#get_files', a:000)
 
 	let data_ds = []
-	call extend(data_ds, perforce#cmd#files('revert -a', files_, 1, 1))
-	call extend(data_ds, perforce#cmd#files('revert'   , files_, 0, 1))
+	call extend(data_ds, perforce#cmd#files('revert -a', files_, 0, 1))
+	call extend(data_ds, perforce#cmd#files('revert'   , files_, 1, 1))
 
 	let outs = perforce#get#outs(data_ds)
 
