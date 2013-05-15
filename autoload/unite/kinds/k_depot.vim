@@ -219,9 +219,17 @@ let s:kind_depot.action_table.a_p4_reopen = {
 			\ }
 function! s:kind_depot.action_table.a_p4_reopen.func(candidates) "{{{
 	let reopen_depots= [] " # ‰Šú‰»
+	let client = a:candidates[0].action__client
 	for l:candidate in a:candidates
 		call add(reopen_depots, l:candidate.action__depot) " # •Û‘¶
+
+		if client != l:candidate.action__client
+			call perforce_2#echo_error('no match '. string(client))
+			return 
+		endif
 	endfor
+
+
 
 	" call unite#start_temporary([insert(reopen_depots,'p4_changes_pending_reopen')])
 	call unite#start([insert(reopen_depots,'p4_changes_pending_reopen')])

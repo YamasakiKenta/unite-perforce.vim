@@ -58,16 +58,6 @@ function! s:source_p4_changes_pending.gather_candidates(args, context) "{{{
 	" @param[in]	args				depot
 	" ********************************************************************************
 	"
-	" 引数の設定
-	if len(a:args) == 0
-		let data_ds = [{}]
-	elseif type({}) == type(a:args[0])
-		let data_ds = a:args
-	else
-		let data_ds = map(a:args, "{'depot': v:val}")
-	endif
-	let data_ds = perforce_2#get_args('depot', a:args)
-	"
 	" 表示するクライアント名の取得
 	let origin_clients = perforce#data#get('g:unite_perforce_clients')
 

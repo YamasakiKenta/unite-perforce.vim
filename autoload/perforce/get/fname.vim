@@ -17,9 +17,10 @@ endfunction
 
 function! perforce#get#fname#for_unite(args, context) 
 	" ƒtƒ@ƒCƒ‹–¼‚ÌŽæ“¾
-	let a:context.source__path = expand('%:p')
-	let a:context.source__linenr = line('.')
-	let a:context.source__depots = s:get_depots(a:args, a:context.source__path)
+	let a:context.source__path          = expand('%:p')
+	let a:context.source__linenr        = line('.')
+	let a:context.source__depots        = s:get_depots(copy(a:args), a:context.source__path)
+	let a:context.source__client_depots = perforce_2#get_args_2('depots', a:args)
 	call unite#print_message('[line] Target: ' . a:context.source__path)
 endfunction
 
