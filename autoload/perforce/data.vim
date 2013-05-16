@@ -13,7 +13,7 @@ function! s:init() "{{{
 	let file_ = expand('~/.vim-unite-perforce')
 
 	call s:perforce_init(file_)
-	call s:perforce_add       ( 'g:unite_perforce_clients'                       ,'perforce clients'             , 'list_ex'       , {'nums' : [0,1], 'items' : ['-p localhost:1819']}) 
+	call s:perforce_add       ( 'g:unite_perforce_clients'                       ,'perforce clients'             , 'list_ex'       , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
 	call s:perforce_add       ( 'g:unite_perforce_diff_dw'                       ,'空白を無視する'               , 'bool'          , 1)
 	call s:perforce_add       ( 'g:unite_perforce_user_changes_only'             ,'ユーザー名でフィルタ'         , 'bool'          , 1) 
 	call s:perforce_add       ( 'g:unite_perforce_client_changes_only'           ,'クライアントでフィルタ'       , 'bool'          , 1) 
@@ -43,12 +43,11 @@ function! s:perforce_init(...)
 	return call('unite_setting_ex#init', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! s:perforce_load(...) 
-	return call('unite_setting_ex#load', extend(['g:unite_pf_data'] , a:000))
+	" return call('unite_setting_ex#load', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! perforce#data#get(valname, ...) "{{{
 	call s:init()
-	let kind = '__common'
-	return unite_setting_ex#get('g:unite_pf_data', a:valname, kind)
+	return unite_setting_ex#get('g:unite_pf_data', a:valname)
 endfunction
 "}}}
 function! perforce#data#setting() "{{{

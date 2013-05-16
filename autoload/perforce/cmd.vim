@@ -183,11 +183,10 @@ function! s:get_outs(cmd) "{{{
 	" @return        outs[] = '' - èoóÕåãâ 
 	" ********************************************************************************
 	" @par filter ÇèúÇ¢ÇΩílÇï‘ÇµÇ‹Ç∑
-	let kind = '__common'
 	echo 's:get_outs -> ' a:cmd
 	let outs = split(system(a:cmd),'\n')
 
-	let filters_ = perforce#data#get('g:unite_perforce_filters',kind)
+	let filters_ = perforce#data#get('g:unite_perforce_filters')
 	if len(join(filters_)) > 0
 		let filter_ = join( filters_, '\|' ) 
 		call filter(outs, 'v:val !~ filter_')
@@ -264,23 +263,20 @@ function! s:pfcmds_with_clients(clients, pfcmd, head, tail) "{{{
 	" .outs[] = ''  
 	" ********************************************************************************
 
-	let kind = '__common'
 	let foot_d = {}
 	let foot_d.base = a:tail
 
-
-
-	let max_ = perforce#data#get('g:unite_perforce_show_max', kind)
+	let max_ = perforce#data#get('g:unite_perforce_show_max')
 	if max_ > 0
 		foot_d.max = '-m '.max_
 	endif 
 
-	if perforce#data#get('g:unite_perforce_user_changes_only',kind) == 1 
+	if perforce#data#get('g:unite_perforce_user_changes_only') == 1 
 		let foot_d.user = '-u '.perforce#get#PFUSER()
 	endif
 
 	let rtns = []
-	if perforce#data#get('g:unite_perforce_client_changes_only',kind) == 1
+	if perforce#data#get('g:unite_perforce_client_changes_only') == 1
 		for client in a:clients
 		 	let foot_d.client = '-c '.client " ç∑ï™
 			call add(rtns, s:pfcmds_with_client(a:pfcmd, client, foot_d))
