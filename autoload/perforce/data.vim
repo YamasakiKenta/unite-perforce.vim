@@ -5,16 +5,14 @@ set cpo&vim
 function! s:init() "{{{
 	if exists('s:init_flg')
 		return
+	else
+		let s:init_flg = 1
 	endif
 
 	echo "load ..."
-
-	let s:init_flg = 1
-
 	let file_ = expand('~/.vim-unite-perforce')
 
 	call s:perforce_init(file_)
-	" call s:perforce_add       ( 'g:unite_perforce_use_default'                   ,''                             , 'bool'          , 1)
 	call s:perforce_add       ( 'g:unite_perforce_clients'                       ,'perforce clients'             , 'list_ex'       , {'nums' : [0,1], 'items' : ['-p localhost:1819']}) 
 	call s:perforce_add       ( 'g:unite_perforce_diff_dw'                       ,'空白を無視する'               , 'bool'          , 1)
 	call s:perforce_add       ( 'g:unite_perforce_user_changes_only'             ,'ユーザー名でフィルタ'         , 'bool'          , 1) 
@@ -39,13 +37,13 @@ endfunction
 "}}}
 
 function! s:perforce_add(...) 
-	return call('unite_setting_ex_3#add'       , extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting_ex_3#add', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! s:perforce_init(...) 
-	return call('unite_setting_ex#init'      , extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting_ex#init', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! s:perforce_load(...) 
-	return call('unite_setting_ex#load'      , extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting_ex#load', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! perforce#data#get(valname, ...) "{{{
 	call s:init()
