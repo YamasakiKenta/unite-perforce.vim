@@ -43,11 +43,11 @@ function! s:perforce_init(...)
 	return call('unite_setting_ex#init', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! s:perforce_load(...) 
-	" return call('unite_setting_ex#load', extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting_ex#load', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! perforce#data#get(valname, ...) "{{{
 	call s:init()
-	return unite_setting_ex#get('g:unite_pf_data', a:valname)
+	return unite_setting_ex_3#get('g:unite_pf_data', a:valname)
 endfunction
 "}}}
 function! perforce#data#setting() "{{{
