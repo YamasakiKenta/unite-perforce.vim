@@ -1,7 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-
 function! s:init() "{{{
 	if exists('s:init_flg')
 		return
@@ -40,23 +39,20 @@ function! s:perforce_add(...)
 	return call('unite_setting_ex_3#add', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! s:perforce_init(...) 
-	return call('unite_setting_ex#init', extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting_ex_3#init', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! s:perforce_load(...) 
-	return call('unite_setting_ex#load', extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting_ex_3#load', extend(['g:unite_pf_data'] , a:000))
 endfunction
-function! perforce#data#get(valname, ...) "{{{
+function! perforce#data#get(valname, ...)
 	call s:init()
 	return unite_setting_ex_3#get('g:unite_pf_data', a:valname)
 endfunction
-"}}}
-function! perforce#data#setting() "{{{
+function! perforce#data#setting() 
 	call s:init()
 	call unite#start([['settings_ex', 'g:unite_pf_data']])
 endfunction
-"}}}
 
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
-
