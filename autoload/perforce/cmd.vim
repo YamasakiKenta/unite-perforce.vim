@@ -268,7 +268,7 @@ function! s:pfcmds_with_clients(clients, pfcmd, head, tail) "{{{
 
 	let max_ = perforce#data#get('g:unite_perforce_show_max')
 	if max_ > 0
-		foot_d.max = '-m '.max_
+		let foot_d.max = '-m '.max_
 	endif 
 
 	if perforce#data#get('g:unite_perforce_user_changes_only') == 1 

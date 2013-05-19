@@ -89,6 +89,8 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_opened.func(candid
 		call add(data_ds, data_d)
 	endfor
 
+	" echo data_d
+
 	echo 's:kind_k_p4_change_pending.action_table.a_p4_change_opened.func - ' string(data_ds)
 
 	call unite#start_temporary([insert(data_ds, 'p4_opened')]) " # •Â‚¶‚È‚¢ ? 
