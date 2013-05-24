@@ -2,6 +2,10 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:init() "{{{
+	if s:have_unite_setting() == 0
+		return
+	endif
+
 	if exists('s:init_flg')
 		return
 	else
@@ -31,6 +35,17 @@ function! s:init() "{{{
 endfunction
 "}}}
 
+function! s:have_unite_setting() "{{{
+	try
+		call unite_setting#have()
+		return 1
+	catch
+		echo 'not have unite_setting.vim...'
+		return 0
+	endtry
+endfunction
+"}}}
+
 function! s:perforce_add(...) 
 	return call('unite_setting_ex_3#add', extend(['g:unite_pf_data'] , a:000))
 endfunction
@@ -40,11 +55,20 @@ endfunction
 function! s:perforce_load(...) 
 	return call('unite_setting_ex_3#load', extend(['g:unite_pf_data'] , a:000))
 endfunction
+
 function! perforce#data#get(valname, ...)
+	if s:have_unite_setting() == 0
+		return
+	endif
+
 	call s:init()
 	return unite_setting_ex_3#get('g:unite_pf_data', a:valname)
 endfunction
 function! perforce#data#setting() 
+	if s:have_unite_setting() == 0
+		return
+	endif
+
 	call s:init()
 	call unite#start([['settings_ex', 'g:unite_pf_data']])
 endfunction
