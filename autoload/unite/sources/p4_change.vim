@@ -59,15 +59,7 @@ function! s:source_p4_changes_pending.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	"
 	" 表示するクライアント名の取得
-	let origin_clients = perforce#data#get('g:unite_perforce_clients')
-
-	if perforce#data#get('g:unite_perforce_client_changes_only') == 1
-		let clients = origin_clients
-	else
-		let port = map(cpy(clients), 'matchstr('-p\s\+\w*')
-	endif
-
-	echo clients 
+	let clients = perforce#data#get('g:unite_perforce_clients')
 
 	" defaultの表示
 	let rtn = []
