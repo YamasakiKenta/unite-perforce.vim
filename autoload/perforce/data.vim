@@ -17,7 +17,7 @@ function! s:init() "{{{
 
 	call s:perforce_init(file_)
 
-	call s:perforce_add( 'g:unite_perforce_clients'             ,'perforce clients'       , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
+	call s:perforce_add( 'g:unite_perforce_global_option'       ,'global option'          , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
 	call s:perforce_add( 'g:unite_perforce_diff_dw'             ,'空白を無視する'         , 1)
 	call s:perforce_add( 'g:unite_perforce_user_changes_only'   ,'ユーザー名でフィルタ'   , 1) 
 	call s:perforce_add( 'g:unite_perforce_client_changes_only' ,'クライアントでフィルタ' , 1) 
