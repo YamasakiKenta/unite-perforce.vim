@@ -1,7 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:Tab = vital#of('unite-perforce.vim').import('Mind.Tab')
 function! unite#kinds#k_p4_template#define()
 	return [s:kind_p4_template]
 endfunction
@@ -47,7 +46,7 @@ function! s:kind.action_table.a_info.func(candidates) "{{{
 		let outs = perforce#cmd#base('client', '-p '.port.' -c '.cltmp, '-o').outs
 		call add(datas, outs)
 
-		call s:Tab.open_lines(datas)
+		call perforce#util#open_lines(datas)
 
 		windo diffthis
 	endfor

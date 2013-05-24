@@ -5,6 +5,7 @@ let s:V = vital#of('unite-perforce.vim')
 let s:Common   = s:V.import('Mind.Common')
 let s:Perforce = s:V.import('Mind.Perforce')
 let s:File     = s:V.import('Mind.Y_files')
+let s:Tab      = s:V.import('Mind.Tab')
 
 function! perforce#util#get_files(...)
 	return call(s:File.get_files, a:000)
@@ -24,6 +25,10 @@ endfunction
 
 function! perforce#util#map_diff(...)
 	return call(s:Common.map_diff, a:000)
+endfunction
+
+function! perforce#util#open_lines(...)
+	return call(s:Tab.open_lines, a:000)
 endfunction
 
 let &cpo = s:save_cpo
