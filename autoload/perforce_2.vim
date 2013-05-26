@@ -77,17 +77,6 @@ function! perforce_2#get_args(default_key, args) "{{{
 	return data_ds
 endfunction
 "}}}
-function! perforce_2#get_args_2(default_key, args) "{{{
-	if len(a:args) == 0
-		let data_ds = [{}]
-	elseif type({}) == type(a:args[0])
-		let data_ds = a:args
-	else
-		let data_ds = [{ a:default_key : a:args }]
-	endif
-	return data_ds
-endfunction
-"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
