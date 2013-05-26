@@ -17,10 +17,11 @@ endfunction
 
 function! perforce#get#fname#for_unite(args, context) 
 	" ƒtƒ@ƒCƒ‹–¼‚ÌŽæ“¾
-	let a:context.source__path          = expand('%:p')
+	let path = expand('%:p')
+	let a:context.source__path          = path
 	let a:context.source__linenr        = line('.')
-	let a:context.source__depots        = s:get_depots(copy(a:args), a:context.source__path)
-	call unite#print_message('[line] Target: ' . a:context.source__path)
+	let a:context.source__depots        = s:get_depots(copy(a:args), path)
+	call unite#print_message('[line] Target: ' . path)
 endfunction
 
 let &cpo = s:save_cpo
