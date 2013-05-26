@@ -5,7 +5,6 @@ function! unite#kinds#k_p4_change#define()
 	return [ 
 				\ s:kind_k_p4_change_pending,
 				\ s:kind_k_p4_change_reopen,
-				\ s:kind_k_p4_change_submitted,
 				\ ]
 endfunction
 
@@ -228,14 +227,9 @@ function! s:make_new_changes(candidate) "{{{
 endfunction
 "}}}
 
-let s:kind_k_p4_change_submitted = deepcopy(s:kind_k_p4_change_pending)
-let s:kind_k_p4_change_submitted.name           = 'k_p4_change_submitted'
-let s:kind_k_p4_change_submitted.default_action = 'a_p4change_describe'
-
 if 1
 	call unite#define_kind(s:kind_k_p4_change_pending)
 	call unite#define_kind(s:kind_k_p4_change_reopen)
-	call unite#define_kind(s:kind_k_p4_change_submitted)
 endif
 
 let &cpo = s:save_cpo
