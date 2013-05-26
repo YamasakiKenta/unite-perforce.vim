@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-function! unite#sources#p4_change#define()
+function! unite#sources#p4_changes_pending#define()
 	return s:source_p4_changes_pending
 endfunction
 " --------------------------------------------------------------------------------
