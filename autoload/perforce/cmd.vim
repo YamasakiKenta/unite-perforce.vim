@@ -12,17 +12,8 @@ function! s:pfcmds_port_only(pfcmd, head, tail) "{{{
 	" .cmd     = 'p4 opened'
 	" .outs[]  = ''  - cmd outputs
 	" ********************************************************************************
-	
-	let client_default_flg = 0 " perforce#data#get('g:unite_perforce_use_default')
-	if client_default_flg == 1
-		let tmp = perforce#cmd#base(a:pfcmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get#PFPORT().'-c '.perforce#get#PFCLIENTNAME()
-		let rtns = [tmp]
-	else
-		let rtns = s:pfcmds_with_clients_from_data_port_only(a:pfcmd, a:head, a:tail)
-	endif
 
-	return rtns
+	return s:pfcmds_with_clients_from_data_port_only(a:pfcmd, a:head, a:tail)
 endfunction
 "}}}
 function! s:pfcmds_with_clients_and_unite_mes(clients, pfcmd, head, tail) "{{{
@@ -74,16 +65,7 @@ function! perforce#cmd#new(pfcmd, head, tail) "{{{
 	" .outs[]  = ''  - cmd outputs
 	" ********************************************************************************
 
-	let client_default_flg = 0 " perforce#data#get('g:unite_perforce_use_default')
-	if client_default_flg == 1
-		let tmp = perforce#cmd#base(a:pfcmd, a:head, a:tail)
-		let tmp.client = '-p '.perforce#get#PFPORT().' -c '.perforce#get#PFCLIENTNAME()
-		let rtns = [tmp]
-	else
-		let rtns = s:pfcmds_with_clients_from_data(a:pfcmd, a:head, a:tail)
-	endif
-
-	return rtns
+	return s:pfcmds_with_clients_from_data(a:pfcmd, a:head, a:tail)
 endfunction
 "}}}
 function! perforce#cmd#base(pfcmd,...) "{{{
