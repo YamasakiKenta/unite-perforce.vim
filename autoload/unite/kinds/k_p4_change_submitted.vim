@@ -1,7 +1,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! unite#kinds#k_p4_change#define()
+function! unite#kinds#k_p4_change_submitted#define()
 	return s:kind_k_p4_change_submitted
 endfunction
 
