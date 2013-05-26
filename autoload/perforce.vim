@@ -124,36 +124,6 @@ function! perforce#matomeDiffs(...) "{{{
 	"}}}
 endfunction
 "}}}
-function! perforce#pfChange(str,...) "{{{
-	"********************************************************************************
-	" チェンジリストの作成
-	" @param[in]	str		チェンジリストのコメント
-	" @param[in]	...		編集するチェンジリスト番号
-	"********************************************************************************
-	"
-	"チェンジ番号のセット ( 引数があるか )
-	let chnum     = get(a:,'1','')
-
-	"ChangeListの設定データを一時保存する
-	let tmp = system('p4 change -o '.chnum)                          
-
-	"コメントの編集
-	let tmp = substitute(tmp,'\nDescription:\zs\_.*\ze\(\nFiles:\)\?','\t'.a:str.'\n','') 
-
-	" 新規作成の場合は、ファイルを含まない
-	if chnum == "" | let tmp = substitute(tmp,'\nFiles:\zs\_.*','','') | endif
-
-	"一時ファイルの書き出し
-	call writefile(split(tmp,'\n'),perforce#get_tmp_file())
-
-	" チェンジリストの作成
-	" ★ client に対応する
-	let out = split(system('more '.perforce#common#get_kk(perforce#get_tmp_file()).' | p4 change -i', '\n'))
-
-	return out
-
-endfunction
-"}}}
 function! perforce#pfFind(...) "{{{
 	if a:0 == 0
 		let str  = input('Find : ')

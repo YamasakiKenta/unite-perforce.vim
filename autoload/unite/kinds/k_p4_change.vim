@@ -198,18 +198,54 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_rename.func(candid
 
 	" 入力がない場合は、実行しない
 	if chname =~ ""
-		let outs = perforce#pfChange(chname,chnum)
+		let outs = s:pfChange(chname,chnum)
 		call perforce#LogFile(outs)
 	endif
 endfunction
 "}}}
 
+if 1
+	call unite#define_kind(s:kind_k_p4_change_pending)
+	call unite#define_kind(s:kind_k_p4_change_reopen)
+endif
+
+"=== SUB ===
+function! s:pfChange(str,...) "{{{
+	"********************************************************************************
+	" チェンジリストの作成
+	" @param[in]	str		チェンジリストのコメント
+	" @param[in]	...		編集するチェンジリスト番号
+	"********************************************************************************
+	"
+	"チェンジ番号のセット ( 引数があるか )
+	let chnum     = get(a:,'1','')
+
+	"ChangeListの設定データを一時保存する
+	let tmp = system('p4 change -o '.chnum)                          
+
+	"コメントの編集
+	let tmp = substitute(tmp,'\nDescription:\zs\_.*\ze\(\nFiles:\)\?','\t'.a:str.'\n','') 
+
+	" 新規作成の場合は、ファイルを含まない
+	if chnum == "" | let tmp = substitute(tmp,'\nFiles:\zs\_.*','','') | endif
+
+	"一時ファイルの書き出し
+	call writefile(split(tmp,'\n'),perforce#get_tmp_file())
+
+	" チェンジリストの作成
+	" ★ client に対応する
+	let out = split(system('more '.perforce#common#get_kk(perforce#get_tmp_file()).' | p4 '.a:client.'change -i', '\n'))
+
+	return out
+
+endfunction
+"}}}
+function! s:make_new_changes(candidate) "{{{
 " ********************************************************************************
 " チェンジリストの番号の取得をする ( new の場合は、新規作成 )
 " @param[in]	candidate	unite のあれ	
 " @retval       chnum		番号
 " ********************************************************************************
-function! s:make_new_changes(candidate) "{{{
 
 	let chnum = a:candidate.action__chnum
 
@@ -217,7 +253,7 @@ function! s:make_new_changes(candidate) "{{{
 		let chname = a:candidate.action__chname
 
 		" チェンジリストの作成
-		let outs = perforce#pfChange(chname)
+		let outs = s:pfChange(chname)
 
 		"チェンジリストの新規作成の結果から番号を取得する
 		let chnum = outs[1]
@@ -226,11 +262,6 @@ function! s:make_new_changes(candidate) "{{{
 	return chnum
 endfunction
 "}}}
-
-if 1
-	call unite#define_kind(s:kind_k_p4_change_pending)
-	call unite#define_kind(s:kind_k_p4_change_reopen)
-endif
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
