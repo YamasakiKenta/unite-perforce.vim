@@ -1,37 +1,37 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let g:pf_clients_template = get(g:, 'pf_clients_template', [])
+let g:pf_clients_template = get(g:, 'pf_clients_template', {})
 
 function! unite#sources#p4_template#define()
-	return [s:source_p4_template]
+	return s:source_p4_template
 endfunction
 
-let s:source_p4_template = {}
 "source - p4_template
-let s:source = {
+let s:source_p4_template = {
 			\ 'name'           : 'p4_template',
+			\ 'default_kind'   : 'k_p4_template',
 			\ 'description'    : '',
 			\ }
-function! s:source.gather_candidates(args, context) "{{{
-	let datas = deepcopy(g:pf_clients_template) 
+function! s:source_p4_template.gather_candidates(args, context) "{{{
+	let data_d = copy(perforce#data#get('g:pf_clients_template'))
 
-	let candidates = []
-	for data in datas
-		for port in data.ports
-			call add( candidates, {
-						\ 'word' : '-p '.printf("%-20s", port).' -c '.printf("%-20s", data.cltmp).' : -c '.printf("%-20s", data.clname),
-						\ 'kind' : 'k_p4_template',
-						\ 'action__cltmp' : data.cltmp,
-						\ 'action__port' : port,
-						\ 'action__clname' : data.clname,
-						\ })
-		endfor
+	let candidates = [{
+				\ 'word' : printf("%-50s -> %s", "template", "client"),
+				\ 'kind' : 'common',
+				\ }]
+
+	for client in keys(data_d)
+		call add( candidates, {
+					\ 'word' : printf("%-50s -> %s", data_d[client], client),
+					\ 'action__cltmp'  : data_d[client],
+					\ 'action__clname' : client,
+					\ })
 	endfor
+
 	return candidates
 endfunction
 "}}}
-let s:source_p4_template = deepcopy(s:source)
 
 call unite#define_source(s:source_p4_template)
 
