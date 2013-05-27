@@ -5,7 +5,7 @@ function! s:get_ChangeNum_from_changes(str)
 	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
 endfunction
 
-function! pf_changes#get(context,data_ds) 
+function! pf_changes#get(context,data_ds)  "{{{
 	" ********************************************************************************
 	" @par          p4_changes Untie 用の 返り値を返す
 	" @param[in]	context
@@ -26,7 +26,7 @@ function! pf_changes#get(context,data_ds)
 
 	return candidates
 endfunction
-
+"}}}
 function! pf_changes#gather_candidates(args, context)  "{{{
 	" ********************************************************************************
 	" チェンジリストの表示 表示設定関数
@@ -35,21 +35,26 @@ function! pf_changes#gather_candidates(args, context)  "{{{
 	" ********************************************************************************
 	"
 	" 表示するクライアント名の取得
-	let clients = perforce#data#get('g:unite_perforce_clients')
+	if a:context.source__client_flg == 0
+		let clients = perforce#data#get('g:unite_perforce_clients')
+	else
+		let clients = a:context.source__client
+	endif
 
 	" defaultの表示
-	let rtn = []
-	let rtn += map( clients, "{
+	let candidates = []
+
+	call extend(candidates, map( copy(clients), "{
 				\ 'word'           : 'default by '.v:val,
 				\ 'kind'           : 'k_p4_change_pending',
 				\ 'action__chnum'  : 'default',
 				\ 'action__client' : v:val,
 				\ 'action__depots' : a:context.source__depots,
-				\ }")
+				\ }"))
 
-	let data_ds = perforce#cmd#new('changes','','-s pending')
-	let rtn += pf_changes#get(a:context, data_ds)
-	return rtn
+	let data_ds = perforce#cmd#clients(clients, 'changes','','-s pending')
+	call extend(candidates, pf_changes#get(a:context, data_ds))
+	return candidates
 endfunction
 "}}}
 function! pf_changes#change_candidates(args, context)  "{{{

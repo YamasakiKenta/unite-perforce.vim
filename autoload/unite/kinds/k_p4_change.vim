@@ -29,12 +29,15 @@ function! s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen.func(candida
 	" ********************************************************************************
 
 	let reopen_depots = a:candidate.action__depots
+	let client        = a:candidate.action__client
 
 	"チェンジリストの番号の取得
 	let chnum = s:make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#cmd#base('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "'))).outs
+	let cmd = 'p4  '.client.' reopen -c '.chnum.' "'.join(reopen_depots,'" "').'"'
+	call unite#print_message(cmd)
+	let outs = split(system(cmd), "\n")
 
 	" ログの出力
 	call perforce#LogFile(outs)
@@ -118,7 +121,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 
 	if perforce#data#get('g:unite_perforce_is_submit_flg') == 0
 		call perforce_2#echo_error('safe mode.')
-		call input("")
+		call input("Push Any Keys...") 
 	else
 		let chnums = map(copy(a:candidates), "v:val.action__chnum")
 		let tmp_ds = perforce#cmd#new('submit','',' -c '.join(chnums))

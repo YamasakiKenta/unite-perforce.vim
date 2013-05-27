@@ -225,6 +225,7 @@ function! s:pfcmds_with_client(pfcmd, client, foot_d) "{{{
 	" ********************************************************************************
 	let foot = s:get_foot(a:pfcmd, a:foot_d)
 	let cmd  = 'p4 '.a:client.' '.a:pfcmd.' '.foot
+
 	return  {
 				\ 'cmd'    : cmd,
 				\ 'client' : a:client,
@@ -260,6 +261,7 @@ function! s:pfcmds_with_clients(clients, pfcmd, head, tail) "{{{
 	let rtns = []
 	if perforce#data#get('g:unite_perforce_client_changes_only') == 1
 		for client in a:clients
+			echo 's:pfcmds_with_clients' - string(client)
 		 	let foot_d.client = '-c '.client " ç∑ï™
 			call add(rtns, s:pfcmds_with_client(a:pfcmd, client, foot_d))
 		endfor 

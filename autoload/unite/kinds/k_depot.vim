@@ -218,21 +218,20 @@ let s:kind_depot.action_table.a_p4_reopen = {
 			\ 'is_selectable' : 1 ,
 			\ }
 function! s:kind_depot.action_table.a_p4_reopen.func(candidates) "{{{
-	let reopen_depots= [] " # ‰Šú‰»
 	let client = a:candidates[0].action__client
-	for l:candidate in a:candidates
-		call add(reopen_depots, l:candidate.action__depot) " # •Û‘¶
 
-		if client != l:candidate.action__client
-			call perforce_2#echo_error('no match '. string(client))
+	let args = [client] " # ‰Šú‰»
+
+	for candidate in a:candidates
+		call add(args , candidate.action__depot) " # •Û‘¶
+
+		if client != candidate.action__client
+			call perforce_2#echo_error('not "'.client. '" only...')
 			return 
 		endif
 	endfor
 
-
-
-	" call unite#start_temporary([insert(reopen_depots,'p4_changes_pending_reopen')])
-	call unite#start([insert(reopen_depots,'p4_changes_pending_reopen')])
+	call unite#start([insert(args ,'p4_changes_pending_reopen')])
 endfunction
 "}}}
 
