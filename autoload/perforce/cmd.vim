@@ -87,19 +87,6 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 
 	call add(gcmds, a:pfcmd)
 
-	if a:pfcmd =~ 'changes'
-		if perforce#data#get('g:unite_perforce_client_changes_only') == 1
-			call add(gcmds, '-c '.perforce#get#PFCLIENTNAME())
-		endif
-	endif 
-
-	if a:pfcmd =~ 'clients' || a:pfcmd =~ 'changes'
-		if perforce#data#get('g:unite_perforce_user_changes_only') == 1 
-			call add(gcmds, '-u '.perforce#get#PFUSER())
-		endif
-	endif 
-
-
 	let max_ = perforce#data#get('g:unite_perforce_show_max')
 	if max_ > 0
 		call add(gcmds, '-m '.max_)
@@ -254,22 +241,10 @@ function! s:pfcmds_with_clients(clients, pfcmd, head, tail) "{{{
 		let foot_d.max = '-m '.max_
 	endif 
 
-	if perforce#data#get('g:unite_perforce_user_changes_only') == 1 
-		let foot_d.user = '-u '.perforce#get#PFUSER()
-	endif
-
 	let rtns = []
-	if perforce#data#get('g:unite_perforce_client_changes_only') == 1
-		for client in a:clients
-			echo 's:pfcmds_with_clients' - string(client)
-		 	let foot_d.client = '-c '.client " ç∑ï™
-			call add(rtns, s:pfcmds_with_client(a:pfcmd, client, foot_d))
-		endfor 
-	else
-		for client in a:clients
-			call add(rtns, s:pfcmds_with_client(a:pfcmd, client, foot_d))
-		endfor 
-	endif
+	for client in a:clients
+		call add(rtns, s:pfcmds_with_client(a:pfcmd, client, foot_d))
+	endfor 
 
 	return rtns
 endfunction

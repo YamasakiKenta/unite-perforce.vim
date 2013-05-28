@@ -84,10 +84,6 @@ function! s:load(name, default) "{{{
 	return get(g:, 'tmp', a:default)
 endfunction
 "}}}
-function! s:get_pathSrash(path) "{{{
-	return substitute(a:path,'\','/','g') " # / ƒ}[ƒN‚É“ˆê
-endfunction
-"}}}
 
 function! s:MyQuit() "{{{
 	map <buffer> q :q<CR>

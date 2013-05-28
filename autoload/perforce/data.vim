@@ -19,8 +19,6 @@ function! s:init() "{{{
 
 	call s:perforce_add( 'g:unite_perforce_clients'             ,''                       , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
 	call s:perforce_add( 'g:unite_perforce_diff_dw'             ,'空白を無視する'         , 1)
-	call s:perforce_add( 'g:unite_perforce_user_changes_only'   ,'ユーザー名でフィルタ'   , 1) 
-	call s:perforce_add( 'g:unite_perforce_client_changes_only' ,'クライアントでフィルタ' , 1) 
 	call s:perforce_add( 'g:unite_perforce_filters'             ,'除外リスト'             , {'nums' : [],    'items' : ['tag', 'snip']})
 	call s:perforce_add( 'g:unite_perforce_show_max'            ,'ファイル数の制限'       , {'num'  : 0,     'items' : [0, 5, 10],                   'consts' : [0]})
 	call s:perforce_add( 'g:unite_perforce_is_out_echo_flg'     ,'実行結果を出力する'     , {'num'  : 0,     'items' : ['none', 'echo', 'log'],      'consts' : [-1]})

@@ -12,8 +12,9 @@ endfunction
 
 function! s:get_client_path_from_name(str) 
 	let str  = system('p4 clients | grep '.a:str) " # ref 直接データをもらう方法はないかな
-	let path = matchstr(str,'.* \d\d\d\d/\d\d/\d\d root \zs\S*')
-	let path = perforce#common#get_pathSrash(path)
+	let path = str
+	let path = matchstr(path,'.* \d\d\d\d/\d\d/\d\d root \zs\S*')
+	let path = substitute((path, '\\', '\/', 'g')
 	return path
 endfunction
 

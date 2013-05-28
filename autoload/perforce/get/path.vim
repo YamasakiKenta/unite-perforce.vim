@@ -1,7 +1,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:get_path_from_where(strg)
+function! s:get_path_from_where(str)
 	return matchstr(a:str, '.\{-}\zs\w*:.*\ze\n.*')
 endfunction
 

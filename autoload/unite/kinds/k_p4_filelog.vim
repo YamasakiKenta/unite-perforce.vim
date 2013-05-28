@@ -14,11 +14,11 @@ functio! s:p4_print(candidates) "{{{
 
 		let name = perforce#get#path#from_depot(candidate.action__depot)
 
-		" 表示するバージョンを取得する
-		if exists('candidate.action__revnum')
-			let file_numstr = '\#'.candidate.action__revnum
-			let numstr      =  '#'.candidate.action__revnum
-		elseif exists('candidate.action__chnum')
+		let revnum = s:revision_num(candidate.action__out)
+		let file_numstr = '\#'.revnum
+		let numstr      =  '#'.revnum
+
+		if exists('candidate.action__chnum')
 			let file_numstr =  '@'.candidate.action__chnum.low
 			let numstr      =  '@'.candidate.action__chnum.low
 		endif
@@ -54,17 +54,6 @@ function! s:kind_filelog.action_table.a_p4_print.func(candidates) "{{{
 endfunction
 "}}}
 
-let s:kind_filelog.action_table.a_p4_print_diff = {
-			\ 'description' : 'ファイルの表示 ( ひとつ前のファイルと一緒 )',
-			\ }
-function! s:kind_filelog.action_table.a_p4_print_diff.func(candidates) "{{{
-	let candidates = [copy(a:candidates), copy(a:candidates)]
-	let candidates[1].action__revnum = candidates[1].action__revnum - 1
-
-	return s:p4_print(candidates)
-endfunction
-"}}}
-
 let s:kind_filelog.action_table.preview = {
 			\ 'description' : 'preview' , 
 			\ 'is_quit' : 0, 
@@ -75,12 +64,12 @@ function! s:kind_filelog.action_table.preview.func(candidate) "{{{
 	let name = perforce#get#path#from_depot(candidate.action__depot)
 
 	let filetype_old = &filetype
+	let revnum = s:revision_num(candidate.action__out)
+	let file_numstr = '\#'.revnum
+	let numstr      =  '#'.revnum
 
 	" 表示するバージョンを取得する
-	if exists('candidate.action__revnum')
-		let file_numstr = '\#'.candidate.action__revnum
-		let numstr      =  '#'.candidate.action__revnum
-	elseif exists('candidate.action__chnum')
+	if exists('candidate.action__chnum')
 		let file_numstr =  '@'.candidate.action__chnum
 		let numstr      =  '@'.candidate.action__chnum
 	endif
@@ -102,6 +91,13 @@ if 1
 	call unite#define_kind(s:kind_filelog)
 endif
 
-let &cpo = s:save_cpo
-unlet s:save_cpo
+function! s:revision_num(str) "{{{
+	return matchstr(a:str, '#\zs\d*')
+endfunction 
+"}}}
 
+
+if exists('s:save_cpo')
+	let &cpo = s:save_cpo
+	unlet s:save_cpo
+endif

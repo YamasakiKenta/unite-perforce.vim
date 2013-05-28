@@ -141,16 +141,14 @@ function! perforce#unite_args(source) "{{{
 	" @param[in]	source	コマンド
 	"********************************************************************
 
-	if 0
-		exe 'Unite '.a:source.':'.perforce#get_dd(expand("%:t"))
-	else
 		" スペース対策
-		" [ ] p4_diff などに修正が必要
-		let tmp = a:source.':'.perforce#common#get_pathSrash(expand("%"))
-		let tmp = substitute(tmp, ' ','\\ ', 'g')
-		let tmp = 'Unite '.tmp
-		exe tmp
-	endif
+		let file_ = expand("%:p")
+		let file_ = substitute(file_ , '\\' , '\/'  , 'g')
+		let file_ = substitute(file_ , ':'  , '\\:' , 'g')
+		let file_ = substitute(file_ , ' '  , '\\ ' , 'g')
+
+		let cmd = 'Unite '.a:source.':'.file_
+		exe cmd
 
 endfunction
 "}}}

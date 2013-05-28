@@ -27,10 +27,11 @@ function! s:source.gather_candidates(args, context) "{{{
 	for arg in a:args 
 	 	let lines = perforce#cmd#base('filelog','',perforce#common#get_kk(arg)).outs
 		let candidates += map(filter(lines, "v:val =~ '\.\.\. #'"), "{ 
-					\ 'word' : v:val,
-					\ 'kind' : 'k_p4_filelog', 
+					\ 'word'           : v:val,
+					\ 'kind'           : 'k_p4_filelog',
 					\ 'action__revnum' : s:revision_num(v:val),
-					\ 'action__depot' : arg,
+					\ 'action__out'    : v:val,
+					\ 'action__depot'  : arg,
 					\ }")
 	endfor
 	
