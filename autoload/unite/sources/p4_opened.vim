@@ -37,7 +37,7 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 		endif
 
 		if exists('data_d.client')
-			call extend(tmps, perforce#cmd#clients([data_d.client], 'opened', '', chnum))
+			call extend(tmps, perforce#cmd#clients_old([data_d.client], 'opened', '', chnum))
 		else
 			call extend(tmps, perforce#cmd#new('opened', '', chnum))
 		endif

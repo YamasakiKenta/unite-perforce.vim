@@ -41,6 +41,9 @@ function! pf_changes#gather_candidates(args, context)  "{{{
 		let clients = a:context.source__client
 	endif
 
+	" -m max
+	" -u user
+
 	" default‚Ì•\Ž¦
 	let candidates = []
 
@@ -52,7 +55,7 @@ function! pf_changes#gather_candidates(args, context)  "{{{
 				\ 'action__depots' : a:context.source__depots,
 				\ }"))
 
-	let data_ds = perforce#cmd#clients(clients, 'changes','','-s pending')
+	let data_ds = perforce#cmd#clients(clients, 'p4 changes -s pending')
 	call extend(candidates, pf_changes#get(a:context, data_ds))
 	return candidates
 endfunction

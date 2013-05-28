@@ -133,7 +133,7 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 endfunction
 "}}}
 "
-function! perforce#cmd#clients(...)
+function! perforce#cmd#clients_old(...)
 	return call('s:pfcmds_with_clients', a:000)
 endfunction
 " ----
@@ -377,6 +377,22 @@ function! perforce#cmd#files(pfcmd, files, have_flg, onetime) "{{{
 		endfor
 	endfor
 
+	return rtn_ds
+endfunction
+"}}}
+function! perforce#cmd#clients(clients, cmd) "{{{
+	let rtn_ds = []
+	let cmd_base = a:cmd
+	let cmd_base = substitute(cmd_base, 'p4', '', '')
+	for client in a:clients
+		let cmd = 'p4 '.client.' '.cmd_base
+		echo cmd
+		call add(rtn_ds, {
+					\ 'cmd'    : cmd,
+					\ 'outs'   : split(system(cmd), "\n"),
+					\ 'client' : client,
+					\ })
+	endfor
 	return rtn_ds
 endfunction
 "}}}
