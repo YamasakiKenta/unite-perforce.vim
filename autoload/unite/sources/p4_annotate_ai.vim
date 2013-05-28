@@ -18,7 +18,7 @@ function! s:source__p4_annotate_ai.gather_candidates(args, context) "{{{
 	let candidates = []
 	for depot in depots 
 
-		let outs = perforce#cmd#base('annotate','','-ai '.perforce#common#get_kk(depot)).outs
+		let outs = perforce#cmd#base('annotate','','-ai '.perforce#get_kk(depot)).outs
 
 		let candidates += map( outs, "{
 					\ 'word' : v:val,

@@ -34,7 +34,7 @@ function! s:setPfcmd(kind, cmd, des) "{{{
 			\ function! action.func(candidates) \n
 				\ let outs = [] \n
 				\ for l:candidate in a:candidates \n
-					\ let outs += perforce#cmd#base('". a:cmd ."','',perforce#common#get_kk(l:candidate.action__". get(kind, a:kind, "path") .")).outs \n
+					\ let outs += perforce#cmd#base('". a:cmd ."','',perforce#get_kk(l:candidate.action__". get(kind, a:kind, "path") .")).outs \n
 				\ endfor \n
 				\ call perforce#LogFile(outs) \n
 			\ endfunction 
@@ -185,7 +185,7 @@ let s:kind_depot.action_table.delete = {
 			\ }
 function! s:kind_depot.action_table.delete.func(candidate) "{{{
 	let depot = a:candidate.action__depot
-	call perforce#common#LogFile('diff', 1, perforce#cmd#base('diff','',depot).outs)
+	call perforce#util#LogFile('diff', 1, perforce#cmd#base('diff','',depot).outs)
 	wincmd p
 endfunction
 "}}}

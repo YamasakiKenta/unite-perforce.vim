@@ -24,10 +24,10 @@ functio! s:p4_print(candidates) "{{{
 		endif
 
 		" ファイルを出力する
-		let strs = perforce#cmd#base('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
+		let strs = perforce#cmd#base('print','','-q '.perforce#get_kk(name.''.numstr)).outs
 		let file = fnamemodify(name,':t').file_numstr
 
-		call perforce#common#LogFile(file, 0, strs) 
+		call perforce#util#LogFile(file, 0, strs) 
 
 		" データの出力
 		exe 'setf' filetype_old
@@ -70,15 +70,18 @@ function! s:kind_filelog.action_table.preview.func(candidate) "{{{
 
 	" 表示するバージョンを取得する
 	if exists('candidate.action__chnum')
+		echo 'USE CHSNGE'
+		let @" = 's:kind_filelog.action_table.preview.func'
+		call input("")
 		let file_numstr =  '@'.candidate.action__chnum
 		let numstr      =  '@'.candidate.action__chnum
 	endif
 
 	" ファイルを出力する
-	let strs = perforce#cmd#base('print','','-q '.perforce#common#get_kk(name.''.numstr)).outs
+	let strs = perforce#cmd#base('print','','-q '.perforce#get_kk(name.''.numstr)).outs
 	let file = fnamemodify(name,':t').file_numstr
 
-	call perforce#common#LogFile(file, 0, strs) 
+	call perforce#util#LogFile(file, 0, strs) 
 
 	" データの出力
 	"exe 'setf' filetype_old

@@ -62,7 +62,7 @@ function! perforce_2#echo_error(message) "{{{
 endfunction
 "}}}
 function! perforce_2#show(str)
-	call perforce#common#LogFile('p4show', 1, a:str)
+	call perforce#util#LogFile('p4show', 1, a:str)
 endfunction
 
 "new

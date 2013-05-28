@@ -18,7 +18,7 @@ function! s:source__p4_annotate.gather_candidates(args, context) "{{{
 	let candidates = []
 	let lnum = 0
 	for depot in depots 
-		let outs = perforce#cmd#base('annotate','',perforce#common#get_kk(depot)).outs
+		let outs = perforce#cmd#base('annotate','',perforce#get_kk(depot)).outs
 
 		for out in outs
 			let candidates += map( [out], "{

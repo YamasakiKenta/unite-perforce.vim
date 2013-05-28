@@ -31,5 +31,9 @@ function! perforce#util#open_lines(...)
 	return call(s:Tab.open_lines, a:000)
 endfunction
 
+function! perforce#util#LogFile(...)
+	return call(s:Common.LogFile, a:000)
+endfunction
+
 let &cpo = s:save_cpo
 unlet s:save_cpo

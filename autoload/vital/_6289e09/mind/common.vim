@@ -132,10 +132,6 @@ function! s:Get_cmds(cmd) "{{{
 	return split(system(a:cmd),'\n')
 endfunction
 "}}}
-function! s:get_kk(str) "{{{
-	return len(a:str) ? '"'.a:str.'"' : ''
-endfunction
-"}}}
 function! s:is_different(path,path2) "{{{
 	" ********************************************************************************
 	" ·•ª‚ğ’²‚×‚é
@@ -306,7 +302,6 @@ function! s:_get_dict_from_list(datas) "{{{
 	return dict_d
 endfunction
 "}}}
-
 function! s:add_uniq(datas, val) "{{{
 	" «‘Œ^‚Ì’l‚É“¯‚¶’l‚ª‚È‚¢ê‡‚ÍAæ“ª‚É’Ç‰Á‚·‚é
 	let dict_d = s:_get_dict_from_list
@@ -318,10 +313,6 @@ function! s:add_uniq(datas, val) "{{{
 	endfor
 
 	return datas
-endfunction
-"}}}
-function! s:get_now_filename() "{{{
-	return perforce#common#get_kk(expand("%:p"))
 endfunction
 "}}}
 let &cpo = s:save_cpo

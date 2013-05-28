@@ -70,7 +70,7 @@ function! s:kind_clients.action_table.a_p4_client_info.func(candidates) "{{{
 		let port   = matchstr(l:candidate.action__port, '\(-p\s*\)*\zs.*')
 
 		" 各クライアントごとに表示する
-		call perforce#common#LogFile(port.'_'.clname, 0)
+		call perforce#util#LogFile(port.'_'.clname, 0)
 		let outs = perforce#cmd#base('info', port.' -c '.clname).outs
 		call append(0,outs)
 	endfor
@@ -87,7 +87,7 @@ function! s:kind_clients.action_table.a_p4_client.func(candidates) "{{{
 		let port   = l:candidate.action__port
 
 		" 各クライアントごとに表示する
-		call perforce#common#LogFile(clname, 0)
+		call perforce#util#LogFile(clname, 0)
 		let outs = perforce#cmd#base('client', port, '-o '.clname).outs
 		call append(0,outs)
 	endfor

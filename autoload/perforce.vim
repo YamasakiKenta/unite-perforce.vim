@@ -30,7 +30,7 @@ function! perforce#get_tmp_file() "{{{
 endfunction
 "}}}
 function! perforce#get_dd(str) "{{{
-	return len(a:str) ? '//...'.perforce#common#get_kk(a:str).'...' : ''
+	return len(a:str) ? '//...'.perforce#get_kk(a:str).'...' : ''
 endfunction
 "}}}
 function! perforce#LogFile(str) "{{{
@@ -49,7 +49,7 @@ function! perforce#LogFile(str) "{{{
 		endfor
 
 	elseif cmd_ == 'log'
-		call perforce#common#LogFile('p4log', 0, a:str)
+		call perforce#util#LogFile('p4log', 0, a:str)
 	endif
 	echo 'perforce#LogFile <<<<'
 
@@ -120,7 +120,7 @@ function! perforce#matomeDiffs(...) "{{{
 		let outs += [data["files"]."\t\t".data["adds"]."\t".data["deleteds"]."\t".data["changeds"]]
 	endfor
 
-	call perforce#common#LogFile('p4log', 0, outs)
+	call perforce#util#LogFile('p4log', 0, outs)
 	"}}}
 endfunction
 "}}}
@@ -160,7 +160,7 @@ function! s:is_p4_have(str) "{{{
 	" @retval       flg		TRUE 	‘¶Ý‚·‚é
 	" @retval       flg		FLASE 	‘¶Ý‚µ‚È‚¢
 	" ********************************************************************************
-	let str = system('p4 have '.perforce#common#get_kk(a:str))
+	let str = system('p4 have '.perforce#get_kk(a:str))
 	return s:is_p4_have_from_have(str)
 endfunction
 "}}}
@@ -212,7 +212,7 @@ function! perforce#is_p4_haves_client2(files) "{{{
 		let rtns_d.false[client] = []
 
 		for file_ in a:files
-			let str = system('p4 '.client.' have '.perforce#common#get_kk(file_))
+			let str = system('p4 '.client.' have '.perforce#get_kk(file_))
 			if s:is_p4_have_from_have(str) == 1
 				let type = 'true'
 			else
@@ -227,6 +227,10 @@ function! perforce#is_p4_haves_client2(files) "{{{
 
 endfunction
 "}}}
+
+function! perforce#get_kk(str) 
+	return len(a:str) ? '"'.a:str.'"' : ''
+endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

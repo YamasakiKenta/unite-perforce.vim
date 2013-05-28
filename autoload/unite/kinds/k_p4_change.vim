@@ -176,7 +176,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_reopen.func(candid
 	let chnum = s:make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let outs = perforce#cmd#base('reopen','',' -c '.chnum.' '.perforce#common#get_kk(join(reopen_depots,'" "'))).outs
+	let outs = perforce#cmd#base('reopen','',' -c '.chnum.' '.perforce#get_kk(join(reopen_depots,'" "'))).outs
 
 	" ログの出力
 	call perforce#LogFile(outs)
@@ -237,7 +237,7 @@ function! s:pfChange(str,...) "{{{
 
 	" チェンジリストの作成
 	" ★ client に対応する
-	let out = split(system('more '.perforce#common#get_kk(perforce#get_tmp_file()).' | p4 '.a:client.'change -i', '\n'))
+	let out = split(system('more '.perforce#get_kk(perforce#get_tmp_file()).' | p4 '.a:client.'change -i', '\n'))
 
 	return out
 
