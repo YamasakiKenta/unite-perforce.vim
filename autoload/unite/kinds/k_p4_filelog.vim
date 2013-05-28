@@ -1,43 +1,10 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:V = vital#of('unite-perforce.vim')
-
 function! unite#kinds#k_p4_filelog#define()
 	return s:kind_filelog
 endfunction
 
-functio! s:p4_print(candidates) "{{{
-	let filetype_old = &filetype
-
-	for l:candidate in deepcopy(a:candidates)
-
-		let name = perforce#get#path#from_depot(candidate.action__depot)
-
-		let revnum = s:revision_num(candidate.action__out)
-		let file_numstr = '\#'.revnum
-		let numstr      =  '#'.revnum
-
-		if exists('candidate.action__chnum')
-			let file_numstr =  '@'.candidate.action__chnum.low
-			let numstr      =  '@'.candidate.action__chnum.low
-		endif
-
-		" ファイルを出力する
-		let strs = perforce#cmd#base('print','','-q '.perforce#get_kk(name.''.numstr)).outs
-		let file = fnamemodify(name,':t').file_numstr
-
-		call perforce#util#LogFile(file, 0, strs) 
-
-		" データの出力
-		exe 'setf' filetype_old
-
-	endfor
-endfunction
-"}}}
-" ********************************************************************************
-" kind - k_p4_filelog
-" ********************************************************************************
 let s:kind_filelog = {
 			\ 'name' : 'k_p4_filelog',
 			\ 'default_action' : 'a_p4_print',
@@ -97,6 +64,34 @@ endif
 function! s:revision_num(str) "{{{
 	return matchstr(a:str, '#\zs\d*')
 endfunction 
+"}}}
+functio! s:p4_print(candidates) "{{{
+	let filetype_old = &filetype
+
+	for l:candidate in deepcopy(a:candidates)
+
+		let name = perforce#get#path#from_depot(candidate.action__depot)
+
+		let revnum = s:revision_num(candidate.action__out)
+		let file_numstr = '\#'.revnum
+		let numstr      =  '#'.revnum
+
+		if exists('candidate.action__chnum')
+			let file_numstr =  '@'.candidate.action__chnum.low
+			let numstr      =  '@'.candidate.action__chnum.low
+		endif
+
+		" ファイルを出力する
+		let strs = perforce#cmd#base('print','','-q '.perforce#get_kk(name.''.numstr)).outs
+		let file = fnamemodify(name,':t').file_numstr
+
+		call perforce#util#LogFile(file, 0, strs) 
+
+		" データの出力
+		exe 'setf' filetype_old
+
+	endfor
+endfunction
 "}}}
 
 
