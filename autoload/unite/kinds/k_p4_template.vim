@@ -23,7 +23,7 @@ function! s:kind_p4_template.action_table.update_.func(candidates) "{{{
 		let clname = s:get_clname(candidate.action__clname)
 		let cmd = 'p4 '.client.' client -o -t '.tmp.' '.clname.' | p4 client -i'
 		call unite#print_message(cmd)
-		" call system(cmd)
+		call system(cmd)
 	endfor
 endfunction
 "}}}
