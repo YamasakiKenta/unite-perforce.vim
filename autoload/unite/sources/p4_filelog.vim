@@ -31,6 +31,7 @@ function! s:source.gather_candidates(args, context) "{{{
 					\ 'kind'           : 'k_p4_filelog',
 					\ 'action__revnum' : s:revision_num(v:val),
 					\ 'action__out'    : v:val,
+					\ 'action__cmd'    : 'filelog',
 					\ 'action__depot'  : arg,
 					\ }")
 	endfor

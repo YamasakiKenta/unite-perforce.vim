@@ -72,6 +72,7 @@ functio! s:p4_print(candidates) "{{{
 
 		let name = perforce#get#path#from_depot(candidate.action__depot)
 
+		if l:candidate.action__cmd == 'filelog'
 		let revnum = s:revision_num(candidate.action__out)
 		let file_numstr = '\#'.revnum
 		let numstr      =  '#'.revnum

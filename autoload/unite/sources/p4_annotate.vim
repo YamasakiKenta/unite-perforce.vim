@@ -25,6 +25,8 @@ function! s:source__p4_annotate.gather_candidates(args, context) "{{{
 						\ 'word' : lnum.' : '.v:val,
 						\ 'kind' : 'k_p4_filelog',
 						\ 'action__depot' : depot,
+						\ 'action__out' : v:val,
+						\ 'action__cmd' : 'annotate',
 						\ 'action__revnum' : s:get_revnum_from_annotate(v:val),
 						\ }")
 			let lnum += 1

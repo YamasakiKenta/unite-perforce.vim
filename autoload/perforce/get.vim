@@ -38,7 +38,7 @@ function! perforce#get#PFUSER()
 	return s:get_set_data('P4USER')
 endfunction 
 
-function! perforce#get#outs(data_ds)
+function! perforce#get#outs(data_ds) "{{{
 	" ********************************************************************************
 	" @param[in]  datas
 	" .cmd      = 'p4 opened'
@@ -53,8 +53,9 @@ function! perforce#get#outs(data_ds)
 	endfor
 	return outs
 endfunction
+"}}}
 
-function! perforce#get#clients()
+function! perforce#get#clients() "{{{
 	let clients = perforce#data#get('g:unite_perforce_clients')
 
 	if len(clients) < 1
@@ -63,6 +64,7 @@ function! perforce#get#clients()
 
 	return clients
 endfunction
+"}}}
 
 
 let &cpo = s:save_cpo
