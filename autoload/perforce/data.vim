@@ -64,6 +64,7 @@ function! perforce#data#get(valname, ...)
 	call s:init()
 	return unite_setting_ex_3#get('g:unite_pf_data', a:valname)
 endfunction
+
 function! perforce#data#setting() 
 	if s:have_unite_setting() == 0
 		return
@@ -72,6 +73,88 @@ function! perforce#data#setting()
 	call s:init()
 	call unite#start([['settings_ex', 'g:unite_pf_data']])
 endfunction
+
+function! perforce#data#get_users() "{{{
+	let users = perforce#data#get('g:unite_perforce_username')
+
+	call map(users, "' -u '.v:val.' '")
+
+	if len(users) == 0
+		"let user = perforce#get#PFUSER()
+		"let users = [user]
+		let users = ['']
+	endif
+
+	return users
+endfunction
+"}}}
+function! perforce#data#get_max() "{{{
+	let max = perforce#data#get('g:unite_perforce_show_max')
+
+	if max > 0 
+		let max = '-m '.max
+	else
+		let max = ''
+	endif
+
+	return max
+endfunction
+"}}}
+function! perforce#data#get_noport_clients() "{{{
+	let datas = perforce#data#get('g:unite_perforce_clients')
+	return perforce#data#get_clients_from_arg(datas)
+endfunction
+"}}}
+function! perforce#data#get_ports() "{{{
+	let datas = perforce#data#get('g:unite_perforce_clients')
+	return perforce#data#get_ports_from_arg(datas)
+endfunction
+"}}}
+"
+function! perforce#data#get_noport_clients_from_arg(datas) "{{{
+	let datas = a:datas
+
+	let clients = []
+	for data in datas
+		let client = matchstr(data, '-c\s\+\zs\S*')
+		if len(client)
+			call add(clients, client)
+		endif
+	endfor
+
+	if len(clients) == 0 
+		" let client = perforce#get#PFCLIENTNAME()
+		" let clients = [client]
+		let clients = ['']
+	else
+		call map(clients, "' -c '.v:val.' '")
+	endif
+
+	return clients
+endfunction
+"}}}
+function! perforce#data#get_ports_from_arg(datas) "{{{
+	let datas = a:datas
+
+	let ports = []
+	for data in datas
+		let port = matchstr(data, '-p\s\+\zs\S*')
+		if len(port)
+			call add(ports, port)
+		endif
+	endfor
+
+	if len(ports) == 0 
+		" let port = perforce#get#PFPORT()
+		" let ports = [port]
+		let ports = ['']
+	else
+		call map(ports, "' -p '.v:val.' '")
+	endif
+
+	return ports
+endfunction
+"}}}
 
 
 let &cpo = s:save_cpo

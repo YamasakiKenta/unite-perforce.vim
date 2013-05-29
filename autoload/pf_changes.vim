@@ -27,7 +27,7 @@ function! pf_changes#get(context,data_ds)  "{{{
 	return candidates
 endfunction
 "}}}
-function! pf_changes#gather_candidates(args, context)  "{{{
+function! pf_changes#gather_candidates(args, context, status)  "{{{
 	" ********************************************************************************
 	" チェンジリストの表示 表示設定関数
 	" チェンジリストの変更の場合、開いたいるファイルを変更するか、actionで指定したファイル
@@ -41,8 +41,6 @@ function! pf_changes#gather_candidates(args, context)  "{{{
 		let clients = a:context.source__client
 	endif
 
-	" -m max
-	" -u user
 
 	" defaultの表示
 	let candidates = []
@@ -55,8 +53,19 @@ function! pf_changes#gather_candidates(args, context)  "{{{
 				\ 'action__depots' : a:context.source__depots,
 				\ }"))
 
-	let data_ds = perforce#cmd#clients(clients, 'p4 changes -s pending')
-	call extend(candidates, pf_changes#get(a:context, data_ds))
+	let users          = perforce#data#get_users()
+	let noport_clients = perforce#data#get_noport_clients_from_arg(clients)
+	let ports          = perforce#data#get_ports_from_arg(clients)
+	let max            = perforce#data#get_max()
+
+	for noport_client in noport_clients
+		for user in users
+			let cmd = 'p4 changes '.user.''.noport_client.''.max.'-s pending'
+			let data_ds = perforce#cmd#clients(ports, cmd)
+			call extend(candidates, pf_changes#get(a:context, data_ds))
+		endfor
+	endfor
+
 	return candidates
 endfunction
 "}}}
