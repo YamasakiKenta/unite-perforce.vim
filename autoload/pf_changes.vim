@@ -45,13 +45,15 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 	" default‚Ì•\Ž¦
 	let candidates = []
 
-	call extend(candidates, map( copy(clients), "{
-				\ 'word'           : 'default by '.v:val,
-				\ 'kind'           : 'k_p4_change_pending',
-				\ 'action__chnum'  : 'default',
-				\ 'action__client' : v:val,
-				\ 'action__depots' : a:context.source__depots,
-				\ }"))
+	if a:status == 'pending'
+		call extend(candidates, map( copy(clients), "{
+					\ 'word'           : 'default by '.v:val,
+					\ 'kind'           : 'k_p4_change_pending',
+					\ 'action__chnum'  : 'default',
+					\ 'action__client' : v:val,
+					\ 'action__depots' : a:context.source__depots,
+					\ }"))
+	endif
 
 	let users          = perforce#data#get_users()
 	let noport_clients = perforce#data#get_noport_clients_from_arg(clients)
@@ -60,7 +62,7 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 
 	for noport_client in noport_clients
 		for user in users
-			let cmd = 'p4 changes '.user.''.noport_client.''.max.'-s pending'
+			let cmd = 'p4 changes '.user.''.noport_client.''.max.'-s '.a:status
 			let data_ds = perforce#cmd#clients(ports, cmd)
 			call extend(candidates, pf_changes#get(a:context, data_ds))
 		endfor

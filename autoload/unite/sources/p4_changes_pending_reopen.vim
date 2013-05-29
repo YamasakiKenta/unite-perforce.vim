@@ -16,7 +16,7 @@ function s:source_p4_changes_pending_reopen.hooks.on_init(...)
 	return call('perforce#get#fname#for_unite', a:000)
 endfunction
 function s:source_p4_changes_pending_reopen.gather_candidates(...)
-return = call('pf_changes#gather_candidates', a:000
+	return call('pf_changes#gather_candidates', a:000 + ['pending'])
 endfunction
 function s:source_p4_changes_pending_reopen.change_candidates(...)
 	return call('pf_changes#change_candidates', a:000)

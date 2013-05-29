@@ -25,7 +25,7 @@ function! s:source_p4_changes_pending.hooks.on_init(...)
 endfunction
 
 function! s:source_p4_changes_pending.gather_candidates(...)
-	return call('pf_changes#gather_candidates', a:000)
+	return call('pf_changes#gather_candidates', a:000 + ['pending'])
 endfunction
 
 function! s:source_p4_changes_pending.change_candidates(...)
