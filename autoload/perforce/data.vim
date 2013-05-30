@@ -17,6 +17,7 @@ function! s:init() "{{{
 
 	call s:perforce_init(file_)
 
+	call s:perforce_add( 'g:unite_perforce_ports_clients'       ,''                       , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
 	call s:perforce_add( 'g:unite_perforce_clients'             ,''                       , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
 	call s:perforce_add( 'g:unite_perforce_diff_dw'             ,'ãÛîíÇñ≥éãÇ∑ÇÈ'         , 1)
 	call s:perforce_add( 'g:unite_perforce_filters'             ,'èúäOÉäÉXÉg'             , {'nums' : [],    'items' : ['tag', 'snip']})
@@ -110,6 +111,14 @@ function! perforce#data#get_ports() "{{{
 	return perforce#data#get_ports_from_arg(datas)
 endfunction
 "}}}
+function! perforce#data#get_port_clients() "{{{
+	let clients = perforce#data#get('g:unite_perforce_ports_clients')
+	if len(clients) == 0
+		let client = [perforce#get#cache_port_client()}
+	endif
+	return clients
+endfunction
+"}}}
 "
 function! perforce#data#get_noport_clients_from_arg(datas) "{{{
 	let datas = a:datas
@@ -123,9 +132,7 @@ function! perforce#data#get_noport_clients_from_arg(datas) "{{{
 	endfor
 
 	if len(clients) == 0 
-		" let client = perforce#get#PFCLIENTNAME()
-		" let clients = [client]
-		let clients = ['']
+		let clients = [perforce#get#cache_client()]
 	else
 		call map(clients, "' -c '.v:val.' '")
 	endif

@@ -36,7 +36,7 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 	"
 	" 表示するクライアント名の取得
 	if a:context.source__client_flg == 0
-		let clients = perforce#data#get('g:unite_perforce_clients')
+		let clients = perforce#data#get_port_clients()
 	else
 		let clients = a:context.source__client
 	endif
@@ -83,7 +83,7 @@ function! pf_changes#change_candidates(args, context)  "{{{
 
 	" 入力がない場合は、表示しない
 	if newfile != ""
-		let clients = perforce#data#get('g:unite_perforce_clients')
+		let clients = perforce#data#get_port_clients()
 		for client in clients
 			call add(candidates, {
 						\ 'word' : '[new] '.client.' : '.newfile,

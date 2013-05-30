@@ -55,17 +55,17 @@ function! perforce#get#outs(data_ds) "{{{
 endfunction
 "}}}
 
-function! perforce#get#clients() "{{{
-	let clients = perforce#data#get('g:unite_perforce_clients')
-
-	if len(clients) < 1
-		let clients = [s:cache_port.' '.s:cache_client]
-	endif
-
-	return clients
+function! perforce#get#cache_port_client()
+	return s:cache_port.' '.s:cache_client
 endfunction
-"}}}
 
+function! perforce#get#cache_port()
+	return s:cache_port
+endfunction
+
+function! perforce#get#cache_client()
+	return s:cache_client
+endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

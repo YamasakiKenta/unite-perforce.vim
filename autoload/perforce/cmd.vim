@@ -48,8 +48,8 @@ function! s:pfcmds_with_clients_from_data(pfcmd, head, tail) "{{{
 	" .cmd     = 'p4 opened'
 	" .outs[]  = ''  - cmd outputs
 	" ********************************************************************************
-	let clients = perforce#get#clients()
-	return  s:pfcmds_with_clients_and_unite_mes(clients, a:pfcmd, a:head, a:tail)
+	let port_clients = perforce#data#get_port_clients()
+	return  s:pfcmds_with_clients_and_unite_mes(port_clients, a:pfcmd, a:head, a:tail)
 endfunction
 "}}}
 
@@ -260,14 +260,9 @@ function! s:pfcmds_with_clients_from_data_port_only(pfcmd,head,tail) "{{{
 	" [].cmd      =  ''  - p4 opened
 	" [].outs     =  []  - cmd outputs
 	" ********************************************************************************
-	let clients = perforce#get#clients()
-	let port_d  = {}
-	for client in clients
-		let port = matchstr(client, '-p\s*\S*')
-		let port_d[port] = ''
-	endfor
 
-	let datas = s:pfcmds_with_clients_and_unite_mes(keys(port_d), a:pfcmd, a:head, a:tail)
+	let ports = perforce#data#get_ports()
+	let datas = s:pfcmds_with_clients_and_unite_mes(ports, a:pfcmd, a:head, a:tail)
 	return  datas
 endfunction
 "}}}

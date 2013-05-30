@@ -192,33 +192,33 @@ function! perforce#is_p4_haves_client2(files) "{{{
 	" @param[in]	files[] = '' - file name
 	"
 	" @return rtns_d
-	" true.{client}[]    = '' -     have file name 
-	" false.{client}[]   = '' - not have file name
+	" true.{port_client}[]    = '' -     have file name 
+	" false.{port_client}[]   = '' - not have file name
 	"
 	" @par  2013/05/05
 	" ********************************************************************************
 	"
-	let clients = perforce#get#clients()
-	echo "perforce#is_p4_haves_client2 ->" clients
+	let port_clients = perforce#data#get_port_clients()
+	echo "perforce#is_p4_haves_client2 ->" port_clients
 	let rtn_client_d = {}
 
 	let rtns_d = {
 				\ 'true'  : {},
 				\ 'false' : {},
 				\ }
-	for client in clients
+	for port_client in port_clients
 
-		let rtns_d.true[client]  = []
-		let rtns_d.false[client] = []
+		let rtns_d.true[port_client]  = []
+		let rtns_d.false[port_client] = []
 
 		for file_ in a:files
-			let str = system('p4 '.client.' have '.perforce#get_kk(file_))
+			let str = system('p4 '.port_client.' have '.perforce#get_kk(file_))
 			if s:is_p4_have_from_have(str) == 1
 				let type = 'true'
 			else
 				let type = 'false'
 			endif
-			call add(rtns_d[type][client], file_)
+			call add(rtns_d[type][port_client], file_)
 		endfor
 
 	endfor
