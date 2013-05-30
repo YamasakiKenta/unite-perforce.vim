@@ -18,7 +18,7 @@ function! s:init() "{{{
 	call s:perforce_init(file_)
 
 	call s:perforce_add( 'g:unite_perforce_ports_clients'       ,''                       , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
-	call s:perforce_add( 'g:unite_perforce_clients'             ,''                       , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
+	call s:perforce_add( 'g:unite_perforce_clients'             ,''                       , {'num'  : 0,     'items' : ['none', 'default', 'port_clients'], 'consts':[-1]})
 	call s:perforce_add( 'g:unite_perforce_diff_dw'             ,'空白を無視する'         , 1)
 	call s:perforce_add( 'g:unite_perforce_filters'             ,'除外リスト'             , {'nums' : [],    'items' : ['tag', 'snip']})
 	call s:perforce_add( 'g:unite_perforce_show_max'            ,'ファイル数の制限'       , {'num'  : 0,     'items' : [0, 5, 10],                   'consts' : [0]})
@@ -101,13 +101,25 @@ function! perforce#data#get_max() "{{{
 	return max
 endfunction
 "}}}
-function! perforce#data#get_noport_clients() "{{{
-	let datas = perforce#data#get('g:unite_perforce_clients')
-	return perforce#data#get_clients_from_arg(datas)
+function! perforce#data#get_clients() "{{{
+	let mode_ = perforce#data#get('g:unite_perforce_clients')
+
+	echo 'perforce#data#get_clients => ' . mode_
+	if mode_ == 'default'
+echo 'default'
+		let clients = [perforce#get#cache_client()]
+	elseif mode_ == 'port_clients'
+echo 'port_clients'
+		let clients = perforce#data#get('g:unite_perforce_ports_clients')
+		let clients = perforce#data#get_clients_from_arg(clients)
+	else 
+		let clients = ['']
+	endif
+	return  clients
 endfunction
 "}}}
 function! perforce#data#get_ports() "{{{
-	let datas = perforce#data#get('g:unite_perforce_clients')
+	let datas = perforce#data#get('g:unite_perforce_ports_clients')
 	return perforce#data#get_ports_from_arg(datas)
 endfunction
 "}}}
@@ -120,7 +132,7 @@ function! perforce#data#get_port_clients() "{{{
 endfunction
 "}}}
 "
-function! perforce#data#get_noport_clients_from_arg(datas) "{{{
+function! perforce#data#get_clients_from_arg(datas) "{{{
 	let datas = a:datas
 
 	let clients = []

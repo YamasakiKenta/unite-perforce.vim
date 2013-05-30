@@ -36,9 +36,12 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 	"
 	" 表示するクライアント名の取得
 	if a:context.source__client_flg == 0
-		let clients = perforce#data#get_port_clients()
+		let clients = perforce#data#get_clients()
+		let ports   = perforce#data#get_ports()
 	else
-		let clients = a:context.source__client
+		let datas = a:context.source__client
+		let clients = perforce#data#get_clients_from_arg(datas)
+		let ports   = perforce#data#get_ports_from_arg(datas)
 	endif
 
 
@@ -55,14 +58,12 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 					\ }"))
 	endif
 
-	let users          = perforce#data#get_users()
-	let noport_clients = perforce#data#get_noport_clients_from_arg(clients)
-	let ports          = perforce#data#get_ports_from_arg(clients)
-	let max            = perforce#data#get_max()
+	let users   = perforce#data#get_users()
+	let max     = perforce#data#get_max()
 
-	for noport_client in noport_clients
+	for client in clients
 		for user in users
-			let cmd = 'p4 changes '.user.''.noport_client.''.max.'-s '.a:status
+			let cmd = 'p4 changes '.user.''.client.''.max.'-s '.a:status
 			let data_ds = perforce#cmd#clients(ports, cmd)
 			call extend(candidates, pf_changes#get(a:context, data_ds))
 		endfor

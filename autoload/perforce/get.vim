@@ -56,14 +56,20 @@ endfunction
 "}}}
 
 function! perforce#get#cache_port_client()
-	return s:cache_port.' '.s:cache_client
+	return perforce#get#cache_port.' '.perforce#get#cache_client
 endfunction
 
 function! perforce#get#cache_port()
+	if len(s:cache_port) == 0
+		call perforce#get#PFPORT()
+	endif
 	return s:cache_port
 endfunction
 
 function! perforce#get#cache_client()
+	if len(s:cache_client) == 0
+		call perforce#get#PFCLIENTNAME()
+	endif
 	return s:cache_client
 endfunction
 
