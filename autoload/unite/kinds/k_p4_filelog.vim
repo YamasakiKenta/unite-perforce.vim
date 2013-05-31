@@ -38,8 +38,8 @@ function! s:kind_filelog.action_table.preview.func(candidate) "{{{
 	" 表示するバージョンを取得する
 	if exists('candidate.action__chnum')
 		echo 'USE CHSNGE'
-		let @" = 's:kind_filelog.action_table.preview.func'
 		call input("")
+		let @" = 's:kind_filelog.action_table.preview.func'
 		let file_numstr =  '@'.candidate.action__chnum
 		let numstr      =  '@'.candidate.action__chnum
 	endif

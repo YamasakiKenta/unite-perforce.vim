@@ -24,9 +24,7 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" ˆø”‚Ìİ’è
 	"
-	echo 's:source_p4_opened'
 	let data_ds = perforce_2#get_args('chnum', a:args)
-
 
 	let tmps = []
 	for data_d in data_ds

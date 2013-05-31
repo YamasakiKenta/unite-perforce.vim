@@ -98,7 +98,7 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 	endif
 
 	let cmd = join(gcmds)
-	echo 'perforce#cmd#base -> ' cmd
+	echo 'perforce#cmd#base -> ' string(cmd)
 	let rtn_d = {
 				\ 'cmd'  : cmd,
 				\ 'outs' : split(system(cmd),'\n'),
@@ -152,7 +152,7 @@ function! s:get_outs(cmd) "{{{
 	" @return        outs[] = '' - o—ÍŒ‹‰Ê
 	" ********************************************************************************
 	" @par filter ‚ðœ‚¢‚½’l‚ð•Ô‚µ‚Ü‚·
-	echo 's:get_outs -> ' a:cmd
+	echo 's:get_outs -> ' string(a:cmd)
 	let outs = split(system(a:cmd),'\n')
 
 	let filters_ = perforce#data#get('g:unite_perforce_filters')
@@ -331,7 +331,7 @@ function! perforce#cmd#files(pfcmd, files, have_flg, onetime) "{{{
 
 	let data_d = perforce#is_p4_haves_client2(a:files)
 
-	echo data_d
+	echo 'perforce#cmd#files -> '. string(data_d)
 	for have_type in have_types
 		for client in keys(data_d[have_type])
 			let files = data_d[have_type][client]
@@ -356,7 +356,7 @@ function! perforce#cmd#clients(clients, cmd) "{{{
 	let cmd_base = substitute(cmd_base, 'p4', '', '')
 	for client in a:clients
 		let cmd = 'p4 '.client.' '.cmd_base
-		echo cmd
+		echo "perforce#cmd#clients : ".string(cmd)
 		call add(rtn_ds, {
 					\ 'cmd'    : cmd,
 					\ 'outs'   : split(system(cmd), "\n"),

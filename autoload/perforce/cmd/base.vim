@@ -3,7 +3,7 @@ set cpo&vim
 
 function! s:cmd(cmd) "{{{
 	let cmd = a:cmd
-	echo cmd 
+	echo "base.vim -> " . string( cmd )
 	call unite#print_message('[cmd - clients] '.cmd)
 	let outs = split(system(cmd), '\n')
 	return outs

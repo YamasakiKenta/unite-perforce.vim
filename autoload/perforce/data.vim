@@ -104,12 +104,9 @@ endfunction
 function! perforce#data#get_clients() "{{{
 	let mode_ = perforce#data#get('g:unite_perforce_clients')
 
-	echo 'perforce#data#get_clients => ' . mode_
 	if mode_ == 'default'
-echo 'default'
 		let clients = [perforce#get#cache_client()]
 	elseif mode_ == 'port_clients'
-echo 'port_clients'
 		let clients = perforce#data#get('g:unite_perforce_ports_clients')
 		let clients = perforce#data#get_clients_from_arg(clients)
 	else 
