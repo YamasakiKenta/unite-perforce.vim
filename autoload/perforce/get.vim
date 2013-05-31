@@ -11,8 +11,8 @@ function! s:system(cmd) "{{{
 endfunction 
 "}}}
 
-let s:cache_client = ' '
-let s:cache_port   = ' '
+let s:cache_client = ''
+let s:cache_port   = ''
 
 function! s:get_set_data(str) 
 	return matchstr(s:system('p4 set '.a:str), '\w*=\zs.* \ze(set)')

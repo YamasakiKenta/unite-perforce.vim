@@ -56,15 +56,6 @@ function! perforce#LogFile(str) "{{{
 
 endfunction
 "}}}
-function! perforce#init() "{{{
-
-	" クライアントデータの読み込み
-	call perforce#get#PFCLIENTPATH()
-
-	" 設定の取得
-	call perforce#data#init()
-endfunction
-"}}}
 function! perforce#matomeDiffs(...) "{{{
 	" new file 用にここで初期化
 	let datas = []

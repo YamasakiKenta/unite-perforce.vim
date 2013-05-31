@@ -49,8 +49,7 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 	let candidates = []
 
 	if a:status == 'pending'
-		call extend(candidates, map( copy(clients), "{
-					\ 'word'           : 'default by '.v:val,
+		call extend(candidates, map( copy(clients), "{ \ 'word'           : 'default by '.v:val,
 					\ 'kind'           : 'k_p4_change_pending',
 					\ 'action__chnum'  : 'default',
 					\ 'action__client' : v:val,
