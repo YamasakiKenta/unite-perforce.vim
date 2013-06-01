@@ -36,20 +36,26 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 	"
 	" 表示するクライアント名の取得
 	if a:context.source__client_flg == 0
-		let clients = perforce#data#get_clients()
-		let ports   = perforce#data#get_ports()
+		let clients     = perforce#data#get_clients()
+		let ports       = perforce#data#get_ports()
+		let use_clients = perforce#data#get_use_port_clients()
 	else
-		let datas = a:context.source__client
-		let clients = perforce#data#get_clients_from_arg(datas)
-		let ports   = perforce#data#get_ports_from_arg(datas)
+		let datas       = a:context.source__client
+		let clients     = perforce#data#get_clients(datas)
+		let ports       = perforce#data#get_ports(datas)
+		let use_clients = perforce#data#get_use_port_clients(datas)
 	endif
 
 
 	" defaultの表示
 	let candidates = []
 
+	" ★
+echo "pf_changes#gather_candidates : ".string(use_clients)
+
 	if a:status == 'pending'
-		call extend(candidates, map( copy(clients), "{ \ 'word'           : 'default by '.v:val,
+		call extend(candidates, map( copy(use_clients), "{
+					\ 'word'           : 'default by '.v:val,
 					\ 'kind'           : 'k_p4_change_pending',
 					\ 'action__chnum'  : 'default',
 					\ 'action__client' : v:val,

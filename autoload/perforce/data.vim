@@ -57,16 +57,17 @@ function! s:perforce_load(...)
 	return call('unite_setting_ex_3#load', extend(['g:unite_pf_data'] , a:000))
 endfunction
 
-function! perforce#data#get(valname, ...)
+function! perforce#data#get(valname, ...) "{{{
 	if s:have_unite_setting() == 0
-		return
+		exe 'let tmp = '.a:valname
+		return tmp
 	endif
 
 	call s:init()
 	return unite_setting_ex_3#get('g:unite_pf_data', a:valname)
 endfunction
-
-function! perforce#data#setting() 
+"}}}
+function! perforce#data#setting()  "{{{
 	if s:have_unite_setting() == 0
 		return
 	endif
@@ -74,6 +75,8 @@ function! perforce#data#setting()
 	call s:init()
 	call unite#start([['settings_ex', 'g:unite_pf_data']])
 endfunction
+"}}}
+
 
 function! perforce#data#get_users() "{{{
 	let users = perforce#data#get('g:unite_perforce_username')
@@ -101,23 +104,34 @@ function! perforce#data#get_max() "{{{
 	return max
 endfunction
 "}}}
-function! perforce#data#get_clients() "{{{
+" à¯êîÇ≈ÇµÇƒÇ¢ÇµÇΩÇ¢èÍçá
+function! perforce#data#get_ports(...) "{{{
+	if a:0 == 0
+		let datas = perforce#data#get('g:unite_perforce_ports_clients')
+	else
+		let datas = a:1
+	endif
+	return s:get_ports_from_arg(datas)
+endfunction
+"}}}
+function! perforce#data#get_clients(...) "{{{
+
 	let mode_ = perforce#data#get('g:unite_perforce_clients')
 
 	if mode_ == 'default'
 		let clients = [perforce#get#cache_client()]
 	elseif mode_ == 'port_clients'
-		let clients = perforce#data#get('g:unite_perforce_ports_clients')
-		let clients = perforce#data#get_clients_from_arg(clients)
+		if a:0 == 0
+			let clients = perforce#data#get('g:unite_perforce_ports_clients')
+		else
+			let clients = a:1
+		endif
+		let clients = s:get_clients_from_arg(clients)
 	else 
 		let clients = ['']
 	endif
+
 	return  clients
-endfunction
-"}}}
-function! perforce#data#get_ports() "{{{
-	let datas = perforce#data#get('g:unite_perforce_ports_clients')
-	return perforce#data#get_ports_from_arg(datas)
 endfunction
 "}}}
 function! perforce#data#get_port_clients() "{{{
@@ -128,8 +142,72 @@ function! perforce#data#get_port_clients() "{{{
 	return clients
 endfunction
 "}}}
-"
-function! perforce#data#get_clients_from_arg(datas) "{{{
+" ï\é¶Ç≈égópÇµÇΩÇ¢èÍçá
+function! s:get_use_ports() "{{{
+	return perforce#data#get_ports()
+endfunction
+"}}}
+function! s:get_use_clients() "{{{
+	let mode_ = perforce#data#get('g:unite_perforce_clients')
+
+	if mode_ == 'none'
+		let clients = [perforce#get#cache_client()]
+	else
+		let clients = perforce#data#get_clients()
+	endif
+
+	return clients
+endfunction
+"}}}
+function! perforce#data#get_use_port_clients(...) "{{{
+
+	if a:0 == 0
+		let ports   = s:get_use_ports()
+		let clients = s:get_use_clients()
+	else
+		let ports   = s:get_use_ports(a:1)
+		let clients = s:get_use_clients(a:1)
+	endif
+
+	let port_clients = []
+	for port in ports
+		for client in clients
+			let port_client = port.' '.client
+			call add(port_clients, port_client)
+		endfor
+	endfor
+
+	if len(port_clients) == 0
+		let port_clients = [perforce#get#cache_port_client()]
+	endif
+
+	return port_clients
+
+endfunction
+"}}}
+" -p, -c ÇÇ¬ÇØÇÈ
+function! s:get_ports_from_arg(datas) "{{{
+	let datas = a:datas
+
+	let ports = []
+	for data in datas
+		let port = matchstr(data, '-p\s\+\zs\S*')
+		if len(port)
+			call add(ports, port)
+		endif
+	endfor
+
+	if len(ports) == 0 
+		let port = perforce#get#PFPORT()
+		let ports = [port]
+	else
+		call map(ports, "' -p '.v:val.' '")
+	endif
+
+	return ports
+endfunction
+"}}}
+function! s:get_clients_from_arg(datas) "{{{
 	let datas = a:datas
 
 	let clients = []
@@ -147,28 +225,6 @@ function! perforce#data#get_clients_from_arg(datas) "{{{
 	endif
 
 	return clients
-endfunction
-"}}}
-function! perforce#data#get_ports_from_arg(datas) "{{{
-	let datas = a:datas
-
-	let ports = []
-	for data in datas
-		let port = matchstr(data, '-p\s\+\zs\S*')
-		if len(port)
-			call add(ports, port)
-		endif
-	endfor
-
-	if len(ports) == 0 
-		" let port = perforce#get#PFPORT()
-		" let ports = [port]
-		let ports = ['']
-	else
-		call map(ports, "' -p '.v:val.' '")
-	endif
-
-	return ports
 endfunction
 "}}}
 

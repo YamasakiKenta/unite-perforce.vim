@@ -55,9 +55,6 @@ function! perforce#get#outs(data_ds) "{{{
 endfunction
 "}}}
 
-function! perforce#get#cache_port_client()
-	return perforce#get#cache_port.' '.perforce#get#cache_client
-endfunction
 
 function! perforce#get#cache_port()
 	if len(s:cache_port) == 0
@@ -71,6 +68,10 @@ function! perforce#get#cache_client()
 		call perforce#get#PFCLIENTNAME()
 	endif
 	return s:cache_client
+endfunction
+
+function! perforce#get#cache_port_client()
+	return perforce#get#cache_port().' '.perforce#get#cache_client()
 endfunction
 
 let &cpo = s:save_cpo
