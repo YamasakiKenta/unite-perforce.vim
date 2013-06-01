@@ -8,8 +8,7 @@ endfunction
 let s:source_p4_changes_pending_reopen = {
 			\ 'name'           : 'p4_changes_pending_reopen',
 			\ 'description'    : 'チェンジリストの移動',
-			\ 'default_action' : 'a_p4_change_reopen',
-			\ 'default_kind'   : 'k_p4_change_pending',
+			\ 'default_kind'   : 'k_p4_change_reopen',
 			\ 'hooks'          : {},
 			\ }
 function s:source_p4_changes_pending_reopen.hooks.on_init(...)

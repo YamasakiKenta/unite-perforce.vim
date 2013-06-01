@@ -105,11 +105,14 @@ function! perforce#data#get_max() "{{{
 endfunction
 "}}}
 " à¯êîÇ≈ÇµÇƒÇ¢ÇµÇΩÇ¢èÍçá
+function! s:get_client_defoult()
+		return [perforce#get#cache_client()]
+endfunction
 function! perforce#data#get_ports(...) "{{{
 	if a:0 == 0
 		let datas = perforce#data#get('g:unite_perforce_ports_clients')
 	else
-		let datas = a:1
+		let datas = a:000
 	endif
 	return s:get_ports_from_arg(datas)
 endfunction
@@ -119,12 +122,12 @@ function! perforce#data#get_clients(...) "{{{
 	let mode_ = perforce#data#get('g:unite_perforce_clients')
 
 	if mode_ == 'default'
-		let clients = [perforce#get#cache_client()]
+		let clients = s:get_client_defoult()
 	elseif mode_ == 'port_clients'
 		if a:0 == 0
 			let clients = perforce#data#get('g:unite_perforce_ports_clients')
 		else
-			let clients = a:1
+			let clients = a:000
 		endif
 		let clients = s:get_clients_from_arg(clients)
 	else 
@@ -143,17 +146,17 @@ function! perforce#data#get_port_clients() "{{{
 endfunction
 "}}}
 " ï\é¶Ç≈égópÇµÇΩÇ¢èÍçá
-function! s:get_use_ports() "{{{
-	return perforce#data#get_ports()
+function! s:get_use_ports(...) "{{{
+	return call('perforce#data#get_ports', a:000)
 endfunction
 "}}}
-function! s:get_use_clients() "{{{
+function! s:get_use_clients(...) "{{{
 	let mode_ = perforce#data#get('g:unite_perforce_clients')
 
 	if mode_ == 'none'
-		let clients = [perforce#get#cache_client()]
+		let clients = s:get_client_defoult()
 	else
-		let clients = perforce#data#get_clients()
+		let clients = call('perforce#data#get_clients', a:000)
 	endif
 
 	return clients
@@ -161,13 +164,8 @@ endfunction
 "}}}
 function! perforce#data#get_use_port_clients(...) "{{{
 
-	if a:0 == 0
-		let ports   = s:get_use_ports()
-		let clients = s:get_use_clients()
-	else
-		let ports   = s:get_use_ports(a:1)
-		let clients = s:get_use_clients(a:1)
-	endif
+	let ports   = call('s:get_use_ports', a:000)
+	let clients = call('s:get_use_clients', a:000)
 
 	let port_clients = []
 	for port in ports
@@ -188,6 +186,8 @@ endfunction
 " -p, -c ÇÇ¬ÇØÇÈ
 function! s:get_ports_from_arg(datas) "{{{
 	let datas = a:datas
+
+echo "s:get_ports_from_arg : ".string(datas)
 
 	let ports = []
 	for data in datas
@@ -210,6 +210,8 @@ endfunction
 function! s:get_clients_from_arg(datas) "{{{
 	let datas = a:datas
 
+echo "s:get_clients_from_arg : ".string(datas)
+
 	let clients = []
 	for data in datas
 		let client = matchstr(data, '-c\s\+\zs\S*')
@@ -228,6 +230,7 @@ function! s:get_clients_from_arg(datas) "{{{
 endfunction
 "}}}
 
-
-let &cpo = s:save_cpo
-unlet s:save_cpo
+if exists('s:save_cpo')
+	let &cpo = s:save_cpo
+	unlet s:save_cpo
+endif
