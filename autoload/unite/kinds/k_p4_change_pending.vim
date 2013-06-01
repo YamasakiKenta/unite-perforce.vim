@@ -1,6 +1,16 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! s:get_port_client(candidate)  "{{{
+	let port_client = a:candidate.action__client
+
+	if port_client !~ '-c'
+		let port_client = port_client.' -c '.s:get_clname_from_change(a:candidate.action__out)
+	endif
+
+	return port_client
+endfunction
+"}}}
 function! s:get_chname_from_change(str) "{{{
 	let str = a:str
 	let str = substitute(str, '.\{-}''', '', '')
@@ -8,6 +18,17 @@ function! s:get_chname_from_change(str) "{{{
 	return str
 endfunction
 "}}}
+function! s:get_clname_from_change(str) 
+	return matchstr(a:str, '@\zs\w*')
+endfunction
+
+function! s:get_change_num_from_changes(str) 
+	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
+endfunction
+
+function! s:get_chnum(candidate) 
+	return get(a:candidate, 'action__chnum', s:get_change_num_from_changes(a:candidate))
+endfunction
 
 function! unite#kinds#k_p4_change_pending#define()
 	return s:kind_k_p4_change_pending
@@ -27,11 +48,11 @@ let s:kind_k_p4_change_pending.action_table.delete = {
 			\ }
 function! s:kind_k_p4_change_pending.action_table.delete.func(candidates) "{{{
 	let i = 1
-	for l:candidate in a:candidates
-		let num    = l:candidate.action__chnum
-		let client = l:candidate.action__client
-		let out    = system('p4 '.client.' change -d '.num)
-		let outs   = split(out,'\n')
+	for candidate in a:candidates
+		let chnum       = s:get_chnum(candidate)
+		let client      = candidate.action__client
+		let out         = system('p4 '.port_client.' change -d '.chnum)
+		let outs        = split(out,'\n')
 		call perforce#LogFile(outs)
 		let i += len(outs)
 	endfor
@@ -51,12 +72,10 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_opened.func(candid
 		" チェンジリストの番号の取得をする
 		let data_d= {
 					\ 'chnum'  : pf_changes#make_new_changes(candidate),
-					\ 'client' : candidate.action__client,
+					\ 'client' : s:get_port_client(candidate),
 					\ }
 		call add(data_ds, data_d)
 	endfor
-
-	echo 's:kind_k_p4_change_pending.action_table.a_p4_change_opened.func - ' string(data_ds)
 
 	call unite#start_temporary([insert(data_ds, 'p4_opened')]) " # 閉じない ? 
 endfunction
@@ -68,8 +87,8 @@ let s:kind_k_p4_change_pending.action_table.a_p4_change_info = {
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_info.func(candidates) "{{{
 	let outs = []
-	for l:candidate in a:candidates
-		let chnum = l:candidate.action__chnum
+	for candidate in a:candidates
+		let chnum = candidate.action__chnum
 		let outs += split(system('P4 change -o '.chnum),'\n')
 	endfor
 	call perforce#LogFile(outs)
@@ -116,8 +135,8 @@ let s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff = {
 			\ 'is_selectable' : 1, 
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff.func(candidates) "{{{
-	for l:candidate in a:candidates
-		let chnum = l:candidate.action__chnum
+	for candidate in a:candidates
+		let chnum = candidate.action__chnum
 		call perforce#matomeDiffs(chnum)
 	endfor
 endfunction

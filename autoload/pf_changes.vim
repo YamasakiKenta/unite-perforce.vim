@@ -1,7 +1,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:get_ChangeNum_from_changes(str) 
+function! s:get_change_num_from_changes(str) 
 	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
 endfunction
 
@@ -17,9 +17,10 @@ function! pf_changes#get(context,data_ds)  "{{{
 		for out in data_d.outs
 			call add( candidates, {
 						\ 'word'           : client.' : '.out,
-						\ 'action__chnum'  : s:get_ChangeNum_from_changes(out),
+						\ 'action__chnum'  : s:get_change_num_from_changes(out),
 						\ 'action__client' : client,
 						\ 'action__depots' : a:context.source__depots,
+						\ 'action__out'    : out,
 						\ })
 		endfor
 	endfor
@@ -51,7 +52,6 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 	if a:status == 'pending'
 		call extend(candidates, map( copy(use_clients), "{
 					\ 'word'           : 'default by '.v:val,
-					\ 'kind'           : 'k_p4_change_pending',
 					\ 'action__chnum'  : 'default',
 					\ 'action__client' : v:val,
 					\ 'action__depots' : a:context.source__depots,
@@ -63,7 +63,7 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 
 	for client in clients
 		for user in users
-			let cmd = 'p4 changes '.user.''.client.''.max.'-s '.a:status
+			let cmd     = 'p4 changes '.user.''.client.''.max.'-s '.a:status
 			let data_ds = perforce#cmd#clients(ports, cmd)
 			call extend(candidates, pf_changes#get(a:context, data_ds))
 		endfor
@@ -132,6 +132,7 @@ function! s:pf_change(str,...) "{{{
 
 endfunction
 "}}}
+" === kind ===
 function! pf_changes#make_new_changes(candidate) "{{{
 " ********************************************************************************
 " チェンジリストの番号の取得をする ( new の場合は、新規作成 )

@@ -187,8 +187,6 @@ endfunction
 function! s:get_ports_from_arg(datas) "{{{
 	let datas = a:datas
 
-echo "s:get_ports_from_arg : ".string(datas)
-
 	let ports = []
 	for data in datas
 		let port = matchstr(data, '-p\s\+\zs\S*')
@@ -209,8 +207,6 @@ endfunction
 "}}}
 function! s:get_clients_from_arg(datas) "{{{
 	let datas = a:datas
-
-echo "s:get_clients_from_arg : ".string(datas)
 
 	let clients = []
 	for data in datas

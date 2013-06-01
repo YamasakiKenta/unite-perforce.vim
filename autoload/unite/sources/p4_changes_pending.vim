@@ -23,7 +23,7 @@ function! s:source_p4_changes_pending.gather_candidates(...)
 endfunction
 
 function! s:source_p4_changes_pending.change_candidates(...)
-return call('pf_changes#change_candidates', a:000)
+	return call('pf_changes#change_candidates', a:000)
 endfunction
 
 call unite#define_source(s:source_p4_changes_pending)
