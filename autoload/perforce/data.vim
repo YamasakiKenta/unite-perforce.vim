@@ -22,8 +22,6 @@ function! s:init() "{{{
 	call s:perforce_add( 'g:unite_perforce_diff_dw'             ,'空白を無視する'         , 1)
 	call s:perforce_add( 'g:unite_perforce_filters'             ,'除外リスト'             , {'nums' : [],    'items' : ['tag', 'snip']})
 	call s:perforce_add( 'g:unite_perforce_show_max'            ,'ファイル数の制限'       , {'num'  : 0,     'items' : [0, 5, 10],                   'consts' : [0]})
-	call s:perforce_add( 'g:unite_perforce_is_out_echo_flg'     ,'実行結果を出力する'     , {'num'  : 0,     'items' : ['none', 'echo', 'log'],      'consts' : [-1]})
-	call s:perforce_add( 'g:unite_perforce_show_cmd'            ,'p4 コマンドを表示する'  , {'num'  : 0,     'items' : ['none', 'echo', 'stop'],     'consts' : [-1]}) 
 	call s:perforce_add( 'g:unite_perforce_diff_tool'           ,'Diff で使用するツール'  , {'num'  : 0,     'items' : ['vimdiff', 'WinMergeU'],     'consts' : [0]}) 
 	call s:perforce_add( 'g:unite_perforce_username'            ,''                       , {'nums' : [],    'items' : ['user']}) 
 	call s:perforce_add( 'g:unite_perforce_is_submit_flg'       ,'サブミットを許可'       , 0) 

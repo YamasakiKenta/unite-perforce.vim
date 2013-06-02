@@ -5,19 +5,14 @@ function! unite#sources#p4_opened#define()
 	return s:source_p4_opened
 endfunction
 
-" ********************************************************************************
-" source - p4_opened 
-" @param[in]	args		表示するチェンジリスト
-" ********************************************************************************
 let s:source_p4_opened = {
 			\ 'name' : 'p4_opened',
 			\ 'description' : '編集しているファイルの表示 ( チェンジリスト番号 )',
 			\ 'is_quit' : 0,
 			\ }
-
-
 function! s:source_p4_opened.gather_candidates(args, context) "{{{
 	" ********************************************************************************
+	" source - p4_opened 
 	" @param[in]     a:args[] = NULL,
 	"                           0,
 	"                           {'chnum' : 1, 'client' : '-p localhost:1818' }:

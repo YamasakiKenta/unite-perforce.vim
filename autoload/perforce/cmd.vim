@@ -48,7 +48,7 @@ function! s:pfcmds_with_clients_from_data(pfcmd, head, tail) "{{{
 	" .cmd     = 'p4 opened'
 	" .outs[]  = ''  - cmd outputs
 	" ********************************************************************************
-	let port_clients = perforce#data#get_port_clients()
+	let port_clients = perforce#data#get_use_port_clients()
 	return  s:pfcmds_with_clients_and_unite_mes(port_clients, a:pfcmd, a:head, a:tail)
 endfunction
 "}}}

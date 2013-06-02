@@ -42,15 +42,17 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 	endif
 
 
-	let clients     = call('perforce#data#get_clients'          , datas)
-	let ports       = call('perforce#data#get_ports'            , datas)
-	let use_clients = call('perforce#data#get_use_port_clients' , datas)
+	let clients          = call('perforce#data#get_clients'          , datas)
+	let ports            = call('perforce#data#get_ports'            , datas)
+	let use_port_clients = call('perforce#data#get_use_port_clients' , datas)
+
+	call s:get_port_clients(use_port_clients)
 
 	" defaultの表示
 	let candidates = []
 
 	if a:status == 'pending'
-		call extend(candidates, map( copy(use_clients), "{
+		call extend(candidates, map( copy(use_port_clients), "{
 					\ 'word'           : 'default by '.v:val,
 					\ 'action__chnum'  : 'default',
 					\ 'action__client' : v:val,
@@ -84,14 +86,14 @@ function! pf_changes#change_candidates(args, context)  "{{{
 
 	" 入力がない場合は、表示しない
 	if newfile != ""
-		let clients = perforce#data#get_port_clients()
+		let clients = s:get_port_clients()
 		for client in clients
 			call add(candidates, {
-						\ 'word' : '[new] '.client.' : '.newfile,
-						\ 'kind' : 'k_p4_change_reopen',
+						\ 'word'           : '[new] '.client.'     : '.newfile,
+						\ 'kind'           : 'k_p4_change_reopen',
 						\ 'action__chname' : newfile,
-						\ 'action__chnum' : 'new',
-						\ 'action_client' : client,
+						\ 'action__chnum'  : 'new',
+						\ 'action__client' : client,
 						\ 'action__depots' : a:context.source__depots,
 						\ })
 		endfor
@@ -101,8 +103,8 @@ function! pf_changes#change_candidates(args, context)  "{{{
 
 endfunction
 "}}}
-"
-function! s:pf_change(str,...) "{{{
+
+function! pf_changes#make(strs, port_client, ...) "{{{
 	"********************************************************************************
 	" チェンジリストの作成
 	" @param[in]	str		チェンジリストのコメント
@@ -113,20 +115,34 @@ function! s:pf_change(str,...) "{{{
 	let chnum     = get(a:,'1','')
 
 	"ChangeListの設定データを一時保存する
-	let tmp = system('p4 change -o '.chnum)                          
-
-	"コメントの編集
-	let tmp = substitute(tmp,'\nDescription:\zs\_.*\ze\(\nFiles:\)\?','\t'.a:str.'\n','') 
+	let cmd = 'p4 change -o '.chnum
+	let tmp = system('p4 '.a:port_client. ' change -o '.chnum)
 
 	" 新規作成の場合は、ファイルを含まない
-	if chnum == "" | let tmp = substitute(tmp,'\nFiles:\zs\_.*','','') | endif
+	if chnum == "" 
+		let tmp = substitute(tmp,'\nFiles:\zs\_.*','','') 
+	endif
+
+	"コメントの編集
+	let tmp = substitute(tmp,'\nDescription:\zs\_.*\ze\(\n\w\+:\|$\)','','') 
+
+	let outs = split(tmp, "\n")
+	let i = 0
+
+	while(outs[i]) !~ '^Description:'
+		let i = i + 1
+	endwhile
+
+	let strs = map(copy(a:strs), "' '.v:val")
+	let outs = extend(outs, strs, i+1)
 
 	"一時ファイルの書き出し
-	call writefile(split(tmp,'\n'),perforce#get_tmp_file())
+	call writefile(outs, perforce#get_tmp_file())
 
 	" チェンジリストの作成
-	" ★ client に対応する
-	let out = split(system('more '.perforce#get_kk(perforce#get_tmp_file()).' | p4 '.a:client.'change -i', '\n'))
+	let  cmd = 'more '.perforce#get_kk(perforce#get_tmp_file()).' | p4 '.a:port_client.' change -i'
+	echo cmd
+	let out = split(system(cmd), "\n")
 
 	return out
 
@@ -140,19 +156,44 @@ function! pf_changes#make_new_changes(candidate) "{{{
 " @retval       chnum		番号
 " ********************************************************************************
 
-	let chnum = a:candidate.action__chnum
+	let chnum       = a:candidate.action__chnum
+	let port_client = pf_changes#get_port_client( a:candidate ) 
 
 	if chnum == 'new'
 		let chname = a:candidate.action__chname
 
 		" チェンジリストの作成
-		let outs = s:pf_change(chname)
+		let outs = pf_changes#make(chname, port_client)
 
 		"チェンジリストの新規作成の結果から番号を取得する
 		let chnum = outs[1]
 	endif
 
 	return chnum
+endfunction
+"}}}
+
+let s:port_clients = perforce#data#get_use_port_clients()
+function! s:get_port_clients(...) "{{{
+	if exists('a:1')
+		let s:port_clients = a:1
+	endif
+	return s:port_clients
+endfunction
+"}}}
+
+function! s:get_client_from_change(candidate) 
+	return matchstr(a:candidate.action__out, '@\zs\w*')
+endfunction
+function! pf_changes#get_port_client(candidate)  "{{{
+	let port_client = a:candidate.action__client
+
+	if port_client !~ '-c'
+		let client = s:get_client_from_change(a:candidate)
+		let port_client = port_client.' -c '.client
+	endif
+
+	return port_client
 endfunction
 "}}}
 

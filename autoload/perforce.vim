@@ -38,21 +38,12 @@ function! perforce#LogFile(str) "{{{
 	" Œ‹‰Ê‚Ìo—Í‚ðs‚¤
 	" @param[in]	str		•\Ž¦‚·‚é•¶Žš
 	" ********************************************************************************
+	"
+	let strs = (type(a:str) == type([])) ? a:str :[a:str]
 
-	let cmd_ = perforce#data#get('g:unite_perforce_is_out_echo_flg', 'common')
-	echo 'perforce#LogFile >>>>'
-	if cmd_ == 'echo'
-		let strs = (type(a:str) == type([])) ? a:str :[a:str]
-
-		for str in strs
-			echo str
-		endfor
-
-	elseif cmd_ == 'log'
-		call perforce#util#LogFile('p4log', 0, a:str)
-	endif
-	echo 'perforce#LogFile <<<<'
-
+	for str in strs
+		echo str
+	endfor
 
 endfunction
 "}}}

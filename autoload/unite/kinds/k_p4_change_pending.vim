@@ -1,33 +1,38 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:get_port_client(candidate)  "{{{
-	let port_client = a:candidate.action__client
+function! s:get_chname_from_change(candidate, chnum, port_client) "{{{
+	let cmd  = 'p4 '.a:port_client.' change -o '.a:chnum
+	echo cmd
+	let outs = split(system(cmd), "\n")
 
-	if port_client !~ '-c'
-		let port_client = port_client.' -c '.s:get_clname_from_change(a:candidate.action__out)
-	endif
+	let strs = []
+	let description_flg = 0
+	for out in outs
+		if description_flg == 1
+			if out =~ '^\t'
+				let str = matchstr(out, '^\t\zs.*')
+				call add(strs, str)
+			else
+				let description_flg = 0
+				break
+			endif
+		elseif out =~ '^Description:'
+			let description_flg = 1
+		endif
+	endfor
 
-	return port_client
+	return join(strs, "\n")
 endfunction
 "}}}
-function! s:get_chname_from_change(str) "{{{
-	let str = a:str
-	let str = substitute(str, '.\{-}''', '', '')
-	let str = substitute(str, '''$', '', '')
-	return str
-endfunction
-"}}}
-function! s:get_clname_from_change(str) 
-	return matchstr(a:str, '@\zs\w*')
-endfunction
-
-function! s:get_change_num_from_changes(str) 
-	return substitute(a:str, '.*change \(\d\+\).*', '\1','')
-endfunction
 
 function! s:get_chnum(candidate) 
-	return get(a:candidate, 'action__chnum', s:get_change_num_from_changes(a:candidate))
+	if exists('a:candidate.action__chnum') 
+		let rtn = a:candidate.action__chnum
+	else
+		let rtn = matchstr(a:candidate.action__out, '.*change \zs\d*')
+	endif
+	return rtn
 endfunction
 
 function! unite#kinds#k_p4_change_pending#define()
@@ -70,9 +75,10 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_opened.func(candid
 	let data_ds = []
 	for candidate in a:candidates
 		" チェンジリストの番号の取得をする
+		let port_client = pf_changes#get_port_client(candidate)
 		let data_d= {
-					\ 'chnum'  : pf_changes#make_new_changes(candidate),
-					\ 'client' : s:get_port_client(candidate),
+					\ 'chnum'  : s:get_chnum(candidate),
+					\ 'client' : port_client,
 					\ }
 		call add(data_ds, data_d)
 	endfor
@@ -88,7 +94,7 @@ let s:kind_k_p4_change_pending.action_table.a_p4_change_info = {
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_info.func(candidates) "{{{
 	let outs = []
 	for candidate in a:candidates
-		let chnum = candidate.action__chnum
+		let chnum = s:get_chnum(candidate)
 		let outs += split(system('P4 change -o '.chnum),'\n')
 	endfor
 	call perforce#LogFile(outs)
@@ -105,7 +111,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 		call perforce_2#echo_error('safe mode.')
 		call input("Push Any Keys...") 
 	else
-		let chnums = map(copy(a:candidates), "v:val.action__chnum")
+		let chnums = map(copy(a:candidates), "s:get_chnum(v:val)")
 		let tmp_ds = perforce#cmd#new('submit','',' -c '.join(chnums))
 		let outs = []
 		for tmp_d in tmp_ds
@@ -125,7 +131,7 @@ let s:kind_k_p4_change_pending.action_table.a_p4change_describe = {
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4change_describe.func(candidates) "{{{
-	let chnums = map(copy(a:candidates),"v:val.action__chnum")
+	let chnums = map(copy(a:candidates),"s:get_chnum(v:val)")
  	call unite#start_temporary([insert(chnums,'p4_describe')])
 endfunction
 "}}}
@@ -136,19 +142,25 @@ let s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff = {
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff.func(candidates) "{{{
 	for candidate in a:candidates
-		let chnum = candidate.action__chnum
+		let chnum s:get_chnum(candidate)
 		call perforce#matomeDiffs(chnum)
 	endfor
 endfunction
 "}}}
 
-let s:kind_k_p4_change_pending.action_table.a_p4_change_rename = {
+let s:kind_k_p4_change_pending.action_table.edit = {
 			\  'description' : '名前の変更' ,
 			\ }
-function! s:kind_k_p4_change_pending.action_table.a_p4_change_rename.func(candidate) "{{{
-	let chnum = a:candidate.action__chnum
-	let chname = s:get_chname_from_change(a:candidate.word)
+function! s:kind_k_p4_change_pending.action_table.edit.func(candidate) "{{{
+	let chnum       = s:get_chnum(a:candidate)
+	let port_client = pf_changes#get_port_client(a:candidate)
+	let chname = s:get_chname_from_change(a:candidate, chnum, port_client)
 	let chname = input(chname.'-> ', chname)
+	if len(chname) > 0
+		echo ' '
+		let strs = split(chname, '\\n')
+		call pf_changes#make(strs, port_client, chnum)
+	endif
 endfunction
 "}}}
 

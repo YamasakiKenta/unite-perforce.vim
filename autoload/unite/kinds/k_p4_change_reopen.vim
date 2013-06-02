@@ -24,13 +24,13 @@ function! s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen.func(candida
 	" ********************************************************************************
 
 	let reopen_depots = a:candidate.action__depots
-	let client        = a:candidate.action__client
+	let port_client   = pf_changes#get_port_client(a:candidate)
 
 	"チェンジリストの番号の取得
 	let chnum = pf_changes#make_new_changes(a:candidate)
 
 	" チェンジリストの変更
-	let cmd = 'p4  '.client.' reopen -c '.chnum.' "'.join(reopen_depots,'" "').'"'
+	let cmd = 'p4  '.port_client.' reopen -c '.chnum.' "'.join(reopen_depots,'" "').'"'
 	call unite#print_message(cmd)
 	let outs = split(system(cmd), "\n")
 
