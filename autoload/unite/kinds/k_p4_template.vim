@@ -21,7 +21,8 @@ function! s:kind_p4_template.action_table.update_.func(candidates) "{{{
 		let tmp    = candidate.action__cltmp
 		let client = s:get_client(candidate.action__clname)
 		let clname = s:get_clname(candidate.action__clname)
-		let cmd = 'p4 '.client.' client -o -t '.tmp.' '.clname.' | p4 client -i'
+		" Åö port , client Ççló∂Ç∑ÇÈ
+		let cmd = 'p4 '.client.' client -o -t '.tmp.' '.clname.' | p4 '.client.' client -i'
 		call unite#print_message(cmd)
 		call system(cmd)
 	endfor

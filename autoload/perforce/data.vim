@@ -163,7 +163,7 @@ endfunction
 "}}}
 function! perforce#data#get_use_port_clients(...) "{{{
 
-	let ports   = call('s:get_use_ports', a:000)
+	let ports   = call('s:get_use_ports',   a:000)
 	let clients = call('s:get_use_clients', a:000)
 
 	let port_clients = []
@@ -195,7 +195,7 @@ function! s:get_ports_from_arg(datas) "{{{
 	endfor
 
 	if len(ports) == 0 
-		let port = perforce#get#PFPORT()
+		let port = '-p '.perforce#get#PFPORT()
 		let ports = [port]
 	else
 		call map(ports, "' -p '.v:val.' '")

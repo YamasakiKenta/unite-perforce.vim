@@ -30,10 +30,11 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 		endif
 
 		if exists('data_d.client')
-			call extend(tmps, perforce#cmd#clients_old([data_d.client], 'opened', '', chnum))
+			let use_port_clients = perforce#data#get_use_port_clients(data_d.client)
 		else
-			call extend(tmps, perforce#cmd#new('opened', '', chnum))
+			let use_port_clients = perforce#data#get_use_port_clients()
 		endif
+		call extend(tmps, perforce#cmd#clients(use_port_clients, 'p4 opened '.chnum))
 	endfor
 
 	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é

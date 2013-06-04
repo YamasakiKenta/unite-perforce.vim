@@ -356,6 +356,7 @@ function! perforce#cmd#clients(clients, cmd) "{{{
 	let cmd_base = substitute(cmd_base, 'p4', '', '')
 	for client in a:clients
 		let cmd = 'p4 '.client.' '.cmd_base
+		call unite#print_message(cmd)
 		call add(rtn_ds, {
 					\ 'cmd'    : cmd,
 					\ 'outs'   : split(system(cmd), "\n"),
