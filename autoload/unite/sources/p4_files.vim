@@ -12,9 +12,18 @@ let s:source_p4_files = {
 			\ 'default_action' : '',
 			\ }
 function! s:source_p4_files.gather_candidates(args, context)
-	let candidates = map( datas, "{
+
+	let port_clients = perforce#data#get_use_port_clients()
+	let cmd = 'p4 files //...'
+
+	let datas_ds = perforce#cmd#clients(port_clients, cmd)
+
+	let candidates = []
+	for data_d in data_ds
+	call extend(candidates = map( copy(data_d.cout), "{
 				\ 'word' : v:val,
 				\ 'kind' : 'file',
+				\ 'action__out' : out
 				\ }")
 	return candidates
 endfunction

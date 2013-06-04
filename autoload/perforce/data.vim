@@ -138,7 +138,8 @@ endfunction
 function! perforce#data#get_port_clients() "{{{
 	let clients = perforce#data#get('g:unite_perforce_ports_clients')
 	if len(clients) == 0
-		let client = [perforce#get#cache_port_client()}
+		echo clients
+		let clients = [perforce#get#cache_port_client()]
 	endif
 	return clients
 endfunction
