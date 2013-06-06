@@ -92,7 +92,6 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 	endif
 
 	let cmd = join(gcmds)
-	echo 'perforce#cmd#base -> ' string(cmd)
 
 	let outs = split(system(cmd),'\n'),
 
@@ -212,6 +211,11 @@ endfunction
 function! perforce#cmd#use_ports_max(cmd) "{{{
 	let max = perforce#data#get_max()
 	return perforce#cmd#use_ports(a:cmd.' '.max.' ')
+endfunction
+"}}}
+function! perforce#cmd#use_port_clients(cmd) "{{{
+	let use_port_clients = perforce#data#get_use_port_clients()
+	return perforce#cmd#clients(use_port_clients, a:cmd)
 endfunction
 "}}}
 

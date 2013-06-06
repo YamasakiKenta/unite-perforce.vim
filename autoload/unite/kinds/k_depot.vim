@@ -118,6 +118,7 @@ let s:kind_depot.action_table.a_p4_files = {
 function! s:kind_depot.action_table.a_p4_files.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
 	let outs = perforce#cmd#base('files','',join(depots)).outs
+	let outs = 
 	call perforce_2#show(outs)
 	sp
 endfunction
