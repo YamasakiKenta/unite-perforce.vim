@@ -111,6 +111,8 @@ function! pf_changes#make(strs, port_client, ...) "{{{
 	" @param[in]	...		編集するチェンジリスト番号
 	"********************************************************************************
 	"
+	let strs = (type(a:strs)==type([])) ? a:strs : [a:strs]
+
 	"チェンジ番号のセット ( 引数があるか )
 	let chnum     = get(a:,'1','')
 
@@ -133,7 +135,7 @@ function! pf_changes#make(strs, port_client, ...) "{{{
 		let i = i + 1
 	endwhile
 
-	let strs = map(copy(a:strs), "' '.v:val")
+	call map(strs, "' '.v:val")
 	let outs = extend(outs, strs, i+1)
 
 	"一時ファイルの書き出し
@@ -142,9 +144,10 @@ function! pf_changes#make(strs, port_client, ...) "{{{
 	" チェンジリストの作成
 	let  cmd = 'more '.perforce#get_kk(perforce#get_tmp_file()).' | p4 '.a:port_client.' change -i'
 	echo cmd
-	let out = split(system(cmd), "\n")
+	let outs = split(system(cmd), "\n")
+	echo outs
 
-	return out
+	return outs
 
 endfunction
 "}}}
@@ -166,7 +169,7 @@ function! pf_changes#make_new_changes(candidate) "{{{
 		let outs = pf_changes#make(chname, port_client)
 
 		"チェンジリストの新規作成の結果から番号を取得する
-		let chnum = outs[1]
+		let chnum = outs[0]
 	endif
 
 	return chnum
