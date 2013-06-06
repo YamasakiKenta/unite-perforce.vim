@@ -109,6 +109,7 @@ function! pf_changes#make(strs, port_client, ...) "{{{
 	" チェンジリストの作成
 	" @param[in]	str		チェンジリストのコメント
 	" @param[in]	...		編集するチェンジリスト番号
+	" @param[out]	chnum	作成したチェンジリスト
 	"********************************************************************************
 	"
 	let strs = (type(a:strs)==type([])) ? a:strs : [a:strs]
@@ -142,39 +143,15 @@ function! pf_changes#make(strs, port_client, ...) "{{{
 	call writefile(outs, perforce#get_tmp_file())
 
 	" チェンジリストの作成
-	let  cmd = 'more '.perforce#get_kk(perforce#get_tmp_file()).' | p4 '.a:port_client.' change -i'
-	echo cmd
-	let outs = split(system(cmd), "\n")
-	echo outs
+	let cmd   = 'more '.perforce#get_kk(perforce#get_tmp_file()).' | p4 '.a:port_client.' change -i'
+	let outs   = split(system(cmd), "\n")
+	let chnum = matchstr(outs[0], '\d\+')
 
-	return outs
+	return chnum
 
 endfunction
 "}}}
 " === kind ===
-function! pf_changes#make_new_changes(candidate) "{{{
-" ********************************************************************************
-" チェンジリストの番号の取得をする ( new の場合は、新規作成 )
-" @param[in]	candidate	unite のあれ	
-" @retval       chnum		番号
-" ********************************************************************************
-
-	let chnum       = a:candidate.action__chnum
-	let port_client = pf_changes#get_port_client( a:candidate ) 
-
-	if chnum == 'new'
-		let chname = a:candidate.action__chname
-
-		" チェンジリストの作成
-		let outs = pf_changes#make(chname, port_client)
-
-		"チェンジリストの新規作成の結果から番号を取得する
-		let chnum = outs[0]
-	endif
-
-	return chnum
-endfunction
-"}}}
 
 let s:port_clients = perforce#data#get_use_port_clients()
 function! s:get_port_clients(...) "{{{
