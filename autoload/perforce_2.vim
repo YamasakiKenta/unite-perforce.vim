@@ -52,9 +52,15 @@ function! perforce_2#echo_error(message) "{{{
   echohl None
 endfunction
 "}}}
-function! perforce_2#show(str)
+function! perforce_2#show(str) "{{{
+	" ********************************************************************************
+	" @par  •K‚¸•Êwindows ‚ð•\Ž¦‚·‚é
+	" @param[in]      = <`2`>
+	" @return        <`3`> = <`4`>
+	" ********************************************************************************
 	call perforce#util#LogFile('p4show', 1, a:str)
 endfunction
-
+"}}}
+"
 let &cpo = s:save_cpo
 unlet s:save_cpo
