@@ -51,30 +51,40 @@ function! perforce#LogFile(str) "{{{
 endfunction
 "}}}
 function! perforce#matomeDiffs(...) "{{{
-	" new file 用にここで初期化
+	" ********************************************************************************
+	" @param[in]    ...  チェンジリスト
+	" ********************************************************************************
+" [2013-06-07 00:58]
 	let datas = []
 
-	echo 'perforce#matomeDiffs -> ' string(a:000)
 	for chnum in a:000
 		" データの取得 {{{
-		let outs = perforce#cmd#base('describe -ds','',chnum).outs
+		let cmd  = 'p4 describe -ds '.chnum
+		let outs = split(system(cmd), "\n")
 
 		" 作業中のファイル
 		if outs[0] =~ '\*pending\*' || chnum == 'default'
-			let files = perforce#cmd#base('opened','','-c '.chnum).outs
-			call map(files, "perforce#get#depot#from_opened(v:val)")
+			let cmd = 'p4 opened -c '.chnum
+			let files_ = split(system(cmd), "\n")
+			call map(files_, "perforce#get#depot#from_opened(v:val)")
 
 			let outs = []
-			for file in files 
-				let list_tmps = perforce#cmd#base('diff -ds','',file).outs
+			for file_ in files_ 
+				let cmd = 'p4 diff -ds '.file_
 
-				for list_tmp in list_tmps
-					if list_tmp =~ '- file(s) not opened for edit.'
-						let file_tmp = substitute(file, '.*[\/]','','')
-						let path = perforce#get#path#from_depot(file)
-						let datas += [{'files' : file_tmp, 'adds' : len(readfile(path)), 'changeds' : 0, 'deleteds' : 0, }]
+				for tmp_out in split(system(cmd), "\n")
+					if tmp_out =~ '- file(s) not opened for edit.'
+						" 新規作成の場合
+						let tmp_file = substitute(file_, '.*[\/]','','')
+						let path     = perforce#get#path#from_depot(file_)
+						call extend(datas, {
+									\ 'files' : tmp_file,
+									\ 'adds'  : len(readfile(path)),
+									\ 'changeds' : 0,
+									\ 'deleteds' : 0, 
+									\ })
 					else
-						let outs += [list_tmp]
+						call add(outs, tmp_out)
 					endif
 				endfor
 			endfor
@@ -82,17 +92,22 @@ function! perforce#matomeDiffs(...) "{{{
 
 		endif
 
-		let find = ' \(\d\+\) chunks \(\|\(\d\+\) / \)\(\d\+\) lines'
+		let find_ = ' \(\d\+\) chunks \(\|\(\d\+\) / \)\(\d\+\) lines'
 		for out in outs
 			if out =~ "===="
-				let datas += [{'files' : substitute(out,'.*/\(.\{-}\)#.*','\1',''), 'adds' : 0, 'changeds' : 0, 'deleteds' : 0, }]
-			elseif out =~ 'add'.find
-				let datas[-1].adds = substitute(out,'add'.find,'\4','')
-			elseif out =~ 'deleted'.find
-				let datas[-1].deleteds = substitute(out,'deleted'.find,'\4','')
-			elseif out =~ 'changed'.find
-				let a = substitute(out,'changed'.find,'\3','')
-				let b = substitute(out,'changed'.find,'\4','')
+				call add(datas, {
+							\ 'files'    : matchstr(out,'.*/\zs.\{-}\ze#.*'),
+							\ 'adds'     : 0,
+							\ 'changeds' : 0,
+							\ 'deleteds' : 0,
+							\ })
+			elseif out =~ 'add'.find_
+				let datas[-1].adds = substitute(out,'add'.find_,'\4','')
+			elseif out =~ 'deleted'.find_
+				let datas[-1].deleteds = substitute(out,'deleted'.find_,'\4','')
+			elseif out =~ 'changed'.find_
+				let a = substitute(out,'changed'.find_,'\3','')
+				let b = substitute(out,'changed'.find_,'\4','')
 				let datas[-1].changeds = a > b ? a : b
 			endif
 		endfor
