@@ -28,7 +28,7 @@ let s:kind_filelog.action_table.preview = {
 function! s:kind_filelog.action_table.preview.func(candidate) "{{{
 	let l:candidate = a:candidate
 
-	let name = perforce#get#path#from_depot(candidate.action__depot)
+	let name = perforce#get#path#from_depot_with_client('', candidate.action__depot)
 
 	let filetype_old = &filetype
 	let revnum = s:revision_num(candidate.action__out)
@@ -70,7 +70,7 @@ functio! s:p4_print(candidates) "{{{
 
 	for l:candidate in deepcopy(a:candidates)
 
-		let name = perforce#get#path#from_depot(candidate.action__depot)
+		let name = perforce#get#path#from_depot_with_client('', candidate.action__depot)
 
 		if l:candidate.action__cmd == 'filelog'
 			let revnum = s:revision_num(candidate.action__out)

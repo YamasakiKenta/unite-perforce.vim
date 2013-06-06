@@ -60,7 +60,7 @@ function! perforce#matomeDiffs(...) "{{{
 					if tmp_out =~ '- file(s) not opened for edit.'
 						" V‹Kì¬‚Ìê‡
 						let tmp_file = substitute(file_, '.*[\/]','','')
-						let path     = perforce#get#path#from_depot(file_)
+						let path     = perforce#get#path#from_depot_with_client('', file_)
 						call extend(datas, {
 									\ 'files' : tmp_file,
 									\ 'adds'  : len(readfile(path)),

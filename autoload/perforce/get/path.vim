@@ -5,20 +5,15 @@ function! s:get_path_from_where(str)
 	return matchstr(a:str, '.\{-}\zs\w*:.*\ze\n.*')
 endfunction
 
-function! perforce#get#path#from_depot(depot) 
-	let out = system('p4 where "'.a:depot.'"')
-	let path = s:get_path_from_where(out)
-	return path
-endfunction
-
 function! perforce#get#path#from_depot_with_client(client, depot)
+	" [2013-06-07 02:35]
 	let cmd = 'p4 '.a:client.' where "'.a:depot.'"'
 	let out = system(cmd)
-	return matchstr(out, '.\{-}\zs\w*:.*\ze\n.*')
+	return s:get_path_from_where(out)
 endfunction
 
 function! perforce#get#path#from_diff(data_d, out) 
-	" ==== //depot/mind/unite-perforce.vim/autoload/perforce.vim#11 - C:\Users\yamasaki.mac\Dropbox\vim\mind\unite-perforce.vim\autoload\perforce.vim ====
+	" [2013-06-07 02:36]
 	"
 	let data_d = a:data_d
 	if a:out =~ '^===='

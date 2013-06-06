@@ -61,7 +61,7 @@ function! perforce#diff#main(path) "{{{
 
 	" depot‚È‚çpath‚É•ÏŠ·
 	if path =~ "^//depot.*"
-		let path = perforce#get#path#from_depot(path)
+		let path = perforce#get#path#from_depot_with_client('', path)
 	endif
 
 	" ÀÛ‚É”äŠr 

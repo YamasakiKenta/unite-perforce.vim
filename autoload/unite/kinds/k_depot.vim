@@ -64,7 +64,7 @@ function! s:find_filepath_from_depot(candidate) "{{{
 		let client = a:candidate.action__client
 		let path = perforce#get#path#from_depot_with_client(client, depot)
 	else
-		let path = perforce#get#path#from_depot(depot)
+		let path = perforce#get#path#from_depot_with_client('', depot)
 	endif
 
 	return path
@@ -141,7 +141,7 @@ function! s:kind_depot.action_table.a_p4_move.func(candidates) "{{{
 		" ˆê‚Â‚¾‚¯‚Ìê‡ "{{{
 		let l:candidate  = a:candidates[0]
 		let depot        = l:candidate.action__depot
-		let path         = perforce#get#path#from_depot(depot)
+		let path         = perforce#get#path#from_depot_with_client('', depot)
 		let file         = fnamemodify(path,":t")
 		let dir          = fnamemodify(path,":h")
 		let new          = input(file.' -> ')
@@ -163,7 +163,7 @@ function! s:kind_depot.action_table.a_p4_move.func(candidates) "{{{
 
 		for candidate in a:candidates
 			let depot          = candidate.action__depot
-			let path           = perforce#get#path#from_depot(depot)
+			let path           = perforce#get#path#from_depot_with_client('', depot)
 			let g:pfmove_oris += [path]
 			let names         += [substitute(fnamemodify(path,":t"),'\n','','')] " # ƒtƒ@ƒCƒ‹–¼‚Ì‚ÝŽæ“¾
 		endfor
@@ -259,7 +259,7 @@ endfunction
 function! s:copy_file(depot, client, root) "{{{
 
 	let depot  = a:depot
-	let file1  = perforce#get#path#from_depot(depot)
+	let file1  = perforce#get#path#from_depot_with_client('', depot)
 	let port   = matchstr(a:client, '-p\s\+\zs\S*')
 	let port   = substitute(port, ':', '', 'g')
 

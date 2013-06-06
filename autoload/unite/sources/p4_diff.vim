@@ -87,7 +87,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 		for str in opened_strs
 			if str =~ '.*#\d\+ - add change'
 				let depot = perforce#get#depot#from_opened(str)
-				let path = perforce#get#path#from_depot(depot)
+				let path = perforce#get#path#from_depot_with_client('', depot)
 
 				let rtns += [{
 							\ 'word' : path,
