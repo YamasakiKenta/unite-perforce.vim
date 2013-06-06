@@ -39,7 +39,6 @@ function! s:get_port_client(candidate) "{{{
 	return port_client
 endfunction
 "}}}
-
 function! s:get_chnum(candidate) "{{{
 	if exists('a:candidate.action__chnum') 
 		let rtn = a:candidate.action__chnum
@@ -125,12 +124,13 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 		call perforce_2#echo_error('safe mode.')
 		call input("Push Any Keys...") 
 	else
-		let chnums = map(copy(a:candidates), "s:get_chnum(v:val)")
-		let tmp_ds = perforce#cmd#new('submit','',' -c '.join(chnums))
 		let outs = []
-		for tmp_d in tmp_ds
-			call add(outs, tmp_d.cmd)
-			call extend(outs, tmp_d.outs)
+		for candidate in a:candidates
+			let port_client = s:get_port_client(candidate)
+			let chnum = s:get_chnum(candidate)
+			let cmd = 'p4 '.port_client.' submit -c '.chnum
+			call unite#print_message(cmd)
+			let outs = extend(outs, split(system(cmd), "\n"))
 		endfor
 
 		call perforce_2#common_action_out(outs)
