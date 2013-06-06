@@ -3,14 +3,17 @@ set cpo&vim
 
 let s:p4_have_cache = {}
 
+function! s:get_depot_from_have(str) 
+	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')
+endfunction
 function! s:get_candidates_from_pfhave(datas) "{{{
 	let candidates = []
 	for data in a:datas
 		let client = data.client
 		call extend(candidates, map( data.outs, "{
-					\ 'word' : client.' : '.perforce#get#depot#from_have(v:val),
+					\ 'word' : client.' : '.s:get_depot_from_have(v:val),
 					\ 'kind' : 'k_depot',
-					\ 'action__depot'  : perforce#get#depot#from_have(v:val),
+					\ 'action__depot'  : s:get_depot_from_have(v:val),
 					\ 'action__client' : client,
 					\ }"))
 	endfor

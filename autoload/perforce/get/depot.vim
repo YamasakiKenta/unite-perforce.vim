@@ -6,10 +6,6 @@ function! s:get_depot_from_where(str)
 	return split(a:str, '[^\\]\zs ')[1]
 endfunction 
 
-function! perforce#get#depot#from_have(str) 
-	return matchstr(a:str,'.\{-}\ze#\d\+ - .*')
-endfunction
-
 function! perforce#get#depot#from_opened(str) 
 	return substitute(a:str,'#.*','','')   " # ƒŠƒrƒWƒ‡ƒ“”Ô†‚Ìíœ
 endfunction 
