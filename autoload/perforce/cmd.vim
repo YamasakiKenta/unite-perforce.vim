@@ -204,6 +204,17 @@ function! perforce#cmd#clients(clients, cmd) "{{{
 endfunction
 "}}}
 
+function! perforce#cmd#use_ports(cmd) "{{{
+	let use_ports = perforce#data#get_use_ports()
+	return perforce#cmd#clients(use_ports, a:cmd)
+endfunction
+"}}}
+function! perforce#cmd#use_ports_max(cmd) "{{{
+	let max = perforce#data#get_max()
+	return perforce#cmd#use_ports(a:cmd.' '.max.' ')
+endfunction
+"}}}
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
 

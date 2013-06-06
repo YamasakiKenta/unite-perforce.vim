@@ -94,7 +94,7 @@ function! perforce#data#get_max() "{{{
 	let max = perforce#data#get('g:unite_perforce_show_max')
 
 	if max > 0 
-		let max = '-m '.max
+		let max = '-m '.max.' '
 	else
 		let max = ''
 	endif

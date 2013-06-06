@@ -12,8 +12,7 @@ let s:source = {
 			\ 'default_kind' : 'k_p4_users',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
-	let use_ports = perforce#data#get_use_ports()
-	let datas     = perforce#cmd#clients(use_ports, 'p4 users')
+	let datas = perforce#cmd#use_ports_max('p4 users')
 
 	let candidates = []
 	for data in datas
