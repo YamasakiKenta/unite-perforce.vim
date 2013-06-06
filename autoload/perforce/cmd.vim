@@ -165,9 +165,6 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 endfunction
 "}}}
 "
-function! perforce#cmd#clients_old(...)
-	return call('s:pfcmds_with_clients', a:000)
-endfunction
 " ----
 "  NEW
 " ----
@@ -312,7 +309,6 @@ function! s:pfcmds_with_clients_from_data_port_only(pfcmd,head,tail) "{{{
 endfunction
 "}}}
 
-" ----
 " new I/F
 function! perforce#cmd#main(pfcmd) "{{{
 	" ********************************************************************************

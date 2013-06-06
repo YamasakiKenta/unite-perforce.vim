@@ -31,7 +31,6 @@ function! s:cmd_main(pfcmd, header, footer)  "{{{
 	return data_d
 endfunction
 "}}}
-"
 function! s:perforce_cmd_clients_main(clients, pfcmd, ...) "{{{
 	let header_base = get(a:, 1, '')
 	let footer      = get(a:, 2, '')
@@ -51,6 +50,7 @@ function! s:perforce_cmd_clients_main(clients, pfcmd, ...) "{{{
 	return data_ds
 endfunction
 "}}}
+"
 function! perforce#cmd#clients#files(clients, pfcmd, files) "{{{
 	" ********************************************************************************
 	" @param[in]     a:clients[] = '-p localhost:1818 -c origin'
