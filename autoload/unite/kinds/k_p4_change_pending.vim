@@ -25,8 +25,22 @@ function! s:get_chname_from_change(candidate, chnum, port_client) "{{{
 	return join(strs, "\n")
 endfunction
 "}}}
+function! s:get_port_client(candidate) "{{{
+	let out    = a:candidate.action__out
+	let tmp = a:candidate.action__client
 
-function! s:get_chnum(candidate) 
+	if tmp =~ '-c'
+		let port_client = tmp
+	else
+		let client = matchstr(out, '@\zs\S*')
+		let port_client = tmp.' -c '.client
+	endif
+
+	return port_client
+endfunction
+"}}}
+
+function! s:get_chnum(candidate) "{{{
 	if exists('a:candidate.action__chnum') 
 		let rtn = a:candidate.action__chnum
 	else
@@ -34,6 +48,7 @@ function! s:get_chnum(candidate)
 	endif
 	return rtn
 endfunction
+"}}}
 
 function! unite#kinds#k_p4_change_pending#define()
 	return s:kind_k_p4_change_pending
@@ -52,15 +67,14 @@ let s:kind_k_p4_change_pending.action_table.delete = {
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.delete.func(candidates) "{{{
-	let i = 1
+	let outs = []
 	for candidate in a:candidates
 		let chnum       = s:get_chnum(candidate)
-		let client      = candidate.action__client
-		let out         = system('p4 '.port_client.' change -d '.chnum)
-		let outs        = split(out,'\n')
-		call perforce#LogFile(outs)
-		let i += len(outs)
+		let port_client = s:get_port_client(candidate)
+		let cmd = 'p4 '.port_client.' change -d '.chnum
+		call extend(outs, split(system(cmd),'\n'))
 	endfor
+	call perforce#LogFile(outs)
 endfunction
 "}}}
 
