@@ -1,6 +1,37 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! s:cmd(cmd) "{{{
+	let cmd = a:cmd
+	echo "base.vim -> " . string( cmd )
+	call unite#print_message('[cmd - clients] '.cmd)
+	let outs = split(system(cmd), '\n')
+	return outs
+endfunction
+"}}}
+function! s:cmd_main(pfcmd, header, footer)  "{{{
+	" ********************************************************************************
+	" @param[in]     a:client    = '-p localhost:1818 -c origin'
+	" @param[in]     a:pfcmd     = ''
+	" @param[in]     a:header    = ''
+	" @param[in]     a:footer    = ''
+	"
+	" @return data_d
+	" .cmd      =  ['p4 edit']
+	" .outs     =  []
+	"
+	" @par ˆê”Ô
+	" ********************************************************************************
+	let cmd    = 'p4 '.a:header.' '.a:pfcmd.' '.a:footer
+	let outs   = s:cmd(cmd)
+	let data_d = {
+				\ 'cmd'  : cmd,
+				\ 'outs' : outs,
+				\ }
+	return data_d
+endfunction
+"}}}
+"
 function! s:perforce_cmd_clients_main(clients, pfcmd, ...) "{{{
 	let header_base = get(a:, 1, '')
 	let footer      = get(a:, 2, '')
@@ -13,7 +44,7 @@ function! s:perforce_cmd_clients_main(clients, pfcmd, ...) "{{{
 
 	for client in clients 
 		let header = client.' '.header_base
-		let data_d = perforce#cmd#base#main(a:pfcmd, header, footer)
+		let data_d = s:cmd_main(a:pfcmd, header, footer)
 		call add(data_ds, data_d)
 	endfor
 
