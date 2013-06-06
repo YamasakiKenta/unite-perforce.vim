@@ -46,21 +46,6 @@ function! s:is_p4_haves_client(files) "{{{
 endfunction
 "}}}
 
-function! s:pfcmds_port_only(pfcmd, head, tail) "{{{
-	" ********************************************************************************
-	" @param[in]     a:pfcmd      = 'opened'
-	" @param[in]     a:head       = '' 
-	" @param[in]     a:tail       = ''
-	"
-	" @return       rtns[]
-	" .client' = '-p localhost:1818' 
-	" .cmd     = 'p4 opened'
-	" .outs[]  = ''  - cmd outputs
-	" ********************************************************************************
-
-	return s:pfcmds_with_clients_from_data_port_only(a:pfcmd, a:head, a:tail)
-endfunction
-"}}}
 function! s:pfcmds_with_clients_and_unite_mes(clients, pfcmd, head, tail) "{{{
 	" ********************************************************************************
 	" @param[in]     a:clients    = []
@@ -291,38 +276,7 @@ function! s:pfcmds_with_clients(clients, pfcmd, head, tail) "{{{
 	return rtns
 endfunction
 "}}}
-function! s:pfcmds_with_clients_from_data_port_only(pfcmd,head,tail) "{{{
-	" ********************************************************************************
-	" @param[in] a:pfcmd
-	" @param[in] a:head
-	" @param[in] a:tail
-	"
-	" @return  datas
-	" [].client'  =  '' 
-	" [].cmd      =  ''  - p4 opened
-	" [].outs     =  []  - cmd outputs
-	" ********************************************************************************
 
-	let ports = perforce#data#get_ports()
-	let datas = s:pfcmds_with_clients_and_unite_mes(ports, a:pfcmd, a:head, a:tail)
-	return  datas
-endfunction
-"}}}
-
-" new I/F
-function! perforce#cmd#main(pfcmd) "{{{
-	" ********************************************************************************
-	" @param[in] a:pfcmd = 'clients'
-	"
-	" @return
-	" .cmd    = 'p4 clients'
-	" .outs[] = ''
-	" ********************************************************************************
-	if a:pfcmd == 'clients'
-		return s:pfcmds_port_only('clients', '', '')
-	endif
-endfunction
-"}}}
 " now making
 function! perforce#cmd#files(pfcmd, files, have_flg, onetime) "{{{
 	" ********************************************************************************
