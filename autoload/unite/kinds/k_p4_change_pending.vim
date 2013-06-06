@@ -156,7 +156,7 @@ let s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff = {
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff.func(candidates) "{{{
 	for candidate in a:candidates
-		let chnum s:get_chnum(candidate)
+		let chnum = s:get_chnum(candidate)
 		call perforce#matomeDiffs(chnum)
 	endfor
 endfunction

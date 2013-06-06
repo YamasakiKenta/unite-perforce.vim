@@ -17,8 +17,14 @@ function! s:is_p4_have_from_have(str) "{{{
 
 endfunction
 "}}}
+function! s:get_dd(str) "{{{
+" [2013-06-07 00:36]
+	return len(a:str) ? '//...'.perforce#get_kk(a:str).'...' : ''
+endfunction
+"}}}
 
 function! perforce#get_tmp_file() "{{{
+	" [2013-06-07 00:35]
 	let g:perforce_tmp_dir  = get(g:, 'perforce_tmp_dir', '~/.perforce/' )
 	let fname               = g:perforce_tmp_dir.'/tmpfile'
 
@@ -29,13 +35,10 @@ function! perforce#get_tmp_file() "{{{
 	return fname
 endfunction
 "}}}
-function! perforce#get_dd(str) "{{{
-	return len(a:str) ? '//...'.perforce#get_kk(a:str).'...' : ''
-endfunction
-"}}}
 function! perforce#LogFile(str) "{{{
+	" [2013-06-07 00:37]
 	" ********************************************************************************
-	" 結果の出力を行う
+	" @par  結果の出力を行う
 	" @param[in]	str		表示する文字
 	" ********************************************************************************
 	"
@@ -102,7 +105,7 @@ function! perforce#matomeDiffs(...) "{{{
 		let outs += [data["files"]."\t\t".data["adds"]."\t".data["deleteds"]."\t".data["changeds"]]
 	endfor
 
-	call perforce#util#LogFile('p4log', 0, outs)
+	call perforce_2#show(outs)
 	"}}}
 endfunction
 "}}}
@@ -113,7 +116,7 @@ function! perforce#pfFind(...) "{{{
 		let str = a:1
 	endif 
 	if str !=# ""
-		call unite#start([insert(map(split(str),"perforce#get_dd(v:val)"),'p4_have')])
+		call unite#start([insert(map(split(str),"s:get_dd(v:val)"),'p4_have')])
 	endif
 endfunction
 "}}}
