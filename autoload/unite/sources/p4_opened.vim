@@ -20,11 +20,11 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" ˆø”‚Ìİ’è
 	"
-	let data_ds = perforce_2#get_chnum_client(a:args)
+	let data_ds = perforce_2#get_data_client('-c', 'chnum', a:args)
 
 	let tmps = []
 	for data_d in data_ds
-		let chnum            = data_d.num_
+		let chnum            = data_d.chnum
 		let use_port_clients = data_d.use_port_clients
 		call extend(tmps, perforce#cmd#clients(use_port_clients, 'p4 opened '.chnum))
 	endfor
@@ -34,7 +34,7 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 	for tmp in tmps
 		let client = tmp.client
 		let tmps = map(tmp.outs, "{
-					\ 'word'           : ''.client.' : '.v:val,
+					\ 'word'           : client.' : '.v:val,
 					\ 'kind'           : 'k_depot',
 					\ 'action__depot'  : perforce#get#depot#from_opened(v:val),
 					\ 'action__client' : client,

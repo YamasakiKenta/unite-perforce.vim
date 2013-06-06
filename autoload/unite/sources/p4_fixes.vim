@@ -17,28 +17,20 @@ let s:source_p4_fixes = {
 			\ 'default_kind'   : 'k_p4_change_pending',
 			\ }
 function! s:source_p4_fixes.gather_candidates(args, context) "{{{
-	" ********************************************************************************
-	" @par       
-	" @param[in]  list  a:args  jobs name
-	" @retval      unite data
-	" ********************************************************************************
-	let jobs = copy(a:args)
 
-	if len(a:args) > 0
-		let jobs = copy(a:args)
-	else
-		call input("job name -> ")
-	endif
+	let data_ds = perforce_2#get_data_client('-j', 'job', a:args)
 
-	let data_ds = []
-	for job in jobs
-		call extend(data_ds, perforce#cmd#new('fixes', '', '-j '.job))
+	let tmps = []
+	for data_d in data_ds
+		let job          = data_d.job
+		let use_ports    = data_d.use_ports
+		call extend(tmps, perforce#cmd#clients(use_ports, 'p4 fixes '.job))
 	endfor
 
 	let candidates = []
-	for data in data_ds
-		let client = data.client
-		call extend(candidates, map( data.outs, "{
+	for tmp in tmps
+		let client = tmp.client
+		call extend(candidates, map( tmp.outs, "{
 					\ 'word' : client.' : '.v:val,
 					\ 'action__chnum'  : s:get_chnum_from_fixes(v:val),
 					\ 'action__client' : client,

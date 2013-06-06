@@ -20,6 +20,7 @@ function! s:source_jobs.gather_candidates(args, context) "{{{
 		call extend(candidates, map(data.outs, "{
 					\ 'word' : data.client.' : '.v:val,
 					\ 'action__out' : v:val,
+					\ 'action__client' : data.client,
 					\ }"))
 	endfor
 

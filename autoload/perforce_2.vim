@@ -83,30 +83,24 @@ function! s:get_args(default_key, args) "{{{
 	return data_ds
 endfunction
 "}}}
-function! perforce_2#get_chnum_client(args) "{{{
+function! perforce_2#get_data_client(type, key, args) "{{{
 	" [2013-06-07 01:47]
 	" ********************************************************************************
-	" @param[in]      = <`2`>
-	" @return        [{'num_' : 0, 'use_port_clients' : ['']}]
+	" @return        [{a:key : 0, 'use_port_clients' : ['']}]
 	" ********************************************************************************
-	let data_ds = s:get_args('num_', a:args)
+	let data_ds = s:get_args(a:key, a:args)
 
 	let rtn_ds = []
 	for data_d in data_ds
-		if exists('data_d.num_')
-			let num_ = '-c '.data_d.num_
-		else
-			let num_ = ''
-		endif
+		let tmp_clients      = exists("data_d,.client") ? [data_d.client] : []
 
-		if exists('data_d.client')
-			let use_port_clients = perforce#data#get_use_port_clients(data_d.client)
-		else
-			let use_port_clients = perforce#data#get_use_port_clients()
-		endif
+		let key_data         = exists('data_d[a:key]') ? a:type.' '.data_d[a:key] : ''
+		let use_ports        = call('perforce#data#get_use_ports'        , tmp_clients)
+		let use_port_clients = call('perforce#data#get_use_port_clients' , tmp_clients)
 
 		call add(rtn_ds, {
-					\ 'num_'            : num_,
+					\ a:key              : key_data,
+					\ 'use_ports'        : use_ports,
 					\ 'use_port_clients' : use_port_clients,
 					\ })
 	endfor
