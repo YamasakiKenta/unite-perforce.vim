@@ -26,6 +26,8 @@ function! s:get_clients(args)
 endfunction
 
 function! perforce#get#fname#for_unite(args, context) 
+	" [2013-06-07 02:29]
+	"
 	" ƒtƒ@ƒCƒ‹–¼‚ÌŽæ“¾
 	let path = expand('%:p')
 	let a:context.source__path          = path
