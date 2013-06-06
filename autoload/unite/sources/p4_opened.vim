@@ -5,6 +5,18 @@ function! unite#sources#p4_opened#define()
 	return s:source_p4_opened
 endfunction
 
+function! s:get_args(default_key, args) "{{{
+	if len(a:args) == 0
+		let data_ds = [{}]
+	elseif type({}) == type(a:args[0])
+		let data_ds = a:args
+	else
+		let data_ds = map(deepcopy(a:args), "{ a:default_key : v:val }")
+	endif
+	return data_ds
+endfunction
+"}}}
+
 let s:source_p4_opened = {
 			\ 'name' : 'p4_opened',
 			\ 'description' : '編集しているファイルの表示 ( チェンジリスト番号 )',
@@ -19,7 +31,7 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" 引数の設定
 	"
-	let data_ds = perforce_2#get_args('chnum', a:args)
+	let data_ds = s:get_args('chnum', a:args)
 
 	let tmps = []
 	for data_d in data_ds

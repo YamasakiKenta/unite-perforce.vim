@@ -133,7 +133,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 			let outs = extend(outs, split(system(cmd), "\n"))
 		endfor
 
-		call perforce_2#common_action_out(outs)
+		call perforce#LogFile(outs)
 	endif 
 
 endfunction
