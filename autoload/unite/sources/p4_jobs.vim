@@ -1,33 +1,32 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-
 function! unite#sources#p4_jobs#define()
 	return s:source_jobs
 endfunction
 
 let s:source_jobs = {
-			\ 'name' : 'p4_jobs',
-			\ 'description' : 'ジョブの表示',
+			\ 'name'         : 'p4_jobs',
+			\ 'description'  : 'ジョブの表示',
+			\ 'default_kind' : 'k_p4_jobs',
 			\ }
-function! s:get_job_from_jobs(str) "{{{
-	return matchstr(a:str, '\S*')
-endfunction
-"}}}
 function! s:source_jobs.gather_candidates(args, context) "{{{
-	let datas = perforce#cmd#base('jobs','').outs
-	let candidates = map( datas, "{
-				\ 'word' : v:val,
-				\ 'kind' : 'k_p4_jobs',
-				\ 'action__job' : s:get_job_from_jobs(v:val),
-				\ }")
+	let use_ports = perforce#data#get_use_ports()
+	let datas     = perforce#cmd#clients(use_ports, 'p4 jobs')
+
+	let candidates = []
+	for data in datas
+		call extend(candidates, map(data.outs, "{
+					\ 'word' : data.client.' : '.v:val,
+					\ 'action__out' : v:val,
+					\ }"))
+	endfor
+
 	return candidates
 endfunction
 "}}}
 
-if 1
-	call unite#define_source(s:source_jobs)
-endif
+call unite#define_source(s:source_jobs)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

@@ -37,10 +37,11 @@ function! s:source_p4_fixes.gather_candidates(args, context) "{{{
 	for data in data_ds
 		let client = data.client
 		call extend(candidates, map( data.outs, "{
-					\ 'word' : v:val,
+					\ 'word' : client.' : '.v:val,
 					\ 'kind' : 'k_p4_change_pending',
 					\ 'action__chnum' : s:get_chnum_from_fixes(v:val),
 					\ 'action__client' : client,
+					\ 'action__out' : v:val,
 					\ }"))
 
 	endfor
@@ -49,9 +50,7 @@ function! s:source_p4_fixes.gather_candidates(args, context) "{{{
 endfunction
 "}}}
 
-if 1
-	call unite#define_source(s:source_p4_fixes)
-endif
+call unite#define_source(s:source_p4_fixes)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

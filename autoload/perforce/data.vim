@@ -145,7 +145,7 @@ function! perforce#data#get_port_clients() "{{{
 endfunction
 "}}}
 " ï\é¶Ç≈égópÇµÇΩÇ¢èÍçá
-function! s:get_use_ports(...) "{{{
+function! perforce#data#get_use_ports(...) "{{{
 	return call('perforce#data#get_ports', a:000)
 endfunction
 "}}}
@@ -163,8 +163,8 @@ endfunction
 "}}}
 function! perforce#data#get_use_port_clients(...) "{{{
 
-	let ports   = call('s:get_use_ports',   a:000)
-	let clients = call('s:get_use_clients', a:000)
+	let ports   = call('perforce#data#get_use_ports',   a:000)
+	let clients = call('s:get_use_clients',             a:000)
 
 	let port_clients = []
 	for port in ports
