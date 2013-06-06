@@ -11,6 +11,7 @@ let s:source_jobs = {
 			\ 'default_kind' : 'k_p4_jobs',
 			\ }
 function! s:source_jobs.gather_candidates(args, context) "{{{
+	" [2013-06-07 01:34]
 	let use_ports = perforce#data#get_use_ports()
 	let datas     = perforce#cmd#clients(use_ports, 'p4 jobs')
 
