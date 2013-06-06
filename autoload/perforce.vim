@@ -1,22 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:get_path_from_where(str) "{{{
-	return matchstr(a:str, '.\{-}\zs\w*:.*\ze\n.*')
-endfunction
-"}}}
-function! s:is_p4_have_from_have(str) "{{{
-
-	if a:str =~ '- file(s) not on client.'
-		let flg = 0
-	else
-		let flg = 1
-	endif
-
-	return flg
-
-endfunction
-"}}}
 function! s:get_dd(str) "{{{
 " [2013-06-07 00:36]
 	return len(a:str) ? '//...'.perforce#get_kk(a:str).'...' : ''
@@ -125,17 +109,20 @@ function! perforce#matomeDiffs(...) "{{{
 endfunction
 "}}}
 function! perforce#pfFind(...) "{{{
+" [2013-06-07 01:00]
 	if a:0 == 0
 		let str  = input('Find : ')
 	else
 		let str = a:1
 	endif 
+
 	if str !=# ""
 		call unite#start([insert(map(split(str),"s:get_dd(v:val)"),'p4_have')])
 	endif
 endfunction
 "}}}
 function! perforce#unite_args(source) "{{{
+	" [2013-06-07 01:01]
 	"********************************************************************
 	" @par          現在のファイル名を Unite に引数に渡します。
 	" @param[in]	source	コマンド
@@ -152,85 +139,11 @@ function! perforce#unite_args(source) "{{{
 
 endfunction
 "}}}
-
-function! s:is_p4_have(str) "{{{
-	" ********************************************************************************
-	" クライアントにファイルがあるか調べる
-	" @param[in]	str				ファイル名 , have の返り値
-	" @retval       flg		TRUE 	存在する
-	" @retval       flg		FLASE 	存在しない
-	" ********************************************************************************
-	let str = system('p4 have '.perforce#get_kk(a:str))
-	return s:is_p4_have_from_have(str)
-endfunction
-"}}}
-function! perforce#is_p4_haves(files) "{{{
-	" ********************************************************************************
-	" クライアントにファイルがあるか調べる
-	" @param[in]	files[] = '' - file name
-	"
-	" @return rtns_d
-	" .true[]  = '' - have file name 
-	" .false[] = '' - not have file name
-	" ********************************************************************************
-	let rtns_d = {
-				\ 'true'  : [],
-				\ 'false' : [],
-				\ }
-
-	for file_ in a:files
-		let type = ( s:is_p4_have(file_) == 1 ) ? 'true' : 'false'
-		call add(rtns_d[type], file_)
-	endfor
-
-	return rtns_d
-endfunction
-"}}}
-function! perforce#is_p4_haves_client2(files) "{{{
-	" ********************************************************************************
-	" クライアントにファイルがあるか調べる
-	" @param[in]	files[] = '' - file name
-	"
-	" @return rtns_d
-	" true.{port_client}[]    = '' -     have file name 
-	" false.{port_client}[]   = '' - not have file name
-	"
-	" @par  2013/05/05
-	" ********************************************************************************
-	"
-	let port_clients = perforce#data#get_port_clients()
-	echo "perforce#is_p4_haves_client2 ->" port_clients
-	let rtn_client_d = {}
-
-	let rtns_d = {
-				\ 'true'  : {},
-				\ 'false' : {},
-				\ }
-	for port_client in port_clients
-
-		let rtns_d.true[port_client]  = []
-		let rtns_d.false[port_client] = []
-
-		for file_ in a:files
-			let str = system('p4 '.port_client.' have '.perforce#get_kk(file_))
-			if s:is_p4_have_from_have(str) == 1
-				let type = 'true'
-			else
-				let type = 'false'
-			endif
-			call add(rtns_d[type][port_client], file_)
-		endfor
-
-	endfor
-
-	return rtns_d
-
-endfunction
-"}}}
-
-function! perforce#get_kk(str) 
+function! perforce#get_kk(str) "{{{
+	" [2013-06-07 01:11]
 	return len(a:str) ? '"'.a:str.'"' : ''
 endfunction
+"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
