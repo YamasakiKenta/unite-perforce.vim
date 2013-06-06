@@ -1,18 +1,20 @@
 let s:save_cpo = &cpo
 set cpo&vim
-function! s:get_chnum_from_fixes(str)
-	return matchstr(a:str, 'change \zs\d\+')
-endfunction
 
 function! unite#sources#p4_fixes#define()
 	return s:source_p4_fixes
 endfunction
 
-"source - p4_fixes
+function! s:get_chnum_from_fixes(str) "{{{
+	return matchstr(a:str, 'change \zs\d\+')
+endfunction
+"}}}
+
 let s:source_p4_fixes = {
 			\ 'name'           : 'p4_fixes',
 			\ 'description'    : '',
 			\ 'default_action' : 'a_p4change_describe',
+			\ 'default_kind'   : 'k_p4_change_pending',
 			\ }
 function! s:source_p4_fixes.gather_candidates(args, context) "{{{
 	" ********************************************************************************
@@ -38,10 +40,9 @@ function! s:source_p4_fixes.gather_candidates(args, context) "{{{
 		let client = data.client
 		call extend(candidates, map( data.outs, "{
 					\ 'word' : client.' : '.v:val,
-					\ 'kind' : 'k_p4_change_pending',
-					\ 'action__chnum' : s:get_chnum_from_fixes(v:val),
+					\ 'action__chnum'  : s:get_chnum_from_fixes(v:val),
 					\ 'action__client' : client,
-					\ 'action__out' : v:val,
+					\ 'action__out'    : v:val,
 					\ }"))
 
 	endfor

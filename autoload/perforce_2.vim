@@ -59,6 +59,60 @@ function! perforce_2#show(str) "{{{
 	call perforce#util#LogFile('p4show', 1, a:str)
 endfunction
 "}}}
-"
+
+function! s:get_args(default_key, args) "{{{
+	" [2013-06-07 01:47]
+	" ********************************************************************************
+	" @par 辞書型に変換する
+	"
+	" @param[in]     a:default_key
+	"  - リスト型の場合の場合に設定したいキー
+	"
+	" @param[in]     args
+	"  - 変換する変数
+	"
+	" @return        data_ds
+	" ********************************************************************************
+	if len(a:args) == 0
+		let data_ds = [{}]
+	elseif type({}) == type(a:args[0])
+		let data_ds = a:args
+	else
+		let data_ds = map(deepcopy(a:args), "{ a:default_key : v:val }")
+	endif
+	return data_ds
+endfunction
+"}}}
+function! perforce_2#get_chnum_client(args) "{{{
+	" [2013-06-07 01:47]
+	" ********************************************************************************
+	" @param[in]      = <`2`>
+	" @return        [{'num_' : 0, 'use_port_clients' : ['']}]
+	" ********************************************************************************
+	let data_ds = s:get_args('num_', a:args)
+
+	let rtn_ds = []
+	for data_d in data_ds
+		if exists('data_d.num_')
+			let num_ = '-c '.data_d.num_
+		else
+			let num_ = ''
+		endif
+
+		if exists('data_d.client')
+			let use_port_clients = perforce#data#get_use_port_clients(data_d.client)
+		else
+			let use_port_clients = perforce#data#get_use_port_clients()
+		endif
+
+		call add(rtn_ds, {
+					\ 'num_'            : num_,
+					\ 'use_port_clients' : use_port_clients,
+					\ })
+	endfor
+
+	return rtn_ds
+endfunction
+"}}}
 let &cpo = s:save_cpo
 unlet s:save_cpo

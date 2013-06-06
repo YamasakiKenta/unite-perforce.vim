@@ -5,17 +5,6 @@ function! unite#sources#p4_opened#define()
 	return s:source_p4_opened
 endfunction
 
-function! s:get_args(default_key, args) "{{{
-	if len(a:args) == 0
-		let data_ds = [{}]
-	elseif type({}) == type(a:args[0])
-		let data_ds = a:args
-	else
-		let data_ds = map(deepcopy(a:args), "{ a:default_key : v:val }")
-	endif
-	return data_ds
-endfunction
-"}}}
 
 let s:source_p4_opened = {
 			\ 'name' : 'p4_opened',
@@ -31,21 +20,12 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" à¯êîÇÃê›íË
 	"
-	let data_ds = s:get_args('chnum', a:args)
+	let data_ds = perforce_2#get_chnum_client(a:args)
 
 	let tmps = []
 	for data_d in data_ds
-		if exists('data_d.chnum')
-			let chnum = '-c '.data_d['chnum']
-		else
-			let chnum = ''
-		endif
-
-		if exists('data_d.client')
-			let use_port_clients = perforce#data#get_use_port_clients(data_d.client)
-		else
-			let use_port_clients = perforce#data#get_use_port_clients()
-		endif
+		let chnum            = data_d.num_
+		let use_port_clients = data_d.use_port_clients
 		call extend(tmps, perforce#cmd#clients(use_port_clients, 'p4 opened '.chnum))
 	endfor
 
@@ -59,6 +39,7 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 					\ 'action__depot'  : perforce#get#depot#from_opened(v:val),
 					\ 'action__client' : client,
 					\ }")
+
 		call extend(candidates , tmps)
 	endfor
 
