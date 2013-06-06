@@ -46,58 +46,22 @@ function! s:is_p4_haves_client(files) "{{{
 endfunction
 "}}}
 
-function! s:pfcmds_with_clients_and_unite_mes(clients, pfcmd, head, tail) "{{{
+function! s:get_outs(outs) "{{{
 	" ********************************************************************************
-	" @param[in]     a:clients    = []
-	" @param[in]     a:pfcmd      = '' 
-	" @param[in]     a:head       = '' 
-	" @param[in]     a:tail       = ''
-	"
-	" @return       rtns[]
-	" .client' = '-p localhost:1818 -c origin' 
-	" .cmd     = 'p4 opened'
-	" .outs[]  = ''  - cmd outputs
+	" @par フィルターをかける
 	" ********************************************************************************
-	let rtns = s:pfcmds_with_clients(a:clients, a:pfcmd, a:head, a:tail)
+	let outs = copy(a:outs)
 
-	for cmd in map(deepcopy(rtns), "v:val.cmd")
-		call unite#print_message('[cmd] '.cmd)
-	endfor
+	let filters_ = perforce#data#get('g:unite_perforce_filters')
+	if len(join(filters_)) > 0
+		let filter_ = join( filters_, '\|' ) 
+		call filter(outs, 'v:val !~ filter_')
+	endif
 
-	return rtns
-endfunction
-"}}}
-function! s:pfcmds_with_clients_from_data(pfcmd, head, tail) "{{{
-	" ********************************************************************************
-	" @param[in]    a:pfcmd = 'opened'
-	" @param[in]    a:head  = ''
-	" @param[in]    a:tail  = ''
-	"
-	" @return       rtns[]
-	" .client' = '-p localhost:1818 -c origin' 
-	" .cmd     = 'p4 opened'
-	" .outs[]  = ''  - cmd outputs
-	" ********************************************************************************
-	let port_clients = perforce#data#get_use_port_clients()
-	return  s:pfcmds_with_clients_and_unite_mes(port_clients, a:pfcmd, a:head, a:tail)
+	return outs
 endfunction
 "}}}
 
-function! perforce#cmd#new(pfcmd, head, tail) "{{{
-	" ********************************************************************************
-	" @param[in]      a:pfcmd = ''
-	" @param[in]      a:head  = ''
-	" @param[in]      a:tail  = ''
-	"
-	" @return       rtns[]
-	" .client' = '-p localhost:1818 -c origin' 
-	" .cmd     = 'p4 opened'
-	" .outs[]  = ''  - cmd outputs
-	" ********************************************************************************
-
-	return s:pfcmds_with_clients_from_data(a:pfcmd, a:head, a:tail)
-endfunction
-"}}}
 function! perforce#cmd#base(pfcmd,...) "{{{
 	" ********************************************************************************
 	" @param[in]    a:pfcmd = 'opened'
@@ -129,13 +93,15 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 
 	let cmd = join(gcmds)
 	echo 'perforce#cmd#base -> ' string(cmd)
+
+	let outs = split(system(cmd),'\n'),
+
+	let outs = s:get_outs(outs)
+
 	let rtn_d = {
 				\ 'cmd'  : cmd,
-				\ 'outs' : split(system(cmd),'\n'),
+				\ 'outs' : outs,
 				\ }
-
-	" Error の場合は、出力を変更する
-	let rtn_d.outs = s:conv_error(rtn_d.outs)
 
 	call unite#print_message(rtn_d.cmd)
 
@@ -149,135 +115,6 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 	return rtn_d
 endfunction
 "}}}
-"
-" ----
-"  NEW
-" ----
-function! s:conv_error(outs) "{{{
-	" ********************************************************************************
-	" @par           エラー発生時に、簡潔にする
-	" @param[in]     a:outs[] = '' - 出力結果
-	"
-	" @return        outs[]  = 'ERROR'  - エラー時は、ERRORに変更する
-	" @return        outs[]  = a:outs[] - 通常時は、そのまま返す
-	" ********************************************************************************
-	let outs = a:outs
-	if len(outs) > 0
-		if outs[0] =~ "^Perforce client error:"
-			let outs = ['ERROR']
-		endif
-	else
-		let outs = ['ERROR']
-	endif
-	return outs
-endfunction
-"}}}
-function! s:get_outs(cmd) "{{{
-	" ********************************************************************************
-	" @param[in]     a:cmd = 'p4 opened'
-	"
-	" @return        outs[] = '' - 出力結果
-	" ********************************************************************************
-	" @par filter を除いた値を返します
-	echo 's:get_outs -> ' string(a:cmd)
-	let outs = split(system(a:cmd),'\n')
-
-	let filters_ = perforce#data#get('g:unite_perforce_filters')
-	if len(join(filters_)) > 0
-		let filter_ = join( filters_, '\|' ) 
-		call filter(outs, 'v:val !~ filter_')
-	endif
-
-	let outs = s:conv_error(outs)
-
-	return outs
-endfunction
-"}}}
-function! s:get_foot(pfcmd, foot_d) "{{{
-	" ********************************************************************************
-	" @par  コマンド毎に使用する 引数を取得する
-	" @param[in]     a:pfcmd  = 'opened'
-	" @param[in]     a:foot_d
-	" .max    = '5'
-	" .user   = ''
-	" .client = ''
-	"
-	" @return        foot = ''
-	" ********************************************************************************
-	"
-	let max     = get(a:foot_d, 'max',    '')
-	let user    = get(a:foot_d, 'user',   '')
-	let client  = get(a:foot_d, 'client', '')
-	let base    = get(a:foot_d, 'base', '')
-
-	let foots = []
-	call add(foots, max)
-	if a:pfcmd == 'clients'
-		call add(foots, user)
-	elseif a:pfcmd == 'changes'
-		call add(foots, user)
-		call add(foots, client)
-	endif 
-
-	call add(foots, base)
-
-	return join(foots)
-endfunction
-"}}}
-function! s:pfcmds_with_client(pfcmd, client, foot_d) "{{{
-	" ********************************************************************************
-	" @param[in]      a:pfcmd  = 'opened'
-	" @param[in]      a:client = '-p localhost:1818'
-	" @param[in]      a:foot_d
-	" .max  = ''
-	" .user = ''
-	"
-	" @return       
-	" .cmd    = 'p4 opened'
-	" .client = '-p localhost:1818'
-	" .outs   = ['']
-	" ********************************************************************************
-	let foot = s:get_foot(a:pfcmd, a:foot_d)
-	let cmd  = 'p4 '.a:client.' '.a:pfcmd.' '.foot
-
-	return  {
-				\ 'cmd'    : cmd,
-				\ 'client' : a:client,
-				\ 'outs'   : s:get_outs(cmd),
-				\ }
-endfunction
-"}}}
-function! s:pfcmds_with_clients(clients, pfcmd, head, tail) "{{{
-	" ********************************************************************************
-	" @param[in]     a:clients[] = '-p localhost:1818'
-	" @param[in]     a:pfcmd     = 'opened'
-	" @param[in]     a:head      = ''
-	" @param[in]     a:tail      = ''
-	"
-	" @return []
-	" .cmd    = 'p4 opened'
-	" .client = '-p localhost:1818'
-	" .outs[] = ''  
-	" ********************************************************************************
-
-	let foot_d = {}
-	let foot_d.base = a:tail
-
-	let max_ = perforce#data#get('g:unite_perforce_show_max')
-	if max_ > 0
-		let foot_d.max = '-m '.max_
-	endif 
-
-	let rtns = []
-	for client in a:clients
-		call add(rtns, s:pfcmds_with_client(a:pfcmd, client, foot_d))
-	endfor 
-
-	return rtns
-endfunction
-"}}}
-
-" now making
 function! perforce#cmd#files(pfcmd, files, have_flg, onetime) "{{{
 	" ********************************************************************************
 	" @param[in]   a:pfcmd       = 'diff'
@@ -346,15 +183,20 @@ function! perforce#cmd#files(pfcmd, files, have_flg, onetime) "{{{
 endfunction
 "}}}
 function! perforce#cmd#clients(clients, cmd) "{{{
-	let rtn_ds = []
 	let cmd_base = a:cmd
 	let cmd_base = substitute(cmd_base, 'p4', '', '')
+
+	let rtn_ds = []
 	for client in a:clients
 		let cmd = 'p4 '.client.' '.cmd_base
 		call unite#print_message(cmd)
+
+		let outs = split(system(cmd), "\n")
+		let outs = s:get_outs(outs)
+
 		call add(rtn_ds, {
 					\ 'cmd'    : cmd,
-					\ 'outs'   : split(system(cmd), "\n"),
+					\ 'outs'   : outs,
 					\ 'client' : client,
 					\ })
 	endfor

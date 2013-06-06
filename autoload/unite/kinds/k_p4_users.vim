@@ -5,6 +5,11 @@ function! unite#kinds#k_p4_users#define()
 	return s:kind
 endfunction
 
+function! s:get_UserName_from_users(candidate) "{{{
+	return matchstr(a:candidate.action__out,'.\{-}\ze <.*')
+endfunction
+"}}}
+
 let s:kind = { 
 			\ 'name' : 'k_p4_users',
 			\ 'default_action' : 'a_p4_user_change',
@@ -17,11 +22,13 @@ let s:kind.action_table.a_p4_user_change = {
 			\ }
 function! s:kind.action_table.a_p4_user_change.func(candidates) "{{{
 	let candidate = a:candidates
-	let user = candidate.action__user
+	let user = s:get_UserName_from_users(candidate)
 	let outs = perforce#set#PFUSER(user)
 	call perforce#LogFile(outs)
 endfunction
 "}}}
+
+call unite#define_kind(s:kind)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

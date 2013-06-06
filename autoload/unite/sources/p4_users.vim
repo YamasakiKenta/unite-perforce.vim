@@ -6,25 +6,29 @@ function! unite#sources#p4_users#define()
 	return s:source
 endfunction
 
-
 let s:source = {
 			\ 'name' : 'p4_users',
 			\ 'description' : 'ƒ†[ƒU[‚ÌØ‚è‘Ö‚¦',
+			\ 'default_kind' : 'k_p4_users',
 			\ }
-function! s:get_UserName_from_users(str) "{{{
-	return substitute(a:str,'\(.\{-}\) <.*','\1','')
-endfunction
-"}}}
 function! s:source.gather_candidates(args, context) "{{{
-	let datas = perforce#cmd#base('users','').outs
-	let candidates = map( datas, "{
-				\ 'word' : v:val,
-				\ 'kind' : 'k_p4_users',
-				\ 'action__user' : s:get_UserName_from_users(v:val),
-				\ }")
+	let use_ports = perforce#data#get_use_ports()
+	let datas     = perforce#cmd#clients(use_ports, 'p4 users')
+
+	let candidates = []
+	for data in datas
+		let client = data.client
+		call extend(candidates, map( data.outs, "{
+					\ 'word' : client.' : '.v:val,
+					\ 'action__out' : v:val,
+					\ 'action__client' : client,
+					\ }"))
+	endfor
 	return candidates
 endfunction
 "}}}
+
+call unite#define_source(s:source)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
