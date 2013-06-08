@@ -93,7 +93,7 @@ function! perforce#cmd#base(pfcmd,...) "{{{
 
 	let cmd = join(gcmds)
 
-	let outs = split(system(cmd),'\n'),
+	let outs = split(system(cmd),'\n')
 
 	let outs = s:get_outs(outs)
 
@@ -202,7 +202,10 @@ function! perforce#cmd#clients(clients, cmd) "{{{
 	return rtn_ds
 endfunction
 "}}}
-function! perforce#cmd#client_files(cmd, datas) "{{{
+function! perforce#cmd#client_files(datas, cmd) "{{{
+	" ********************************************************************************
+	" @param[in]     datas[port_client] = [file]
+	" ********************************************************************************
 	" ポート、ファイル名の取得
 	let rtns = []
 	for port_client in keys(a:datas)

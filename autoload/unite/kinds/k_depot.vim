@@ -30,9 +30,13 @@ endfunction
 function! s:sub_action(candidates, cmd) "{{{
 	" [2013-06-08 20:32]
 	let file_d = s:get_port_client_files(a:candidates)
-	let datas  = perforce#cmd#client_files(a:cmd, file_d)
-	let outs   = map(copy(datas), "v:val.outs")
+	let datas  = perforce#cmd#client_files(file_d, a:cmd)
+	let outs = []
+	for data in datas
+		call extend(outs, data.outs)
+	endfor
 	call perforce#LogFile(outs)
+	return outs
 endfunction
 "}}}
 function! s:find_filepath_from_depot(candidate) "{{{
@@ -139,11 +143,9 @@ let s:kind_depot.action_table.a_p4_files = {
 			\ 'description' : 'ÉtÉ@ÉCÉãÇÃèÓïÒ',
 			\ }
 function! s:kind_depot.action_table.a_p4_files.func(candidates) "{{{
-	let depots = map(copy(a:candidates),"v:val.action__depot")
-	let outs = perforce#cmd#base('files','',join(depots)).outs
-	let outs = 
+	"TODO: source Ç…Ç∑ÇÈ
+	let outs = s:sub_action(a:candidates, 'files')
 	call perforce_2#show(outs)
-	sp
 endfunction
 "}}}
 

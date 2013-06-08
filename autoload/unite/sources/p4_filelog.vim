@@ -24,16 +24,24 @@ function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	let candidates = []
 
-	for arg in a:args 
-	 	let lines = perforce#cmd#base('filelog','',perforce#get_kk(arg)).outs
-		let candidates += map(filter(lines, "v:val =~ '\.\.\. #'"), "{ 
-					\ 'word'           : v:val,
-					\ 'kind'           : 'k_p4_filelog',
-					\ 'action__revnum' : s:revision_num(v:val),
-					\ 'action__out'    : v:val,
-					\ 'action__cmd'    : 'filelog',
-					\ 'action__depot'  : arg,
-					\ }")
+	let data_ds = perforce_2#get_data_client('-c', 'file_', a:args)
+
+	for data_d in data_ds 
+		let file_            = data_d.file_
+		let use_port_clients = data_d.use_port_clients
+
+		let datas = perforce#cmd#use_port_clients('filelog '.perforce#get_kk(arg))
+		for data in datas
+			let candidates += map(filter(lines, "v:val =~ '\.\.\. #'"), "{ 
+						\ 'word'           : v:val,
+						\ 'kind'           : 'k_p4_filelog',
+						\ 'action__revnum' : s:revision_num(v:val),
+						\ 'action__out'    : v:val,
+						\ 'action__cmd'    : 'filelog',
+						\ 'action__depot'  : arg,
+						\ 'action__client' : client,
+						\ }")
+		endfor
 	endfor
 	
 	return candidates
