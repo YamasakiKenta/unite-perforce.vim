@@ -202,6 +202,18 @@ function! perforce#cmd#clients(clients, cmd) "{{{
 	return rtn_ds
 endfunction
 "}}}
+function! perforce#cmd#client_files(cmd, datas) "{{{
+	" ポート、ファイル名の取得
+	let rtns = []
+	for port_client in keys(a:datas)
+		let files       = a:datas[port_client]
+		let tmps        = perforce#cmd#clients#files([port_client], a:cmd, files)
+		call extend(rtns, tmps)
+	endfor
+
+	return rtns
+endfunction
+"}}}
 
 function! perforce#cmd#use_ports(cmd) "{{{
 	let use_ports = perforce#data#get_use_ports()

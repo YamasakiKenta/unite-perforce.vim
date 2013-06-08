@@ -1,75 +1,63 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-" ********************************************************************************
-" depotで操作できるもの
-" ********************************************************************************
 function! unite#kinds#k_depot#define()
 	return s:kind_depot
 endfunction
 
-function! s:setPfcmd(kind, cmd, des) "{{{
+function! s:get_port_client_files(candidates) "{{{
 	" ********************************************************************************
-	" ファイル名を渡すだけのコマンドのアクション作成
-	" @param[in]	kind		unite kind	
-	" @param[in]	cmd			p4 コマンド
-	" @param[in]	des			説明文
+	" [2013-06-08 20:32]
+	" @return        { port_client = [file] }
 	" ********************************************************************************
-	"
-	let action = {
-				\ 'is_selectable' : 1, 
-				\ 'description' : a:des,
-				\ }
+	let file_d = {}
+	for candidate in a:candidates
+		let port_client = get(candidate, 'action__client', ' ')
+		if !exists('file_d[port_client]')
+			let file_d[port_client] = []
+		endif
+		if exists('candidate.action__depot')
+			let path = candidate.action__depot
+		elseif exists('candidate.action__path')
+			let path = candidate.action__path
+		endif
+		call add(file_d[port_client], path)
+	endfor
 
-	" Uniteにアクションの追加
-	call unite#custom_action(a:kind, 'a_p4_'.a:cmd, action)
-
-	" アクションパス
-	let kind = {
-				\ 'k_depot' : 'depot'
-				\ }
-
-	" 引数をコマンドにする "{{{
-	execute "
-			\ function! action.func(candidates) \n
-				\ let outs = [] \n
-				\ for l:candidate in a:candidates \n
-					\ let outs += perforce#cmd#base('". a:cmd ."','',perforce#get_kk(l:candidate.action__". get(kind, a:kind, "path") .")).outs \n
-				\ endfor \n
-				\ call perforce#LogFile(outs) \n
-			\ endfunction 
-			\ "
-	"}}}
-	unlet action
+	return file_d
 endfunction
 "}}}
-
-call s:setPfcmd('jump_list' , 'add'       , '追加'               ) 
-call s:setPfcmd('jump_list' , 'edit'      , '編集'               ) 
-call s:setPfcmd('file'      , 'add'       , '追加'               ) 
-call s:setPfcmd('file'      , 'edit'      , '編集'               ) 
-call s:setPfcmd('k_depot'   , 'edit'      , '編集'               ) 
-call s:setPfcmd('k_depot'   , 'delete'    , '削除'               ) 
-call s:setPfcmd('k_depot'   , 'revert -a' , '元に戻す'           ) 
-call s:setPfcmd('k_depot'   , 'revert'    , '元に戻す [ 強制 ] ' ) 
-
+function! s:sub_action(candidates, cmd) "{{{
+	" [2013-06-08 20:32]
+	let file_d = s:get_port_client_files(a:candidates)
+	let datas  = perforce#cmd#client_files(a:cmd, file_d)
+	let outs   = map(copy(datas), "v:val.outs")
+	call perforce#LogFile(outs)
+endfunction
+"}}}
 function! s:find_filepath_from_depot(candidate) "{{{
 	" ********************************************************************************
+	" [2013-06-09 01:27]
 	" 編集するファイル名を取得する 
 	" @param[in]	candidate		unite action の引数
 	" @retval       path			編集するファイル名
 	" ********************************************************************************
-	let depot     = a:candidate.action__depot
-	if exists( 'a:candidate.action__client' )
-		let client = a:candidate.action__client
-		let path = perforce#get#path#from_depot_with_client(client, depot)
-	else
-		let path = perforce#get#path#from_depot_with_client('', depot)
-	endif
-
+	let depot  = a:candidate.action__depot
+	let client = exists( 'a:candidate.action__client' ) ? a:candidate.action__client : ''
+	let path   = perforce#get#path#from_depot_with_client(client, depot)
 	return path
 endfunction
 "}}}
+"
+let action = {
+				\ 'is_selectable' : 1, 
+				\ 'description'   : '',
+				\ }
+function action.func(candidates)
+	return s:sub_action(a:candidates, 'add')
+endfunction
+call unite#custom_action('jump_list' , 'add' , action)
+call unite#custom_action('file'      , 'add' , action)
 
 "p4 k_depot 
 let s:kind_depot = {
@@ -78,6 +66,41 @@ let s:kind_depot = {
 			\ 'action_table'   : {},
 			\ 'parents'        : ['k_p4'],
 			\ }
+let s:kind_depot.action_table.edit = {
+				\ 'is_selectable' : 1, 
+				\ 'description'   : '',
+				\ }
+function s:kind_depot.action_table.edit.func(candidates)
+	return s:sub_action(a:candidates, 'edit')
+endfunction
+call unite#custom_action('jump_list' , 'p4_edit' , s:kind_depot.action_table.edit)
+call unite#custom_action('file'      , 'p4_edit' , s:kind_depot.action_table.edit)
+
+let s:kind_depot.action_table.delete = {
+				\ 'is_selectable' : 1, 
+				\ 'description'   : '',
+				\ }
+function s:kind_depot.action_table.delete.func(candidates)
+	return s:sub_action(a:candidates, 'delete')
+endfunction
+
+if 0
+let s:kind_depot.action_table.revert = {
+				\ 'is_selectable' : 1, 
+				\ 'description'   : '',
+				\ }
+function s:kind_depot.action_table.revert.func(candidates)
+	return s:sub_action(a:candidates, 'revert')
+endfunction
+endif
+
+let s:kind_depot.action_table.revert_a = {
+				\ 'is_selectable' : 1, 
+				\ 'description'   : '',
+				\ }
+function s:kind_depot.action_table.revert_a.func(candidates)
+	return s:sub_action(a:candidates, 'revert -a')
+endfunction
 
 let s:kind_depot.action_table.a_open = {
 			\ 'description' : '開く',
@@ -121,62 +144,6 @@ function! s:kind_depot.action_table.a_p4_files.func(candidates) "{{{
 	let outs = 
 	call perforce_2#show(outs)
 	sp
-endfunction
-"}}}
-
-let s:kind_depot.action_table.a_p4_move = {
-			\ 'is_selectable' : 1 ,
-			\ 'description' : '移動 ( 名前の変更 )' ,
-			\ }
-function! s:kind_depot.action_table.a_p4_move.func(candidates) "{{{
-	" ********************************************************************************
-	" perforceで名前の変更を行う
-	" 一時ファイルが保存されたら、値を更新する
-	" @param[in]	g:pfmove_oris		元の名前 ( ローカルパス )
-	" @param[in]	g:pfmove_tmpfile	変更後の名前が保存される
-	" ********************************************************************************
-	"
-	" 選択しているものがあれば、 
-	"if len(a:candidates) == 1 
-	if 0
-		" 一つだけの場合 "{{{
-		let l:candidate  = a:candidates[0]
-		let depot        = l:candidate.action__depot
-		let path         = perforce#get#path#from_depot_with_client('', depot)
-		let file         = fnamemodify(path,":t")
-		let dir          = fnamemodify(path,":h")
-		let new          = input(file.' -> ')
-		if new != ''
-			let outs = []
-			let outs += perforce#cmd#base('edit','',path).outs
-			let outs += perforce#cmd#base('move','',path.' '.dir.'/'.new).outs
-			call perforce#LogFile(outs)
-		endif
-		"}}}
-	else 
-		" 複数選択の場合 "{{{
-
-		let g:pfmove_tmpfile = copy(perforce#get_tmp_file())
-		"
-		" 元のパスの登録と初期のファイル名の取得 "{{{
-		let names = []
-		let g:pfmove_oris = []
-
-		for candidate in a:candidates
-			let depot          = candidate.action__depot
-			let path           = perforce#get#path#from_depot_with_client('', depot)
-			let g:pfmove_oris += [path]
-			let names         += [substitute(fnamemodify(path,":t"),'\n','','')] " # ファイル名のみ取得
-		endfor
-		"}}}
-		"
-		" 初期の名前の書き出し
-		call perforce#util#event_save_file(g:pfmove_tmpfile, names, 'common#do_move', [g:pfmove_oris, g:pfmove_tmpfile])
-
-		"}}}
-	endif 
-
-
 endfunction
 "}}}
 
