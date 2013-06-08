@@ -5,6 +5,17 @@ function! unite#kinds#k_depot#define()
 	return s:kind_depot
 endfunction
 
+function! s:extend_dicts(key, ...) "{{{
+	let rtns = []
+	for dicts in a:000
+		for dict in dicts
+			call extend(rtns, dict[a:key])
+		endfor
+	endfor
+	return rtns
+endfunction
+"}}}
+
 function! s:get_port_client_files(candidates) "{{{
 	" ********************************************************************************
 	" [2013-06-08 20:32]
@@ -31,10 +42,15 @@ function! s:sub_action(candidates, cmd) "{{{
 	" [2013-06-08 20:32]
 	let file_d = s:get_port_client_files(a:candidates)
 	let datas  = perforce#cmd#client_files(file_d, a:cmd)
-	let outs = []
-	for data in datas
-		call extend(outs, data.outs)
-	endfor
+	let outs   = s:extend_dicts('outs', datas)
+	return outs
+endfunction
+"}}}
+function! s:sub_action_log(candidates, cmd) "{{{
+	" [2013-06-08 20:32]
+	let file_d = s:get_port_client_files(a:candidates)
+	let datas  = perforce#cmd#client_files(file_d, a:cmd)
+	let outs   = s:extend_dicts('outs', datas)
 	call perforce#LogFile(outs)
 	return outs
 endfunction
@@ -58,7 +74,7 @@ let action = {
 				\ 'description'   : '',
 				\ }
 function action.func(candidates)
-	return s:sub_action(a:candidates, 'add')
+	return s:sub_action_log(a:candidates, 'add')
 endfunction
 call unite#custom_action('jump_list' , 'add' , action)
 call unite#custom_action('file'      , 'add' , action)
@@ -75,7 +91,7 @@ let s:kind_depot.action_table.edit = {
 				\ 'description'   : '',
 				\ }
 function s:kind_depot.action_table.edit.func(candidates)
-	return s:sub_action(a:candidates, 'edit')
+	return s:sub_action_log(a:candidates, 'add')
 endfunction
 call unite#custom_action('jump_list' , 'p4_edit' , s:kind_depot.action_table.edit)
 call unite#custom_action('file'      , 'p4_edit' , s:kind_depot.action_table.edit)
@@ -85,7 +101,7 @@ let s:kind_depot.action_table.delete = {
 				\ 'description'   : '',
 				\ }
 function s:kind_depot.action_table.delete.func(candidates)
-	return s:sub_action(a:candidates, 'delete')
+	return s:sub_action_log(a:candidates, 'delete')
 endfunction
 
 if 0
@@ -94,7 +110,7 @@ let s:kind_depot.action_table.revert = {
 				\ 'description'   : '',
 				\ }
 function s:kind_depot.action_table.revert.func(candidates)
-	return s:sub_action(a:candidates, 'revert')
+	return s:sub_action_log(a:candidates, 'revert')
 endfunction
 endif
 
@@ -103,7 +119,7 @@ let s:kind_depot.action_table.revert_a = {
 				\ 'description'   : '',
 				\ }
 function s:kind_depot.action_table.revert_a.func(candidates)
-	return s:sub_action(a:candidates, 'revert -a')
+	return s:sub_action_log(a:candidates, 'revert -a')
 endfunction
 
 let s:kind_depot.action_table.a_open = {
@@ -150,12 +166,13 @@ endfunction
 "}}}
 
 let s:kind_depot.action_table.delete = { 
-			\ 'description' : '差分 ( delete だけど ) ',
+			\ 'description' : 'diff preview ( not delete action. ) ',
 			\ 'is_quit' : 0, 
 			\ }
 function! s:kind_depot.action_table.delete.func(candidate) "{{{
-	let depot = a:candidate.action__depot
-	call perforce#util#LogFile('diff', 1, perforce#cmd#base('diff','',depot).outs)
+	" [2013-06-09 02:49]
+	let outs = s:sub_action([a:candidate], 'diff -dw')
+	call perforce#util#LogFile('diff', 1, outs)
 	wincmd p
 endfunction
 "}}}
@@ -166,6 +183,7 @@ let s:kind_depot.action_table.a_p4_diff = {
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind_depot.action_table.a_p4_diff.func(candidates) "{{{
+	"TODO: クライアント対応
 	let args = map(copy(a:candidates),"v:val.action__depot")
 	call unite#start_temporary([insert(args,'p4_diff')]) 
 endfunction
@@ -215,17 +233,6 @@ function! s:kind_depot.action_table.a_p4_filelog.func(candidates) "{{{
 endfunction
 "}}}
 
-let s:kind_depot.action_table.a_p4_sync = { 
-			\ 'is_selectable' : 1, 
-			\ 'description' : 'ファイルの最新同期',
-			\ }
-function! s:kind_depot.action_table.a_p4_sync.func(candidates) "{{{
-	let depots = map(copy(a:candidates),"v:val.action__depot")
-	let outs = perforce#cmd#base('sync','',join(depots)).outs
-	call perforce#LogFile(outs)
-endfunction
-"}}}
-
 function! s:copy_file(depot, client, root) "{{{
 
 	let depot  = a:depot
@@ -235,7 +242,6 @@ function! s:copy_file(depot, client, root) "{{{
 
 	" 空白と引数がない場合は、defaultを設定する
 	let root2 = perforce#data#get('g:perforce_merge_default_path')
-
 
 	" 末尾の \ を削除する
 	let root2 = substitute(root2,'/$','','')
@@ -277,15 +283,17 @@ let s:kind_depot.action_table.a_p4_dir_copy = {
 	\ 'description' : 'dirでコピーする',
 	\ 'is_selectable' : 1,
 	\ }
-
 function! s:kind_depot.action_table.a_p4_dir_copy.func(candidates) "{{{
 	let root_cache = {}
 	for candidate in a:candidates
 		let client = candidate.action__client
+
 		if !exists('root_cache[client]')
 			let root_cache[client] = perforce#util#get_client_root_from_client(client)
 		endif
-		call s:copy_file(candidate.action__depot, client, root_cache[client].root)
+		let path = perforce#get#path#from_depot_with_client(client, candidate.action__depot)
+
+		call s:copy_file(path, client, root_cache[client].root)
 	endfor
 endfunction
 "}}}
@@ -302,10 +310,12 @@ function! s:kind_depot.action_table.a_p4_depot_copy.func(candidates) "{{{
 endfunction
 "}}}
 "
-if 1
-	call unite#define_kind(s:kind_depot)
-endif
+call unite#define_kind(s:kind_depot)
 
-let &cpo = s:save_cpo
-unlet s:save_cpo
+if exists('s:save_cpo')
+	let &cpo = s:save_cpo
+	unlet s:save_cpo
+else
+	set cpo&
+endif
 

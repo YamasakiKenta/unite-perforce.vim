@@ -26,6 +26,8 @@ function! s:init() "{{{
 	call s:perforce_add( 'g:unite_perforce_username'            ,''                       , {'nums' : [],    'items' : ['user']}) 
 	call s:perforce_add( 'g:unite_perforce_is_submit_flg'       ,'サブミットを許可'       , 0) 
 	call s:perforce_add( 'g:pf_clients_template'                ,'template'               , {}) 
+	call s:perforce_add( 'g:perforce_merge_default_path'        ,'template'               , {'num' : 0, 'items' : ['c:\tmp']})
+g:perforce_merge_default_path
 
 	call s:perforce_load()
 
