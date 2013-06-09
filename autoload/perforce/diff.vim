@@ -40,7 +40,8 @@ function! perforce#diff#main(path) "{{{
 
 
 	" 最新 REV のファイルの取得
-	let outs = perforce#cmd#files('print -q', [path], 1, 1)[0].outs
+	let datas = perforce#cmd#use_port_clients('p4 print -q '.perforce#get_kk(path))
+	let outs  = perforce_2#extend_dicts('outs', datas)
 
 	" ERROR
 	if !exists('outs[0]')
