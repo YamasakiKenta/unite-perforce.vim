@@ -233,10 +233,10 @@ function! s:kind_depot.action_table.a_p4_filelog.func(candidates) "{{{
 endfunction
 "}}}
 
-function! s:copy_file(depot, client, root) "{{{
+function! s:copy_file(depot, client, root, type) "{{{
 
 	let depot  = a:depot
-	let file1  = perforce#get#path#from_depot_with_client('', depot)
+	let file1  = perforce#get#path#from_depot_with_client(a:client, depot)
 	let port   = matchstr(a:client, '-p\s\+\zs\S*')
 	let port   = substitute(port, ':', '', 'g')
 
@@ -246,18 +246,20 @@ function! s:copy_file(depot, client, root) "{{{
 	" 末尾の \ を削除する
 	let root2 = substitute(root2,'/$','','')
 
-	" 先頭の\\を削除する
-	let depot = substitute(depot, '//','','')
-	
-	" ClientPathを削除する
-	let root1  = a:root
-	let root1  = substitute(root1, '/', '\','g')
+	if a:type == 'depot'
+		" 先頭の\\を削除する
+		let depot = substitute(depot, '//','','')
+	else
+		" ClientPathを削除する
+		let root1  = a:root
+		let root1  = substitute(root1, '/', '\','g')
 
-	" 置換するため、スペースはエスケープする
-	let root1 = escape(root1,'\')
+		" 置換するため、スペースはエスケープする
+		let root1 = escape(root1,'\')
 
-	" ルートの削除
-	let path1 = substitute(file1, root1,'','')
+		" ルートの削除
+		let depot = substitute(file1, root1,'','')
+	endif
 
 	" コピー先
 	let file2 = root2.'/new/'.port.'/'.depot 
@@ -291,9 +293,8 @@ function! s:kind_depot.action_table.a_p4_dir_copy.func(candidates) "{{{
 		if !exists('root_cache[client]')
 			let root_cache[client] = perforce#util#get_client_root_from_client(client)
 		endif
-		let path = perforce#get#path#from_depot_with_client(client, candidate.action__depot)
 
-		call s:copy_file(path, client, root_cache[client].root)
+		call s:copy_file(candidate.action__depot, client, root_cache[client].root, 'path')
 	endfor
 endfunction
 "}}}
@@ -305,7 +306,7 @@ let s:kind_depot.action_table.a_p4_depot_copy = {
 function! s:kind_depot.action_table.a_p4_depot_copy.func(candidates) "{{{
 	for candidate in a:candidates
 		let client = candidate.action__client
-		call s:copy_file(candidate.action__depot, client, '')
+		call s:copy_file(candidate.action__depot, client, '', 'depot')
 	endfor
 endfunction
 "}}}

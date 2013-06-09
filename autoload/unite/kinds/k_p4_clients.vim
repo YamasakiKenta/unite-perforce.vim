@@ -10,25 +10,19 @@ function! unite#kinds#k_p4_clients#define()
 	return s:kind_clients
 endfunction
 
-function! s:get_client_path_from_name(str) 
-	let str  = system('p4 clients | grep '.a:str) " # ref 直接データをもらう方法はないかな
-	let path = str
-	let path = matchstr(path,'.* \d\d\d\d/\d\d/\d\d root \zs\S*')
-	let path = substitute((path, '\\', '\/', 'g')
+function! s:get_client_path_from_name(port, clname) "{{{
+	let cmd = 'p4 '.a:port.' client -o '.a:clname
+	let line = system(cmd)
+	let path = matchstr(line, '\nRoot:\s*\zs\S*\ze\n')
 	return path
 endfunction
+"}}}
 
-" ********************************************************************************
-" kind - k_p4_clients
-" ********************************************************************************
 let s:kind_clients = {
 			\ 'name' : 'k_p4_clients',
 			\ 'default_action' : 'a_p4_client',
 			\ 'action_table' : {},
-			\ 'parents' : ['k_p4', 'common'],
 			\}
-call unite#define_kind(s:kind_clients)
-
 let s:kind_clients.action_table.a_p4_client_set = {
 			\ 'description' : 'クライアントの変更', 
 			\ }
@@ -37,7 +31,8 @@ function! s:kind_clients.action_table.a_p4_client_set.func(candidates) "{{{
 	" 保存する名前の取得
 	let clname = a:candidates.action__clname
 	let port   = matchstr(a:candidates.action__port, '\(-p\s*\)*\zs.*')
-	let clpath = s:get_client_path_from_name(clname)
+	let clpath = s:get_client_path_from_name('-p '.port, clname)
+	echo clpath
 
 	" 作成するファイルの名前の保存 ( 切り替え ) 
 	call perforce#set#PFCLIENTNAME(clname)
@@ -65,15 +60,23 @@ let s:kind_clients.action_table.a_p4_client_info = {
 			\ 'description' : 'クライアントの情報 ( info ) ',
 			\ }
 function! s:kind_clients.action_table.a_p4_client_info.func(candidates) "{{{
+
+	let clients = []
 	for l:candidate in a:candidates
 		let clname = l:candidate.action__clname
-		let port   = matchstr(l:candidate.action__port, '\(-p\s*\)*\zs.*')
-
-		" 各クライアントごとに表示する
-		call perforce#util#LogFile(port.'_'.clname, 0)
-		let outs = perforce#cmd#base('info', port.' -c '.clname).outs
-		call append(0,outs)
+		let port   = l:candidate.action__port
+		let client = port.' -c '.clname
+		call add(clients, client)
 	endfor
+
+	let datas = perforce#cmd#clients(clients, 'info')
+
+	for data in datas
+		call perforce#util#LogFile(data.client, 0)
+		call append(0,datas[0].outs)
+		cursor(1, 1)
+	endfor
+	
 endfunction
 "}}}
 
@@ -82,21 +85,27 @@ let s:kind_clients.action_table.a_p4_client = {
 			\ 'description' : 'クライアントの情報 ( client )',
 			\ }
 function! s:kind_clients.action_table.a_p4_client.func(candidates) "{{{
+
+	let datas = []
 	for l:candidate in a:candidates
 		let clname = l:candidate.action__clname
 		let port   = l:candidate.action__port
+		let client = port.' -c '.clname
 
-		" 各クライアントごとに表示する
-		call perforce#util#LogFile(clname, 0)
-		let outs = perforce#cmd#base('client', port, '-o '.clname).outs
-		call append(0,outs)
+		let tmps = perforce#cmd#clients([client], 'p4 client -o '.clname)
+		call extend(datas, tmps)
 	endfor
+
+	for data in datas
+		call perforce#util#LogFile(data.client, 0)
+		call append(0,data.outs)
+		call cursor(28, 1)
+	endfor
+
 endfunction
 "}}}
 
-if 1
-	call unite#define_kind(s:kind_clients)
-endif
+call unite#define_kind(s:kind_clients)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
