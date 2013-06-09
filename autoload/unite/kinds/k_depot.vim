@@ -5,17 +5,6 @@ function! unite#kinds#k_depot#define()
 	return s:kind_depot
 endfunction
 
-function! s:extend_dicts(key, ...) "{{{
-	let rtns = []
-	for dicts in a:000
-		for dict in dicts
-			call extend(rtns, dict[a:key])
-		endfor
-	endfor
-	return rtns
-endfunction
-"}}}
-
 function! s:get_port_client_files(candidates) "{{{
 	" ********************************************************************************
 	" [2013-06-08 20:32]
@@ -42,7 +31,7 @@ function! s:sub_action(candidates, cmd) "{{{
 	" [2013-06-08 20:32]
 	let file_d = s:get_port_client_files(a:candidates)
 	let datas  = perforce#cmd#client_files(file_d, a:cmd)
-	let outs   = s:extend_dicts('outs', datas)
+	let outs   = perforce_2#extend_dicts('outs', datas)
 	return outs
 endfunction
 "}}}
@@ -50,7 +39,7 @@ function! s:sub_action_log(candidates, cmd) "{{{
 	" [2013-06-08 20:32]
 	let file_d = s:get_port_client_files(a:candidates)
 	let datas  = perforce#cmd#client_files(file_d, a:cmd)
-	let outs   = s:extend_dicts('outs', datas)
+	let outs   = perforce_2#extend_dicts('outs', datas)
 	call perforce#LogFile(outs)
 	return outs
 endfunction

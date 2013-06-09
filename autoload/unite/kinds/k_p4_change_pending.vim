@@ -61,11 +61,11 @@ let s:kind_k_p4_change_pending = {
 			\ }
 
 " 共通
-let s:kind_k_p4_change_pending.action_table.delete = {
+let s:kind_k_p4_change_pending.action_table.change_list_delete = {
 			\ 'description' : 'チェンジリストの削除' ,
 			\ 'is_selectable' : 1,
 			\ }
-function! s:kind_k_p4_change_pending.action_table.delete.func(candidates) "{{{
+function! s:kind_k_p4_change_pending.action_table.change_list_delete.func(candidates) "{{{
 	let outs = []
 	for candidate in a:candidates
 		let chnum       = s:get_chnum(candidate)
@@ -139,14 +139,23 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 endfunction
 "}}}
 
-let s:kind_k_p4_change_pending.action_table.a_p4change_describe = { 
-			\ 'description' : '差分の表示',
+let s:kind_k_p4_change_pending.action_table.delete = { 
+			\ 'description' : 'describe ( not delete )',
 			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
-function! s:kind_k_p4_change_pending.action_table.a_p4change_describe.func(candidates) "{{{
-	let chnums = map(copy(a:candidates),"s:get_chnum(v:val)")
- 	call unite#start_temporary([insert(chnums,'p4_describe')])
+function! s:kind_k_p4_change_pending.action_table.delete.func(candidates) "{{{
+	let data_ds = []
+	for candidate in a:candidates
+		" チェンジリストの番号の取得をする
+		let port_client = pf_changes#get_port_client(candidate)
+		let data_d= {
+					\ 'chnum'  : s:get_chnum(candidate),
+					\ 'client' : port_client,
+					\ }
+		call add(data_ds, data_d)
+	endfor
+ 	call unite#start_temporary([insert(data_ds,'p4_describe')])
 endfunction
 "}}}
 

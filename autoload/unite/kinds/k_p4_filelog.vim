@@ -26,7 +26,6 @@ endfunction
 function! s:p4_print(candidates) "{{{
 	for candidate in deepcopy(a:candidates)
 		let client = candidate.action__client
-		echo client
 
 		let name = perforce#get#path#from_depot_with_client(client, candidate.action__depot)
 
@@ -36,6 +35,10 @@ function! s:p4_print(candidates) "{{{
 			let numstr      =  '#'.revnum
 		elseif candidate.action__cmd == 'annotate'
 			let revnum = s:get_revnum_from_annotate(candidate.action__out)
+			let file_numstr = '\#'.revnum
+			let numstr      =  '#'.revnum
+		elseif  candidate.action__cmd == 'describe'
+			let revnum = candidate.action__revnum
 			let file_numstr = '\#'.revnum
 			let numstr      =  '#'.revnum
 		endif

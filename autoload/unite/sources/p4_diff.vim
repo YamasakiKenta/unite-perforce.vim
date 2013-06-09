@@ -6,7 +6,7 @@ function! unite#sources#p4_diff#define()
 	return s:source_diff
 endfunction
 
-function! s:get_source_file_from_path(path) "{{{
+function! s:get_source_file_from_path(path, client) "{{{
 	" ********************************************************************************
 	" 差分の出力を、Unite jump_list化
 	" @param[in]	outs		差分のデータ
@@ -16,13 +16,14 @@ function! s:get_source_file_from_path(path) "{{{
 	let candidates = []
 	let lnum = 1
 	for line in lines
-		let candidates += [{
-					\ 'word' : lnum.' : '.line,
+		call add(candidates ,{
+					\ 'word' : printf("%5d", lnum).' : '.line,
 					\ 'kind' : 'jump_list',
 					\ 'action__line' : lnum,
 					\ 'action__path' : path,
 					\ 'action__text' : line,
-					\ }]
+					\ 'action__client' : a:client,
+					\ })
 		let lnum += 1
 	endfor
 	return candidates
@@ -71,46 +72,53 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 		let all_flg  = 1
 	endif
 
-	let rtns = []
+	let candidates = []
 	let outs = []
 
 	let files_d = perforce#cmd#files('diff', files_, 1, 1)
 
 	let outs    = perforce#get#outs(files_d)
 
-	let rtns += s:perforce_get_file_source_diff(outs) 
+	let candidates += s:perforce_get_file_source_diff(outs) 
 
 	" add したファイルを追加する "{{{
 	if all_flg
-		let opened_strs = perforce#cmd#base('opened','').outs
+		let datas = perforce#cmd#use_ports('p4 opened')
 
-		for str in opened_strs
-			if str =~ '.*#\d\+ - add change'
-				let depot = perforce#get#depot#from_opened(str)
-				let path = perforce#get#path#from_depot_with_client('', depot)
+		let candidates = []
+		for data in datas
+			for out in data.outs
+				if out =~ '.*#\d\+ - add \w\+ change'
+					let depot = perforce#get#depot#from_opened(out)
+					let path = perforce#get#path#from_depot_with_client(data.client, depot)
 
-				let rtns += [{
-							\ 'word' : path,
-							\ 'kind' : 'jump_list',
-							\ 'action__line' : 0,
-							\ 'action__path' : path,
-							\ 'action__text' : 0,
-							\ }]
-
-				let rtns += s:get_source_file_from_path(path)
-			endif
+					" ファイル名
+					let candidate = {
+								\ 'word' : path,
+								\ 'kind' : 'jump_list',
+								\ 'action__line' : 0,
+								\ 'action__path' : path,
+								\ 'action__text' : 0,
+								\ 'action__client' : data.client
+								\ }
+					call add(candidates, candidate)
+					call extend(candidates, s:get_source_file_from_path(path, data.client))
+				endif
+			endfor
 		endfor
 
 	endif
 	"}}}
-	return rtns
+	return candidates
 endfunction
 "}}}
 
-if 1
-	call unite#define_source(s:source_diff)
-endif
+call unite#define_source(s:source_diff)
 
-let &cpo = s:save_cpo
-unlet s:save_cpo
+if exists('s:save_cpo')
+	let &cpo = s:save_cpo
+	unlet s:save_cpo
+else
+	set cpo&
+endif
 

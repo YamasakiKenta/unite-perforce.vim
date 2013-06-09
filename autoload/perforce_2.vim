@@ -106,6 +106,17 @@ function! perforce_2#get_data_client(type, key, args) "{{{
 	return rtn_ds
 endfunction
 "}}}
+"
+function! perforce_2#extend_dicts(key, ...) "{{{
+	let rtns = []
+	for dicts in a:000
+		for dict in dicts
+			call extend(rtns, dict[a:key])
+		endfor
+	endfor
+	return rtns
+endfunction
+"}}}
 
 if exists('s:save_cpo')
 	let &cpo = s:save_cpo
