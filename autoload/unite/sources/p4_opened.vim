@@ -19,7 +19,7 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 	"                           {'chnum' : 1, 'client' : '-p localhost:1818' }:
 	" ********************************************************************************
 	" ˆø”‚Ìİ’è
-	"
+
 	let data_ds = perforce_2#get_data_client('-c', 'chnum', a:args)
 
 	let tmps = []
