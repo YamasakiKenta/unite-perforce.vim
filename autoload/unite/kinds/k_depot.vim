@@ -37,9 +37,7 @@ endfunction
 "}}}
 function! s:sub_action_log(candidates, cmd) "{{{
 	" [2013-06-08 20:32]
-	let file_d = s:get_port_client_files(a:candidates)
-	let datas  = perforce#cmd#client_files(file_d, a:cmd)
-	let outs   = perforce_2#extend_dicts('outs', datas)
+	let outs = s:sub_action(a:candidates, a:cmd)
 	call perforce#LogFile(outs)
 	return outs
 endfunction
