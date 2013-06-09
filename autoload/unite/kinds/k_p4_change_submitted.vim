@@ -9,7 +9,7 @@ let s:kind_k_p4_change_submitted = {
 			\ 'name'           : 'k_p4_change_submitted',
 			\ 'default_action' : 'a_p4change_describe',
 			\ 'action_table'   : {},
-			\ 'parents'        : ['1k_p4_change_pending'],
+			\ 'parents'        : ['k_p4_change_pending'],
 			\ }
 
 call unite#define_kind(s:kind_k_p4_change_submitted)
