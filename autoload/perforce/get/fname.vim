@@ -16,7 +16,7 @@ function! s:get_depots(args, path)
 endfunction
 
 function! s:get_clients(args)
-	let client = get(a:args, 0, '')
+	let client = get(a:args, 0, perforce#data#get_use_port_clients())
 	if type(client) != type([])
 		let clients = [client]
 	else
