@@ -62,58 +62,6 @@ function! s:get_outs(outs) "{{{
 endfunction
 "}}}
 
-function! perforce#cmd#base(pfcmd,...) "{{{
-	" ********************************************************************************
-	" @param[in]    a:pfcmd = 'opened'
-	" @param[in]    a:000
-	" [0]  = ''  - head
-	" [1:] = ''  - foot
-	"
-	" @return rtn_d
-	" .cmd    = 'p4 opened'
-	" .outs[] = ''
-	" ********************************************************************************
-
-	let gcmds = ['p4']
-	if a:0 > 0 
-		call add(gcmds, a:1)
-	endif
-
-	call add(gcmds, a:pfcmd)
-
-	let max_ = perforce#data#get('g:unite_perforce_show_max')
-	if max_ > 0
-		call add(gcmds, '-m '.max_)
-	endif 
-
-
-	if a:0 > 1
-		call add(gcmds, join(a:000[1:]))
-	endif
-
-	let cmd = join(gcmds)
-
-	let outs = split(system(cmd),'\n')
-
-	let outs = s:get_outs(outs)
-
-	let rtn_d = {
-				\ 'cmd'  : cmd,
-				\ 'outs' : outs,
-				\ }
-
-	call unite#print_message(rtn_d.cmd)
-
-	" 非表示にするコマンド
-	let filters_ = perforce#data#get('g:unite_perforce_filters')
-	if len(join(filters_)) > 0
-		let filter_ = join(filters_, '\|' ) 
-		call filter(rtn_d.outs, 'v:val !~ filter_')
-	endif
-
-	return rtn_d
-endfunction
-"}}}
 function! perforce#cmd#files(pfcmd, files, have_flg, onetime) "{{{
 	" ********************************************************************************
 	" @param[in]   a:pfcmd       = 'diff'
