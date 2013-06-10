@@ -1,7 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-
 function! unite#sources#p4_describe#define()
 	return s:source_describe
 endfunction
@@ -24,7 +23,7 @@ function! s:get_file_source_describe(client, outs) "{{{
 		let lnum = num.lnum
 		let data_d = perforce#get#path#from_diff(data_d, out)
 		call add(candidates, {
-					\ 'word'           : lnum.' : '.out,
+					\ 'word'           : printf("%5d : %s", lnum, out),
 					\ 'action__line'   : lnum,
 					\ 'action__depot'  : data_d.depot,
 					\ 'action__revnum' : data_d.revnum,

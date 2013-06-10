@@ -9,21 +9,22 @@ endfunction
 let s:source_p4_files = {
 			\ 'name'           : 'p4_files',
 			\ 'description'    : '',
-			\ 'default_action' : '',
+			\ 'default_kind'   : 'k_depot',
 			\ }
 function! s:source_p4_files.gather_candidates(args, context) "{{{
 
 	let port_clients = perforce#data#get_use_port_clients()
 	let cmd = 'p4 files //...'
 
-	let datas_ds = perforce#cmd#clients(port_clients, cmd)
+	let data_ds = perforce#cmd#clients(port_clients, cmd)
 
 	let candidates = []
-	for data_d in data_ds
-		let tmps = map( copy(data_d.out), "{
-					\ 'word'        : v:val,
-					\ 'kind'        : 'file',
-					\ 'action__out' : out
+	for data in data_ds
+		let tmps = map( copy(data.outs), "{
+					\ 'word'          : v:val,
+					\ 'action__out'   : v:val,
+					\ 'action__cmd'   : 'files',
+					\ 'action__client': data.client,
 					\ }")
 		call extend(candidates, tmps)
 	endfor

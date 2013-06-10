@@ -49,7 +49,15 @@ function! s:find_filepath_from_depot(candidate) "{{{
 	" @param[in]	candidate		unite action の引数
 	" @retval       path			編集するファイル名
 	" ********************************************************************************
-	let depot  = a:candidate.action__depot
+	if exists('a:candidate.action__cmd')
+		if a:candidate.action__cmd == 'files'
+			let depot = matchstr(a:candidate.action__out, '.*\ze#\d\+ - ')
+		else
+			let depot  = a:candidate.action__depot
+		endif
+	else
+		let depot  = a:candidate.action__depot
+	endif
 	let client = exists( 'a:candidate.action__client' ) ? a:candidate.action__client : ''
 	let path   = perforce#get#path#from_depot_with_client(client, depot)
 	return path
@@ -267,7 +275,6 @@ function! s:copy_file(depot, client, root, type) "{{{
 
 endfunction
 "}}}
-"
 let s:kind_depot.action_table.a_p4_dir_copy = {
 	\ 'description' : 'dirでコピーする',
 	\ 'is_selectable' : 1,
