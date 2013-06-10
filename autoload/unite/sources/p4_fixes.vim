@@ -18,7 +18,7 @@ let s:source_p4_fixes = {
 			\ }
 function! s:source_p4_fixes.gather_candidates(args, context) "{{{
 
-	let data_ds = perforce_2#get_data_client('-j', 'job', a:args)
+	let data_ds = perforce_2#get_data_client('-j ', 'job', a:args)
 
 	let tmps = []
 	for data_d in data_ds

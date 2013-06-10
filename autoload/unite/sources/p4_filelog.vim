@@ -24,22 +24,22 @@ function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	let candidates = []
 
-	let data_ds = perforce_2#get_data_client('-c', 'file_', a:args)
+	let data_ds = perforce_2#get_data_client('', 'file_', a:args)
 
 	for data_d in data_ds 
 		let file_            = data_d.file_
 		let use_port_clients = data_d.use_port_clients
 
-		let datas = perforce#cmd#use_port_clients('filelog '.perforce#get_kk(arg))
+		let datas = perforce#cmd#use_port_clients('p4 filelog '.perforce#get_kk(file_))
 		for data in datas
-			let candidates += map(filter(lines, "v:val =~ '\.\.\. #'"), "{ 
+			let candidates += map(filter(data.outs, "v:val =~ '\.\.\. #'"), "{ 
 						\ 'word'           : v:val,
 						\ 'kind'           : 'k_p4_filelog',
 						\ 'action__revnum' : s:revision_num(v:val),
 						\ 'action__out'    : v:val,
 						\ 'action__cmd'    : 'filelog',
-						\ 'action__depot'  : arg,
-						\ 'action__client' : client,
+						\ 'action__depot'  : file_,
+						\ 'action__client' : data.client,
 						\ }")
 		endfor
 	endfor
@@ -48,9 +48,7 @@ function! s:source.gather_candidates(args, context) "{{{
 endfunction 
 "}}}
 
-if 1
-	call unite#define_source(s:source)
-endif
+call unite#define_source(s:source)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

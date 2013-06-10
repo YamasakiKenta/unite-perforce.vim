@@ -11,7 +11,7 @@ let s:source_p4_files = {
 			\ 'description'    : '',
 			\ 'default_action' : '',
 			\ }
-function! s:source_p4_files.gather_candidates(args, context)
+function! s:source_p4_files.gather_candidates(args, context) "{{{
 
 	let port_clients = perforce#data#get_use_port_clients()
 	let cmd = 'p4 files //...'
@@ -20,13 +20,16 @@ function! s:source_p4_files.gather_candidates(args, context)
 
 	let candidates = []
 	for data_d in data_ds
-	call extend(candidates = map( copy(data_d.cout), "{
-				\ 'word' : v:val,
-				\ 'kind' : 'file',
-				\ 'action__out' : out
-				\ }")
+		let tmps = map( copy(data_d.out), "{
+					\ 'word'        : v:val,
+					\ 'kind'        : 'file',
+					\ 'action__out' : out
+					\ }")
+		call extend(candidates, tmps)
+	endfor
 	return candidates
 endfunction
+"}}}
 
 call unite#define_source(s:source_p4_files) 
 
