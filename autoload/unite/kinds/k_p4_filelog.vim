@@ -26,8 +26,7 @@ endfunction
 function! s:p4_print(candidates) "{{{
 	for candidate in deepcopy(a:candidates)
 		let client = candidate.action__client
-
-		let name = perforce#get#path#from_depot_with_client(client, candidate.action__depot)
+		let name   = candidate.action__path
 
 		if candidate.action__cmd == 'filelog'
 			let revnum = s:revision_num(candidate.action__out)
@@ -50,7 +49,6 @@ function! s:p4_print(candidates) "{{{
 		endif
 
 		" ファイルを出力する
-		"let cmd = 'p4 '.client.'print -q '. perforce#get_kk(name.''.numstr)
 		let cmd = 'p4 '.client.'print '. perforce#get_kk(name.''.numstr)
 		call unite#print_message(cmd)
 		echo cmd

@@ -28,8 +28,6 @@ function! s:source.gather_candidates(args, context) "{{{
 
 	for data_d in data_ds 
 		let file_            = data_d.file_
-		let use_port_clients = data_d.use_port_clients
-
 		let datas = perforce#cmd#use_port_clients('p4 filelog '.perforce#get_kk(file_))
 		for data in datas
 			let candidates += map(filter(data.outs, "v:val =~ '\.\.\. #'"), "{ 
@@ -38,7 +36,7 @@ function! s:source.gather_candidates(args, context) "{{{
 						\ 'action__revnum' : s:revision_num(v:val),
 						\ 'action__out'    : v:val,
 						\ 'action__cmd'    : 'filelog',
-						\ 'action__depot'  : file_,
+						\ 'action__path'  : file_,
 						\ 'action__client' : data.client,
 						\ }")
 		endfor
