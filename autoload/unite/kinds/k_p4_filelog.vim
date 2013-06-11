@@ -26,7 +26,13 @@ endfunction
 function! s:p4_print(candidates) "{{{
 	for candidate in deepcopy(a:candidates)
 		let client = candidate.action__client
-		let name   = candidate.action__path
+		if exists('candidate.action__path')
+			let name   = candidate.action__path
+		elseif exists('candidate.action__depot')
+			let name = perforce#get#path#from_depot_with_client(client, candidate.action__depot)
+		elseif
+			unite#print_message('not find file name...')
+		endif
 
 		if candidate.action__cmd == 'filelog'
 			let revnum = s:revision_num(candidate.action__out)
@@ -60,8 +66,6 @@ function! s:p4_print(candidates) "{{{
 	endfor
 endfunction
 "}}}
-
-
 let s:kind_filelog = {
 			\ 'name' : 'k_p4_filelog',
 			\ 'default_action' : 'a_p4_print',

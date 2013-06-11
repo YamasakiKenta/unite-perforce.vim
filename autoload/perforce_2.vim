@@ -118,6 +118,150 @@ function! perforce_2#extend_dicts(key, ...) "{{{
 endfunction
 "}}}
 
+
+function! perforce_2#annnotate(file)
+	let file = expand("%:p")
+
+	let data_ds = perforce#cmd#use_port_clients_files('p4 annotate', [file], 1)
+	let rev_outs = []
+	for data_d in data_ds
+		let tmps = data_d.outs
+		if tmps[0] !~ 'An empty string is not allowed as a file name.'
+			call extend(rev_outs, tmps[1:])
+		endif
+	endfor
+
+	let data_ds = perforce#cmd#use_port_clients_files('p4 diff -dw', [file], 1)
+	let diff_outs = []
+	for data_d in data_ds
+		let tmps = data_d.outs
+		if tmps[0] !~ 'An empty string is not allowed as a file name.'
+			call extend(diff_outs, tmps[1:])
+		endif
+	endfor
+
+	" 差分データの設定
+	let diffs = []
+	let diff  = {}
+	for out in diff_outs
+		if out !~ '^[<>-]'
+			call insert(diffs, copy(diff))
+			let diff.type      = matchstr(out, '[acd]')
+			let diff.old_start = matchstr(out, '\d\+')-1
+			let diff.old_end   = matchstr(out, '\d\+,\zs\d\+\ze[acd]')-1
+			let diff.start     = matchstr(out, '[acd]\zs\d\+')-1
+			let diff.end       = matchstr(out, '[acd]\d\+,\zs\d\+')-1
+			let diff.old_strs  = []
+			let diff.new_strs  = []
+		elseif out =~ '^<'
+			call add(diff.old_strs, out)
+		elseif out =~ '^>'
+			call add(diff.new_strs, out)
+		endif
+	endfor
+	call insert(diffs, copy(diff))
+
+	" 逆順で、行う
+	let new_outs = copy(rev_outs) "{{{
+	for diff in diffs[:-2]
+		if diff.type == 'a'
+			call extend(new_outs, diff.new_strs, diff.old_start+1)
+		elseif diff.type == 'd'
+			if diff.old_end >= 0
+				call remove(new_outs, diff.old_start, diff.old_end)
+			else
+				call remove(new_outs, diff.old_start)
+			endif
+		elseif diff.type == 'c' 
+			if diff.old_end >= 0
+				call remove(new_outs, diff.old_start, diff.old_end)
+			else
+				call remove(new_outs, diff.old_start)
+			endif
+			call extend(new_outs, diff.new_strs, diff.old_start)
+		endif
+	endfor
+	"}}}
+
+	if 0
+	let old_outs = copy(rev_outs) "{{{
+	for diff in diffs[:-2]
+		if diff.type == 'd'
+			if diff.old_end >= 0
+				call remove(old_outs, diff.old_start, diff.old_end)
+			else
+				call remove(old_outs, diff.old_start)
+			endif
+		elseif diff.type == 'c' 
+			if diff.old_end >= 0
+				call remove(old_outs, diff.old_start, diff.old_end)
+			else
+				call remove(old_outs, diff.old_start)
+			endif
+		endif
+	endfor
+	"}}}
+	endif
+
+	" 差分データの設定
+
+	winc H
+	let ft = &filetype
+	"set scb
+
+	let lnum = line(".")
+
+	if 0
+		let tmp_file = 'p4_annotate diff'
+		call perforce#util#LogFile(tmp_file, 1, diff_outs)
+		winc H
+		"set scb
+		exe 'set ft='.ft
+		call cursor(lnum, 0)
+	endif
+
+	if 0
+		let tmp_file = 'p4_annotate rev'
+		call perforce#util#LogFile(tmp_file, 1, rev_outs)
+		winc H
+		"set scb
+		exe 'set ft='.ft
+		call cursor(lnum, 0)
+	endif 
+
+	if 1
+		let tmp_file = 'p4_annotate new'
+		call perforce#util#LogFile(tmp_file, 1, new_outs)
+		winc H
+		"set scb
+		exe 'set ft='.ft
+		call cursor(lnum, 0)
+	endif
+
+	if 0
+		let tmp_file = 'p4_annotate old'
+		call perforce#util#LogFile(tmp_file, 1, old_outs)
+		winc H
+		"set scb
+		exe 'set ft='.ft
+		call cursor(lnum, 0)
+	endif
+
+	" window の修正
+	vertical res 10
+	winc l
+	if 0
+		vertical res 20
+		winc l
+		vertical res 20
+		winc l
+		vertical res 20
+		winc l
+	endif
+
+
+endfunction
+
 if exists('s:save_cpo')
 	let &cpo = s:save_cpo
 	unlet s:save_cpo

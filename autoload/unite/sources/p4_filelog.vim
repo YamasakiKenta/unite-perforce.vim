@@ -6,11 +6,6 @@ function! unite#sources#p4_filelog#define()
 	return s:source
 endfunction
 
-function! s:revision_num(str) "{{{
-	return matchstr(a:str, '#\zs\d*')
-endfunction 
-"}}}
-
 let s:source = { 
 			\ 'name' : 'p4_filelog',
 			\ 'description' : '—š—ð',
@@ -24,19 +19,18 @@ function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	let candidates = []
 
-	let data_ds = perforce_2#get_data_client('', 'file_', a:args)
+	let tmps = perforce_2#get_data_client('', 'file_', a:args)
 
-	for data_d in data_ds 
-		let file_            = data_d.file_
-		let datas = perforce#cmd#use_port_clients('p4 filelog '.perforce#get_kk(file_))
+	for tmp in tmps 
+		let file_  = tmp.file_
+		let datas  = perforce#cmd#use_port_clients('p4 filelog '.perforce#get_kk(file_))
 		for data in datas
 			let candidates += map(filter(data.outs, "v:val =~ '\.\.\. #'"), "{ 
 						\ 'word'           : v:val,
 						\ 'kind'           : 'k_p4_filelog',
-						\ 'action__revnum' : s:revision_num(v:val),
 						\ 'action__out'    : v:val,
 						\ 'action__cmd'    : 'filelog',
-						\ 'action__path'  : file_,
+						\ 'action__path'   : file_,
 						\ 'action__client' : data.client,
 						\ }")
 		endfor

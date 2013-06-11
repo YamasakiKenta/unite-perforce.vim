@@ -95,8 +95,8 @@ function! perforce#matomeDiffs(...) "{{{
 				let datas[-1].changeds = a > b ? a : b
 			endif
 		endfor
-	endfor
 	"}}}
+	endfor
 	"
 	"データの出力 {{{
 	let outs = []
