@@ -118,8 +118,7 @@ function! perforce_2#extend_dicts(key, ...) "{{{
 endfunction
 "}}}
 
-
-function! perforce_2#annnotate(file)
+function! perforce_2#annnotate(file) "{{{
 	let file = expand("%:p")
 
 	let data_ds = perforce#cmd#use_port_clients_files('p4 annotate', [file], 1)
@@ -259,8 +258,8 @@ function! perforce_2#annnotate(file)
 		winc l
 	endif
 
-
 endfunction
+"}}}
 
 if exists('s:save_cpo')
 	let &cpo = s:save_cpo
