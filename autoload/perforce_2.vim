@@ -118,6 +118,38 @@ function! perforce_2#extend_dicts(key, ...) "{{{
 endfunction
 "}}}
 
+function! s:get_diffs(diff_outs) "{{{
+	let diff_outs = a:diff_outs
+
+	let diffs = []
+	let diff  = {}
+	for out in diff_outs
+		let out = substitute(out, '\\r', '', 'g')
+		if out !~ '^[<>-]'
+			" 編集行以外
+			call insert(diffs, copy(diff))
+			let diff.type      = matchstr(out, '[acd]')
+			let diff.old_start = matchstr(out, '\d\+')-1
+			let diff.old_end   = matchstr(out, '\d\+,\zs\d\+\ze[acd]')-1
+			let diff.start     = matchstr(out, '[acd]\zs\d\+')-1
+			let diff.end       = matchstr(out, '[acd]\d\+,\zs\d\+')-1
+			let diff.old_strs  = []
+			let diff.new_strs  = []
+		elseif out =~ '^<'
+			" 削除行
+			call add(diff.old_strs, out)
+		elseif out =~ '^>'
+			" 追加行
+			call add(diff.new_strs, out)
+		endif
+	endfor
+	call insert(diffs, copy(diff))
+
+	unlet diffs[-1]
+
+	return diffs
+endfunction
+"}}}
 function! perforce_2#annnotate(file) "{{{
 	let file = expand("%:p")
 
@@ -131,6 +163,7 @@ function! perforce_2#annnotate(file) "{{{
 	endfor
 
 	let data_ds = perforce#cmd#use_port_clients_files('p4 diff -dw', [file], 1)
+
 	let diff_outs = []
 	for data_d in data_ds
 		let tmps = data_d.outs
@@ -140,123 +173,87 @@ function! perforce_2#annnotate(file) "{{{
 	endfor
 
 	" 差分データの設定
-	let diffs = []
-	let diff  = {}
-	for out in diff_outs
-		if out !~ '^[<>-]'
-			call insert(diffs, copy(diff))
-			let diff.type      = matchstr(out, '[acd]')
-			let diff.old_start = matchstr(out, '\d\+')-1
-			let diff.old_end   = matchstr(out, '\d\+,\zs\d\+\ze[acd]')-1
-			let diff.start     = matchstr(out, '[acd]\zs\d\+')-1
-			let diff.end       = matchstr(out, '[acd]\d\+,\zs\d\+')-1
-			let diff.old_strs  = []
-			let diff.new_strs  = []
-		elseif out =~ '^<'
-			call add(diff.old_strs, out)
-		elseif out =~ '^>'
-			call add(diff.new_strs, out)
-		endif
-	endfor
-	call insert(diffs, copy(diff))
+	let diffs = s:get_diffs(diff_outs)
 
 	" 逆順で、行う
+	let del_outs = []
 	let new_outs = copy(rev_outs) "{{{
-	for diff in diffs[:-2]
+	let old_outs = repeat([''], len(rev_outs))
+	for diff in diffs
 		if diff.type == 'a'
 			call extend(new_outs, diff.new_strs, diff.old_start+1)
 		elseif diff.type == 'd'
 			if diff.old_end >= 0
-				call remove(new_outs, diff.old_start, diff.old_end)
+				let del_outs = remove(new_outs, diff.old_start, diff.old_end)
+				call extend(old_outs, del_outs, diff.old_start)
 			else
 				call remove(new_outs, diff.old_start)
 			endif
 		elseif diff.type == 'c' 
 			if diff.old_end >= 0
-				call remove(new_outs, diff.old_start, diff.old_end)
+				let del_outs = remove(new_outs, diff.old_start, diff.old_end)
+				call extend(old_outs, del_outs, diff.old_start)
 			else
-				call remove(new_outs, diff.old_start)
+				let del_outs = [remove(new_outs, diff.old_start)]
+				call extend(old_outs, del_outs, diff.old_start)
 			endif
 			call extend(new_outs, diff.new_strs, diff.old_start)
 		endif
 	endfor
 	"}}}
 
-	if 0
-	let old_outs = copy(rev_outs) "{{{
-	for diff in diffs[:-2]
-		if diff.type == 'd'
-			if diff.old_end >= 0
-				call remove(old_outs, diff.old_start, diff.old_end)
-			else
-				call remove(old_outs, diff.old_start)
-			endif
-		elseif diff.type == 'c' 
-			if diff.old_end >= 0
-				call remove(old_outs, diff.old_start, diff.old_end)
-			else
-				call remove(old_outs, diff.old_start)
-			endif
-		endif
-	endfor
-	"}}}
-	endif
-
 	" 差分データの設定
+	let lnum = line(".")
+
+
+	let ft = &filetype
 
 	winc H
-	let ft = &filetype
+	call cursor(lnum, 0)
 	"set scb
-
-	let lnum = line(".")
+	exe 'set ft='.ft
 
 	if 0
 		let tmp_file = 'p4_annotate diff'
 		call perforce#util#LogFile(tmp_file, 1, diff_outs)
 		winc H
-		"set scb
-		exe 'set ft='.ft
 		call cursor(lnum, 0)
+		set scb
+		exe 'set ft='.ft
 	endif
 
 	if 0
 		let tmp_file = 'p4_annotate rev'
 		call perforce#util#LogFile(tmp_file, 1, rev_outs)
 		winc H
+		call cursor(lnum, 0)
 		"set scb
 		exe 'set ft='.ft
-		call cursor(lnum, 0)
 	endif 
 
 	if 1
 		let tmp_file = 'p4_annotate new'
 		call perforce#util#LogFile(tmp_file, 1, new_outs)
 		winc H
+		call cursor(lnum, 0)
 		"set scb
 		exe 'set ft='.ft
-		call cursor(lnum, 0)
 	endif
 
-	if 0
+	if 1
 		let tmp_file = 'p4_annotate old'
 		call perforce#util#LogFile(tmp_file, 1, old_outs)
 		winc H
+		call cursor(lnum, 0)
 		"set scb
 		exe 'set ft='.ft
-		call cursor(lnum, 0)
 	endif
 
 	" window の修正
-	vertical res 10
-	winc l
-	if 0
-		vertical res 20
-		winc l
-		vertical res 20
-		winc l
-		vertical res 20
-		winc l
-	endif
+	vertical res 20 | winc l
+	vertical res 20 | winc l
+	" vertical res 20 | winc l
+	" vertical res 20 | winc l
 
 endfunction
 "}}}
