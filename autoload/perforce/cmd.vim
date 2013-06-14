@@ -1,9 +1,11 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:is_p4_have_from_have(str) "{{{
+function! s:is_p4_have_from_have(port_client, file) "{{{
 	" [2013-06-07 01:02]
-	return ( a:str =~ '- file(s) not on client.' ) ? 0 : 1
+	let cmd = printf('p4 -s %s have %s', a:port_client, perforce#get_kk(a:file))
+	let str = system(cmd)
+	return ( str =~ '^error: ' ) ? 0 : 1
 endfunction
 "}}}
 function! s:is_p4_haves_client(files) "{{{
@@ -30,8 +32,7 @@ function! s:is_p4_haves_client(files) "{{{
 		let rtns_d.false[port_client] = []
 
 		for file_ in a:files
-			let str = system('p4 '.port_client.' have '.perforce#get_kk(file_))
-			if s:is_p4_have_from_have(str) == 1
+			if s:is_p4_have_from_have(port_client, file_) == 1
 				let type = 'true'
 			else
 				let type = 'false'
