@@ -162,7 +162,7 @@ function! s:get_diffs(diff_outs) "{{{
 	return diffs
 endfunction
 "}}}
-function!s:get_annotate_strs(rev_outs, diff_outs) "{{{
+function! s:get_annotate_sub_strs(rev_outs, diff_outs) "{{{
 	" [2013-06-15 12:26]
 
 	" 逆順で、行う
@@ -204,40 +204,42 @@ function!s:get_annotate_strs(rev_outs, diff_outs) "{{{
 				\ }
 endfunction
 "}}}
+function! s:p4_annotate_sub_set_win(bufnr, ft) "{{{
+	exe 'bufnr '.a:bufnr
+	winc H
+	call cursor(lnum, 0)
+	norm zz
+	"set scb
+	exe 'set ft='.a:ft
+endfunction
+"}}}
 function! perforce_2#annnotate(file) "{{{
 	let file = expand("%:p")
 	let rev_outs  = s:p4_cmd('p4 annotate', file)
 	let diff_outs = s:p4_cmd('p4 diff -dw', file)
 
-	let out_d = s:get_annotate_strs(rev_outs, diff_outs)
+	let out_d = s:get_annotate_sub_strs(rev_outs, diff_outs)
 	let new_outs = out_d.new
 	let old_outs = out_d.old
 
 	" 差分データの設定
 	let lnum = line(".")
 	let ft   = &filetype
+	let bufnrs = []
 
-	winc H
-	call cursor(lnum, 0)
-	norm zz
-	"set scb
-	exe 'set ft='.ft
+	call add(bufnrs, bufnr("%"))
+
+	echo bufnrs
+
+	call s:p4_annotate_sub_set_win(bufnr("."), ft)
 
 	let tmp_file = 'p4_annotate new'
 	call perforce#util#LogFile(tmp_file, 1, new_outs)
-	winc H
-	call cursor(lnum, 0)
-	norm zz
-	"set scb
-	exe 'set ft='.ft
 
 	let tmp_file = 'p4_annotate old'
 	call perforce#util#LogFile(tmp_file, 1, old_outs)
-	winc H
-	call cursor(lnum, 0)
-	norm zz
-	"set scb
-	exe 'set ft='.ft
+
+	call s:p4_annotate_sub_set_win(ft)
 
 	let tmp_file = 'p4_annotate diff'
 	call perforce#util#LogFile(tmp_file, 1, diff_outs)

@@ -126,6 +126,7 @@ function! s:LogFile(name, deleteFlg, ...) "{{{
 	endif
 	cal cursor(1,1) " # ˆês–Ú‚ÉˆÚ“®‚·‚é
 
+	return bufnr("%")
 endfunction
 "}}}
 function! s:Get_cmds(cmd) "{{{
