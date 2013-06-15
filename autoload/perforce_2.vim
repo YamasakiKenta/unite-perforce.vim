@@ -118,6 +118,18 @@ function! perforce_2#extend_dicts(key, ...) "{{{
 endfunction
 "}}}
 
+function! s:p4_cmd(cmd, file) "{{{
+	" [2013-06-15 12:14]
+	let data_ds = perforce#cmd#use_port_clients_files(a:cmd, [a:file], 1)
+	let outs = []
+	for data_d in data_ds
+		let tmps = data_d.outs
+		call extend(outs, tmps[1:])
+	endfor
+
+	return outs
+endfunction
+"}}}
 function! s:get_diffs(diff_outs) "{{{
 	let diff_outs = a:diff_outs
 
@@ -150,34 +162,20 @@ function! s:get_diffs(diff_outs) "{{{
 	return diffs
 endfunction
 "}}}
-function! perforce_2#annnotate(file) "{{{
-	let file = expand("%:p")
+function!s:get_annotate_strs(rev_outs, diff_outs) "{{{
+	" [2013-06-15 12:26]
 
-	let data_ds = perforce#cmd#use_port_clients_files('p4 annotate', [file], 1)
-	let rev_outs = []
-	for data_d in data_ds
-		let tmps = data_d.outs
-		if tmps[0] !~ 'An empty string is not allowed as a file name.'
-			call extend(rev_outs, tmps[1:])
-		endif
-	endfor
+	" 逆順で、行う
+	let del_outs = []
+	let rev_outs  = a:rev_outs
+	let diff_outs = a:diff_outs
 
-	let data_ds = perforce#cmd#use_port_clients_files('p4 diff -dw', [file], 1)
-	let diff_outs = []
-	for data_d in data_ds
-		let tmps = data_d.outs
-		if tmps[0] !~ 'An empty string is not allowed as a file name.'
-			call extend(diff_outs, tmps[1:])
-		endif
-	endfor
+	let new_outs = copy(rev_outs) 
+	let old_outs = repeat([''], len(rev_outs))
 
 	" 差分データの設定
 	let diffs = s:get_diffs(diff_outs)
 
-	" 逆順で、行う
-	let del_outs = []
-	let new_outs = copy(rev_outs) "{{{
-	let old_outs = repeat([''], len(rev_outs))
 	for diff in diffs
 		if diff.type == 'a'
 			call extend(new_outs, diff.new_strs, diff.old_start+1)
@@ -199,7 +197,21 @@ function! perforce_2#annnotate(file) "{{{
 			call extend(new_outs, diff.new_strs, diff.old_start)
 		endif
 	endfor
-	"}}}
+	"
+	return {
+				\ 'new' : new_outs,
+				\ 'old' : old_outs,
+				\ }
+endfunction
+"}}}
+function! perforce_2#annnotate(file) "{{{
+	let file = expand("%:p")
+	let rev_outs  = s:p4_cmd('p4 annotate', file)
+	let diff_outs = s:p4_cmd('p4 diff -dw', file)
+
+	let out_d = s:get_annotate_strs(rev_outs, diff_outs)
+	let new_outs = out_d.new
+	let old_outs = out_d.old
 
 	" 差分データの設定
 	let lnum = line(".")
@@ -208,7 +220,7 @@ function! perforce_2#annnotate(file) "{{{
 	winc H
 	call cursor(lnum, 0)
 	norm zz
-	set scb
+	"set scb
 	exe 'set ft='.ft
 
 	let tmp_file = 'p4_annotate new'
@@ -216,7 +228,7 @@ function! perforce_2#annnotate(file) "{{{
 	winc H
 	call cursor(lnum, 0)
 	norm zz
-	set scb
+	"set scb
 	exe 'set ft='.ft
 
 	let tmp_file = 'p4_annotate old'
@@ -224,13 +236,21 @@ function! perforce_2#annnotate(file) "{{{
 	winc H
 	call cursor(lnum, 0)
 	norm zz
-	set scb
+	"set scb
+	exe 'set ft='.ft
+
+	let tmp_file = 'p4_annotate diff'
+	call perforce#util#LogFile(tmp_file, 1, diff_outs)
+	winc H
+	call cursor(lnum, 0)
+	norm zz
+	"set scb
 	exe 'set ft='.ft
 
 	" window の修正
 	vertical res 20 | winc l
 	vertical res 20 | winc l
-	" vertical res 20 | winc l
+	vertical res 20 | winc l
 	" vertical res 20 | winc l
 
 endfunction

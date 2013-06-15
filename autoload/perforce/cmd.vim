@@ -69,17 +69,21 @@ function! perforce#cmd#clients(clients, cmd) "{{{
 
 	let rtn_ds = []
 	for client in a:clients
-		let cmd = 'p4 '.client.' '.cmd_base
+		let cmd = printf('p4 %s %s', client, cmd_base)
 		call unite#print_message(cmd)
 
 		let outs = split(system(cmd), "\n")
+
+		" filter
 		let outs = s:get_outs(outs)
 
-		call add(rtn_ds, {
-					\ 'cmd'    : cmd,
-					\ 'outs'   : outs,
-					\ 'client' : client,
-					\ })
+		if !s:is_error(outs)
+			call add(rtn_ds, {
+						\ 'cmd'    : cmd,
+						\ 'outs'   : outs,
+						\ 'client' : client,
+						\ })
+		endif
 	endfor
 	return rtn_ds
 endfunction
@@ -141,6 +145,13 @@ endfunction
 "}}}
 
 function! s:is_error(outs)
+	let rtn = 0
+	if ( len(a:outs) > 0 ) &&  (type(a:outs) == type([]))
+		if a:outs[0] =~ 'An empty string is not allowed as a file name.'
+			let rtn = 1
+		endif
+	endif
+	return rtn
 endfunction
 
 let &cpo = s:save_cpo
