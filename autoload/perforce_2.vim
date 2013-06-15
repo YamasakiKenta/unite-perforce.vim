@@ -24,7 +24,7 @@ function! perforce_2#edit_add(add_flg, ...) "{{{
 	let data_d = perforce#cmd#use_port_clients_files('p4 edit', files_, 1)
 	call extend(data_ds, data_d)
 	if ( a:add_flg == 1 )
-	let data_d = perforce#cmd#use_port_clients_files('p4 add', files_, 0)
+		let data_d = perforce#cmd#use_port_clients_files('p4 add', files_, 0)
 		call extend(data_ds, data_d)
 	endif
 
@@ -47,9 +47,9 @@ function! perforce_2#revert(...) "{{{
 endfunction 
 "}}}
 function! perforce_2#echo_error(message) "{{{
-  echohl WarningMsg 
-  echo a:message 
-  echohl None
+	echohl WarningMsg 
+	echo a:message 
+	echohl None
 endfunction
 "}}}
 function! perforce_2#show(str) "{{{
@@ -163,7 +163,6 @@ function! perforce_2#annnotate(file) "{{{
 	endfor
 
 	let data_ds = perforce#cmd#use_port_clients_files('p4 diff -dw', [file], 1)
-
 	let diff_outs = []
 	for data_d in data_ds
 		let tmps = data_d.outs
@@ -204,50 +203,29 @@ function! perforce_2#annnotate(file) "{{{
 
 	" ç∑ï™ÉfÅ[É^ÇÃê›íË
 	let lnum = line(".")
-
-
-	let ft = &filetype
+	let ft   = &filetype
 
 	winc H
 	call cursor(lnum, 0)
-	"set scb
+	norm zz
+	set scb
 	exe 'set ft='.ft
 
-	if 0
-		let tmp_file = 'p4_annotate diff'
-		call perforce#util#LogFile(tmp_file, 1, diff_outs)
-		winc H
-		call cursor(lnum, 0)
-		set scb
-		exe 'set ft='.ft
-	endif
+	let tmp_file = 'p4_annotate new'
+	call perforce#util#LogFile(tmp_file, 1, new_outs)
+	winc H
+	call cursor(lnum, 0)
+	norm zz
+	set scb
+	exe 'set ft='.ft
 
-	if 0
-		let tmp_file = 'p4_annotate rev'
-		call perforce#util#LogFile(tmp_file, 1, rev_outs)
-		winc H
-		call cursor(lnum, 0)
-		"set scb
-		exe 'set ft='.ft
-	endif 
-
-	if 1
-		let tmp_file = 'p4_annotate new'
-		call perforce#util#LogFile(tmp_file, 1, new_outs)
-		winc H
-		call cursor(lnum, 0)
-		"set scb
-		exe 'set ft='.ft
-	endif
-
-	if 1
-		let tmp_file = 'p4_annotate old'
-		call perforce#util#LogFile(tmp_file, 1, old_outs)
-		winc H
-		call cursor(lnum, 0)
-		"set scb
-		exe 'set ft='.ft
-	endif
+	let tmp_file = 'p4_annotate old'
+	call perforce#util#LogFile(tmp_file, 1, old_outs)
+	winc H
+	call cursor(lnum, 0)
+	norm zz
+	set scb
+	exe 'set ft='.ft
 
 	" window ÇÃèCê≥
 	vertical res 20 | winc l
@@ -257,6 +235,10 @@ function! perforce_2#annnotate(file) "{{{
 
 endfunction
 "}}}
+
+function! perforce_2#system(cmd)
+	return system(a:cmd)
+endfunction
 
 if exists('s:save_cpo')
 	let &cpo = s:save_cpo

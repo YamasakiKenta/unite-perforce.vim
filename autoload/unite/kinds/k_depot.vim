@@ -11,17 +11,26 @@ function! s:get_port_client_files(candidates) "{{{
 	" @return        { port_client = [file] }
 	" ********************************************************************************
 	let file_d = {}
+	let default_port_clients = perforce#data#get_use_port_clients()
 	for candidate in a:candidates
-		let port_client = get(candidate, 'action__client', ' ')
-		if !exists('file_d[port_client]')
-			let file_d[port_client] = []
+
+		if exists('candidate.action__client')
+			let port_clients = [candidate.action__client]
+		else
+			let port_clients = deepcopy(default_port_clients)
 		endif
-		if exists('candidate.action__depot')
-			let path = candidate.action__depot
-		elseif exists('candidate.action__path')
-			let path = candidate.action__path
-		endif
-		call add(file_d[port_client], path)
+
+		for port_client in port_clients
+			if !exists('file_d[port_client]')
+				let file_d[port_client] = []
+			endif
+			if exists('candidate.action__depot')
+				let path = candidate.action__depot
+			elseif exists('candidate.action__path')
+				let path = candidate.action__path
+			endif
+			call add(file_d[port_client], path)
+		endfor
 	endfor
 
 	return file_d
@@ -86,7 +95,7 @@ let s:kind_depot.action_table.edit = {
 				\ 'description'   : '',
 				\ }
 function s:kind_depot.action_table.edit.func(candidates)
-	return s:sub_action_log(a:candidates, 'add')
+	return s:sub_action_log(a:candidates, 'edit')
 endfunction
 call unite#custom_action('jump_list' , 'p4_edit' , s:kind_depot.action_table.edit)
 call unite#custom_action('file'      , 'p4_edit' , s:kind_depot.action_table.edit)
