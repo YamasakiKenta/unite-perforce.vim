@@ -140,6 +140,9 @@ function! perforce#cmd#use_port_clients_files(cmd, files, have_flg) "{{{
 endfunction
 "}}}
 
+function! s:is_error(outs)
+endfunction
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
 

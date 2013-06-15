@@ -38,7 +38,7 @@ endfunction
 
 function! s:have_unite_setting() "{{{
 	try
-		call unite_setting#have()
+		call unite_setting_2#version()
 		return 1
 	catch
 		echo 'not have unite_setting.vim...'
