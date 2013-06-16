@@ -13,9 +13,8 @@ function! s:init() "{{{
 	endif
 
 	echo "load ..."
-	let file_ = expand('~/.vim-unite-perforce')
 
-	call s:perforce_init(file_)
+	call s:perforce_init()
 
 	call s:perforce_add( 'g:unite_perforce_ports_clients'       ,''                       , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
 	call s:perforce_add( 'g:unite_perforce_clients'             ,''                       , {'num'  : 0,     'items' : ['none', 'default', 'port_clients'], 'consts':[-1]})
@@ -47,13 +46,13 @@ endfunction
 "}}}
 
 function! s:perforce_add(...) 
-	return call('unite_setting_ex_3#add', extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting#data#add', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! s:perforce_init(...) 
-	return call('unite_setting_ex_3#init', extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting#data#init', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! s:perforce_load(...) 
-	return call('unite_setting_ex_3#load', extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting#data#load', extend(['g:unite_pf_data'] , a:000))
 endfunction
 
 function! perforce#data#get(valname, ...) "{{{
@@ -63,7 +62,7 @@ function! perforce#data#get(valname, ...) "{{{
 	endif
 
 	call s:init()
-	return unite_setting_ex_3#get('g:unite_pf_data', a:valname)
+	return unite_setting#data#get('g:unite_pf_data', a:valname)
 endfunction
 "}}}
 function! perforce#data#setting()  "{{{

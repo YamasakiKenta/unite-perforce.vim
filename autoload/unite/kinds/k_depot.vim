@@ -90,15 +90,15 @@ let s:kind_depot = {
 			\ 'action_table'   : {},
 			\ 'parents'        : ['k_p4'],
 			\ }
-let s:kind_depot.action_table.edit = {
+let s:kind_depot.action_table.p4_edit = {
 				\ 'is_selectable' : 1, 
 				\ 'description'   : '',
 				\ }
-function s:kind_depot.action_table.edit.func(candidates)
+function s:kind_depot.action_table.p4_edit.func(candidates)
 	return s:sub_action_log(a:candidates, 'edit')
 endfunction
-call unite#custom_action('jump_list' , 'p4_edit' , s:kind_depot.action_table.edit)
-call unite#custom_action('file'      , 'p4_edit' , s:kind_depot.action_table.edit)
+call unite#custom_action('jump_list' , 'p4_edit' , s:kind_depot.action_table.p4_edit)
+call unite#custom_action('file'      , 'p4_edit' , s:kind_depot.action_table.p4_edit)
 
 let s:kind_depot.action_table.delete = {
 				\ 'is_selectable' : 1, 

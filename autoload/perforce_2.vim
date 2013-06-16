@@ -204,10 +204,10 @@ function! s:get_annotate_sub_strs(rev_outs, diff_outs) "{{{
 				\ }
 endfunction
 "}}}
-function! s:p4_annotate_sub_set_win(bufnr, ft) "{{{
-	exe 'bufnr '.a:bufnr
+function! s:p4_annotate_sub_set_win(bufnr, lnum, ft) "{{{
+	exe 'b '.a:bufnr
 	winc H
-	call cursor(lnum, 0)
+	call cursor(a:lnum, 0)
 	norm zz
 	"set scb
 	exe 'set ft='.a:ft
@@ -225,29 +225,20 @@ function! perforce_2#annnotate(file) "{{{
 	" ç∑ï™ÉfÅ[É^ÇÃê›íË
 	let lnum = line(".")
 	let ft   = &filetype
-	let bufnrs = []
 
-	call add(bufnrs, bufnr("%"))
-
-	echo bufnrs
-
-	call s:p4_annotate_sub_set_win(bufnr("."), ft)
+	call s:p4_annotate_sub_set_win(bufnr("%"), lnum, ft)
 
 	let tmp_file = 'p4_annotate new'
 	call perforce#util#LogFile(tmp_file, 1, new_outs)
+	call s:p4_annotate_sub_set_win(bufnr("%"), lnum, ft)
 
 	let tmp_file = 'p4_annotate old'
 	call perforce#util#LogFile(tmp_file, 1, old_outs)
-
-	call s:p4_annotate_sub_set_win(ft)
+	call s:p4_annotate_sub_set_win(bufnr("%"), lnum, ft)
 
 	let tmp_file = 'p4_annotate diff'
 	call perforce#util#LogFile(tmp_file, 1, diff_outs)
-	winc H
-	call cursor(lnum, 0)
-	norm zz
-	"set scb
-	exe 'set ft='.ft
+	call s:p4_annotate_sub_set_win(bufnr("%"), lnum, ft)
 
 	" window ÇÃèCê≥
 	vertical res 20 | winc l
