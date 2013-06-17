@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! unite#kinds#k_p4_help#define()
-	return s:kind
+	return s:kind_help
 endfunction
 
 function! s:get_pfcmd_from_help(candidate) "{{{
@@ -10,18 +10,18 @@ function! s:get_pfcmd_from_help(candidate) "{{{
 endfunction
 "}}}
 
-let s:kind = { 
+let s:kind_help = { 
 			\ 'name' : 'k_p4_help',
 			\ 'default_action' : 'a_help',
 			\ 'action_table' : {},
 			\ 'parents' : [],
 			\ }
 
-let s:kind.action_table.a_help = {
+let s:kind_help.action_table.a_help = {
 			\ 'description' : 'è⁄ÇµÇ¢èÓïÒÇï\é¶',
 			\ 'is_selectable' : 1,
 			\ }
-function! s:kind.action_table.a_help.func(candidates) "{{{
+function! s:kind_help.action_table.a_help.func(candidates) "{{{
 	" [2013-06-07 07:56]
 	let outs = []
 	for candidate in a:candidates
@@ -33,7 +33,7 @@ function! s:kind.action_table.a_help.func(candidates) "{{{
 endfunction 
 "}}}
 
-call unite#define_kind(s:kind)
+call unite#define_kind(s:kind_help)
 
 if exists('s:save_cpo')
 	let &cpo = s:save_cpo

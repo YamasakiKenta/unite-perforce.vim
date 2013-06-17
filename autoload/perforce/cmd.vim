@@ -96,11 +96,13 @@ function! perforce#cmd#client_files(datas, cmd) "{{{
 	let rtns = []
 	for port_client in keys(a:datas)
 		let files = a:datas[port_client]
-		call map(files, "expand('%:p')")
-		let file_ = '"'.join(files, '" "').'"'
-		let cmd   = a:cmd.' '.file_
-		let tmps  = perforce#cmd#clients([port_client], cmd)
-		call extend(rtns, tmps)
+		if len(files) > 0
+			call map(files, "fnamemodify(v:val, ':p')")
+			let file_ = '"'.join(files, '" "').'"'
+			let cmd   = a:cmd.' '.file_
+			let tmps  = perforce#cmd#clients([port_client], cmd)
+			call extend(rtns, tmps)
+		endif
 	endfor
 
 	return rtns

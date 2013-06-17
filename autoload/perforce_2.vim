@@ -171,7 +171,6 @@ function! s:get_annotate_sub_strs(rev_outs, diff_outs) "{{{
 	let diff_outs = a:diff_outs
 
 	let new_outs = copy(rev_outs) 
-	let old_outs = repeat([''], len(rev_outs))
 
 	" 差分データの設定
 	let diffs = s:get_diffs(diff_outs)
@@ -182,17 +181,14 @@ function! s:get_annotate_sub_strs(rev_outs, diff_outs) "{{{
 		elseif diff.type == 'd'
 			if diff.old_end >= 0
 				let del_outs = remove(new_outs, diff.old_start, diff.old_end)
-				call extend(old_outs, del_outs, diff.old_start)
 			else
 				call remove(new_outs, diff.old_start)
 			endif
 		elseif diff.type == 'c' 
 			if diff.old_end >= 0
 				let del_outs = remove(new_outs, diff.old_start, diff.old_end)
-				call extend(old_outs, del_outs, diff.old_start)
 			else
 				let del_outs = [remove(new_outs, diff.old_start)]
-				call extend(old_outs, del_outs, diff.old_start)
 			endif
 			call extend(new_outs, diff.new_strs, diff.old_start)
 		endif
@@ -200,7 +196,6 @@ function! s:get_annotate_sub_strs(rev_outs, diff_outs) "{{{
 	"
 	return {
 				\ 'new' : new_outs,
-				\ 'old' : old_outs,
 				\ }
 endfunction
 "}}}
@@ -209,7 +204,6 @@ function! s:p4_annotate_sub_set_win(bufnr, lnum, ft) "{{{
 	winc H
 	call cursor(a:lnum, 0)
 	norm zz
-	"set scb
 	exe 'set ft='.a:ft
 endfunction
 "}}}
@@ -220,11 +214,10 @@ function! perforce_2#annnotate(file) "{{{
 
 	let out_d = s:get_annotate_sub_strs(rev_outs, diff_outs)
 	let new_outs = out_d.new
-	let old_outs = out_d.old
 
 	" 差分データの設定
-	let lnum = line(".")
-	let ft   = &filetype
+	let lnum   = line(".")
+	let ft     = &filetype
 
 	call s:p4_annotate_sub_set_win(bufnr("%"), lnum, ft)
 
@@ -232,19 +225,14 @@ function! perforce_2#annnotate(file) "{{{
 	call perforce#util#LogFile(tmp_file, 1, new_outs)
 	call s:p4_annotate_sub_set_win(bufnr("%"), lnum, ft)
 
-	let tmp_file = 'p4_annotate old'
-	call perforce#util#LogFile(tmp_file, 1, old_outs)
-	call s:p4_annotate_sub_set_win(bufnr("%"), lnum, ft)
-
 	let tmp_file = 'p4_annotate diff'
 	call perforce#util#LogFile(tmp_file, 1, diff_outs)
 	call s:p4_annotate_sub_set_win(bufnr("%"), lnum, ft)
 
-	" window の修正
-	vertical res 20 | winc l
-	vertical res 20 | winc l
-	vertical res 20 | winc l
-	" vertical res 20 | winc l
+	for bufnr in range(2)
+		vertical res 20 
+		winc l
+	endfor
 
 endfunction
 "}}}

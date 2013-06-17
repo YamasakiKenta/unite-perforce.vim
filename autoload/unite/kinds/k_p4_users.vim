@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! unite#kinds#k_p4_users#define()
-	return s:kind
+	return s:kind_users
 endfunction
 
 function! s:get_UserName_from_users(candidate) "{{{
@@ -10,17 +10,17 @@ function! s:get_UserName_from_users(candidate) "{{{
 endfunction
 "}}}
 
-let s:kind = { 
+let s:kind_users = { 
 			\ 'name' : 'k_p4_users',
 			\ 'default_action' : 'a_p4_user_change',
 			\ 'action_table' : {},
 			\ 'parents' : ['k_p4'],
 			\ }
 
-let s:kind.action_table.a_p4_user_change = {
+let s:kind_users.action_table.a_p4_user_change = {
 			\ 'description' : 'ƒ†[ƒU[‚ÌØ‚è‘Ö‚¦',
 			\ }
-function! s:kind.action_table.a_p4_user_change.func(candidates) "{{{
+function! s:kind_users.action_table.a_p4_user_change.func(candidates) "{{{
 	let candidate = a:candidates
 	let user = s:get_UserName_from_users(candidate)
 	let outs = perforce#set#PFUSER(user)
@@ -28,7 +28,7 @@ function! s:kind.action_table.a_p4_user_change.func(candidates) "{{{
 endfunction
 "}}}
 
-call unite#define_kind(s:kind)
+call unite#define_kind(s:kind_users)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
