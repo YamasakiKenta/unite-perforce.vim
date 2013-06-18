@@ -36,7 +36,7 @@ endfunction
 
 function! s:have_unite_setting() "{{{
 	try
-		call unite_setting_2#version()
+		call unite_setting_ex#version()
 		return 1
 	catch
 		echo 'not have unite_setting.vim...'
@@ -46,13 +46,13 @@ endfunction
 "}}}
 
 function! s:perforce_add(...) 
-	return call('unite_setting#data#add', extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting_ex#data#add', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! s:perforce_init(...) 
-	return call('unite_setting#data#init', extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting_ex#data#init', extend(['g:unite_pf_data'] , a:000))
 endfunction
 function! s:perforce_load(...) 
-	return call('unite_setting#data#load', extend(['g:unite_pf_data'] , a:000))
+	return call('unite_setting_ex#data#load', extend(['g:unite_pf_data'] , a:000))
 endfunction
 
 function! perforce#data#get(valname, ...) "{{{
@@ -62,7 +62,7 @@ function! perforce#data#get(valname, ...) "{{{
 	endif
 
 	call s:init()
-	return unite_setting#data#get('g:unite_pf_data', a:valname)
+	return unite_setting_ex#data#get('g:unite_pf_data', a:valname)
 endfunction
 "}}}
 function! perforce#data#setting()  "{{{

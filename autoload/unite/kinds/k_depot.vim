@@ -47,7 +47,7 @@ endfunction
 function! s:sub_action_log(candidates, cmd) "{{{
 	" [2013-06-08 20:32]
 	let outs = s:sub_action(a:candidates, a:cmd)
-	call perforce#LogFile(outs)
+	call perforce#log_file(outs)
 	return outs
 endfunction
 "}}}

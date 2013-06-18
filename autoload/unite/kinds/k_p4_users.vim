@@ -24,7 +24,7 @@ function! s:kind_users.action_table.a_p4_user_change.func(candidates) "{{{
 	let candidate = a:candidates
 	let user = s:get_UserName_from_users(candidate)
 	let outs = perforce#set#PFUSER(user)
-	call perforce#LogFile(outs)
+	call perforce#log_file(outs)
 endfunction
 "}}}
 

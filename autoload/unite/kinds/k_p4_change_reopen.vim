@@ -54,7 +54,7 @@ function! s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen.func(candida
 	let outs = split(system(cmd), "\n")
 
 	" ÉçÉOÇÃèoóÕ
-	call perforce#LogFile(outs)
+	call perforce#log_file(outs)
 
 endfunction
 "}}}

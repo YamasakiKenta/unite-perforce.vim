@@ -19,7 +19,7 @@ function! perforce#get_tmp_file() "{{{
 	return fname
 endfunction
 "}}}
-function! perforce#LogFile(str) "{{{
+function! perforce#log_file(str) "{{{
 	" [2013-06-07 00:37]
 	" ********************************************************************************
 	" @par  Œ‹‰Ê‚Ìo—Í‚ğs‚¤

@@ -73,7 +73,7 @@ function! s:kind_k_p4_change_pending.action_table.change_list_delete.func(candid
 		let cmd = 'p4 '.port_client.' change -d '.chnum
 		call extend(outs, split(system(cmd),'\n'))
 	endfor
-	call perforce#LogFile(outs)
+	call perforce#log_file(outs)
 endfunction
 "}}}
 
@@ -110,7 +110,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_info.func(candidat
 		let chnum = s:get_chnum(candidate)
 		let outs += split(system('P4 change -o '.chnum),'\n')
 	endfor
-	call perforce#LogFile(outs)
+	call perforce#log_file(outs)
 endfunction
 "}}}
 
@@ -133,7 +133,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 			let outs = extend(outs, split(system(cmd), "\n"))
 		endfor
 
-		call perforce#LogFile(outs)
+		call perforce#log_file(outs)
 	endif 
 
 endfunction

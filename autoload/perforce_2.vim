@@ -43,7 +43,7 @@ function! perforce_2#revert(...) "{{{
 
 	let outs = perforce#get#outs(data_ds)
 
-	call perforce#LogFile(outs)
+	call perforce#log_file(outs)
 endfunction 
 "}}}
 function! perforce_2#echo_error(message) "{{{
