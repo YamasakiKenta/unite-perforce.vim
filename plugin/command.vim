@@ -7,15 +7,15 @@ command! PfSetting call perforce#data#setting()
 
 command! -nargs=+ PfMatomeDiffs call perforce#matomeDiffs(<f-args>)
 
-command! -nargs=* PfEdit   call perforce_2#edit_add(0, <f-args>)
+command! -nargs=* PfEdit   call perforce#command#edit_add(0, <f-args>)
 
-command! -nargs=* PfAdd    call perforce_2#edit_add(1, <f-args>)
+command! -nargs=* PfAdd    call perforce#command#edit_add(1, <f-args>)
 
-command! PfAnnotate call perforce_2#annnotate(expand("%:p"))
+command! PfAnnotate call perforce#command#annnotate(expand("%:p"))
 
 command! -nargs=? PfDiff   call perforce#diff#file(<f-args>)
 
-command! -nargs=? PfRevert call perforce_2#revert(<f-args>)
+command! -nargs=? PfRevert call perforce#command#revert(<f-args>)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
