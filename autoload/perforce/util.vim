@@ -31,7 +31,7 @@ function! perforce#util#open_lines(...)
 	return call(s:Tab.open_lines, a:000)
 endfunction
 
-function! perforce#util#LogFile(...)
+function! perforce#util#log_file(...)
 	return call(s:Common.LogFile, a:000)
 endfunction
 

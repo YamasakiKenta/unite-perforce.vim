@@ -72,7 +72,7 @@ function! s:kind_clients.action_table.a_p4_client_info.func(candidates) "{{{
 	let datas = perforce#cmd#clients(clients, 'info')
 
 	for data in datas
-		call perforce#util#LogFile(data.client, 0)
+		call perforce#util#log_file(data.client, 0)
 		call append(0,datas[0].outs)
 		cursor(1, 1)
 	endfor
@@ -97,7 +97,7 @@ function! s:kind_clients.action_table.a_p4_client.func(candidates) "{{{
 	endfor
 
 	for data in datas
-		call perforce#util#LogFile(data.client, 0)
+		call perforce#util#log_file(data.client, 0)
 		call append(0,data.outs)
 		call cursor(28, 1)
 	endfor

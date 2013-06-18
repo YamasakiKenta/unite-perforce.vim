@@ -62,7 +62,7 @@ function! s:p4_print(candidates) "{{{
 
 		let file = fnamemodify(name,':t').''.file_numstr
 
-		call perforce#util#LogFile(file, 0, strs) 
+		call perforce#util#log_file(file, 0, strs) 
 	endfor
 endfunction
 "}}}

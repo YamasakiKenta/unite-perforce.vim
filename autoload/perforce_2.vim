@@ -56,7 +56,7 @@ function! perforce_2#show(str) "{{{
 	" ********************************************************************************
 	" @par  •K‚¸•Êwindows ‚ð•\Ž¦‚·‚é
 	" ********************************************************************************
-	call perforce#util#LogFile('p4show', 1, a:str)
+	call perforce#util#log_file('p4show', 1, a:str)
 endfunction
 "}}}
 
@@ -222,11 +222,11 @@ function! perforce_2#annnotate(file) "{{{
 	call s:p4_annotate_sub_set_win(bufnr("%"), lnum, ft)
 
 	let tmp_file = 'p4_annotate new'
-	call perforce#util#LogFile(tmp_file, 1, new_outs)
+	call perforce#util#log_file(tmp_file, 1, new_outs)
 	call s:p4_annotate_sub_set_win(bufnr("%"), lnum, ft)
 
 	let tmp_file = 'p4_annotate diff'
-	call perforce#util#LogFile(tmp_file, 1, diff_outs)
+	call perforce#util#log_file(tmp_file, 1, diff_outs)
 	call s:p4_annotate_sub_set_win(bufnr("%"), lnum, ft)
 
 	for bufnr in range(2)

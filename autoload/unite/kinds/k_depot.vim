@@ -176,7 +176,7 @@ let s:kind_depot.action_table.delete = {
 function! s:kind_depot.action_table.delete.func(candidate) "{{{
 	" [2013-06-09 02:49]
 	let outs = s:sub_action([a:candidate], 'diff -dw')
-	call perforce#util#LogFile('diff', 1, outs)
+	call perforce#util#log_file('diff', 1, outs)
 	wincmd p
 endfunction
 "}}}
