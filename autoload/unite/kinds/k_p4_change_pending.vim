@@ -121,7 +121,7 @@ let s:kind_k_p4_change_pending.action_table.a_p4_change_submit = {
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candidates) "{{{
 
 	if perforce#data#get('g:unite_perforce_is_submit_flg') == 0
-		call perforce_2#echo_error('safe mode.')
+		echoe 'safe mode.'
 		call input("Push Any Keys...") 
 	else
 		let outs = []

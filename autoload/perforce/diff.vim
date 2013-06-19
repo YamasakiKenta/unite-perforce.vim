@@ -34,21 +34,21 @@ function! perforce#diff#main(path) "{{{
 
 	" ファイル名があるか
 	if len(path) == ''
-		call perforce_2#echo_error("no file")
+		echoe "no file"
 		return 
 	endif
 
 
 	" 最新 REV のファイルの取得
 	let datas = perforce#cmd#use_port_clients('p4 print -q '.perforce#get_kk(path))
-	let outs  = perforce_2#extend_dicts('outs', datas)
+	let outs  = perforce#extend_dicts('outs', datas)
 
 	" ERROR
 	if !exists('outs[0]')
-		echo 'not find'
+		echoe 'not find'
 		return 
 	elseif outs[0] =~ "is not under client's root "
-		call perforce_2#echo_error("is not under client's root")
+		echoe "is not under client's root"
 		return
 	endif
 
@@ -80,5 +80,9 @@ function! perforce#diff#file(...) "{{{
 endfunction
 "}}}
 
-let &cpo = s:save_cpo
-unlet s:save_cpo
+if exists('s:save_cpo')
+	let &cpo = s:save_cpo
+	unlet s:save_cpo
+else
+	set cpo&
+endif

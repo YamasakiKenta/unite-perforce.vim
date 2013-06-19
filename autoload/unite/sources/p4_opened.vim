@@ -20,7 +20,7 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	" ˆø”‚Ìİ’è
 
-	let data_ds = perforce_2#get_data_client('-c ', 'chnum', a:args)
+	let data_ds = perforce#source#get_data_client('-c ', 'chnum', a:args)
 
 	let tmps = []
 	for data_d in data_ds

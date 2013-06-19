@@ -43,7 +43,7 @@ let s:source_describe = {
 			\ }
 function! s:source_describe.gather_candidates(args, context) "{{{
 
-	let data_ds = perforce_2#get_data_client('', 'chnum', a:args)
+	let data_ds = perforce#source#get_data_client('', 'chnum', a:args)
 
 	let datas = []
 	for data_d in data_ds

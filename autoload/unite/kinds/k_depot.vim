@@ -40,7 +40,7 @@ function! s:sub_action(candidates, cmd) "{{{
 	" [2013-06-08 20:32]
 	let file_d = s:get_port_client_files(a:candidates)
 	let datas  = perforce#cmd#client_files(file_d, a:cmd)
-	let outs   = perforce_2#extend_dicts('outs', datas)
+	let outs   = perforce#extend_dicts('outs', datas)
 	return outs
 endfunction
 "}}}
@@ -165,7 +165,7 @@ let s:kind_depot.action_table.a_p4_files = {
 function! s:kind_depot.action_table.a_p4_files.func(candidates) "{{{
 	"TODO: source ‚É‚·‚é
 	let outs = s:sub_action(a:candidates, 'files')
-	call perforce_2#show(outs)
+	call perforce#show(outs)
 endfunction
 "}}}
 
@@ -218,7 +218,7 @@ function! s:kind_depot.action_table.a_p4_reopen.func(candidates) "{{{
 		call add(args , candidate.action__depot) " # •Û‘¶
 
 		if client != candidate.action__client
-			call perforce_2#echo_error('not "'.client. '" only...')
+			echoe 'not "'.client. '" only...'
 			return 
 		endif
 	endfor

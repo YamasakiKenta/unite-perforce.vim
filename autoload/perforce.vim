@@ -104,7 +104,7 @@ function! perforce#matomeDiffs(...) "{{{
 		let outs += [data["files"]."\t\t".data["adds"]."\t".data["deleteds"]."\t".data["changeds"]]
 	endfor
 
-	call perforce_2#show(outs)
+	call perforce#show(outs)
 	"}}}
 endfunction
 "}}}
@@ -142,6 +142,25 @@ endfunction
 function! perforce#get_kk(str) "{{{
 	" [2013-06-07 01:11]
 	return len(a:str) ? '"'.a:str.'"' : ''
+endfunction
+"}}}
+"
+function! perforce#extend_dicts(key, ...) "{{{
+	let rtns = []
+	for dicts in a:000
+		for dict in dicts
+			call extend(rtns, dict[a:key])
+		endfor
+	endfor
+	return rtns
+endfunction
+"}}}
+"
+function! perforce#show(str) "{{{
+	" ********************************************************************************
+	" @par  •K‚¸•Êwindows ‚ð•\Ž¦‚·‚é
+	" ********************************************************************************
+	call perforce#util#log_file('p4show', 1, a:str)
 endfunction
 "}}}
 

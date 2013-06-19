@@ -29,7 +29,7 @@ function! s:kind_help.action_table.a_help.func(candidates) "{{{
 		let outs += split(system('p4 help '.cmd), "\n")
 	endfor
 
-	call perforce_2#show(outs)
+	call perforce#show(outs)
 endfunction 
 "}}}
 

@@ -1,7 +1,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-command! -complete=customlist,perforce_2#complate_have -nargs=1 PfFind call perforce#pfFind(<f-args>)
+command! -complete=customlist,perforce#command#complate_have -nargs=1 PfFind call perforce#pfFind(<f-args>)
 
 command! PfSetting call perforce#data#setting()
 

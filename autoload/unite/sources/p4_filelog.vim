@@ -19,7 +19,7 @@ function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
 	let candidates = []
 
-	let tmps = perforce_2#get_data_client('', 'file_', a:args)
+	let tmps = perforce#source#get_data_client('', 'file_', a:args)
 
 	for tmp in tmps 
 		let file_  = tmp.file_
