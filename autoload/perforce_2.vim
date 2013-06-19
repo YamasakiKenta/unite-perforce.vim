@@ -1,30 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! perforce_2#complate_have(A,L,P) "{{{
-	"********************************************************************************
-	" 補完 : perforce 上に存在するファイルを表示する
-	"********************************************************************************
-	let outs = split(system('p4 have //.../'.a:A.'...'), "\n")
-	return map( copy(outs), "
-				\ matchstr(v:val, '.*/\\zs.\\{-}\\ze\\#')
-				\ ")
-endfunction
-"}}}
-function! perforce_2#echo_error(message) "{{{
-	echohl WarningMsg 
-	echo a:message 
-	echohl None
-endfunction
-"}}}
-function! perforce_2#show(str) "{{{
-	" ********************************************************************************
-	" @par  必ず別windows を表示する
-	" ********************************************************************************
-	call perforce#util#log_file('p4show', 1, a:str)
-endfunction
-"}}}
-
 function! s:get_args(default_key, args) "{{{
 	" [2013-06-07 01:47]
 	" ********************************************************************************
@@ -48,7 +24,7 @@ function! s:get_args(default_key, args) "{{{
 	return data_ds
 endfunction
 "}}}
-function! perforce_2#get_data_client(type, key, args) "{{{
+function! perforce#source#get_data_client(type, key, args) "{{{
 	" [2013-06-07 01:47]
 	" ********************************************************************************
 	" @return        [{a:key : 0, 'use_port_clients' : ['']}]
@@ -71,21 +47,6 @@ function! perforce_2#get_data_client(type, key, args) "{{{
 	return rtn_ds
 endfunction
 "}}}
-"
-function! perforce_2#extend_dicts(key, ...) "{{{
-	let rtns = []
-	for dicts in a:000
-		for dict in dicts
-			call extend(rtns, dict[a:key])
-		endfor
-	endfor
-	return rtns
-endfunction
-"}}}
-
-function! perforce_2#system(cmd)
-	return system(a:cmd)
-endfunction
 
 if exists('s:save_cpo')
 	let &cpo = s:save_cpo
