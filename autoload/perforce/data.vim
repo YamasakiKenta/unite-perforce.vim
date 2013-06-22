@@ -17,15 +17,16 @@ function! s:init() "{{{
 	call s:perforce_init()
 
 	call s:perforce_add( 'g:unite_perforce_ports_clients'       ,''                       , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
-	call s:perforce_add( 'g:unite_perforce_clients'             ,''                       , {'num'  : 0,     'items' : ['none', 'default', 'port_clients'], 'consts':[-1]})
+	call s:perforce_add( 'g:unite_perforce_clients'             ,''                       , {'nums' : [0],   'items' : ['none', 'default', 'port_clients'], 'consts':[-1]})
 	call s:perforce_add( 'g:unite_perforce_diff_dw'             ,'空白を無視する'         , 1)
-	call s:perforce_add( 'g:unite_perforce_filters'             ,'除外リスト'             , {'nums' : [],    'items' : ['tag', 'snip']})
-	call s:perforce_add( 'g:unite_perforce_show_max'            ,'ファイル数の制限'       , {'num'  : 0,     'items' : [0, 5, 10],                   'consts' : [0]})
-	call s:perforce_add( 'g:unite_perforce_diff_tool'           ,'Diff で使用するツール'  , {'num'  : 0,     'items' : ['vimdiff', 'WinMergeU'],     'consts' : [0]}) 
-	call s:perforce_add( 'g:unite_perforce_username'            ,''                       , {'nums' : [],    'items' : ['user']}) 
+	call s:perforce_add( 'g:unite_perforce_filters'             ,'除外リスト'             , {'nums' : [0,1], 'items' : ['tag', 'snip']})
+	call s:perforce_add( 'g:unite_perforce_show_max'            ,'ファイル数の制限'       , {'nums' : [0],   'items' : [0, 5, 10],                   'consts' : [0]})
+	call s:perforce_add( 'g:unite_perforce_diff_tool'           ,'Diff で使用するツール'  , {'nums' : [0],   'items' : ['vimdiff', 'WinMergeU'],     'consts' : [0]}) 
+	call s:perforce_add( 'g:unite_perforce_username'            ,''                       , {'nums' : [0,1], 'items' : ['user']}) 
 	call s:perforce_add( 'g:unite_perforce_is_submit_flg'       ,'サブミットを許可'       , 0) 
 	call s:perforce_add( 'g:pf_clients_template'                ,'template'               , {}) 
-	call s:perforce_add( 'g:perforce_merge_default_path'        ,'template'               , {'num' : 0, 'items' : ['c:\tmp']})
+	call s:perforce_add( 'g:pf_var'                             ,'template'               , '') 
+	call s:perforce_add( 'g:perforce_merge_default_path'        ,'template'               , {'nums' : [0], 'items' : ['c:\tmp']})
 
 	call s:perforce_load()
 
@@ -74,8 +75,6 @@ function! perforce#data#setting()  "{{{
 	call unite#start([['settings_ex', 'g:unite_pf_data']])
 endfunction
 "}}}
-
-
 function! perforce#data#get_users() "{{{
 	let users = perforce#data#get('g:unite_perforce_username')
 

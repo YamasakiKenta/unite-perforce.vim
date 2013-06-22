@@ -66,15 +66,13 @@ function! s:get_annotate_sub_strs(rev_outs, diff_outs) "{{{
 
 	for diff in diffs
 		if diff.type == 'a'
-			call extend(new_outs, diff.new_strs, diff.old_start+1)
+			call extend(new_outs, diff.new_strs, diff.old_start + 1)
 		elseif diff.type == 'd'
 			if diff.old_end >= 0
 				let del_outs = remove(new_outs, diff.old_start, diff.old_end)
 			else
 				let del_outs =  remove(new_outs, diff.old_start)
 			endif
-			echo del_outs
-			call input("")
 			call extend(old_outs, [diff.state]+ del_outs)
 		elseif diff.type == 'c' 
 			if diff.old_end >= 0
@@ -82,9 +80,7 @@ function! s:get_annotate_sub_strs(rev_outs, diff_outs) "{{{
 			else
 				let del_outs = [remove(new_outs, diff.old_start)]
 			endif
-			echo del_outs
-			call input("")
-			call extend(old_outs, [diff.state]+ del_outs)
+			call extend(old_outs, [diff.state] + del_outs)
 			call extend(new_outs, diff.new_strs, diff.old_start)
 		endif
 	endfor
