@@ -16,17 +16,17 @@ function! s:init() "{{{
 
 	call s:perforce_init()
 
-	call s:perforce_add( 'g:unite_perforce_ports_clients'       ,''                       , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
-	call s:perforce_add( 'g:unite_perforce_clients'             ,''                       , {'nums' : [0],   'items' : ['none', 'default', 'port_clients'], 'all_const' : 1 })
-	call s:perforce_add( 'g:unite_perforce_diff_dw'             ,'空白を無視する'         , 1)
-	call s:perforce_add( 'g:unite_perforce_filters'             ,'除外リスト'             , {'nums' : [0,1], 'items' : ['tag', 'snip']})
-	call s:perforce_add( 'g:unite_perforce_show_max'            ,'ファイル数の制限'       , {'nums' : [0],   'items' : [0, 5, 10],                   'consts' : [0]})
-	call s:perforce_add( 'g:unite_perforce_diff_tool'           ,'Diff で使用するツール'  , {'nums' : [0],   'items' : ['vimdiff', 'WinMergeU'],     'consts' : [0]}) 
-	call s:perforce_add( 'g:unite_perforce_username'            ,''                       , {'nums' : [0,1], 'items' : ['user']}) 
-	call s:perforce_add( 'g:unite_perforce_is_submit_flg'       ,'サブミットを許可'       , 0) 
-	call s:perforce_add( 'g:pf_clients_template'                ,'template'               , {}) 
-	call s:perforce_add( 'g:pf_var'                             ,'template'               , '') 
-	call s:perforce_add( 'g:perforce_merge_default_path'        ,'template'               , {'nums' : [0], 'items' : ['c:\tmp']})
+	call s:perforce_add( 'g:unite_perforce_ports_clients', {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
+	call s:perforce_add( 'g:unite_perforce_clients'      , {'nums' : [0],   'items' : ['none', 'default', 'port_clients'], 'all_const' : 1 })
+	call s:perforce_add( 'g:unite_perforce_diff_dw'      , 1)
+	call s:perforce_add( 'g:unite_perforce_filters'      , {'nums' : [0,1], 'items' : ['tag', 'snip']})
+	call s:perforce_add( 'g:unite_perforce_show_max'     , {'nums' : [0],   'items' : [0, 5, 10],                   'consts' : [0]})
+	call s:perforce_add( 'g:unite_perforce_diff_tool'    , {'nums' : [0],   'items' : ['vimdiff', 'WinMergeU'],     'consts' : [0]}) 
+	call s:perforce_add( 'g:unite_perforce_username'     , {'nums' : [0,1], 'items' : ['user']}) 
+	call s:perforce_add( 'g:unite_perforce_is_submit_flg', 0) 
+	call s:perforce_add( 'g:pf_clients_template'         , {}) 
+	call s:perforce_add( 'g:pf_var'                      , '') 
+	call s:perforce_add( 'g:perforce_merge_default_path' , {'nums' : [0], 'items' : ['c:\tmp']})
 
 	call s:perforce_load()
 
