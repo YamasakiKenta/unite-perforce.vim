@@ -82,16 +82,31 @@ function! s:kind_filelog.action_table.a_p4_print.func(candidates) "{{{
 endfunction
 "}}}
 
-let s:kind_filelog.action_table.preview = {
-			\ 'description' : 'preview' , 
-			\ 'is_quit' : 0, 
+function! s:get_chnum(candidate)
+	" k_p4_change_pending.vim ( s:get_chnum ) と同じ
+	return matchstr(a:candidate.action__out, '.*change \zs\d*')
+endfunction
+let s:kind_filelog.action_table.delete = { 
+			\ 'description' : 'describe ( not delete )',
+			\ 'is_selectable' : 1, 
+			\ 'is_quit' : 0,
 			\ }
-function! s:kind_filelog.action_table.preview.func(candidate) "{{{
+function! s:kind_filelog.action_table.delete.func(candidates) "{{{
+	let data_ds = []
+	for candidate in a:candidates
+		" チェンジリストの番号の取得をする
+		let port_client = pf_changes#get_port_client(candidate)
+		let data_d= {
+					\ 'chnum'  : s:get_chnum(candidate),
+					\ 'client' : port_client,
+					\ }
+		call add(data_ds, data_d)
+	endfor
+ 	call unite#start_temporary([insert(data_ds,'p4_describe')])
 endfunction
 "}}}
 
-	call unite#define_kind(s:kind_filelog)
-
+call unite#define_kind(s:kind_filelog)
 
 if exists('s:save_cpo')
 	let &cpo = s:save_cpo
