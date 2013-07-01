@@ -7,9 +7,10 @@ endfunction
 
 
 let s:source_p4_opened = {
-			\ 'name' : 'p4_opened',
-			\ 'description' : '編集しているファイルの表示 ( チェンジリスト番号 )',
-			\ 'is_quit' : 0,
+			\ 'name'         : 'p4_opened',
+			\ 'description'  : '編集しているファイルの表示 ( チェンジリスト番号 )',
+			\ 'default_kind' : 'k_depot',
+			\ 'is_quit'      : 0,
 			\ }
 function! s:source_p4_opened.gather_candidates(args, context) "{{{
 	" ********************************************************************************
@@ -35,14 +36,12 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 		let client = tmp.client
 		let tmps = map(tmp.outs, "{
 					\ 'word'           : client.' : '.v:val,
-					\ 'kind'           : 'k_depot',
 					\ 'action__depot'  : perforce#get#depot#from_opened(v:val),
 					\ 'action__client' : client,
 					\ }")
 
 		call extend(candidates , tmps)
 	endfor
-
 
 	return candidates
 endfunction
