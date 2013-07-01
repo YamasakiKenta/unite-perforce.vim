@@ -17,7 +17,7 @@ function! s:init() "{{{
 	call s:perforce_init()
 
 	call s:perforce_add( 'g:unite_perforce_ports_clients', {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
-	call s:perforce_add( 'g:unite_perforce_clients'      , {'nums' : [0],   'items' : ['none', 'default', 'port_clients'], 'all_const' : 1 })
+	call s:perforce_add( 'g:unite_perforce_clients'      , {'nums' : [0],   'items' : ['none', 'default', 'port_clients', 'auto'], 'consts' : [-1] })
 	call s:perforce_add( 'g:unite_perforce_filters'      , {'nums' : [0,1], 'items' : ['tag', 'snip']})
 	call s:perforce_add( 'g:unite_perforce_show_max'     , {'nums' : [0],   'items' : [0, 5, 10],                   'consts' : [0]})
 	call s:perforce_add( 'g:unite_perforce_diff_tool'    , {'nums' : [0],   'items' : ['vimdiff', 'WinMergeU'],     'consts' : [0]}) 
@@ -104,6 +104,87 @@ endfunction
 function! s:get_client_defoult()
 		return [perforce#get#cache_client()]
 endfunction
+
+let s:cache_client = {}
+let s:cache_client_root = {}
+function! s:get_outs_from_clients(port) "{{{
+	if len(a:port) > 0
+		let port = ' '
+	endif
+
+	let outs = []
+	for user in perforce#data#get_users()
+		let cmd = 'p4 '.port.' clients '.user
+		call extend(outs, split(system(cmd), "\n"))
+	endfor
+
+	return outs
+endfunction
+"}}}
+function! s:get_port_client_roots(port, root) "{{{
+
+	let port = a:port=='' ? ' ' : a:port
+	
+	" cache から取得
+	if exists('s:cache_client_root[port][a:root]')
+		return s:cache_client_root[port][a:root]
+	else
+		if !exists('s:cache_client_root[port]')
+			let s:cache_client_root[port] = {}
+		endif
+		let s:cache_client_root[port][a:root] = []
+	endif
+
+	" perforce から取得
+	if !exists('s:cache_client[port]') "{{{
+		let s:cache_client[port] = {}
+
+		" クライアントの取得
+		let outs = s:get_outs_from_clients(port)
+
+		" cacheの設定
+		for out in outs
+			let client = matchstr(out, 'Client \zs\w\+')
+			let root   = matchstr(out, 'Client \w\+ ....\/..\/.. root \zs.\{-}\ze ''')
+
+			let s:cache_client[port][port. ' -c '.client] = root
+		endfor
+	endif
+	"}}}
+
+	" 検索
+	for port_client in keys(s:cache_client[port]) "{{{
+		let root = s:cache_client[port][port_client]
+		if a:root =~ escape(root, '\\')
+			call add(s:cache_client_root[port][a:root], port_client)
+		endif
+	endfor
+	"}}}
+
+	" 戻り値
+	if exists('s:cache_client_root[port][a:root]')
+		let rtn = s:cache_client_root[port][a:root]
+	else
+		let rtn = ''
+	endif
+
+	return rtn
+
+endfunction
+"}}}
+
+function! s:get_port_client_auto() "{{{
+	let cd = getcwd()
+	let ports = perforce#data#get_use_ports()
+	let clients = []
+	for port in ports
+		let tmp = s:get_port_client_roots(port, cd)
+		call extend(clients, s:get_port_client_roots(port, cd))
+	endfor
+	return clients
+endfunction
+"}}}
+
 function! perforce#data#get_ports(...) "{{{
 	if a:0 == 0
 		let datas = perforce#data#get('g:unite_perforce_ports_clients')
@@ -119,6 +200,8 @@ function! perforce#data#get_clients(...) "{{{
 
 	if mode_ == 'default'
 		let clients = s:get_client_defoult()
+	elseif mode_ == 'auto'
+		let clients = s:get_port_client_auto()
 	elseif mode_ == 'port_clients'
 		if a:0 == 0
 			let clients = perforce#data#get('g:unite_perforce_ports_clients')
