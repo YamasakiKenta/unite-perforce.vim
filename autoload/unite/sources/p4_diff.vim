@@ -75,7 +75,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 	let candidates = []
 	let outs = []
 
-	let files_d = perforce#cmd#use_port_clients_files('p4 diff', files_, 1)
+	let files_d = perforce#cmd#use_port_clients_files('p4 diff -dw', files_, 1)
 
 	let outs    = perforce#get#outs(files_d)
 
