@@ -92,31 +92,13 @@ g:pf_setting.bool.ClientMove_recursive_flg.value	*g:pf_setting.bool.ClientMove_r
 		初期値は、FALSE である
 
 ------------------------------------------------------------------------------
-FUNCTIONS	*unite_perforce_functions*
-
-g:PerforceDiff					*g:PerforceDiff*
-		Diff tool 関数
-
-------------------------------------------------------------------------------
 KEY MAPPING 	*unite-perforce-mappings*
 
 <Plug>(unite_p4_commit)				*<Plug>(unite_p4_commit)*
 	perforce の unite sourceを表示する
 
-<Plug>(p4_diff_tool)				*<Plug>(p4_diff_tool)*
-	file を client との差分を指定したDiff Tool
-
 <Plug>(p4_echo_client_data)			*<Plug>(p4_echo_client_data)*
 	現在の Client Name   Client Path の表示を行います
-
-<Plug>(p4_print_info)				*<Plug>(p4_print_info)*
-	Client 情報を表示する
-
-<Plug>(p4_edit)					*<Plug>(p4_edit)*
-	編集状態にする
-
-<Plug>(p4_revert)				*<Plug>(p4_revert)*
-	編集状態の解除
 
 <PLUG>(p4_filelog)				*<PLUG>(p4_filelog)*
 	現在のファイルのファイルログの出力
@@ -126,29 +108,6 @@ KEY MAPPING 	*unite-perforce-mappings*
 
 <PLUG>(p4_find)					*<PLUG>(p4_find)*
 	ファイルをサーバーから検索する
-
-
-ノーマルモードマッピング
-{lhs}		{rhs}
---------	-----------------------------
-;ff<CR>		<PLUG>(p4_find)
-;up<CR> 	<PLUG>(unite_p4_commit)
-;wd<CR> 	<PLUG>(p4_diff_tool)
-;cl<CR> 	<PLUG>(p4_echo_client_data)
-;cr<CR> 	<PLUG>(p4_cd_clentpath)
-;pi<CR> 	<PLUG>(p4_print_info)
-;pe<CR> 	<PLUG>(p4_edit)
-;pr<CR> 	<PLUG>(p4_revert)
-
-;pp<CR> 	Unite p4_settings
-;pt<CR> 	Unite p4_clients
-;pc<CR> 	Unite p4_changes_pending
-;ps<CR> 	Unite p4_changes_submitted
-;po<CR> 	Unite p4_opened
-;pj<CR> 	Unite p4_jobs
-;ph<CR> 	Unite p4_have
-;pa<CR> 	Unite p4_annotate
-;pC<CR> 	Unite p4_changes_pending_reopen
 
 ==============================================================================
 SOURCES						*unite-perforce-sources*

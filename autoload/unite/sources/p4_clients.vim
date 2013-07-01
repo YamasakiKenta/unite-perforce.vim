@@ -21,12 +21,18 @@ function! s:source_p4_clients.gather_candidates(args, context)
 	" ********************************************************************************
 
 	let use_ports = perforce#data#get_use_ports()
-	let datas     = perforce#cmd#clients(use_ports, 'p4 clients')
+
+	let max    = perforce#data#get_max()
+	let users = perforce#data#get_users()
+	let datas  = []
+	for user in users
+		call extend(datas, perforce#cmd#clients(use_ports, 'p4 clients '.user.' '.max))
+	endfor
 
 	let candidates = []
 	for data in datas
 		let port = data.client
-		if data.outs[0] == 'ERROR'
+		if get(data.outs, 0, 'ERROR') == 'ERROR'
 			call add(candidates, {
 						\ 'word' : port.' - ERROR',
 						\ 'kind' : 'common',
