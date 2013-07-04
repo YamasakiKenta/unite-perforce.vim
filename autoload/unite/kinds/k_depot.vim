@@ -44,11 +44,8 @@ function! s:sub_action(candidates, cmd) "{{{
 	return outs
 endfunction
 "}}}
-function! s:sub_action_log(candidates, cmd) "{{{
-	" [2013-06-08 20:32]
-	let outs = s:sub_action(a:candidates, a:cmd)
-	call perforce#log_file(outs)
-	return outs
+function! s:sub_action_log(...) "{{{
+	return call('pf_action#sub_action_log', a:000)
 endfunction
 "}}}
 function! s:find_filepath_from_depot(candidate) "{{{
@@ -73,16 +70,6 @@ function! s:find_filepath_from_depot(candidate) "{{{
 endfunction
 "}}}
 "
-let action = {
-				\ 'is_selectable' : 1, 
-				\ 'description'   : '',
-				\ }
-function action.func(candidates)
-	return s:sub_action_log(a:candidates, 'add')
-endfunction
-call unite#custom_action('jump_list' , 'add' , action)
-call unite#custom_action('file'      , 'add' , action)
-
 "p4 k_depot 
 let s:kind_depot = {
 			\ 'name'           : 'k_depot',
@@ -97,8 +84,6 @@ let s:kind_depot.action_table.p4_edit = {
 function s:kind_depot.action_table.p4_edit.func(candidates)
 	return s:sub_action_log(a:candidates, 'edit')
 endfunction
-call unite#custom_action('jump_list' , 'p4_edit' , s:kind_depot.action_table.p4_edit)
-call unite#custom_action('file'      , 'p4_edit' , s:kind_depot.action_table.p4_edit)
 
 let s:kind_depot.action_table.delete = {
 				\ 'is_selectable' : 1, 
