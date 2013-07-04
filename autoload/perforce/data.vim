@@ -108,13 +108,15 @@ endfunction
 let s:cache_client = {}
 let s:cache_client_root = {}
 function! s:get_outs_from_clients(port) "{{{
-	if len(a:port) > 0
+	if len(a:port) == 0
 		let port = ' '
+	else
+		let port = a:port
 	endif
 
 	let outs = []
 	for user in perforce#data#get_users()
-		let cmd = 'p4 '.port.' clients '.user
+		let cmd = 'p4 '.port.' clients '
 		call extend(outs, split(system(cmd), "\n"))
 	endfor
 
@@ -179,8 +181,12 @@ function! s:get_port_client_auto() "{{{
 	let clients = []
 	for port in ports
 		let tmp = s:get_port_client_roots(port, cd)
-		call extend(clients, s:get_port_client_roots(port, cd))
+		call extend(clients, tmp)
 	endfor
+
+	if len(clients) == 0
+		let clients = perforce#data#get_port_clients()
+	endif
 	return clients
 endfunction
 "}}}
@@ -219,7 +225,6 @@ endfunction
 function! perforce#data#get_port_clients() "{{{
 	let clients = perforce#data#get('g:unite_perforce_ports_clients')
 	if len(clients) == 0
-		echo clients
 		let clients = [perforce#get#cache_port_client()]
 	endif
 	return clients
