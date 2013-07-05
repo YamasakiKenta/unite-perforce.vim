@@ -108,11 +108,8 @@ endfunction
 let s:cache_client = {}
 let s:cache_client_root = {}
 function! s:get_outs_from_clients(port) "{{{
-	if len(a:port) == 0
-		let port = ' '
-	else
-		let port = a:port
-	endif
+
+	let port = a:port=='' ? ' ' : a:port
 
 	let outs = []
 	for user in perforce#data#get_users()
@@ -185,7 +182,6 @@ function! s:get_port_client_auto() "{{{
 	endfor
 
 	if len(clients) == 0
-		echom 'use default'
 		let clients = s:get_client_defoult()
 	endif
 	return clients
