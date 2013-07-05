@@ -10,13 +10,6 @@ function! unite#kinds#k_p4_clients#define()
 	return s:kind_clients
 endfunction
 
-function! s:get_client_path_from_name(port, clname) "{{{
-	let cmd = 'p4 '.a:port.' client -o '.a:clname
-	let line = perforce#system(cmd)
-	let path = matchstr(line, '\nRoot:\s*\zs\S*\ze\n')
-	return path
-endfunction
-"}}}
 
 let s:kind_clients = {
 			\ 'name' : 'k_p4_clients',
@@ -31,8 +24,6 @@ function! s:kind_clients.action_table.a_p4_client_set.func(candidates) "{{{
 	" 保存する名前の取得
 	let clname = a:candidates.action__clname
 	let port   = matchstr(a:candidates.action__port, '\(-p\s*\)*\zs.*')
-	let clpath = s:get_client_path_from_name('-p '.port, clname)
-	echo clpath
 
 	" 作成するファイルの名前の保存 ( 切り替え ) 
 	call perforce#set#PFCLIENTNAME(clname)
