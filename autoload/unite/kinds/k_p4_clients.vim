@@ -22,14 +22,17 @@ let s:kind_clients.action_table.a_p4_client_set = {
 function! s:kind_clients.action_table.a_p4_client_set.func(candidates) "{{{
 
 	" 保存する名前の取得
+	echom a:candidates.action__port
+	echom a:candidates.action__clname
+	let port   = matchstr(a:candidates.action__port, '-p\s*\zs\S*')
 	let clname = a:candidates.action__clname
-	let port   = matchstr(a:candidates.action__port, '\(-p\s*\)*\zs.*')
+	
 
 	" 作成するファイルの名前の保存 ( 切り替え ) 
 	call perforce#set#PFCLIENTNAME(clname)
 	call perforce#set#PFPORT(port)
 	call s:Perforce.get_client_root(1)
-
+ 
 endfunction
 "}}}
 

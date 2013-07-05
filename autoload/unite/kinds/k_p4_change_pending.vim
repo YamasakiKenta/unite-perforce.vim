@@ -119,20 +119,19 @@ let s:kind_k_p4_change_pending.action_table.a_p4_change_submit = {
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candidates) "{{{
+	" [2013-07-06 04:09]
 
 	if perforce#data#get('g:unite_perforce_is_submit_flg') == 0
-		echoe 'safe mode.'
-		call input("Push Any Keys...") 
+		unite#print_error('safe mode.')
 	else
 		let outs = []
 		for candidate in a:candidates
 			let port_client = s:get_port_client(candidate)
 			let chnum = s:get_chnum(candidate)
 			let cmd = 'p4 '.port_client.' submit -c '.chnum
-			call unite#print_message(cmd)
-			let outs = extend(outs, split(perforce#system(cmd), "\n"))
+			call add(outs, cmd)
+			call extend(outs, split(perforce#system(cmd), "\n"))
 		endfor
-
 		call perforce#log_file(outs)
 	endif 
 
