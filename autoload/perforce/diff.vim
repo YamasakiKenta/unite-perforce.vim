@@ -14,10 +14,10 @@ function! s:pf_diff_tool(file,file2) "{{{
 		" キーマップの登録
 		call perforce#util#map_diff()
 	elseif cmd =~ 'kdiff3'
-		call system(cmd.' '.perforce#get_kk(a:file).' '.perforce#get_kk(a:file2).' -o '.perforce#Get_kk(a:file2))
+		call perforce#system(cmd.' '.perforce#get_kk(a:file).' '.perforce#get_kk(a:file2).' -o '.perforce#Get_kk(a:file2))
 	else
 		" winmergeu
-		call system(cmd.' '.perforce#get_kk(a:file).' '.perforce#get_kk(a:file2))
+		call perforce#system(cmd.' '.perforce#get_kk(a:file).' '.perforce#get_kk(a:file2))
 	endif
 
 endfunction

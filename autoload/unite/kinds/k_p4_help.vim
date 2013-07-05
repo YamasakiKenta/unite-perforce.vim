@@ -26,7 +26,7 @@ function! s:kind_help.action_table.a_help.func(candidates) "{{{
 	let outs = []
 	for candidate in a:candidates
 		let cmd = s:get_pfcmd_from_help( candidate ) 
-		let outs += split(system('p4 help '.cmd), "\n")
+		let outs += split(perforce#system('p4 help '.cmd), "\n")
 	endfor
 
 	call perforce#show(outs)

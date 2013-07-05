@@ -5,7 +5,7 @@ function! s:system(cmd) "{{{
 	if exists('s:exists_vimproc')
 		let data = vimproc#system(a:cmd)
 	else
-		let data = system(a:cmd)
+		let data = perforce#system(a:cmd)
 	endif
 	return data
 endfunction 

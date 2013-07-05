@@ -51,7 +51,7 @@ function! s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen.func(candida
 	" チェンジリストの変更
 	let cmd = 'p4  '.port_client.' reopen -c '.chnum.' "'.join(reopen_depots,'" "').'"'
 	call unite#print_message(cmd)
-	let outs = split(system(cmd), "\n")
+	let outs = split(perforce#system(cmd), "\n")
 
 	" ログの出力
 	call perforce#log_file(outs)

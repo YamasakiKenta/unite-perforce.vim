@@ -3,7 +3,7 @@ set cpo&vim
 
 function! s:pf_cmd_rtn_cmd_outs(cmd)
 	" コマンドと実行結果を返す
-	return extend([a:cmd], split(system(a:cmd), "\n"))
+	return extend([a:cmd], split(perforce#system(a:cmd), "\n"))
 endfunction
 
 function! perforce#set#PFCLIENTNAME(str) 

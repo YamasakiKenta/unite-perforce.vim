@@ -16,8 +16,8 @@ function! s:init() "{{{
 
 	call s:perforce_init()
 
-	call s:perforce_add( 'g:unite_perforce_ports_clients', {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']}) 
-	call s:perforce_add( 'g:unite_perforce_clients'      , {'nums' : [0],   'items' : ['none', 'default', 'port_clients', 'auto'], 'consts' : [-1] })
+	call s:perforce_add( 'g:unite_perforce_ports_clients', {'nums' : [0,1], 'items' : ['auto', '-p localhost:1819', '-p localhost:2013'], 'consts' : [0] }) 
+	call s:perforce_add( 'g:unite_perforce_clients'      , {'nums' : [0],   'items' : ['none', 'default', 'port_clients'], 'consts' : [-1] })
 	call s:perforce_add( 'g:unite_perforce_filters'      , {'nums' : [0,1], 'items' : ['tag', 'snip']})
 	call s:perforce_add( 'g:unite_perforce_show_max'     , {'nums' : [0],   'items' : [0, 5, 10],                   'consts' : [0]})
 	call s:perforce_add( 'g:unite_perforce_diff_tool'    , {'nums' : [0],   'items' : ['vimdiff', 'WinMergeU'],     'consts' : [0]}) 
@@ -100,7 +100,7 @@ function! perforce#data#get_max() "{{{
 	return max
 endfunction
 "}}}
-" ˆø”‚Å‚µ‚Ä‚¢‚µ‚½‚¢ê‡
+" ˆø”‚ÅŽw’è‚µ‚½‚¢ê‡
 function! s:get_client_defoult()
 		return [perforce#get#cache_client()]
 endfunction
@@ -117,7 +117,7 @@ function! s:get_outs_from_clients(port) "{{{
 	let outs = []
 	for user in perforce#data#get_users()
 		let cmd = 'p4 '.port.' clients '
-		call extend(outs, split(system(cmd), "\n"))
+		call extend(outs, split(perforce#system(cmd), "\n"))
 	endfor
 
 	return outs
@@ -185,7 +185,8 @@ function! s:get_port_client_auto() "{{{
 	endfor
 
 	if len(clients) == 0
-		let clients = perforce#data#get_port_clients()
+		echom 'use default'
+		let clients = s:get_client_defoult()
 	endif
 	return clients
 endfunction
@@ -193,7 +194,7 @@ endfunction
 
 function! perforce#data#get_ports(...) "{{{
 	if a:0 == 0
-		let datas = perforce#data#get('g:unite_perforce_ports_clients')
+		let datas = s:get_unite_perforce_ports_clients()
 	else
 		let datas = a:000
 	endif
@@ -210,7 +211,7 @@ function! perforce#data#get_clients(...) "{{{
 		let clients = s:get_port_client_auto()
 	elseif mode_ == 'port_clients'
 		if a:0 == 0
-			let clients = perforce#data#get('g:unite_perforce_ports_clients')
+			let clients = s:get_unite_perforce_ports_clients()
 		else
 			let clients = a:000
 		endif
@@ -223,7 +224,7 @@ function! perforce#data#get_clients(...) "{{{
 endfunction
 "}}}
 function! perforce#data#get_port_clients() "{{{
-	let clients = perforce#data#get('g:unite_perforce_ports_clients')
+	let clients = s:get_unite_perforce_ports_clients()
 	if len(clients) == 0
 		let clients = [perforce#get#cache_port_client()]
 	endif
@@ -308,6 +309,29 @@ function! s:get_clients_from_arg(datas) "{{{
 	endif
 
 	return clients
+endfunction
+"}}}
+
+let s:get_unite_perforce_ports_clients_flg = 0
+function! s:get_unite_perforce_ports_clients() "{{{
+	let datas = perforce#data#get('g:unite_perforce_ports_clients')
+
+	if s:get_unite_perforce_ports_clients_flg == 0
+		let s:get_unite_perforce_ports_clients_flg = 1
+		let num = index(datas, 'auto')
+		if num >= 0
+			unlet datas[num]
+			let tmp_clients = s:get_port_client_auto()
+			for tmp_client in tmp_clients
+				if index(datas, tmp_client) >= 0
+					call add(datas, tmp_client)
+				endif
+			endfor
+		endif
+		let s:get_unite_perforce_ports_clients_flg = 0
+	endif
+
+	return datas
 endfunction
 "}}}
 

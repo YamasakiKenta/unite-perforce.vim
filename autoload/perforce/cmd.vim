@@ -4,7 +4,7 @@ set cpo&vim
 function! s:is_p4_have_from_have(port_client, file) "{{{
 	" [2013-06-07 01:02]
 	let cmd = printf('p4 -s %s have %s', a:port_client, perforce#get_kk(a:file))
-	let str = system(cmd)
+	let str = perforce#system(cmd)
 	return ( str =~ '^error: ' ) ? 0 : 1
 endfunction
 "}}}
@@ -68,11 +68,12 @@ function! perforce#cmd#clients(clients, cmd) "{{{
 	let cmd_base = substitute(cmd_base, 'p4', '', '')
 
 	let rtn_ds = []
+	let msgs = []
 	for client in a:clients
 		let cmd = printf('p4 %s %s', client, cmd_base)
-		call unite#print_message(cmd)
+		call add(msgs, cmd)
 
-		let outs = split(system(cmd), "\n")
+		let outs = split(perforce#system(cmd), "\n")
 
 		" filter
 		let outs = s:get_outs(outs)
@@ -85,6 +86,10 @@ function! perforce#cmd#clients(clients, cmd) "{{{
 						\ })
 		endif
 	endfor
+
+	" message
+	call unite#print_message(string(msgs))
+
 	return rtn_ds
 endfunction
 "}}}

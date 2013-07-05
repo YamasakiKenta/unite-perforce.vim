@@ -44,19 +44,19 @@ function! perforce#matomeDiffs(...) "{{{
 	for chnum in a:000
 		" データの取得 {{{
 		let cmd  = 'p4 describe -ds '.chnum
-		let outs = split(system(cmd), "\n")
+		let outs = split(perforce#system(cmd), "\n")
 
 		" 作業中のファイル
 		if outs[0] =~ '\*pending\*' || chnum == 'default'
 			let cmd = 'p4 opened -c '.chnum
-			let files_ = split(system(cmd), "\n")
+			let files_ = split(perforce#system(cmd), "\n")
 			call map(files_, "perforce#get#depot#from_opened(v:val)")
 
 			let outs = []
 			for file_ in files_ 
 				let cmd = 'p4 diff -ds '.file_
 
-				for tmp_out in split(system(cmd), "\n")
+				for tmp_out in split(perforce#system(cmd), "\n")
 					if tmp_out =~ '- file(s) not opened for edit.'
 						" 新規作成の場合
 						let tmp_file = substitute(file_, '.*[\/]','','')
@@ -163,6 +163,11 @@ function! perforce#show(str) "{{{
 	call perforce#util#log_file('p4show', 1, a:str)
 endfunction
 "}}}
+
+function! perforce#system(cmd)
+	" [2013-07-05 22:28]
+	return system(a:cmd)
+endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

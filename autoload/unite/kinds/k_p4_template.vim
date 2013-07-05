@@ -24,7 +24,7 @@ function! s:kind_p4_template.action_table.update_.func(candidates) "{{{
 		" š port , client ‚ğl—¶‚·‚é
 		let cmd = 'p4 '.client.' client -o -t '.tmp.' '.clname.' | p4 '.client.' client -i'
 		call unite#print_message(cmd)
-		call system(cmd)
+		call perforce#system(cmd)
 	endfor
 endfunction
 "}}}
@@ -47,13 +47,13 @@ function! s:kind_p4_template.action_table.a_info.func(candidates) "{{{
 		" ƒƒCƒ“
 		let cmd = 'p4 '.port.' client -o '.clname
 		call add(cmds, cmd)
-		let outs = split(system(cmd), "\n")
+		let outs = split(perforce#system(cmd), "\n")
 		call add(datas, outs)
 
 		" teamplte
 		let cmd = 'p4 '.port.' client -o '.cltmp
 		call add(cmds, cmd)
-		let outs = split(system(cmd), "\n")
+		let outs = split(perforce#system(cmd), "\n")
 		call add(datas, outs)
 
 		" windows ‚Ì•\¦

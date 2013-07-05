@@ -20,7 +20,7 @@ function! s:get_port_client_files(candidates) "{{{
 			let port_clients = deepcopy(default_port_clients)
 		endif
 
-		call input(string(port_clients))
+		" call input(string(port_clients))
 
 		for port_client in port_clients
 			if !exists('file_d[port_client]')

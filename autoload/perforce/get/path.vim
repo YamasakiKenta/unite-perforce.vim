@@ -8,7 +8,7 @@ endfunction
 function! perforce#get#path#from_depot_with_client(client, depot)
 	" [2013-06-07 02:35]
 	let cmd = 'p4 '.a:client.' where "'.a:depot.'"'
-	let out = system(cmd)
+	let out = perforce#system(cmd)
 	return s:get_path_from_where(out)
 endfunction
 

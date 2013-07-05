@@ -4,7 +4,7 @@ set cpo&vim
 function! s:get_chname_from_change(candidate, chnum, port_client) "{{{
 	let cmd  = 'p4 '.a:port_client.' change -o '.a:chnum
 	echo cmd
-	let outs = split(system(cmd), "\n")
+	let outs = split(perforce#system(cmd), "\n")
 
 	let strs = []
 	let description_flg = 0
@@ -71,7 +71,7 @@ function! s:kind_k_p4_change_pending.action_table.change_list_delete.func(candid
 		let chnum       = s:get_chnum(candidate)
 		let port_client = s:get_port_client(candidate)
 		let cmd = 'p4 '.port_client.' change -d '.chnum
-		call extend(outs, split(system(cmd),'\n'))
+		call extend(outs, split(perforce#system(cmd),'\n'))
 	endfor
 	call perforce#log_file(outs)
 endfunction
@@ -108,7 +108,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_info.func(candidat
 	let outs = []
 	for candidate in a:candidates
 		let chnum = s:get_chnum(candidate)
-		let outs += split(system('P4 change -o '.chnum),'\n')
+		let outs += split(perforce#system('P4 change -o '.chnum),'\n')
 	endfor
 	call perforce#log_file(outs)
 endfunction
@@ -130,7 +130,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candid
 			let chnum = s:get_chnum(candidate)
 			let cmd = 'p4 '.port_client.' submit -c '.chnum
 			call unite#print_message(cmd)
-			let outs = extend(outs, split(system(cmd), "\n"))
+			let outs = extend(outs, split(perforce#system(cmd), "\n"))
 		endfor
 
 		call perforce#log_file(outs)

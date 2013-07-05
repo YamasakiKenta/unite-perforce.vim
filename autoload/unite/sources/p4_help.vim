@@ -17,7 +17,7 @@ endfunction
 "}}}
 function! s:source.gather_candidates(args, context) "{{{
 	" [2013-06-07 07:56]
-	let datas = split(system('p4 help commands'), "\n")
+	let datas = split(perforce#system('p4 help commands'), "\n")
 	unlet datas[0:1]
 	let candidates = map( datas, "{
 				\ 'word' : substitute(v:val,'\t','',''),

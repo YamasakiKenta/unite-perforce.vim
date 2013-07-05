@@ -119,7 +119,7 @@ function! pf_changes#make(strs, port_client, ...) "{{{
 
 	"ChangeListの設定データを一時保存する
 	let cmd = 'p4 change -o '.chnum
-	let tmp = system('p4 '.a:port_client. ' change -o '.chnum)
+	let tmp = perforce#system('p4 '.a:port_client. ' change -o '.chnum)
 
 	" 新規作成の場合は、ファイルを含まない
 	if chnum == "" 
@@ -144,7 +144,7 @@ function! pf_changes#make(strs, port_client, ...) "{{{
 
 	" チェンジリストの作成
 	let cmd   = 'more '.perforce#get_kk(perforce#get_tmp_file()).' | p4 '.a:port_client.' change -i'
-	let outs   = split(system(cmd), "\n")
+	let outs   = split(perforce#system(cmd), "\n")
 	let chnum = matchstr(outs[0], '\d\+')
 
 	return chnum

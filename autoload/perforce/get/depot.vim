@@ -14,7 +14,7 @@ endfunction
 
 function! perforce#get#depot#from_path(str) 
 	" [2013-06-07 02:28]
-	let out   = split(system('p4 where "'.a:str.'"'), "\n")[0]
+	let out   = split(perforce#system('p4 where "'.a:str.'"'), "\n")[0]
 	let depot =  s:get_depot_from_where(out)
 	return depot 
 endfunction 

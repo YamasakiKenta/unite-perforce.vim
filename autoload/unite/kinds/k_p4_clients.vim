@@ -12,7 +12,7 @@ endfunction
 
 function! s:get_client_path_from_name(port, clname) "{{{
 	let cmd = 'p4 '.a:port.' client -o '.a:clname
-	let line = system(cmd)
+	let line = perforce#system(cmd)
 	let path = matchstr(line, '\nRoot:\s*\zs\S*\ze\n')
 	return path
 endfunction
