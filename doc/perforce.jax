@@ -11,8 +11,6 @@ Functions  |unite-perforce-functions|
 KeyMapping |unite-perforce-key-mappings|
 Variables  |unite-perforce-variables|
 Sources    |unite-perforce-sources|
-Kinds      |unite-perforce-kinds|
-Actions    |unite-perforce-actions|
 
 ==============================================================================
 Commands					*unite-perforce-commands*
@@ -29,129 +27,106 @@ Commands					*unite-perforce-commands*
 :PfRevert {filename} *:PfRevert*
 	現在のファイル、もしくは{filename}の編集状態を解除します。
 
-:PfFind {filename} ... *PfFind*
+:PfFind {filename} ... *:PfFind*
 	{filename}を、クライアントから検索します。
 
-:PfGetClientName *PfGetClientName*
-	クライアント名を表示します
-
-:PfSetting *PfSetting*
+:PfSetting *:PfSetting*
 	設定をします。|unite-setting.vim| が必要になります
 
 	git://github.com/YamasakiKenta/unite-setting.vim.git
 
+:PfAnnotate *:PfAnnotate*
+	annotate を編集ファイル合わせて表示します。
+
+:PfMatomeDiffs {chnum} ... *:PfMatomeDiffs*
+	チェンジリスト{chnum}の修正のまとめを表示します
+
 ------------------------------------------------------------------------------
 Variables						*unite-perforce-variables*
 
-g:pf_setting.bool.user_changes_only.value	*g:pf_setting.bool.user_changes_only.value*
-		user name で changelist を filter する
+g:unite_perforce_clients *g:unite_perforce_clients*
+	let g:unite_perforce_clients = 'none'
 
-		初期値は、TRUE である
+g:unite_perforce_filters *g:unite_perforce_filters*
+	let g:unite_perforce_filters = ['tag', 'snip']
 
-g:pf_setting.bool.client_changes_only.value	*g:pf_setting.bool.client_changes_only.value*
-		client name で changelist を filter する
+g:unite_perforce_show_max *g:unite_perforce_show_max*
+	let g:unite_perforce_show_max = 0
 
-		初期値は、TRUE である
+g:unite_perforce_diff_tool *g:unite_perforce_diff_tool*
+	let g:unite_perforce_diff_tool = 'vimdiff'
 
-g:pf_setting.bool.is_submit_flg.value		*g:pf_setting.bool.is_submit_flg.value*
-		submit するかどうかの設定
+g:unite_perforce_ports_clients *g:unite_perforce_ports_clients*
+	let g:unite_perforce_ports_clients = ['-p localhost:2013', '-p localhost:1819']
 
-		初期値は、TRUE である
+g:unite_perforce_username *g:unite_perforce_username*
+	let g:unite_perforce_username = []
 
-g:pf_ports					*g:pf_ports*
-		port の設定
->
-	    	g:pf_ports = [1818...]
-<
-g:pf_setting.bool.is_out_flg.value		*g:pf_setting.bool.is_out_flg.value*
-		結果出力を行う
+g:unite_perforce_is_submit_flg *g:unite_perforce_is_submit_flg*
+	let g:unite_perforce_is_submit_flg = 1
 
-		初期値は、TRUE である
+g:perforce_merge_default_path *g:perforce_merge_default_path*
+	let g:perforce_merge_default_path = 'c:\tmp'
 
-g:pf_setting.bool.is_out_echo_flg.value		*g:pf_setting.bool.is_out_echo_flg.value*
-		結果出力をechoで行う
-
-		初期値は、TRUE である
-
-g:pf_setting.bool.is_vimdiff_flg.value		*g:pf_setting.bool.is_vimdiff_flg.value*
-	" 	vimdiffで比較する
-
-		初期値は、TRUE である
-
-g:pf_diff_tool					*g:pf_diff_tool*
-		DiffToolを指定する
-
-		初期値は、WinMergeU である
-
-$PFTMP						*$PFTMP*
-		比較する時の一時 file の名前
-
-g:pf_setting.bool.ClientMove_recursive_flg.value	*g:pf_setting.bool.ClientMove_recursive_flg.value*
-		|ClientMove|で再帰検索をするか
-	
-		初期値は、FALSE である
+g:perforce_tmp_dir *g:perforce_tmp_dir*
+	let g:perforce_tmp_dir = '~/vimtmp'
 
 ------------------------------------------------------------------------------
 KEY MAPPING 	*unite-perforce-mappings*
 
-<Plug>(unite_p4_commit)				*<Plug>(unite_p4_commit)*
-	perforce の unite sourceを表示する
-
-<Plug>(p4_echo_client_data)			*<Plug>(p4_echo_client_data)*
+<Plug>(p4_echo_client_data) *<Plug>(p4_echo_client_data)*
 	現在の Client Name   Client Path の表示を行います
 
-<PLUG>(p4_filelog)				*<PLUG>(p4_filelog)*
+<PLUG>(p4_lcd_clentpath) *<PLUG>(p4_lcd_clentpath)*
+	client rootをlcd にします
+
+<PLUG>(p4_filelog) *<PLUG>(p4_filelog)*
 	現在のファイルのファイルログの出力
 
-<PLUG>(p4_diff)					*<PLUG>(p4_diff)*
+<PLUG>(p4_diff) *<PLUG>(p4_diff)*
 	現在のファイルの差分の出力
 
-<PLUG>(p4_find)					*<PLUG>(p4_find)*
+<PLUG>(p4_find) *<PLUG>(p4_find)*
 	ファイルをサーバーから検索する
+
+<PLUG>(p4_get_depot) *<PLUG>(p4_get_depot)*
+	depotを表示します
 
 ==============================================================================
 SOURCES						*unite-perforce-sources*
+
+p4_annotate
+	各行にリビジョン番号を表示
+
+p4_annotate_ai
+	各行にチェンジリスト番号を表示 ( 全て )
+
+p4_changes_pending
+	作成中のチェンジリスト
+
+p4_changes_pending_reopen
+	チェンジリストの移動
+
+p4_changes_submitted
+	submit 済みチェンジリスト
+
 p4_clients
 	クライアントを表示する
+
+p4_describe
+	サブミット済みのチェンジリストの差分を表示
 
 p4_diff
 	差分を表示する
 
-p4_fixes
-	job と change リストの紐づけを表示する
-
-p4_info
-	設定を表示する
-
-p4_annotate			
-	各行にリビジョン番号を表示
-
-p4_annotate_ai			
-	各行にチェンジリスト番号を表示 ( 全て )
-
-p4_changes_pending		
-	作成中のチェンジリスト
-
-p4_changes_pending_reopen	
-	チェンジリストの移動
-
-p4_changes_submitted		
-	submit 済みチェンジリスト
-
-p4_clientMove 			
-	特定のフォルダからファイルを比較する
-
-p4_clients			
-	クライアントの表示
-
-p4_describe			
-	サブミット済みのチェンジリストの差分を表示
-
-p4_diff				
-	ファイルの差分表示
-
 p4_filelog
 	履歴
+
+p4_files
+	所有するファイル
+
+p4_fixes
+	job と change リストの紐づけを表示する
 
 p4_have
 	所有するファイル
@@ -162,176 +137,21 @@ p4_have_reset
 p4_help
 	ヘルプを表示
 
+p4_info
+	設定を表示する
+
 p4_jobs
 	ジョブの表示
 
 p4_opened
 	編集しているファイルの表示 ( チェンジリスト番号 )
 
-p4_settings
-	unite-perforce.vim の設定
-
-p4_select
-	複数選択
+p4_template
+	テンプレートで管理します
 
 p4_users
 	ユーザーの切り替え
 
-p4_template
-	テンプレートで管理します
-
-==============================================================================
-KINDS						*unite-perforce-kinds*
-jump_list					*unite-perforce-kind-jump_list*
-file 						*unite-perforce-kind-file*
-k_depot						*unite-perforce-kind-k_depot*
-k_p4						*unite-perforce-kind-k_p4*
-k_p4_change_reopen				*unite-perforce-kind-k_p4_change_reopen*
-k_p4_change					*unite-perforce-kind-k_p4_change*
-k_p4_clientMove					*unite-perforce-kind-k_p4_clientMove*
-k_p4_clients					*unite-perforce-kind-k_p4_clients*
-k_p4_filelog					*unite-perforce-kind-k_p4_filelog*
-k_p4_help 					*unite-perforce-kind-k_p4_help*
-k_p4_jobs					*unite-perforce-kind-k_p4_jobs*
-k_p4_settings_bool				*unite-perforce-kind-k_p1_settings_bool*
-k_p4_settings_strs				*unite-perforce-kind-k_p4_settings_strs*
-k_p4_select					*unite-perforce-kind-k_p4_select*
-k_p4_users					*unite-perforce-kind-k_p4_users*
-
-==============================================================================
-ACTIONS						*unite-perforce-actions*
-jump_list					*unite-perforce-action-jump_list*
-	add
-		追加
-	edit
-		編集
-file 						*unite-perforce-action-file*
-	add
-		追加
-	edit
-		編集
-
-k_depot						*unite-perforce-action-k_depot*
-	edit
-		編集
-	delete
-		削除
-	revert -a
-		元に戻す
-	revert
-		元に戻す [ 強制 ] 
-	a_open
-		開く
-	preview
-		preview  
-	a_p4_files 
-		ファイルの情報
-	a_p4_move
-		移動 ( 名前の変更 ) 
-	delete 
-		差分
-	a_p4_diff 
-		差分
-	a_p4_diff_tool
-		差分 ( TOOL ) 
-	a_p4_reopen
-		チェンジリストの変更 
-	a_p4_filelog 
-		履歴
-	a_p4_sync 
-		ファイルの最新同期
-	a_p4_dir_copy
-		dirでコピーする
-	a_p4_depot_copy
-		depotでコピーする
-
-k_p4						*unite-perforce-action-k_p4*
-	a_pf_settings
-		設定
-	a_add_fix
-		quickfixに追加
-
-k_p4_change_reopen				*unite-perforce-action-k_p4_change_reopen*
-	a_p4_change_reopen
-		チェンジリストの変更 ( reopen )
-
-k_p4_change					*unite-perforce-action-k_p4_change*
-	delete
-		チェンジリストの削除 
-	a_p4_change_opened 
-		ファイルの表示
-	a_p4_change_info 
-		チェンジリストの情報 
-	a_p4_change_submit
-		サブミット 
-	a_p4change_describe 
-		差分の表示
-	a_p4_matomeDiff 
-		差分のまとめを表示
-	a_p4_change_reopen
-		チェンジリストの変更 
-	a_p4_change_rename
-		名前の変更 
-k_p4_clientMove					*unite-perforce-action-k_p4_clientMove*
-	a_merge
-		比較する
-	a_copy
-		置き換える
-k_p4_clients					*unite-perforce-action-k_p4_clients*
-	a_p4_client_set
-		クライアントの変更
-	a_p4_client_sync 
-		最新同期
-	a_p4_client_info 
-		ライアントの情報 ( info )
-	a_p4_client 
-		クライアントの情報 ( client 
-
-k_p4_filelog					*unite-perforce-action-k_p4_filelog*
-	preview
-		preview
-
-	a_p4_print
-		ファイルの表示
-
-k_p4_help 					*unite-perforce-action-k_p4_help*
-	a_help
-		詳しい情報を表示
-k_p4_jobs					*unite-perforce-action-k_p4_jobs*
-	a_p4_fixes
-		ジョブの情報
-
-k_p4_settings_bool				*unite-perforce-action-k_p1_settings_bool*
-	a_toggle
-		設定の切替
-	a_set_enable
-		有効にする
-	a_set_disable
-		無効にする
-
-k_p4_settings_strs				*unite-perforce-action-k_p4_settings_strs*
-	a_toggle
-		設定の切替
-	a_toggles
-		複数選択
-	a_set_strs
-		名前の登録 ( リスト ) 
-
-k_p4_select					*unite-perforce-action-k_p4_select*
-	a_toggle
-		設定の切替
-	delete
-		削除
-
-k_p4_users					*unite-perforce-action-k_p4_users*
-	a_p4_user_change
-		ユーザーの切り替え 1
-
-k_p4_template *unite-perforce-action-k_p4_template*
-	a_update
-
-==============================================================================
-TODO *unite-perforce-todo*
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:sw=8

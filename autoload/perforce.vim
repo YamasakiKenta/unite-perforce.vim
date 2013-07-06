@@ -9,11 +9,12 @@ endfunction
 
 function! perforce#get_tmp_file() "{{{
 	" [2013-06-07 00:35]
-	let g:perforce_tmp_dir  = get(g:, 'perforce_tmp_dir', '~/.perforce/' )
-	let fname               = g:perforce_tmp_dir.'/tmpfile'
+	"g:perforce_tmp_dir
+	let tmp =  expand(perforce#data#get('g:perforce_tmp_dir'))
+	let fname = expand(tmp.'/tmpfile')
 
-	if !isdirectory(g:perforce_tmp_dir)
-		call mkdir(g:perforce_tmp_dir)
+	if !isdirectory(tmp)
+		call mkdir(tmp)
 	endif
 
 	return fname

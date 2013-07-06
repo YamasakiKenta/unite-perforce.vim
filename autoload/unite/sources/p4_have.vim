@@ -23,23 +23,20 @@ endfunction
 function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 	" 空白の場合は、スペースを使用する
 	let str = a:str
+	let candidates = []
 
-	let port   = perforce#get#PFPORT()
-	let client = perforce#get#PFCLIENTNAME()
-	let key    = port.'_'.client.'_'.str
+	let port_clients = perforce#data#get_use_port_clients()
 
-	let data_ds = {}
-	if !has_key(s:p4_have_cache, key) || a:reset_flg == 1
-		echo 'loading...'
-		let port_clients = perforce#data#get_use_port_clients()
-		let datas = perforce#cmd#clients(port_clients, 'p4 have '.str)
-		let s:p4_have_cache[key] = s:get_candidates_from_pfhave(deepcopy(datas))
-		echo 'finish !!'
-	else
-		echo 'cache load!'
-	endif
+	for port_client in port_clients
+		if !exists('s:p4_have_cache[port_client]') || a:reset_flg == 1
+			let datas = perforce#cmd#clients([port_client], 'p4 have '.str)
+			let s:p4_have_cache[port_client] = s:get_candidates_from_pfhave(deepcopy(datas))
+		endif
 
-	return s:p4_have_cache[key]
+		call extend(candidates, s:p4_have_cache[port_client])
+	endfor
+
+	return candidates
 endfunction
 "}}}
 
@@ -74,6 +71,9 @@ function! s:souce_p4have_reset.gather_candidates(args, context) "{{{
 endfunction
 "}}}
 
-let &cpo = s:save_cpo
-unlet s:save_cpo
-
+if exists('s:save_cpo')
+	let &cpo = s:save_cpo
+	unlet s:save_cpo
+else
+	set cpo&
+endif
