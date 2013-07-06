@@ -165,8 +165,13 @@ endfunction
 "}}}
 
 function! perforce#system(cmd)
-	" [2013-07-05 22:28]
-	return system(a:cmd)
+	" [2013-07-06 10:38]
+	if exists('s:exists_vimproc')
+		let data = vimproc#system(a:cmd)
+	else
+		let data = system(a:cmd)
+	endif
+	return data
 endfunction
 
 let &cpo = s:save_cpo

@@ -1,21 +1,11 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:system(cmd) "{{{
-	if exists('s:exists_vimproc')
-		let data = vimproc#system(a:cmd)
-	else
-		let data = perforce#system(a:cmd)
-	endif
-	return data
-endfunction 
-"}}}
-
 let s:cache_client = ''
 let s:cache_port   = ''
 
 function! s:get_set_data(str) 
-	return matchstr(s:system('p4 set '.a:str), '\w*=\zs.* \ze(set)')
+	return matchstr(perforce#system('p4 set '.a:str), '\w*=\zs.* \ze(set)')
 endfunction 
 
 function! perforce#get#PFCLIENTPATH(...) 
