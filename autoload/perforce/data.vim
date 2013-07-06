@@ -26,6 +26,7 @@ function! s:init() "{{{
 	call s:perforce_add( 'g:pf_clients_template'         , {}) 
 	call s:perforce_add( 'g:pf_var'                      , '') 
 	call s:perforce_add( 'g:perforce_merge_default_path' , {'nums' : [0], 'items' : ['c:\tmp']})
+	call s:perforce_add( 'g:perforce_tmp_dir'            , {'nums' : [0], 'items' : ["~/vimtmp"]})
 
 	call s:perforce_load()
 
