@@ -98,10 +98,22 @@ function! perforce#get#auto_client#main() "{{{
 
 	if len(clients) == 0
 		echo 'use default...'
-		let clients = s:get_default_client()
+		let clients = [perforce#get#cache_client()]
 	endif
 
 	return clients
+endfunction
+"}}}
+"
+command! DebugPfData call s:debug()
+function! s:debug() "{{{
+	if exists("g:debug")
+		unlet g:debug
+	endif
+	let g:debug = [
+				\ s:cache_ports,
+				\ s:cache_client_root,
+				\ ]
 endfunction
 "}}}
 
