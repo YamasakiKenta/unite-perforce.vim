@@ -18,7 +18,7 @@ function! s:source_p4_files.gather_candidates(args, context) "{{{
 	let root = substitute(root, '\\', '/', 'g')
 
 
-	echo root
+	echom string(root)
 	let cmd = printf('p4 files %s/...', root)
 
 	let data_ds = perforce#cmd#clients(port_clients, cmd)

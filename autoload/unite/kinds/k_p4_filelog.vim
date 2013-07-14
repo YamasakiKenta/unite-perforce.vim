@@ -57,7 +57,7 @@ function! s:p4_print(candidates) "{{{
 		" ファイルを出力する
 		let cmd = 'p4 '.client.'print '. perforce#get_kk(name.''.numstr)
 		call unite#print_message(cmd)
-		echo cmd
+		echom string(cmd)
 		let strs = split(perforce#system(cmd), "\n")
 
 		let file = fnamemodify(name,':t').''.file_numstr

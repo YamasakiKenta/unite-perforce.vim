@@ -30,7 +30,7 @@ function! perforce#log_file(str) "{{{
 	let strs = (type(a:str) == type([])) ? a:str :[a:str]
 
 	for str in strs
-		echo str
+		echom string(str)
 	endfor
 
 endfunction

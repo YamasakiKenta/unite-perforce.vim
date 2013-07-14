@@ -3,7 +3,7 @@ set cpo&vim
 
 function! s:get_chname_from_change(candidate, chnum, port_client) "{{{
 	let cmd  = 'p4 '.a:port_client.' change -o '.a:chnum
-	echo cmd
+	echom string(cmd)
 	let outs = split(perforce#system(cmd), "\n")
 
 	let strs = []
@@ -179,7 +179,7 @@ function! s:kind_k_p4_change_pending.action_table.edit.func(candidate) "{{{
 	let chname = s:get_chname_from_change(a:candidate, chnum, port_client)
 	let chname = input(chname.'-> ', chname)
 	if len(chname) > 0
-		echo ' '
+		echom ' '
 		let strs = split(chname, '\\n')
 		call pf_changes#make(strs, port_client, chnum)
 	endif

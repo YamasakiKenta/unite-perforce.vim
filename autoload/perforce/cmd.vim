@@ -89,7 +89,6 @@ function! perforce#cmd#clients(clients, cmd) "{{{
 
 	" message
 	call unite#print_message(string(msgs))
-	call input("")
 	return rtn_ds
 endfunction
 "}}}

@@ -5,7 +5,11 @@ let s:cache_client = {}
 let s:cache_client_root = {}
 function! s:get_outs_from_clients(port) "{{{
 
-	let port = a:port=='' ? ' ' : a:port
+	if !len(a:port)
+		return []
+	endif
+
+	let port = a:port
 
 	let outs = []
 	for user in perforce#data#get_users()
@@ -18,7 +22,12 @@ endfunction
 "}}}
 function! s:get_port_client_roots(port, root) "{{{
 
-	let port = a:port=='' ? ' ' : a:port
+	if !len(a:port)
+		return []
+	endif
+
+	let port = a:port
+	let root = a:root
 
 	" cache ‚©‚çŽæ“¾
 	if exists('s:cache_client_root[port][a:root]')
@@ -38,17 +47,17 @@ function! s:get_port_client_roots(port, root) "{{{
 		" cache‚ÌÝ’è
 		for out in outs
 			let client = matchstr(out, 'Client \zs\w\+')
-			let root   = matchstr(out, 'Client \w\+ ....\/..\/.. root \zs.\{-}\ze ''')
+			let tmp_root   = matchstr(out, 'Client \w\+ ....\/..\/.. tmp_root \zs.\{-}\ze ''')
 
-			let s:cache_client[port][port. ' -c '.client] = root
+			let s:cache_client[port][port. ' -c '.client] = tmp_root
 		endfor
 	endif
 	"}}}
 
 	" ŒŸõ
 	for port_client in keys(s:cache_client[port])
-		let root = s:cache_client[port][port_client]
-		if a:root =~ escape(root, '\\')
+		let tmp_root = s:cache_client[port][port_client]
+		if root =~ escape(tmp_root, '\\')
 			call add(s:cache_client_root[port][a:root], port_client)
 		endif
 	endfor
@@ -57,7 +66,7 @@ function! s:get_port_client_roots(port, root) "{{{
 	if exists('s:cache_client_root[port][a:root]')
 		let rtn = s:cache_client_root[port][a:root]
 	else
-		let rtn = ''
+		let rtn = []
 	endif
 
 	return rtn
@@ -65,39 +74,46 @@ function! s:get_port_client_roots(port, root) "{{{
 endfunction
 "}}}
 
-
-if exists('s:cache_ports')
-	unlet s:cache_ports
-endif
-function! s:get_all_port() "{{{
-	if !exists('s:cache_ports')
-		let ports = perforce#data#get_orig('g:unite_perforce_ports_clients').items
-		
-		call add(ports, perforce#get#cache_port())
-
-
-		call filter(ports, 'v:val =~ "-p"')
-		call map(ports, '"-p ".matchstr(v:val, ''-p\s*\zs\S*'')')
-		let uniq_port = {}
-		for port in ports
-			let uniq_port[port] = ''
-		endfor
-		let s:cache_ports = keys(uniq_port)
-	endif
-	return s:cache_ports
+function! s:get_all_port() 
+	" ‚»‚Ì‚Ü‚ÜŒÄ‚Ô‚ÆAauto ‚Æ”í‚éˆ×Aæ‚ÉÝ’è‚·‚é
+	let tmps = perforce#data#get('g:unite_perforce_ports_clients')
+	return call('perforce#get#clients#get_ports', tmps)
 endfunction
-" }}}
+
+let s:cache_file_client = {}
+function! s:get_client_from_fname(fname, clients)
+	let fname = a:fname
+	if !exists('s:cache_file_client[fname]')
+		let s:cache_file_client[fname] = {}
+	endif
+	let clients = []
+	for client in a:clients
+		if !exists('s:cache_file_client[fname][client]')
+			let cmd = 'p4 '.client.' fstat "'.fname.'"'
+			let outs = split(perforce#system(cmd), "\n")
+			let s:cache_file_client[fname][client] = ( len(outs) > 1 )
+		endif
+		if s:cache_file_client[fname][client] == 1
+			call add(clients, client)
+		endif
+	endfor
+	return clients
+endfunction
+
 function! perforce#get#auto_client#main() "{{{
 	let cd = expand("%:p:h")
 	let clients = []
 	let ports = s:get_all_port()
+
 	for port in ports
 		let tmp = s:get_port_client_roots(port, cd)
 		call extend(clients, tmp)
 	endfor
 
+	let clients = s:get_client_from_fname(expand("%:p"), clients)
+
 	if len(clients) == 0
-		echo 'use default...'
+		echom 'use default...'
 		let clients = [perforce#get#cache_client()]
 	endif
 
@@ -105,8 +121,8 @@ function! perforce#get#auto_client#main() "{{{
 endfunction
 "}}}
 "
-command! DebugPfData call s:debug()
-function! s:debug() "{{{
+command! PfDebugPfData call s:pf_debug_pf_data()
+function! s:pf_debug_pf_data() "{{{
 	if exists("g:debug")
 		unlet g:debug
 	endif
@@ -116,6 +132,11 @@ function! s:debug() "{{{
 				\ ]
 endfunction
 "}}}
+
+command! PfShowClient call s:pf_show_client()
+function! s:pf_show_client()
+	echom string(perforce#get#auto_client#main())
+endfunction
 
 if exists('s:save_cpo')
 	let &cpo = s:save_cpo

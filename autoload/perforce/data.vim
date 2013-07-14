@@ -12,7 +12,7 @@ function! s:init() "{{{
 		let s:init_flg = 1
 	endif
 
-	echo "load ..."
+	echom "load ..."
 
 	call s:perforce_init()
 
@@ -30,8 +30,6 @@ function! s:init() "{{{
 
 	call s:perforce_load()
 
-	echo 'end...'
-
 endfunction
 "}}}
 
@@ -39,7 +37,7 @@ function! s:have_unite_setting() "{{{
 	try
 		return unite_setting_ex#version()
 	catch
-		echo 'not have unite_setting.vim...'
+		echom 'not have unite_setting.vim...'
 		return 0
 	endtry
 endfunction
@@ -53,9 +51,6 @@ function! s:perforce_init(...)
 endfunction
 function! s:perforce_load(...) 
 	return call('unite_setting_ex#data#load', extend(['g:unite_pf_data'] , a:000))
-endfunction
-function! perforce#data#get_orig(...)
-	return call('unite_setting_ex#data#get_orig', extend(['g:unite_pf_data'] , a:000))
 endfunction
 
 function! perforce#data#get(valname) "{{{

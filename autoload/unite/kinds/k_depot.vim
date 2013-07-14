@@ -259,12 +259,12 @@ function! s:copy_file(depot, client, root, type) "{{{
 
 	" フォルダの作成
 	let cmd = 'mkdir "'.fnamemodify(file2,':h').'"'
-	echo 's:copy_file ->' string(cmd)
+	echom 's:copy_file ->' string(cmd)
 	call perforce#system(cmd)
 
 	" コピーする
 	let cmd = 'copy "'.file1.'" "'.file2.'"'
-	echo 's:copy_file ->' string(cmd)
+	echom 's:copy_file ->' string(cmd)
 	call perforce#system(cmd)
 
 endfunction

@@ -1,18 +1,16 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-" 引数で指定したい場合
-function! s:get_default_client()
-		return [perforce#get#cache_client()]
-endfunction
-
+" 引数が指定されている場合は、引数のクライアントを使用する
+" ない場合は、設定しているクライアントを取得する
+" global option
 function! perforce#get#clients#get_ports(...) "{{{
 	if a:0 == 0
 		let datas = s:get_unite_perforce_ports_clients()
 	else
 		let datas = a:000
 	endif
-	return s:get_ports_from_arg(datas)
+	return s:get_petern_from_arg('-p', datas)
 endfunction
 "}}}
 function! perforce#get#clients#get_clients(...) "{{{
@@ -20,14 +18,15 @@ function! perforce#get#clients#get_clients(...) "{{{
 	let mode_ = perforce#data#get('g:unite_perforce_clients')
 
 	if mode_ == 'default'
-		let clients = s:get_default_client()
+		let clients = [perforce#get#cache_client()]
 	elseif mode_ == 'port_clients'
 		if a:0 == 0
 			let clients = s:get_unite_perforce_ports_clients()
 		else
 			let clients = a:000
 		endif
-		let clients = s:get_clients_from_arg(clients)
+
+		let clients = s:get_petern_from_arg('-c', clients)
 	else 
 		let clients = ['']
 	endif
@@ -44,16 +43,12 @@ function! perforce#get#clients#get_port_clients() "{{{
 endfunction
 "}}}
 
-" 表示で使用したい場合
-function! perforce#get#clients#get_use_ports(...) "{{{
-	return call('perforce#get#clients#get_ports', a:000)
-endfunction
-"}}}
+" normal option
 function! s:get_use_clients(...) "{{{
 	let mode_ = perforce#data#get('g:unite_perforce_clients')
 
 	if mode_ == 'none'
-		let clients = s:get_default_client()
+		let clients = [perforce#get#cache_client()]
 	else
 		let clients = call('perforce#get#clients#get_clients', a:000)
 	endif
@@ -61,6 +56,9 @@ function! s:get_use_clients(...) "{{{
 	return clients
 endfunction
 "}}}
+function! perforce#get#clients#get_use_ports(...) 
+	return call('perforce#get#clients#get_ports', a:000)
+endfunction
 function! perforce#get#clients#get_use_port_clients(...) "{{{
 
 	let ports   = call('perforce#get#clients#get_use_ports',   a:000)
@@ -83,62 +81,27 @@ function! perforce#get#clients#get_use_port_clients(...) "{{{
 endfunction
 "}}}
 
+function! s:uniq(datas)
+	return filter(a:datas, 'count(a:datas[0: v:key], v:val) == 1')
+endfunction
+
 " -p, -c をつける
-function! s:get_ports_from_arg(datas) "{{{
-	let datas = a:datas
+function! s:get_petern_from_arg(ptrn, datas) "{{{
+	let rtn_datas = copy(a:datas)
+	call map(rtn_datas, 'matchstr(v:val, '''.a:ptrn.'\s\+\zs\S*'')')
+	call filter(rtn_datas, 'len(v:val)')
+	call s:uniq(rtn_datas)
 
-	let ports = []
-	for data in datas
-		let port = matchstr(data, '-p\s\+\zs\S*')
-		if len(port)
-			call add(ports, port)
-		endif
-	endfor
+	call map(rtn_datas, "' '.a:ptrn.' '.v:val.' '")
 
-	if len(ports) == 0 
-		let port = '-p '.perforce#get#PFPORT()
-		let ports = [port]
-	else
-		call map(ports, "' -p '.v:val.' '")
-	endif
-
-	return ports
+	return rtn_datas
 endfunction
 "}}}
-function! s:get_clients_from_arg(datas) "{{{
-	let datas = a:datas
-
-	let clients = []
-	for data in datas
-		let client = matchstr(data, '-c\s\+\zs\S*')
-		if len(client)
-			call add(clients, client)
-		endif
-	endfor
-
-	if len(clients) == 0 
-		let clients = [perforce#get#cache_client()]
-	else
-		call map(clients, "' -c '.v:val.' '")
-	endif
-
-	return clients
-endfunction
-"}}}
-
 function! s:get_unite_perforce_ports_clients() "{{{
 	let datas = perforce#data#get('g:unite_perforce_ports_clients')
 
-	let num = index(datas, 'auto')
-	if num != -1
-		unlet datas[num]
-		let tmp_clients = perforce#get#auto_client#main()
-
-		let tmp_dir = {}
-		for tmp_client in tmp_clients + datas
-			let tmp_dir[tmp_client] = ''
-		endfor
-		let datas = keys(tmp_dir)
+	if index(datas, 'auto') != -1
+		let datas = perforce#get#auto_client#main()
 	endif
 
 	return datas

@@ -22,8 +22,8 @@ let s:kind_clients.action_table.a_p4_client_set = {
 function! s:kind_clients.action_table.a_p4_client_set.func(candidates) "{{{
 
 	" •Û‘¶‚·‚é–¼‘O‚ÌŽæ“¾
-	echom a:candidates.action__port
-	echom a:candidates.action__clname
+	echom string(a:candidates.action__port)
+	echom string(a:candidates.action__clname)
 	let port   = matchstr(a:candidates.action__port, '-p\s*\zs\S*')
 	let clname = a:candidates.action__clname
 	

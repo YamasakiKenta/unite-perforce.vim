@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 nnoremap <PLUG>(p4_echo_client_data)
-			\ :<C-u>echo " -p " . perforce#get#PFPORT() . " -c " . perforce#get#PFCLIENTNAME() . "\n" . perforce#get#PFCLIENTPATH()<CR>|"
+			\ :<C-u>echom " -p " . perforce#get#PFPORT() . " -c " . perforce#get#PFCLIENTNAME() . "\n" . perforce#get#PFCLIENTPATH()<CR>|"
 
 nnoremap <PLUG>(p4_lcd_clentpath)
 			\ :<C-u>lcd <C-r>=perforce#get#PFCLIENTPATH()<CR><CR>|"
