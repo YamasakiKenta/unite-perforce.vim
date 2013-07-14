@@ -74,15 +74,19 @@ function! s:get_port_client_roots(port, root) "{{{
 endfunction
 "}}}
 
-function! s:get_all_port() 
+function! s:get_all_port() "{{{
 	" ÇªÇÃÇ‹Ç‹åƒÇ‘Ç∆ÅAauto Ç∆îÌÇÈà◊ÅAêÊÇ…ê›íËÇ∑ÇÈ
 	let tmps = perforce#data#get('g:unite_perforce_ports_clients')
 	return call('perforce#get#clients#get_ports', tmps)
 endfunction
+" }}}
 
 let s:cache_file_client = {}
-function! s:get_client_from_fname(fname, clients)
+function! s:get_client_from_fname(fname, clients) "{{{
 	let fname = a:fname
+	if len(fname) == 0
+		return []
+	endif
 	if !exists('s:cache_file_client[fname]')
 		let s:cache_file_client[fname] = {}
 	endif
@@ -99,6 +103,7 @@ function! s:get_client_from_fname(fname, clients)
 	endfor
 	return clients
 endfunction
+"}}}
 
 function! perforce#get#auto_client#main() "{{{
 	let cd = expand("%:p:h")
@@ -120,23 +125,6 @@ function! perforce#get#auto_client#main() "{{{
 	return clients
 endfunction
 "}}}
-"
-command! PfDebugPfData call s:pf_debug_pf_data()
-function! s:pf_debug_pf_data() "{{{
-	if exists("g:debug")
-		unlet g:debug
-	endif
-	let g:debug = [
-				\ s:cache_ports,
-				\ s:cache_client_root,
-				\ ]
-endfunction
-"}}}
-
-command! PfShowClient call s:pf_show_client()
-function! s:pf_show_client()
-	echom string(perforce#get#auto_client#main())
-endfunction
 
 if exists('s:save_cpo')
 	let &cpo = s:save_cpo
