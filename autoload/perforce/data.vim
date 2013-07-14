@@ -58,7 +58,7 @@ function! perforce#data#get_orig(...)
 	return call('unite_setting_ex#data#get_orig', extend(['g:unite_pf_data'] , a:000))
 endfunction
 
-function! perforce#data#get(valname, ...) "{{{
+function! perforce#data#get(valname) "{{{
 	if s:have_unite_setting() == 0
 		exe 'let tmp = '.a:valname
 		return tmp
