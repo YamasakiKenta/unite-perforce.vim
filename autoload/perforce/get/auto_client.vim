@@ -13,7 +13,7 @@ function! s:get_outs_from_clients(port) "{{{
 
 	let outs = []
 	for user in perforce#data#get_users()
-		let cmd = 'p4 '.port.' clients '
+		let cmd = 'p4 '.port.' clients '.user
 		call extend(outs, split(perforce#system(cmd), "\n"))
 	endfor
 
