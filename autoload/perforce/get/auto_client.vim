@@ -20,7 +20,7 @@ function! s:get_outs_from_clients(port) "{{{
 	return outs
 endfunction
 "}}}
-function! s:get_port_client_roots(port, root) "{{{
+function! s:get_port_client_from_roots(port, root) "{{{
 
 	if !len(a:port)
 		return []
@@ -80,7 +80,7 @@ function! perforce#get#auto_client#main() "{{{
 	let ports = perforce#get#clients#get_ports()
 
 	for port in ports
-		let tmp = s:get_port_client_roots(port, cd)
+		let tmp = s:get_port_client_from_roots(port, cd)
 		call extend(clients, tmp)
 	endfor
 
