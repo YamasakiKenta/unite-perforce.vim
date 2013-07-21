@@ -12,12 +12,18 @@ function! s:get_outs_from_clients(port) "{{{
 	let port = a:port
 
 	let outs = []
+	let max = perforce#data#get_max()
 	for user in perforce#data#get_users()
-		let cmd = 'p4 '.port.' clients '.user
+		let cmd = 'p4 '.port.' clients '.user.' '.max
 		call extend(outs, split(perforce#system(cmd), "\n"))
 	endfor
 
 	return outs
+endfunction
+"}}}
+function! s:set_cache_port_root_init(port, root) "{{{
+	let s:cache_client_root[a:port] = get(s:cache_client_root, a:port, {})
+	let s:cache_client_root[a:port][a:root] = []
 endfunction
 "}}}
 function! s:get_port_client_from_roots(port, root) "{{{
@@ -26,16 +32,16 @@ function! s:get_port_client_from_roots(port, root) "{{{
 		return []
 	endif
 
-	let port = a:port
-	let root = a:root
-
 	" cache Ç©ÇÁéÊìæ
-	if exists('s:cache_client_root[port][a:root]')
-		return s:cache_client_root[port][a:root]
+	if exists('s:cache_client_root[a:port][a:root]')
+		return s:cache_client_root[a:port][a:root]
 	endif
 
-	let s:cache_client_root[port] = get(s:cache_client_root, port, {})
-	let s:cache_client_root[port][a:root] = []
+	" cache ÇÃèâä˙âª
+	call s:set_cache_port_root_init(a:port, a:root)
+
+	let port = a:port
+	let root = a:root
 
 	" perforce Ç©ÇÁéÊìæ
 	if !exists('s:cache_client[port]') "{{{
