@@ -81,30 +81,6 @@ function! s:get_all_port() "{{{
 endfunction
 " }}}
 
-let s:cache_file_client = {}
-function! s:get_client_from_fname(fname, clients) "{{{
-	let fname = a:fname
-	if len(fname) == 0
-		return []
-	endif
-	if !exists('s:cache_file_client[fname]')
-		let s:cache_file_client[fname] = {}
-	endif
-	let clients = []
-	for client in a:clients
-		if !exists('s:cache_file_client[fname][client]')
-			let cmd = 'p4 '.client.' fstat "'.fname.'"'
-			let outs = split(perforce#system(cmd), "\n")
-			let s:cache_file_client[fname][client] = ( len(outs) > 1 )
-		endif
-		if s:cache_file_client[fname][client] == 1
-			call add(clients, client)
-		endif
-	endfor
-	return clients
-endfunction
-"}}}
-
 function! perforce#get#auto_client#main() "{{{
 	let cd = expand("%:p:h")
 	let clients = []
@@ -115,8 +91,7 @@ function! perforce#get#auto_client#main() "{{{
 		call extend(clients, tmp)
 	endfor
 
-	let clients = s:get_client_from_fname(expand("%:p"), clients)
-
+	" file Š‚ÌŠm”F‚ÍŠÔ‚©‚ª‚©‚©‚éˆ×A•Û—¯
 	if len(clients) == 0
 		echom 'use default...'
 		let clients = [perforce#get#cache_client()]
