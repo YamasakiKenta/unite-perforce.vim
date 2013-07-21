@@ -74,17 +74,10 @@ function! s:get_port_client_roots(port, root) "{{{
 endfunction
 "}}}
 
-function! s:get_all_port() "{{{
-	" ÇªÇÃÇ‹Ç‹åƒÇ‘Ç∆ÅAauto Ç∆îÌÇÈà◊ÅAêÊÇ…ê›íËÇ∑ÇÈ
-	let tmps = perforce#data#get('g:unite_perforce_ports_clients')
-	return call('perforce#get#clients#get_ports', tmps)
-endfunction
-" }}}
-
 function! perforce#get#auto_client#main() "{{{
 	let cd = expand("%:p:h")
 	let clients = []
-	let ports = s:get_all_port()
+	let ports = perforce#get#clients#get_ports()
 
 	for port in ports
 		let tmp = s:get_port_client_roots(port, cd)
@@ -96,6 +89,8 @@ function! perforce#get#auto_client#main() "{{{
 		echom 'use default...'
 		let clients = [perforce#get#cache_client()]
 	endif
+
+	call vimconsole#log(clients)
 
 	return clients
 endfunction
