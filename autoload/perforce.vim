@@ -165,6 +165,45 @@ function! perforce#show(str) "{{{
 endfunction
 "}}}
 
+function! perforce#system_dict(cmd) "{{{
+	" ********************************************************************************
+	" @par スクリプト用のコマンドを実行する
+	" @param[in]     
+	" @return perforce の辞書型      
+	" ********************************************************************************
+	"
+	let cmd = substitute(a:cmd, 'p4', 'p4 -s -G', '')
+	let outputs = split(perforce#system(cmd), "\n")[:-2]
+
+	let start_key = matchstr(outputs[0], ' \zs[^ ]*')
+
+	for i in range(0, len(outputs)-1)
+		let outputs[i] = substitute(outputs[i], 
+					\ 'info1: \(.\{-}\) \(.*\)',
+					\ '''\1'':''\2'',',
+					\ '')
+	endfor
+
+	" 行数の取得
+	let step = 1
+	while(outputs[step] !~ "'".start_key."':")
+		let step = step + 1
+	endwhile
+
+	" 少し修正
+	for i in range(step, len(outputs)-1, step)
+		let outputs[i] = '},{'.outputs[i]
+	endfor
+
+	let str = '[{'.join(outputs).'}]'
+
+	exe 'let rtns = '.str
+
+	return rtns
+endfunction
+"}}}
+
+
 function! perforce#system(cmd)
 	" [2013-07-06 10:38]
 	if exists('s:exists_vimproc')
