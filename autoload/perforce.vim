@@ -173,6 +173,7 @@ function! perforce#system_dict(cmd) "{{{
 	" ********************************************************************************
 	"
 	let cmd = substitute(a:cmd, 'p4', 'p4 -s -G', '')
+	call unite#print_message(cmd)
 	let outputs = split(perforce#system(cmd), "\n")[:-2]
 
 	let start_key = matchstr(outputs[0], ' \zs[^ ]*')
@@ -197,7 +198,7 @@ function! perforce#system_dict(cmd) "{{{
 
 	let str = '[{'.join(outputs).'}]'
 
-	exe 'let rtns = '.str
+	let rtns = eval(str)
 
 	return rtns
 endfunction

@@ -24,26 +24,18 @@ function! s:source_p4_clients.gather_candidates(args, context)
 
 	let max    = perforce#data#get_max()
 	let users = perforce#data#get_users()
-	let datas  = []
-	for user in users
-		call extend(datas, perforce#cmd#clients(use_ports, 'p4 clients '.user.' '.max))
-	endfor
-
 	let candidates = []
-	for data in datas
-		let port = data.client
-		if get(data.outs, 0, 'ERROR') == 'ERROR'
-			call add(candidates, {
-						\ 'word' : port.' - ERROR',
-						\ 'kind' : 'common',
-						\ })
-		else
-			call extend(candidates, map(deepcopy(data['outs']), "{
-						\ 'word'           : port.' -c '.s:get_client_name_from_clients(v:val),
-						\ 'action__clname' : s:get_client_name_from_clients(v:val),
-						\ 'action__port'   : port,
-						\ }"))
-		endif
+	for port in use_ports 
+		for user in users
+			let tmp_datas = perforce#system_dict('p4 '.port.' clients '.user.' '.max)
+			for data in tmp_datas
+				call add(candidates, {
+							\ 'word'           : '-h '.data.Host.''.port.' -c '.data.client,
+							\ 'action__clname' : data.client,
+							\ 'action__port'   : port,
+							\ })
+			endfor
+		endfor
 	endfor
 
 	return candidates
