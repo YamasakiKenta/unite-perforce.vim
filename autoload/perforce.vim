@@ -165,7 +165,7 @@ function! perforce#show(str) "{{{
 endfunction
 "}}}
 
-function! perforce#system_dict(cmd) "{{{
+function! perforce#system_dict(port, cmd) "{{{
 	" ********************************************************************************
 	" @par スクリプト用のコマンドを実行する
 	" @param[in]     
@@ -193,10 +193,10 @@ function! perforce#system_dict(cmd) "{{{
 
 	" 少し修正
 	for i in range(step, len(outputs)-1, step)
-		let outputs[i] = '},{'.outputs[i]
+		let outputs[i] = '"port":a:port},{'.outputs[i]
 	endfor
 
-	let str = '[{'.join(outputs).'}]'
+	let str = '[{'.join(outputs).'"port":a:port}]'
 
 	let rtns = eval(str)
 

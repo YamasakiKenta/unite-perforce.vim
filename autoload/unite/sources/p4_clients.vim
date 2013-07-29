@@ -27,12 +27,12 @@ function! s:source_p4_clients.gather_candidates(args, context)
 	let candidates = []
 	for port in use_ports 
 		for user in users
-			let tmp_datas = perforce#system_dict('p4 '.port.' clients '.user.' '.max)
+			let tmp_datas = perforce#system_dict(port, 'p4 '.port.' clients '.user.' '.max)
 			for data in tmp_datas
 				call add(candidates, {
-							\ 'word'           : '-h '.data.Host.''.port.' -c '.data.client,
+							\ 'word'           : '-h '.data.Host.''.data.port.' -c '.data.client,
 							\ 'action__clname' : data.client,
-							\ 'action__port'   : port,
+							\ 'action__port'   : data.port,
 							\ })
 			endfor
 		endfor
