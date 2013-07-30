@@ -6,7 +6,7 @@ set cpo&vim
 " global option
 function! perforce#get#clients#get_ports(...) "{{{
 	if a:0 == 0
-		let datas = perforce#data#get('g:unite_perforce_ports_clients')
+		let datas = perforce#data#get('g:unite_perforce_ports')
 	else
 		let datas = a:000
 	endif
@@ -45,7 +45,7 @@ endfunction
 
 " normal option
 function! s:get_use_clients(...) "{{{
-	let mode_ = perforce#data#get('g:unite_perforce_clients')
+	let mode_ = perforce#data#get('g:unite_perforce_args_clients')
 
 	if mode_ == 'none'
 		let clients = [perforce#get#cache_client()]
@@ -98,11 +98,18 @@ function! s:get_petern_from_arg(ptrn, datas) "{{{
 endfunction
 "}}}
 function! s:get_unite_perforce_ports_clients() "{{{
-	let datas = perforce#data#get('g:unite_perforce_ports_clients')
+	let ports = perforce#data#get('g:unite_perforce_ports')
+	let clients = perforce#data#get('g:unite_perforce_clients')
 
-	if index(datas, 'auto') != -1
+	if index(clients, 'auto') != -1
 		let datas = perforce#get#auto_client#main()
 	endif
+
+	for port in ports
+	for client in clients
+		let servers = '-p '.pot
+	endfor
+	endfor
 
 	return datas
 endfunction

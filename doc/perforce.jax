@@ -44,8 +44,8 @@ Commands					*unite-perforce-commands*
 ------------------------------------------------------------------------------
 Variables						*unite-perforce-variables*
 
-g:unite_perforce_clients *g:unite_perforce_clients*
-	let g:unite_perforce_clients = 'none'
+g:unite_perforce_args_clients *g:unite_perforce_args_clients*
+	let g:unite_perforce_args_clients = 'none'
 
 g:unite_perforce_filters *g:unite_perforce_filters*
 	let g:unite_perforce_filters = ['tag', 'snip']
@@ -55,9 +55,6 @@ g:unite_perforce_show_max *g:unite_perforce_show_max*
 
 g:unite_perforce_diff_tool *g:unite_perforce_diff_tool*
 	let g:unite_perforce_diff_tool = 'vimdiff'
-
-g:unite_perforce_ports_clients *g:unite_perforce_ports_clients*
-	let g:unite_perforce_ports_clients = ['-p localhost:2013', '-p localhost:1819']
 
 g:unite_perforce_username *g:unite_perforce_username*
 	let g:unite_perforce_username = []

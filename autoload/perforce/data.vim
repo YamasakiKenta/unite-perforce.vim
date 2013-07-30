@@ -16,8 +16,9 @@ function! s:init() "{{{
 
 	call s:perforce_init()
 
-	call s:perforce_add( 'g:unite_perforce_ports_clients', {'nums' : [0,1], 'items' : ['auto', '-p localhost:1819', '-p localhost:2013'], 'consts' : [0] }) 
-	call s:perforce_add( 'g:unite_perforce_clients'      , {'nums' : [0],   'items' : ['none', 'default', 'port_clients'], 'consts' : [-1] })
+	call s:perforce_add( 'g:unite_perforce_ports'        , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']})
+	call s:perforce_add( 'g:unite_perforce_clients'      , {'nums' : [0],   'items' : ['auto'], 'consts' : [0] }) 
+	call s:perforce_add( 'g:unite_perforce_args_clients' , {'nums' : [0],   'items' : ['none', 'default', 'port_clients'], 'consts' : [-1] })
 	call s:perforce_add( 'g:unite_perforce_filters'      , {'nums' : [0,1], 'items' : ['tag', 'snip']})
 	call s:perforce_add( 'g:unite_perforce_show_max'     , {'nums' : [0],   'items' : [0, 5, 10],                   'consts' : [0]})
 	call s:perforce_add( 'g:unite_perforce_diff_tool'    , {'nums' : [0],   'items' : ['vimdiff', 'WinMergeU'],     'consts' : [0]}) 
@@ -80,8 +81,6 @@ function! perforce#data#get_users() "{{{
 	call map(users, "' -u '.v:val.' '")
 
 	if len(users) == 0
-		"let user = perforce#get#PFUSER()
-		"let users = [user]
 		let users = ['']
 	endif
 
