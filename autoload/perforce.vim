@@ -176,6 +176,10 @@ function! perforce#system_dict(port, cmd) "{{{
 	call unite#print_message(cmd)
 	let outputs = split(perforce#system(cmd), "\n")[:-2]
 
+	if len(outputs) <= 0
+		return []
+	endif
+
 	let start_key = matchstr(outputs[0], ' \zs[^ ]*')
 
 	for i in range(0, len(outputs)-1)
