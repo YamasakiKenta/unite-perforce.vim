@@ -16,8 +16,8 @@ function! s:init() "{{{
 
 	call s:perforce_init()
 
-	call s:perforce_add( 'g:unite_perforce_ports'        , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']})
-	call s:perforce_add( 'g:unite_perforce_clients'      , {'nums' : [0],   'items' : ['auto'], 'consts' : [0] }) 
+	call s:perforce_add( 'g:unite_perforce_ports'        , {'nums' : [0,1], 'items' : ['localhost:1819', 'localhost:2013']})
+	call s:perforce_add( 'g:unite_perforce_clients'      , {'nums' : [],   'items' : ['auto'], 'consts' : [0] }) 
 	call s:perforce_add( 'g:unite_perforce_args_clients' , {'nums' : [0],   'items' : ['none', 'default', 'port_clients'], 'consts' : [-1] })
 	call s:perforce_add( 'g:unite_perforce_filters'      , {'nums' : [0,1], 'items' : ['tag', 'snip']})
 	call s:perforce_add( 'g:unite_perforce_show_max'     , {'nums' : [0],   'items' : [0, 5, 10],                   'consts' : [0]})
@@ -56,8 +56,7 @@ endfunction
 
 function! perforce#data#get(valname) "{{{
 	if s:have_unite_setting() == 0
-		exe 'let tmp = '.a:valname
-		return tmp
+		return eval(a:valname)
 	else
 		call s:init()
 		return unite_setting_ex#data#get('g:unite_pf_data', a:valname)
