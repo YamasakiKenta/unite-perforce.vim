@@ -20,6 +20,7 @@ function! perforce#get#clients#get_clients(...) "{{{
 	if mode_ == 'default'
 		let clients = [perforce#get#cache_client()]
 	elseif mode_ == 'port_clients'
+		echom string(a:000)
 		if a:0 == 0
 			let clients = s:get_unite_perforce_ports_clients()
 		else

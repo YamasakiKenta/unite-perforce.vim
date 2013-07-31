@@ -9,16 +9,29 @@ function! s:get_outs_from_clients(port) "{{{
 		return []
 	endif
 
-	let port = a:port
+	if 0
 
-	let outs = []
-	let max = perforce#data#get_max()
-	for user in perforce#data#get_users()
-		let cmd = 'p4 '.port.' clients '.user.' '.max
-		call extend(outs, split(perforce#system(cmd), "\n"))
-	endfor
+		let outs = []
+		let max = perforce#data#get_max()
+		for user in perforce#data#get_users()
+			let cmd = 'p4 '.a:port.' clients '.user.' '.max
+			call extend(outs, split(perforce#system(cmd), "\n"))
+		endfor
 
-	return outs
+		return outs
+	else
+		let rtns = []
+		let max = perforce#data#get_max()
+		let port = a:port
+		let port = substitute(port, '-p', '', '')
+		let port = substitute(port, ' ', '', 'g')
+		for user in perforce#data#get_users()
+			let cmd = 'p4 '.a:port.' clients '.user.' '.max
+			call extend(rtns, perforce#system_dict(port, cmd))
+		endfor
+
+		return rtns
+	endif
 endfunction
 "}}}
 function! s:set_cache_port_root_init(port, root) "{{{
@@ -52,19 +65,18 @@ function! s:get_port_client_from_roots(port, root) "{{{
 
 		" cache‚Ìİ’è
 		for out in outs
-			let client = matchstr(out, 'Client \zs\w\+')
-			let tmp_root   = matchstr(out, 'Client \w\+ ....\/..\/.. tmp_root \zs.\{-}\ze ''')
-
-			let s:cache_client[port][port. ' -c '.client] = tmp_root
+			let client   = out.client
+			let tmp_root = out.Root
+			let s:cache_client[port][client] = tmp_root
 		endfor
 	endif
 	"}}}
 
 	" ŒŸõ
-	for port_client in keys(s:cache_client[port])
-		let tmp_root = s:cache_client[port][port_client]
-		if root =~ escape(tmp_root, '\\')
-			call add(s:cache_client_root[port][a:root], port_client)
+	for client in keys(s:cache_client[port])
+		let tmp_root = s:cache_client[port][client]
+		if len(tmp_root) > 0 && root =~ escape(tmp_root, '\\') 
+			call add(s:cache_client_root[port][a:root], client)
 		endif
 	endfor
 
@@ -87,7 +99,7 @@ function! perforce#get#auto_client#main() "{{{
 
 	for port in ports
 		let tmp = s:get_port_client_from_roots(port, cd)
-		call extend(clients, tmp)
+		call extend(clients, map(tmp, 'port." -c ".v:val'))
 	endfor
 
 	" file Š‚ÌŠm”F‚ÍŠÔ‚©‚ª‚©‚©‚éˆ×A•Û—¯
@@ -96,7 +108,8 @@ function! perforce#get#auto_client#main() "{{{
 		let clients = [perforce#get#cache_client()]
 	endif
 
-	call vimconsole#log(clients)
+	echo clients
+	call input("")
 
 	return clients
 endfunction

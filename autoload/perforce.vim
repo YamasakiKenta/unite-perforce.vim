@@ -49,7 +49,7 @@ function! perforce#matomeDiffs(...) "{{{
 
 		" ì‹Æ’†‚Ìƒtƒ@ƒCƒ‹
 		if outs[0] =~ '\*pending\*' || chnum == 'default'
-			let cmd = 'p4 opened -c '.chnum
+			let cmd = 'p4 opened -c '.chnum " args
 			let files_ = split(perforce#system(cmd), "\n")
 			call map(files_, "perforce#get#depot#from_opened(v:val)")
 
