@@ -14,9 +14,9 @@ function! perforce#get#clients#get_ports(...) "{{{
 	endif
 endfunction
 "}}}
-function! perforce#get#clients#get_clients(...) "{{{
+function! perforce#get#clients#get_args_clients(...) "{{{
 
-	let mode_ = perforce#data#get('g:unite_perforce_clients')
+	let mode_ = perforce#data#get('g:unite_perforce_args_clients')
 
 	if mode_ == 'default'
 		let clients = [perforce#get#cache_client()]
@@ -31,6 +31,19 @@ function! perforce#get#clients#get_clients(...) "{{{
 	else 
 		let clients = ['']
 	endif
+
+	return  clients
+endfunction
+"}}}
+function! perforce#get#clients#get_clients(...) "{{{
+
+	if a:0 == 0
+		let clients = s:get_unite_perforce_ports_clients()
+	else
+		let clients = a:000
+	endif
+
+	let clients = s:get_petern_from_arg('-c', clients)
 
 	return  clients
 endfunction
@@ -57,13 +70,14 @@ function! s:get_use_clients(...) "{{{
 	return clients
 endfunction
 "}}}
-function! perforce#get#clients#get_use_ports(...) 
+function! perforce#get#clients#get_use_ports(...) "{{{
 	return call('perforce#get#clients#get_ports', a:000)
 endfunction
+"}}}
 function! perforce#get#clients#get_use_port_clients(...) "{{{
 
-	let ports   = call('perforce#get#clients#get_use_ports',   a:000)
-	let clients = call('s:get_use_clients',             a:000)
+	let ports   = call('perforce#get#clients#get_use_ports' , a:000)
+	let clients = call('s:get_use_clients'                  , a:000)
 
 	let port_clients = []
 	for port in ports
@@ -102,17 +116,19 @@ function! s:get_unite_perforce_ports_clients() "{{{
 	let ports = perforce#data#get('g:unite_perforce_ports')
 	let clients = perforce#data#get('g:unite_perforce_clients')
 
-	if index(clients, 'auto') != -1
-		let datas = perforce#get#auto_client#main()
+	let cache_index = index(clients, 'auto')
+	if cache_index != -1
+		unlet clients(cache_index)
+		call extend(clients, perforce#get#auto_client#main())
 	endif
 
 	for port in ports
-	for client in clients
-		let servers = '-p '.pot
-	endfor
+		for client in clients
+			let servers = ' -p '.port.' -c '.client
+		endfor
 	endfor
 
-	return datas
+	return servers
 endfunction
 "}}}
 
