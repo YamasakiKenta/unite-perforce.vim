@@ -7,6 +7,7 @@ set cpo&vim
 function! perforce#get#clients#get_ports(...) "{{{
 	if a:0 == 0
 		let datas = perforce#data#get('g:unite_perforce_ports')
+		call map(datas, '"-p ".v:val')
 		return datas
 	else
 		return s:get_petern_from_arg('-p', a:000)
