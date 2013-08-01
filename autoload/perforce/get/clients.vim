@@ -16,21 +16,13 @@ endfunction
 function! perforce#get#clients#get_clients(...) "{{{
 
 	let mode_ = perforce#data#get('g:unite_perforce_clients')
-
-	if mode_ == 'default'
-		let clients = [perforce#get#cache_client()]
-	elseif mode_ == 'port_clients'
-		echom string(a:000)
-		if a:0 == 0
-			let clients = s:get_unite_perforce_ports_clients()
-		else
-			let clients = a:000
-		endif
-
-		let clients = s:get_petern_from_arg('-c', clients)
-	else 
-		let clients = ['']
+	if a:0 == 0
+		let clients = s:get_unite_perforce_ports_clients()
+	else
+		let clients = a:000
 	endif
+
+	let clients = s:get_petern_from_arg('-c', clients)
 
 	return  clients
 endfunction
@@ -86,6 +78,29 @@ endfunction
 function! s:uniq(datas)
 	return filter(a:datas, 'count(a:datas[0: v:key], v:val) == 1')
 endfunction
+
+function! perforce#get#clients#get_args_clients(...) "{{{
+
+	let mode_ = perforce#data#get('g:unite_perforce_clients')
+
+	if mode_ == 'default'
+		let clients = [perforce#get#cache_client()]
+	elseif mode_ == 'port_clients'
+		echom string(a:000)
+		if a:0 == 0
+			let clients = s:get_unite_perforce_ports_clients()
+		else
+			let clients = a:000
+		endif
+
+		let clients = s:get_petern_from_arg('-c', clients)
+	else  " mode_ == 'none'
+		let clients = ['']
+	endif
+
+	return  clients
+endfunction
+"}}}
 
 " -p, -c ‚ð‚Â‚¯‚é
 function! s:get_petern_from_arg(ptrn, datas) "{{{

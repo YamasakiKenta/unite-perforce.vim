@@ -42,7 +42,7 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 	endif
 
 
-	let clients          = call('perforce#get#clients#get_clients'          , datas)
+	let clients          = call('perforce#get#clients#get_args_clients'     , datas)
 	let ports            = call('perforce#get#clients#get_ports'            , datas)
 	let use_port_clients = call('perforce#get#clients#get_use_port_clients' , datas)
 
