@@ -102,22 +102,6 @@ function! perforce#data#get_max() "{{{
 endfunction
 "}}}
 
-function! perforce#data#get_clients(...) 
-	return call('perforce#get#clients#get_clients', a:000)
-endfunction
-function! perforce#data#get_port_clients() 
-	return call('perforce#get#clients#get_port_clients', a:000)
-endfunction
-function! perforce#data#get_ports(...) 
-	return call('perforce#get#clients#get_ports', a:000)
-endfunction
-function! perforce#data#get_use_port_clients(...) 
-	return call('perforce#get#clients#get_use_port_clients', a:000)
-endfunction
-function! perforce#data#get_use_ports(...) 
-	return call('perforce#get#clients#get_use_ports', a:000)
-endfunction
-
 if exists('s:save_cpo')
 	let &cpo = s:save_cpo
 	unlet s:save_cpo

@@ -110,7 +110,7 @@ function! perforce#get#auto_client#main() "{{{
 	endif
 
 	echo clients
-	call input("")
+	" call input("")
 
 	return clients
 endfunction

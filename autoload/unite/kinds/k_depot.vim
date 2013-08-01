@@ -11,7 +11,7 @@ function! s:get_port_client_files(candidates) "{{{
 	" @return        { port_client = [file] }
 	" ********************************************************************************
 	let file_d = {}
-	let default_port_clients = perforce#data#get_use_port_clients()
+	let default_port_clients = perforce#get#clients#get_use_port_clients()
 	for candidate in a:candidates
 
 		if exists('candidate.action__client')

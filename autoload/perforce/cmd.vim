@@ -19,7 +19,7 @@ function! s:is_p4_haves_client(files) "{{{
 	" false.{port_client}[]   = '' - not have file name
 	" ********************************************************************************
 	"
-	let port_clients = perforce#data#get_port_clients()
+	let port_clients = perforce#get#clients#get_port_clients()
 	let rtn_client_d = {}
 
 	let rtns_d = {
@@ -114,7 +114,7 @@ endfunction
 "}}}
 
 function! perforce#cmd#use_ports(cmd) "{{{
-	let use_ports = perforce#data#get_use_ports()
+	let use_ports = perforce#get#clients#get_use_ports()
 	return perforce#cmd#clients(use_ports, a:cmd)
 endfunction
 "}}}
@@ -124,7 +124,7 @@ function! perforce#cmd#use_ports_max(cmd) "{{{
 endfunction
 "}}}
 function! perforce#cmd#use_port_clients(cmd) "{{{
-	let use_port_clients = perforce#data#get_use_port_clients()
+	let use_port_clients = perforce#get#clients#get_use_port_clients()
 	return perforce#cmd#clients(use_port_clients, a:cmd)
 endfunction
 "}}}

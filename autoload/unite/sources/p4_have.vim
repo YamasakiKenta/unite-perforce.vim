@@ -25,7 +25,7 @@ function! s:get_datas_from_p4_have(str, reset_flg) "{{{
 	let str = a:str
 	let candidates = []
 
-	let port_clients = perforce#data#get_use_port_clients()
+	let port_clients = perforce#get#clients#get_use_port_clients()
 
 	for port_client in port_clients
 		if !exists('s:p4_have_cache[port_client]') || a:reset_flg == 1

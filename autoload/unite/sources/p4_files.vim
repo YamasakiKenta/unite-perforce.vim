@@ -13,7 +13,7 @@ let s:source_p4_files = {
 			\ }
 function! s:source_p4_files.gather_candidates(args, context) "{{{
 
-	let port_clients = perforce#data#get_use_port_clients()
+	let port_clients = perforce#get#clients#get_use_port_clients()
 	let root = get(a:args, 0, '/')
 	let root = substitute(root, '\\', '/', 'g')
 

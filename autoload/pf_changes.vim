@@ -42,9 +42,9 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 	endif
 
 
-	let clients          = call('perforce#data#get_clients'          , datas)
-	let ports            = call('perforce#data#get_ports'            , datas)
-	let use_port_clients = call('perforce#data#get_use_port_clients' , datas)
+	let clients          = call('perforce#get#clients#get_clients'          , datas)
+	let ports            = call('perforce#get#clients#get_ports'            , datas)
+	let use_port_clients = call('perforce#get#clients#get_use_port_clients' , datas)
 
 	call s:get_port_clients(use_port_clients)
 
@@ -153,7 +153,7 @@ endfunction
 "}}}
 " === kind ===
 
-let s:port_clients = perforce#data#get_use_port_clients()
+let s:port_clients = perforce#get#clients#get_use_port_clients()
 function! s:get_port_clients(...) "{{{
 	if exists('a:1')
 		let s:port_clients = a:1

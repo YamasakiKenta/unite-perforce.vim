@@ -20,7 +20,7 @@ function! s:source_p4_clients.gather_candidates(args, context)
 	" クライアントを表示する
 	" ********************************************************************************
 
-	let use_ports = perforce#data#get_use_ports()
+	let use_ports = perforce#get#clients#get_use_ports()
 
 	let max    = perforce#data#get_max()
 	let users = perforce#data#get_users()

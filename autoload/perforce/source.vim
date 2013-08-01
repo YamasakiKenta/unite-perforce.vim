@@ -35,8 +35,8 @@ function! perforce#source#get_data_client(type, key, args) "{{{
 	for data_d in data_ds
 		let tmp_clients      = exists("data_d.client") ? [data_d.client] : []
 		let key_data         = exists('data_d[a:key]') ? a:type.''.data_d[a:key] : ''
-		let use_ports        = call('perforce#data#get_use_ports'        , tmp_clients)
-		let use_port_clients = call('perforce#data#get_use_port_clients' , tmp_clients)
+		let use_ports        = call('perforce#get#clients#get_use_ports'        , tmp_clients)
+		let use_port_clients = call('perforce#get#clients#get_use_port_clients' , tmp_clients)
 
 		call add(rtn_ds, {
 					\ a:key              : key_data,
