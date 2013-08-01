@@ -15,7 +15,6 @@ endfunction
 "}}}
 function! perforce#get#clients#get_clients(...) "{{{
 
-	let mode_ = perforce#data#get('g:unite_perforce_args_clients')
 	if a:0 == 0
 		let clients = s:get_unite_perforce_ports_clients()
 	else
@@ -38,15 +37,7 @@ endfunction
 
 " normal option
 function! s:get_use_clients(...) "{{{
-	let mode_ = perforce#data#get('g:unite_perforce_args_clients')
-
-	if mode_ == 'none'
-		let clients = [perforce#get#cache_client()]
-	else
-		let clients = call('perforce#get#clients#get_clients', a:000)
-	endif
-
-	return clients
+	return call('perforce#get#clients#get_clients', a:000)
 endfunction
 "}}}
 function! perforce#get#clients#get_use_ports(...) "{{{
