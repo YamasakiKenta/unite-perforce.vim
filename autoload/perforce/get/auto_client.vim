@@ -10,7 +10,6 @@ function! s:get_outs_from_clients(port) "{{{
 	endif
 
 	if 0
-
 		let outs = []
 		let max = perforce#data#get_max()
 		for user in perforce#data#get_users()
@@ -63,6 +62,8 @@ function! s:get_port_client_from_roots(port, root) "{{{
 		" クライアントの取得
 		let outs = s:get_outs_from_clients(port)
 
+		" echom string(outs)
+
 		" cacheの設定
 		for out in outs
 			let client   = out.client
@@ -99,7 +100,7 @@ function! perforce#get#auto_client#main() "{{{
 
 	for port in ports
 		let tmp = s:get_port_client_from_roots(port, cd)
-		call extend(clients, map(tmp, 'port." -c ".v:val'))
+		call extend(clients, map(copy(tmp), 'port." -c ".v:val'))
 	endfor
 
 	" file 所持の確認は時間かがかかる為、保留
