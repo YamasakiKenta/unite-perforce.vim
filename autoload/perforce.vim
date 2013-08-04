@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:get_dd(str) "{{{
-" [2013-06-07 00:36]
+	" [2013-06-07 00:36]
 	return len(a:str) ? '//...'.perforce#get_kk(a:str).'...' : ''
 endfunction
 "}}}
@@ -39,7 +39,7 @@ function! perforce#matomeDiffs(...) "{{{
 	" ********************************************************************************
 	" @param[in]    ...  チェンジリスト
 	" ********************************************************************************
-" [2013-06-07 00:58]
+	" [2013-06-07 00:58]
 	let datas = []
 
 	for chnum in a:000
@@ -96,7 +96,7 @@ function! perforce#matomeDiffs(...) "{{{
 				let datas[-1].changeds = a > b ? a : b
 			endif
 		endfor
-	"}}}
+		"}}}
 	endfor
 	"
 	"データの出力 {{{
@@ -110,7 +110,7 @@ function! perforce#matomeDiffs(...) "{{{
 endfunction
 "}}}
 function! perforce#pfFind(...) "{{{
-" [2013-06-07 01:00]
+	" [2013-06-07 01:00]
 	if a:0 == 0
 		let str  = input('Find : ')
 	else
@@ -129,14 +129,14 @@ function! perforce#unite_args(source) "{{{
 	" @param[in]	source	コマンド
 	"********************************************************************
 
-		" スペース対策
-		let file_ = expand("%:p")
-		let file_ = substitute(file_ , '\\' , '\/'  , 'g')
-		let file_ = substitute(file_ , ':'  , '\\:' , 'g')
-		let file_ = substitute(file_ , ' '  , '\\ ' , 'g')
+	" スペース対策
+	let file_ = expand("%:p")
+	let file_ = substitute(file_ , '\\' , '\/'  , 'g')
+	let file_ = substitute(file_ , ':'  , '\\:' , 'g')
+	let file_ = substitute(file_ , ' '  , '\\ ' , 'g')
 
-		let cmd = 'Unite '.a:source.':'.file_
-		exe cmd
+	let cmd = 'Unite '.a:source.':'.file_
+	exe cmd
 
 endfunction
 "}}}
@@ -182,16 +182,28 @@ function! perforce#system_dict(port, cmd) "{{{
 
 	let start_key = matchstr(outputs[0], ' \zs[^ ]*')
 
-	for i in range(0, len(outputs)-1)
+	let i = 0
+	let max = len(outputs)
+	while ( i < max ) 
+		let tmp = outputs[i]
 		let outputs[i] = substitute(outputs[i], 
 					\ 'info1: \(.\{-}\) \(.*\)',
 					\ '''\1'':''\2'',',
 					\ '')
-	endfor
+
+		if tmp =~ 'info1: Description '
+			while i+1 < max && outputs[i+1] !~ 'info1: client '
+				unlet outputs[i+1]
+				let max = max - 1
+			endwhile
+		endif
+
+		let i = i + 1
+	endwhile
 
 	" 行数の取得
 	let step = 1
-	while(outputs[step] !~ "'".start_key."':")
+	while(step < max && outputs[step] !~ "'".start_key."':")
 		let step = step + 1
 	endwhile
 
@@ -202,12 +214,12 @@ function! perforce#system_dict(port, cmd) "{{{
 
 	let str = '[{'.join(outputs).'"port":a:port}]'
 
+	let @+ = str
 	let rtns = eval(str)
 
 	return rtns
 endfunction
 "}}}
-
 
 function! perforce#system(cmd)
 	" [2013-07-06 10:38]
