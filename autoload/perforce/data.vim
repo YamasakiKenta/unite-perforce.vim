@@ -22,9 +22,8 @@ function! s:init() "{{{
 	"New
 	"
 
-	call s:perforce_add( 'g:unite_perforce_gpot_ports'   , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']})
+	call s:perforce_add( 'g:unite_perforce_gopt_ports'   , {'nums' : [0,1], 'items' : ['-p localhost:1819', '-p localhost:2013']})
 	call s:perforce_add( 'g:unite_perforce_gopt_clients' , {'nums' : [],    'items' : ['auto'], 'consts' : [0] }) 
-	call s:perforce_add( 'g:unite_perforce_ports_clients', {'nums' : [0,1], 'items' : ['auto', '-p localhost:1819', '-p localhost:2013'], 'consts' : [0] }) 
 	call s:perforce_add( 'g:unite_perforce_args_clients' , {'nums' : [0],   'items' : ['none', 'default', 'port_clients'], 'consts' : [-1] })
 	call s:perforce_add( 'g:unite_perforce_filters'      , {'nums' : [0,1], 'items' : ['tag', 'snip']})
 	call s:perforce_add( 'g:unite_perforce_show_max'     , {'nums' : [0],   'items' : [0, 5, 10],                   'consts' : [0]})
