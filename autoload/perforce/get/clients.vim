@@ -6,7 +6,7 @@ set cpo&vim
 " global option
 function! perforce#get#clients#get_ports(...) "{{{
 	if a:0 == 0
-		let datas = perforce#data#get('g:unite_perforce_gpot_ports')
+		let datas = perforce#data#get('g:unite_perforce_gopt_ports')
 	else
 		let datas = a:000
 	endif
