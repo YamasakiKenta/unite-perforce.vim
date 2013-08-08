@@ -116,6 +116,10 @@ function! s:get_unite_perforce_ports_clients() "{{{
 		call extend(clients, tmps)
 	endif
 
+	if len(clients) == 0
+		let clients = [perforce#get#cache_client()]
+	endif
+
 	let servers = []
 	for port in ports
 		for client in clients

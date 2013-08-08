@@ -1,8 +1,14 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! s:start(cmd)
+	exe 'silent !start '.a:cmd
+endfunction
+
 function! s:pf_diff_tool(file,file2) "{{{
 	let cmd = perforce#data#get('g:unite_perforce_diff_tool')
+	let tempname = tempname()
+	call system('copy "'.a:file2.'" "'.tempname.'"')
 	if cmd == 'vimdiff'
 		" タブで新しいファイルを開く
 		exe 'tabe' a:file2
@@ -14,10 +20,10 @@ function! s:pf_diff_tool(file,file2) "{{{
 		" キーマップの登録
 		call perforce#util#map_diff()
 	elseif cmd =~ 'kdiff3'
-		call perforce#system(cmd.' '.perforce#get_kk(a:file).' '.perforce#get_kk(a:file2).' -o '.perforce#Get_kk(a:file2))
+		call s:start(cmd.' '.perforce#get_kk(tempname).' '.perforce#get_kk(a:file2).' -o '.perforce#Get_kk(a:file2))
 	else
 		" winmergeu
-		call perforce#system(cmd.' '.perforce#get_kk(a:file).' '.perforce#get_kk(a:file2))
+		call s:start(cmd.' '.perforce#get_kk(tempname).' '.perforce#get_kk(a:file2))
 	endif
 
 endfunction
