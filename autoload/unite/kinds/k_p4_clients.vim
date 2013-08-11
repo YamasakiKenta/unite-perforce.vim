@@ -68,7 +68,7 @@ function! s:kind_clients.action_table.a_p4_client_info.func(candidates) "{{{
 	for data in datas
 		call perforce#util#log_file(data.client, 0)
 		call append(0,datas[0].outs)
-		cursor(1, 1)
+		call cursor(1, 1)
 	endfor
 	
 endfunction
