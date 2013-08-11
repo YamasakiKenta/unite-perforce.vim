@@ -17,7 +17,7 @@ let s:kind_clients = {
 			\ 'action_table' : {},
 			\}
 let s:kind_clients.action_table.a_p4_client_set = {
-			\ 'description' : 'クライアントの変更', 
+			\ 'description' : '',
 			\ }
 function! s:kind_clients.action_table.a_p4_client_set.func(candidates) "{{{
 
@@ -38,7 +38,7 @@ endfunction
 
 let s:kind_clients.action_table.a_p4_client_sync = { 
 			\'is_selectable' : 1,
-			\'description' : '最新同期', 
+			\'description' : '',
 			\}
 function! s:kind_clients.action_table.a_p4_client_sync.func(candidates) "{{{
 	for l:candidate in a:candidates
@@ -51,7 +51,7 @@ endfunction
 
 let s:kind_clients.action_table.a_p4_client_info = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'クライアントの情報 ( info ) ',
+			\ 'description' : '',
 			\ }
 function! s:kind_clients.action_table.a_p4_client_info.func(candidates) "{{{
 
@@ -76,7 +76,7 @@ endfunction
 
 let s:kind_clients.action_table.a_p4_client = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'クライアントの情報 ( client )',
+			\ 'description' : '',
 			\ }
 function! s:kind_clients.action_table.a_p4_client.func(candidates) "{{{
 
