@@ -11,7 +11,7 @@ endfunction
 "}}}
 
 let s:source_p4_fixes = {
-			\ 'name'           : 'p4_fixes',
+			\ 'name'           : 'p4/fixes',
 			\ 'description'    : '',
 			\ 'default_action' : 'a_p4change_describe',
 			\ 'default_kind'   : 'k_p4_change_pending',

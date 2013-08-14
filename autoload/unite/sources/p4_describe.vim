@@ -37,7 +37,7 @@ endfunction
 "}}}
 
 let s:source_describe = {
-			\ 'name' : 'p4_describe',
+			\ 'name' : 'p4/describe',
 			\ 'description' : 'サブミット済みのチェンジリストの差分を表示',
 			\ 'default_kind' : 'k_p4_filelog',
 			\ }

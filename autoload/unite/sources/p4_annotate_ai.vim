@@ -6,7 +6,7 @@ function! unite#sources#p4_annotate_ai#define()
 endfunction
 
 let s:source__p4_annotate_ai = {
-			\ 'name' : 'p4_annotate_ai',
+			\ 'name' : 'p4/annotate_ai',
 			\ 'description' : '各行にチェンジリスト番号を表示 ( 全て )',
 			\ 'default_kind' : 'k_p4_filelog',
 			\ 'hooks' : {},

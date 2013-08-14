@@ -6,7 +6,7 @@ function! unite#sources#p4_info#define()
 endfunction
 
 let s:source_p4_info = {
-			\ 'name' : 'p4_info',
+			\ 'name' : 'p4/info',
 			\ 'description' : 'show p4 info',
 			\ }
 function! s:source_p4_info.gather_candidates(args, context) "{{{

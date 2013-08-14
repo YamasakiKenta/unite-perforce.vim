@@ -7,7 +7,7 @@ function! unite#sources#p4_users#define()
 endfunction
 
 let s:source = {
-			\ 'name' : 'p4_users',
+			\ 'name' : 'p4/users',
 			\ 'description' : 'ƒ†[ƒU[‚ÌØ‚è‘Ö‚¦',
 			\ 'default_kind' : 'k_p4_users',
 			\ }

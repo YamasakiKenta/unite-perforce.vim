@@ -7,7 +7,7 @@ function! unite#sources#p4_filelog#define()
 endfunction
 
 let s:source = { 
-			\ 'name' : 'p4_filelog',
+			\ 'name' : 'p4/filelog',
 			\ 'description' : '—š—ð',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{

@@ -9,7 +9,7 @@ endfunction
 
 "source - p4_template
 let s:source_p4_template = {
-			\ 'name'           : 'p4_template',
+			\ 'name'           : 'p4/template',
 			\ 'default_kind'   : 'k_p4_template',
 			\ 'description'    : '',
 			\ }

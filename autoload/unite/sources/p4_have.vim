@@ -48,7 +48,7 @@ function! unite#sources#p4_have#define()
 endfunction
 
 let s:souce_p4have = {
-			\ 'name' : 'p4_have',
+			\ 'name' : 'p4/have',
 			\ 'description' : '所有するファイル',
 			\ }
 function! s:souce_p4have.gather_candidates(args, context) "{{{
@@ -60,7 +60,7 @@ endfunction
 "}}}
 
 let s:souce_p4have_reset = {
-			\ 'name' : 'p4_have_reset',
+			\ 'name' : 'p4/have_reset',
 			\ 'description' : '所有するファイル ( キャッシュを削除する ) ',
 			\ }
 function! s:souce_p4have_reset.gather_candidates(args, context) "{{{

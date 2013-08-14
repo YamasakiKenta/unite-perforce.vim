@@ -6,7 +6,7 @@ function! unite#sources#p4_jobs#define()
 endfunction
 
 let s:source_jobs = {
-			\ 'name'         : 'p4_jobs',
+			\ 'name'         : 'p4/jobs',
 			\ 'description'  : 'ƒWƒ‡ƒu‚Ì•\Ž¦',
 			\ 'default_kind' : 'k_p4_jobs',
 			\ }

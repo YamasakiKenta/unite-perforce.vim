@@ -7,7 +7,7 @@ endfunction
 
 
 let s:source_p4_opened = {
-			\ 'name'         : 'p4_opened',
+			\ 'name'         : 'p4/opened',
 			\ 'description'  : '編集しているファイルの表示 ( チェンジリスト番号 )',
 			\ 'default_kind' : 'k_depot',
 			\ 'is_quit'      : 0,

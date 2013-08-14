@@ -11,7 +11,7 @@ function! s:get_client_name_from_clients(str)
 endfunction
 
 let s:source_p4_clients = {
-			\ 'name'         : 'p4_clients',
+			\ 'name'         : 'p4/clients',
 			\ 'description'  : 'クライアントの表示',
 			\ 'default_kind' : 'k_p4_clients',
 			\ }

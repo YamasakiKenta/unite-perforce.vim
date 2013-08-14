@@ -7,7 +7,7 @@ function! unite#sources#p4_changes_pending#define()
 endfunction
 
 let s:source_p4_changes_pending = {
-			\ 'name'         : 'p4_changes_pending',
+			\ 'name'         : 'p4/changes_pending',
 			\ 'description'  : '作成中のチェンジリスト',
 			\ 'default_kind' : 'k_p4_change_pending',
 			\ 'hooks'        : {},

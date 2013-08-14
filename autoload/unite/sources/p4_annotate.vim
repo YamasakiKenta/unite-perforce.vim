@@ -6,7 +6,7 @@ function! unite#sources#p4_annotate#define()
 endfunction
 
 let s:source__p4_annotate = {
-			\ 'name' : 'p4_annotate',
+			\ 'name' : 'p4/annotate',
 			\ 'description' : '各行にリビジョン番号を表示',
 			\ 'default_kind' : 'k_p4_filelog',
 			\ 'hooks' : {},

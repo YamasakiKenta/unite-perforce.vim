@@ -7,7 +7,7 @@ endfunction
 
 "source - p4_files
 let s:source_p4_files = {
-			\ 'name'           : 'p4_files',
+			\ 'name'           : 'p4/files',
 			\ 'description'    : '',
 			\ 'default_kind'   : 'k_depot',
 			\ }
