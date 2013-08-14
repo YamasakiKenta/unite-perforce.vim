@@ -9,40 +9,6 @@ function! s:_len_compara(i1, i2) "{{{
 endfunction
 "}}}
 
-function! s:get_list(tmp) "{{{
-	return (type(a:tmp) == type([])) ? a:tmp : [a:tmp]
-endfunction
-"}}}
-function! s:set_dict_extend(dict1, dict2) "{{{
-	" 同じキーがある場合は、リストで結合して返す
-	
-	" 大きい方をdict1 に設定する
-	let [dict1, dict2] = [a:dict1, a:dict2]
-
-	" a:dict1 を優先させる
-	let dict_new = dict1
-	for key in keys(dict2)
-		let dict_new[key] = exists('dict_new[key]')
-					\ ? extend(s:get_list(a:dict1[key]), s:get_list(a:dict2[key])) 
-					\ : dict2[key]
-	endfor
-
-	return dict_new
-endfunction
-"}}}
-function! s:get_fname_key(file_d, fname_full) "{{{
-	" 辞書型に登録しているキーを、検索する 
-	" ( キーが見つかるまで、ファイル名を短くする ) 
-
-	let file_d    = a:file_d
-	let fname_tmp  = substitute(a:fname_full, '\\', '\/', 'g')
-
-	while len(fname_tmp) && !exists('file_d[fname_tmp]')
-		let fname_tmp  = matchstr(fname_tmp, '.\{-}[\/\\]\zs.*')
-	endwhile
-	return fname_tmp
-endfunction
-"}}}
 function! s:get_len_sort(lists) "{{{
 	return sort(a:lists, "s:_len_compara")
 endfunction
@@ -86,6 +52,7 @@ endfunction
 "}}}
 
 function! s:MyQuit() "{{{
+	" ファイル内で使用
 	map <buffer> q :q<CR>
 endfunction
 "}}}

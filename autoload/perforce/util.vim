@@ -4,11 +4,10 @@ set cpo&vim
 let s:V = vital#of('unite-perforce.vim')
 let s:Common   = s:V.import('Mind.Common')
 let s:Perforce = s:V.import('Mind.Perforce')
-let s:File     = s:V.import('Mind.Y_files')
 let s:Tab      = s:V.import('Mind.Tab')
 
 function! perforce#util#get_files(...)
-	return call(s:File.get_files, a:000)
+	return get(a:, 1, "") == "" ? [expand("%:p")] : a:000
 endfunction
 
 function! perforce#util#get_client_root(...) 
