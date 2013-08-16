@@ -54,7 +54,7 @@ function! s:p4_print(candidates) "{{{
 			let numstr      =  '@'.chnum
 		endif
 
-		" ƒtƒ@ƒCƒ‹‚ğo—Í‚·‚é
+		" ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡ºåŠ›ã™ã‚‹
 		let cmd = 'p4 '.client.'print '. perforce#get_kk(name.''.numstr)
 		call unite#print_message(cmd)
 		echom string(cmd)
@@ -74,7 +74,7 @@ let s:kind_filelog = {
 			\ }
 
 let s:kind_filelog.action_table.a_p4_print = {
-			\ 'description' : 'ƒtƒ@ƒCƒ‹‚Ì•\¦',
+			\ 'description' : 'ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º',
 			\ 'is_selectable' : 1, 
 			\ }
 function! s:kind_filelog.action_table.a_p4_print.func(candidates) "{{{
@@ -83,7 +83,7 @@ endfunction
 "}}}
 
 function! s:get_chnum(candidate)
-	" k_p4_change_pending.vim ( s:get_chnum ) ‚Æ“¯‚¶
+	" k_p4_change_pending.vim ( s:get_chnum ) ã¨åŒã˜
 	return matchstr(a:candidate.action__out, '.*change \zs\d*')
 endfunction
 let s:kind_filelog.action_table.delete = { 
@@ -94,7 +94,7 @@ let s:kind_filelog.action_table.delete = {
 function! s:kind_filelog.action_table.delete.func(candidates) "{{{
 	let data_ds = []
 	for candidate in a:candidates
-		" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì”Ô†‚Ìæ“¾‚ğ‚·‚é
+		" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç•ªå·ã®å–å¾—ã‚’ã™ã‚‹
 		let port_client = pf_changes#get_port_client(candidate)
 		let data_d= {
 					\ 'chnum'  : s:get_chnum(candidate),

@@ -7,7 +7,7 @@ endfunction
 
 let s:source__p4_annotate_ai = {
 			\ 'name' : 'p4/annotate_ai',
-			\ 'description' : '各行にチェンジリスト番号を表示 ( 全て )',
+			\ 'description' : '蜷�陦後↓繝√ぉ繝ｳ繧ｸ繝ｪ繧ｹ繝育分蜿ｷ繧定｡ｨ遉ｺ ( 蜈ｨ縺ｦ )',
 			\ 'default_kind' : 'k_p4_filelog',
 			\ 'hooks' : {},
 			\ }

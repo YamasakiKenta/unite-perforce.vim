@@ -7,7 +7,7 @@ endfunction
 
 let s:source_p4_changes_pending_reopen = {
 			\ 'name'           : 'p4/changes_pending_reopen',
-			\ 'description'    : 'ƒ`ƒFƒ“ƒWƒŠƒXƒg‚ÌˆÚ“®',
+			\ 'description'    : 'ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç§»å‹•',
 			\ 'default_kind'   : 'k_p4_change_reopen',
 			\ 'hooks'          : {},
 			\ }

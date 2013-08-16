@@ -19,14 +19,14 @@ let s:k_p4_jobs = {
 
 let s:k_p4_jobs.action_table.a_p4_fixes = { 
 			\ 'is_selectable' : 1,
-			\ 'description'   : '�W���u�̏��',
+			\ 'description'   : 'ジョブの情報',
 			\ 'is_quit'       : 0,
 			\ }
 function! s:k_p4_jobs.action_table.a_p4_fixes.func(candidates) "{{{
 	" [2013-06-07 01:34]
 	let data_ds = []
 	for candidate in a:candidates
-		" �`�F���W���X�g�̔ԍ��̎擾������
+		" チェンジリストの番号の取得をする
 		let port_client = candidate.action__client
 		let data_d= {
 					\ 'job'    : s:get_job_from_jobs(candidate),

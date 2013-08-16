@@ -7,8 +7,8 @@ endfunction
 
 function! s:get_file_source_describe(client, outs) "{{{
 	" ********************************************************************************
-	" ·•ª‚Ìo—Í‚ðAUnite‚Ìjump_list‰»‚¯‚·‚é
-	" @param[in]	outs		·•ª‚Ìƒf[ƒ^
+	" å·®åˆ†ã®å‡ºåŠ›ã‚’ã€Uniteã®jump_liståŒ–ã‘ã™ã‚‹
+	" @param[in]	outs		å·®åˆ†ã®ãƒ‡ãƒ¼ã‚¿
 	" ********************************************************************************
 	let outs = a:outs
 	let candidates = []
@@ -38,7 +38,7 @@ endfunction
 
 let s:source_describe = {
 			\ 'name' : 'p4/describe',
-			\ 'description' : 'ƒTƒuƒ~ƒbƒgÏ‚Ý‚Ìƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì·•ª‚ð•\Ž¦',
+			\ 'description' : 'ã‚µãƒ–ãƒŸãƒƒãƒˆæ¸ˆã¿ã®ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å·®åˆ†ã‚’è¡¨ç¤º',
 			\ 'default_kind' : 'k_p4_filelog',
 			\ }
 function! s:source_describe.gather_candidates(args, context) "{{{

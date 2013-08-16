@@ -12,12 +12,12 @@ endfunction
 
 let s:source_p4_clients = {
 			\ 'name'         : 'p4/clients',
-			\ 'description'  : 'クライアントの表示',
+			\ 'description'  : '繧ｯ繝ｩ繧､繧｢繝ｳ繝医�ｮ陦ｨ遉ｺ',
 			\ 'default_kind' : 'k_p4_clients',
 			\ }
 function! s:source_p4_clients.gather_candidates(args, context) 
 	" ********************************************************************************
-	" クライアントを表示する
+	" 繧ｯ繝ｩ繧､繧｢繝ｳ繝医ｒ陦ｨ遉ｺ縺吶ｋ
 	" ********************************************************************************
 
 	let use_ports = perforce#get#clients#get_use_ports()

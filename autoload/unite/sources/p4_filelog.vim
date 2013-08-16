@@ -8,12 +8,12 @@ endfunction
 
 let s:source = { 
 			\ 'name' : 'p4/filelog',
-			\ 'description' : '履歴',
+			\ 'description' : '螻･豁ｴ',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************
-	" @par ファイルの履歴を表示する
-	" @param[in]	arg		表示する履歴のdepot
+	" @par 繝輔ぃ繧､繝ｫ縺ｮ螻･豁ｴ繧定｡ｨ遉ｺ縺吶ｋ
+	" @param[in]	arg		陦ｨ遉ｺ縺吶ｋ螻･豁ｴ縺ｮdepot
 	" @par
 	" "... ... branch into //depot/branch_1/mind/Test/AAA BBB/AAA BBB.txt.txt#1
 	" ********************************************************************************

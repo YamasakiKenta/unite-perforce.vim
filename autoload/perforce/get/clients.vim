@@ -1,8 +1,8 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-" ˆø”‚ªw’è‚³‚ê‚Ä‚¢‚éê‡‚ÍAˆø”‚ÌƒNƒ‰ƒCƒAƒ“ƒg‚ğg—p‚·‚é
-" ‚È‚¢ê‡‚ÍAİ’è‚µ‚Ä‚¢‚éƒNƒ‰ƒCƒAƒ“ƒg‚ğæ“¾‚·‚é
+" å¼•æ•°ãŒæŒ‡å®šã•ã‚Œã¦ã„ã‚‹å ´åˆã¯ã€å¼•æ•°ã®ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚’ä½¿ç”¨ã™ã‚‹
+" ãªã„å ´åˆã¯ã€è¨­å®šã—ã¦ã„ã‚‹ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚’å–å¾—ã™ã‚‹
 " global option
 function! perforce#get#clients#get_ports(...) "{{{
 	if a:0 == 0
@@ -93,7 +93,7 @@ function! perforce#get#clients#get_args_clients(...) "{{{
 endfunction
 "}}}
 
-" -p, -c ‚ğ‚Â‚¯‚é
+" -p, -c ã‚’ã¤ã‘ã‚‹
 function! s:get_petern_from_arg(ptrn, datas) "{{{
 	let rtn_datas = copy(a:datas)
 	call map(rtn_datas, 'matchstr(v:val, '''.a:ptrn.'\s\+\zs\S*'')')

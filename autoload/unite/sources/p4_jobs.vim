@@ -7,7 +7,7 @@ endfunction
 
 let s:source_jobs = {
 			\ 'name'         : 'p4/jobs',
-			\ 'description'  : 'ƒWƒ‡ƒu‚Ì•\¦',
+			\ 'description'  : 'ã‚¸ãƒ§ãƒ–ã®è¡¨ç¤º',
 			\ 'default_kind' : 'k_p4_jobs',
 			\ }
 function! s:source_jobs.gather_candidates(args, context) "{{{

@@ -3,7 +3,7 @@ set cpo&vim
 
 function! perforce#command#revert(...) "{{{
 	" ********************************************************************************
-	" @param[in] ƒtƒ@ƒCƒ‹–¼
+	" @param[in] ãƒ•ã‚¡ã‚¤ãƒ«å
 	" ********************************************************************************
 	let files_ = call('perforce#util#get_files', a:000)
 
@@ -19,9 +19,9 @@ endfunction
 "
 function! perforce#command#edit_add(add_flg, ...) "{{{
 	" ********************************************************************************
-	" @par •ÒWó‘ÔA‚à‚µ‚­‚Í’Ç‰Áó‘Ô‚É‚·‚é
-	" @param[in] a:add_flg = 1 - TREUE : ƒNƒ‰ƒCƒAƒ“ƒg‚É‘¶İ‚µ‚È‚¢ê‡‚ÍAƒtƒ@ƒCƒ‹‚ğ’Ç‰Á
-	" @param[in] a:000     {ƒtƒ@ƒCƒ‹–¼}     ’l‚ª‚È‚¢ê‡‚ÍAŒ»İ‚Ìƒtƒ@ƒCƒ‹‚ğ•ÒW‚·‚é
+	" @par ç·¨é›†çŠ¶æ…‹ã€ã‚‚ã—ãã¯è¿½åŠ çŠ¶æ…‹ã«ã™ã‚‹
+	" @param[in] a:add_flg = 1 - TREUE : ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«å­˜åœ¨ã—ãªã„å ´åˆã¯ã€ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¿½åŠ 
+	" @param[in] a:000     {ãƒ•ã‚¡ã‚¤ãƒ«å}     å€¤ãŒãªã„å ´åˆã¯ã€ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç·¨é›†ã™ã‚‹
 	" ********************************************************************************
 	"
 	let files_ = call('perforce#util#get_files', a:000)
@@ -53,7 +53,7 @@ endfunction
 function! s:get_annotate_sub_strs(rev_outs, diff_outs) "{{{
 	" [2013-06-15 12:26]
 
-	" ‹t‡‚ÅAs‚¤
+	" é€†é †ã§ã€è¡Œã†
 	let del_outs = []
 	let rev_outs  = a:rev_outs
 	let diff_outs = a:diff_outs
@@ -61,7 +61,7 @@ function! s:get_annotate_sub_strs(rev_outs, diff_outs) "{{{
 	let new_outs = copy(rev_outs) 
 	let old_outs = []
 
-	" ·•ªƒf[ƒ^‚Ìİ’è
+	" å·®åˆ†ãƒ‡ãƒ¼ã‚¿ã®è¨­å®š
 	let diffs = s:get_annotate_sub_diffs(diff_outs)
 
 	for diff in diffs
@@ -107,7 +107,7 @@ function! s:get_annotate_sub_diffs(diff_outs) "{{{
 	for out in diff_outs
 		let out = substitute(out, '\\r', '', 'g')
 		if out !~ '^[<>-]'
-			" •ÒWsˆÈŠO
+			" ç·¨é›†è¡Œä»¥å¤–
 			call insert(diffs, copy(diff))
 			let diff.type      = matchstr(out, '[acd]')
 			let diff.old_start = matchstr(out, '\d\+')-1
@@ -118,10 +118,10 @@ function! s:get_annotate_sub_diffs(diff_outs) "{{{
 			let diff.old_strs  = []
 			let diff.new_strs  = []
 		elseif out =~ '^<'
-			" íœs
+			" å‰Šé™¤è¡Œ
 			call add(diff.old_strs, out)
 		elseif out =~ '^>'
-			" ’Ç‰Ás
+			" è¿½åŠ è¡Œ
 			call add(diff.new_strs, out)
 		endif
 	endfor
@@ -141,7 +141,7 @@ function! perforce#command#annnotate(file) "{{{
 	let new_outs = out_d.new
 	let old_outs = out_d.old
 
-	" ·•ªƒf[ƒ^‚Ìİ’è
+	" å·®åˆ†ãƒ‡ãƒ¼ã‚¿ã®è¨­å®š
 	let lnum   = line(".")
 	let ft     = &filetype
 
@@ -165,7 +165,7 @@ endfunction
 "
 function! perforce#command#complate_have(A,L,P) "{{{
 	"********************************************************************************
-	" •âŠ® : perforce ã‚É‘¶İ‚·‚éƒtƒ@ƒCƒ‹‚ğ•\¦‚·‚é
+	" è£œå®Œ : perforce ä¸Šã«å­˜åœ¨ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¡¨ç¤ºã™ã‚‹
 	"********************************************************************************
 	let outs = split(system('p4 have //.../'.a:A.'...'), "\n")
 	return map( copy(outs), "

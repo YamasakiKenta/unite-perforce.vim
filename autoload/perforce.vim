@@ -23,8 +23,8 @@ endfunction
 function! perforce#log_file(str) "{{{
 	" [2013-06-07 00:37]
 	" ********************************************************************************
-	" @par  Œ‹‰Ê‚Ìo—Í‚ğs‚¤
-	" @param[in]	str		•\¦‚·‚é•¶š
+	" @par  çµæœã®å‡ºåŠ›ã‚’è¡Œã†
+	" @param[in]	str		è¡¨ç¤ºã™ã‚‹æ–‡å­—
 	" ********************************************************************************
 	"
 	let strs = (type(a:str) == type([])) ? a:str :[a:str]
@@ -37,17 +37,17 @@ endfunction
 "}}}
 function! perforce#matomeDiffs(...) "{{{
 	" ********************************************************************************
-	" @param[in]    ...  ƒ`ƒFƒ“ƒWƒŠƒXƒg
+	" @param[in]    ...  ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆ
 	" ********************************************************************************
 	" [2013-06-07 00:58]
 	let datas = []
 
 	for chnum in a:000
-		" ƒf[ƒ^‚Ìæ“¾ {{{
+		" ãƒ‡ãƒ¼ã‚¿ã®å–å¾— {{{
 		let cmd  = 'p4 describe -ds '.chnum
 		let outs = split(perforce#system(cmd), "\n")
 
-		" ì‹Æ’†‚Ìƒtƒ@ƒCƒ‹
+		" ä½œæ¥­ä¸­ã®ãƒ•ã‚¡ã‚¤ãƒ«
 		if outs[0] =~ '\*pending\*' || chnum == 'default'
 			let cmd = 'p4 opened -c '.chnum " args
 			let files_ = split(perforce#system(cmd), "\n")
@@ -59,7 +59,7 @@ function! perforce#matomeDiffs(...) "{{{
 
 				for tmp_out in split(perforce#system(cmd), "\n")
 					if tmp_out =~ '- file(s) not opened for edit.'
-						" V‹Kì¬‚Ìê‡
+						" æ–°è¦ä½œæˆã®å ´åˆ
 						let tmp_file = substitute(file_, '.*[\/]','','')
 						let path     = perforce#get#path#from_depot_with_client('', file_)
 						call extend(datas, {
@@ -99,7 +99,7 @@ function! perforce#matomeDiffs(...) "{{{
 		"}}}
 	endfor
 	"
-	"ƒf[ƒ^‚Ìo—Í {{{
+	"ãƒ‡ãƒ¼ã‚¿ã®å‡ºåŠ› {{{
 	let outs = []
 	for data in datas 
 		let outs += [data["files"]."\t\t".data["adds"]."\t".data["deleteds"]."\t".data["changeds"]]
@@ -125,11 +125,11 @@ endfunction
 function! perforce#unite_args(source) "{{{
 	" [2013-06-07 01:01]
 	"********************************************************************
-	" @par          Œ»İ‚Ìƒtƒ@ƒCƒ‹–¼‚ğ Unite ‚Éˆø”‚É“n‚µ‚Ü‚·B
-	" @param[in]	source	ƒRƒ}ƒ“ƒh
+	" @par          ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«åã‚’ Unite ã«å¼•æ•°ã«æ¸¡ã—ã¾ã™ã€‚
+	" @param[in]	source	ã‚³ãƒãƒ³ãƒ‰
 	"********************************************************************
 
-	" ƒXƒy[ƒX‘Îô
+	" ã‚¹ãƒšãƒ¼ã‚¹å¯¾ç­–
 	let file_ = expand("%:p")
 	let file_ = substitute(file_ , '\\' , '\/'  , 'g')
 	let file_ = substitute(file_ , ':'  , '\\:' , 'g')
@@ -159,7 +159,7 @@ endfunction
 "
 function! perforce#show(str) "{{{
 	" ********************************************************************************
-	" @par  •K‚¸•Êwindows ‚ğ•\¦‚·‚é
+	" @par  å¿…ãšåˆ¥windows ã‚’è¡¨ç¤ºã™ã‚‹
 	" ********************************************************************************
 	call perforce#util#log_file('p4show', 1, a:str)
 endfunction
@@ -167,9 +167,9 @@ endfunction
 
 function! perforce#system_dict(port, cmd) "{{{
 	" ********************************************************************************
-	" @par ƒXƒNƒŠƒvƒg—p‚ÌƒRƒ}ƒ“ƒh‚ğÀs‚·‚é
+	" @par ã‚¹ã‚¯ãƒªãƒ—ãƒˆç”¨ã®ã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œã™ã‚‹
 	" @param[in]     
-	" @return perforce ‚Ì«‘Œ^      
+	" @return perforce ã®è¾æ›¸å‹      
 	" ********************************************************************************
 	"
 	let cmd = substitute(a:cmd, 'p4', 'p4 -s -G', '')
@@ -201,13 +201,13 @@ function! perforce#system_dict(port, cmd) "{{{
 		let i = i + 1
 	endwhile
 
-	" s”‚Ìæ“¾
+	" è¡Œæ•°ã®å–å¾—
 	let step = 1
 	while(step < max && outputs[step] !~ "'".start_key."':")
 		let step = step + 1
 	endwhile
 
-	" ­‚µC³
+	" å°‘ã—ä¿®æ­£
 	for i in range(step, len(outputs)-1, step)
 		let outputs[i] = '"port":a:port},{'.outputs[i]
 	endfor

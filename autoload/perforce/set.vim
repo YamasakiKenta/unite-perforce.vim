@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:pf_cmd_rtn_cmd_outs(cmd)
-	" コマンドと実行結果を返す
+	" 繧ｳ繝槭Φ繝峨→螳溯｡檎ｵ先棡繧定ｿ斐☆
 	return extend([a:cmd], split(perforce#system(a:cmd), "\n"))
 endfunction
 

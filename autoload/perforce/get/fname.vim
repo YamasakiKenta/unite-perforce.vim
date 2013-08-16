@@ -3,8 +3,8 @@ set cpo&vim
 
 function! s:get_depots(args, path) 
 	" ********************************************************************************
-	" @par          depots ‚ğæ“¾‚·‚é
-	" @param[in]	args	ƒtƒ@ƒCƒ‹–¼
+	" @par          depots ã‚’å–å¾—ã™ã‚‹
+	" @param[in]	args	ãƒ•ã‚¡ã‚¤ãƒ«å
 	" @param[in]	context
 	" ********************************************************************************
 	if len(a:args) > 1
@@ -28,7 +28,7 @@ endfunction
 function! perforce#get#fname#for_unite(args, context) 
 	" [2013-06-07 02:29]
 	"
-	" ƒtƒ@ƒCƒ‹–¼‚Ìæ“¾
+	" ãƒ•ã‚¡ã‚¤ãƒ«åã®å–å¾—
 	let path = expand('%:p')
 	let a:context.source__path          = path
 	let a:context.source__linenr        = line('.')

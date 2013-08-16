@@ -8,7 +8,7 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4/help',
-			\ 'description' : 'ƒwƒ‹ƒv‚ð•\Ž¦',
+			\ 'description' : 'ãƒ˜ãƒ«ãƒ—ã‚’è¡¨ç¤º',
 			\ 'default_kind' : 'k_p4_help',
 			\ }
 function! s:get_pfcmd_from_help(str) "{{{

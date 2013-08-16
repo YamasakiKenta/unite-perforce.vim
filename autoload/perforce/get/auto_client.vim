@@ -44,27 +44,27 @@ function! s:get_port_client_from_roots(port, root) "{{{
 		return []
 	endif
 
-	" cache ‚©‚çæ“¾
+	" cache ã‹ã‚‰å–å¾—
 	if exists('s:cache_client_root[a:port][a:root]')
 		return s:cache_client_root[a:port][a:root]
 	endif
 
-	" cache ‚Ì‰Šú‰»
+	" cache ã®åˆæœŸåŒ–
 	call s:set_cache_port_root_init(a:port, a:root)
 
 	let port = a:port
 	let root = a:root
 
-	" perforce ‚©‚çæ“¾
+	" perforce ã‹ã‚‰å–å¾—
 	if !exists('s:cache_client[port]') "{{{
 		let s:cache_client[port] = {}
 
-		" ƒNƒ‰ƒCƒAƒ“ƒg‚Ìæ“¾
+		" ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®å–å¾—
 		let outs = s:get_outs_from_clients(port)
 
 		" echom string(outs)
 
-		" cache‚Ìİ’è
+		" cacheã®è¨­å®š
 		for out in outs
 			let client   = out.client
 			let tmp_root = out.Root
@@ -73,7 +73,7 @@ function! s:get_port_client_from_roots(port, root) "{{{
 	endif
 	"}}}
 
-	" ŒŸõ
+	" æ¤œç´¢
 	for client in keys(s:cache_client[port])
 		let tmp_root = s:cache_client[port][client]
 		if len(tmp_root) > 0 && root =~ escape(tmp_root, '\\') 
@@ -81,7 +81,7 @@ function! s:get_port_client_from_roots(port, root) "{{{
 		endif
 	endfor
 
-	" –ß‚è’l
+	" æˆ»ã‚Šå€¤
 	if exists('s:cache_client_root[port][a:root]')
 		let rtn = s:cache_client_root[port][a:root]
 	else
@@ -103,7 +103,7 @@ function! perforce#get#auto_client#main() "{{{
 		call extend(clients, map(copy(tmp), 'port." -c ".v:val'))
 	endfor
 
-	" file Š‚ÌŠm”F‚ÍŠÔ‚©‚ª‚©‚©‚éˆ×A•Û—¯
+	" file æ‰€æŒã®ç¢ºèªã¯æ™‚é–“ã‹ãŒã‹ã‹ã‚‹ç‚ºã€ä¿ç•™
 	if len(clients) == 0
 		echom 'use default...'
 		let clients = [perforce#get#cache_client()]

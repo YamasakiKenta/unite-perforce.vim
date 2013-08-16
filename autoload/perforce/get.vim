@@ -35,7 +35,7 @@ function! perforce#get#outs(data_ds) "{{{
 	" .client   = '-p localhost:1818 -c origin'
 	" .outs[]   = ''
 	"
-	" @return    outs[] = '' - �o�͌��ʂ��܂Ƃ߂�
+	" @return    outs[] = '' - 出力結果をまとめる
 	" ********************************************************************************
 	let outs = []
 	for data_d in a:data_ds

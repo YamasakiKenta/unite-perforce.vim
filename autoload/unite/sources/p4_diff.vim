@@ -8,8 +8,8 @@ endfunction
 
 function! s:get_source_file_from_path(path, client) "{{{
 	" ********************************************************************************
-	" ·•ª‚Ìo—Í‚ğAUnite jump_list‰»
-	" @param[in]	outs		·•ª‚Ìƒf[ƒ^
+	" å·®åˆ†ã®å‡ºåŠ›ã‚’ã€Unite jump_liståŒ–
+	" @param[in]	outs		å·®åˆ†ã®ãƒ‡ãƒ¼ã‚¿
 	" ********************************************************************************
 	let path = a:path
 	let lines = readfile(path)
@@ -31,8 +31,8 @@ endfunction
 "}}}
 function! s:perforce_get_file_source_diff(outs) "{{{
 	" ********************************************************************************
-	" ·•ª‚Ìo—Í‚ğAUnite‚Ìjump_list‰»‚¯‚·‚é
-	" @param[in]	outs		·•ª‚Ìƒf[ƒ^
+	" å·®åˆ†ã®å‡ºåŠ›ã‚’ã€Uniteã®jump_liståŒ–ã‘ã™ã‚‹
+	" @param[in]	outs		å·®åˆ†ã®ãƒ‡ãƒ¼ã‚¿
 	" ********************************************************************************
 	let outs = a:outs
 	let candidates = []
@@ -59,11 +59,11 @@ endfunction
 
 let s:source_diff = {
 			\ 'name' : 'p4/diff',
-			\ 'description' : 'ƒtƒ@ƒCƒ‹‚Ì·•ª•\¦',
+			\ 'description' : 'ãƒ•ã‚¡ã‚¤ãƒ«ã®å·®åˆ†è¡¨ç¤º',
 			\ }
 function! s:source_diff.gather_candidates(args, context) "{{{
 
-	" ˆø”‚ª‚È‚¢ê‡‚ÍA‹ó”’‚ğİ’è‚·‚é ( ‘SŒŸõ )
+	" å¼•æ•°ãŒãªã„å ´åˆã¯ã€ç©ºç™½ã‚’è¨­å®šã™ã‚‹ ( å…¨æ¤œç´¢ )
 	if len(a:args) > 0
 		let files_   = a:args
 		let all_flg = 0
@@ -81,7 +81,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 
 	let candidates += s:perforce_get_file_source_diff(outs) 
 
-	" add ‚µ‚½ƒtƒ@ƒCƒ‹‚ğ’Ç‰Á‚·‚é "{{{
+	" add ã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¿½åŠ ã™ã‚‹ "{{{
 	if all_flg
 		let datas = perforce#cmd#use_ports('p4 opened')
 
@@ -92,7 +92,7 @@ function! s:source_diff.gather_candidates(args, context) "{{{
 					let depot = perforce#get#depot#from_opened(out)
 					let path = perforce#get#path#from_depot_with_client(data.client, depot)
 
-					" ƒtƒ@ƒCƒ‹–¼
+					" ãƒ•ã‚¡ã‚¤ãƒ«å
 					let candidate = {
 								\ 'word' : path,
 								\ 'kind' : 'jump_list',

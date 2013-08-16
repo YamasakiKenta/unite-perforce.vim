@@ -10,14 +10,14 @@ function! s:pf_diff_tool(file,file2) "{{{
 	let tempname = tempname()
 	call system('copy "'.a:file2.'" "'.tempname.'"')
 	if cmd == 'vimdiff'
-		" ƒ^ƒu‚ÅV‚µ‚¢ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+		" ã‚¿ãƒ–ã§æ–°ã—ã„ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã
 		exe 'tabe' a:file2
 		exe 'vs' a:file
 
-		" diff‚ÌŠJn
+		" diffã®é–‹å§‹
 		windo diffthis
 
-		" ƒL[ƒ}ƒbƒv‚Ì“o˜^
+		" ã‚­ãƒ¼ãƒãƒƒãƒ—ã®ç™»éŒ²
 		call perforce#util#map_diff()
 	elseif cmd =~ 'kdiff3'
 		call s:start(cmd.' '.perforce#get_kk(tempname).' '.perforce#get_kk(a:file2).' -o '.perforce#Get_kk(a:file2))
@@ -31,21 +31,21 @@ endfunction
 
 function! perforce#diff#main(path) "{{{
 	" ********************************************************************************
-	" ƒtƒ@ƒCƒ‹‚ğTOOL‚ğg—p‚µ‚Ä”äŠr‚µ‚Ü‚·
-	" @param[in]	path		”äŠr‚·‚éƒpƒX ( path or depot )
+	" ãƒ•ã‚¡ã‚¤ãƒ«ã‚’TOOLã‚’ä½¿ç”¨ã—ã¦æ¯”è¼ƒã—ã¾ã™
+	" @param[in]	path		æ¯”è¼ƒã™ã‚‹ãƒ‘ã‚¹ ( path or depot )
 	" ********************************************************************************
 
-	" ƒtƒ@ƒCƒ‹‚Ì”äŠr
+	" ãƒ•ã‚¡ã‚¤ãƒ«ã®æ¯”è¼ƒ
 	let path = a:path
 
-	" ƒtƒ@ƒCƒ‹–¼‚ª‚ ‚é‚©
+	" ãƒ•ã‚¡ã‚¤ãƒ«åãŒã‚ã‚‹ã‹
 	if len(path) == ''
 		echoe "no file"
 		return 
 	endif
 
 
-	" ÅV REV ‚Ìƒtƒ@ƒCƒ‹‚Ìæ“¾
+	" æœ€æ–° REV ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®å–å¾—
 	let datas = perforce#cmd#use_port_clients('p4 print -q '.perforce#get_kk(path))
 	let outs  = perforce#extend_dicts('outs', datas)
 
@@ -58,20 +58,20 @@ function! perforce#diff#main(path) "{{{
 		return
 	endif
 
-	"tmpƒtƒ@ƒCƒ‹‚Ì‘‚«o‚µ
+	"tmpãƒ•ã‚¡ã‚¤ãƒ«ã®æ›¸ãå‡ºã—
 	call writefile(outs, perforce#get_tmp_file())
 
-	" ‰üs‚ªˆê’v‚µ‚È‚¢‚Ì‚Å•Û‘¶‚µ’¼‚·
+	" æ”¹è¡ŒãŒä¸€è‡´ã—ãªã„ã®ã§ä¿å­˜ã—ç›´ã™
 	exe 'sp' perforce#get_tmp_file()
 	set ff=dos
 	wq
 
-	" depot‚È‚çpath‚É•ÏŠ·
+	" depotãªã‚‰pathã«å¤‰æ›
 	if path =~ "^//depot.*"
 		let path = perforce#get#path#from_depot_with_client('', path)
 	endif
 
-	" ÀÛ‚É”äŠr 
+	" å®Ÿéš›ã«æ¯”è¼ƒ 
 	call s:pf_diff_tool(perforce#get_tmp_file(), path)
 
 endfunction
@@ -79,7 +79,7 @@ endfunction
 "
 function! perforce#diff#file(...) "{{{
 	" ********************************************************************************
-	" @param[in] a:000 ƒtƒ@ƒCƒ‹–¼
+	" @param[in] a:000 ãƒ•ã‚¡ã‚¤ãƒ«å
 	" ********************************************************************************
 	let file_ = call('perforce#util#get_files', a:000)[0]
 	call perforce#diff#main(file_)

@@ -8,7 +8,7 @@ endfunction
 let s:kind_p4_template = {
 	\ 'name'           : 'k_p4_template',
 	\ 'default_action' : 'a_info',
-	\ 'description'    : 'ƒeƒ“ƒvƒŒ[ƒg‚©‚çİ’è‚µ‚Ü‚·',
+	\ 'description'    : 'ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‹ã‚‰è¨­å®šã—ã¾ã™',
 	\ 'action_table'   : {},
 	\ 'parents'        : ['common'],
 	\ }
@@ -21,7 +21,7 @@ function! s:kind_p4_template.action_table.update_.func(candidates) "{{{
 		let tmp    = candidate.action__cltmp
 		let client = s:get_client(candidate.action__clname)
 		let clname = s:get_clname(candidate.action__clname)
-		" š port , client ‚ğl—¶‚·‚é
+		" â˜… port , client ã‚’è€ƒæ…®ã™ã‚‹
 		let cmd = 'p4 '.client.' client -o -t '.tmp.' '.clname.' | p4 '.client.' client -i'
 		call unite#print_message(cmd)
 		call perforce#system(cmd)
@@ -30,7 +30,7 @@ endfunction
 "}}}
 let s:kind_p4_template.action_table.a_info = {
 	\ 'is_selectable' : 1,
-	\ 'description'   : 'à–¾‚ğ•\¦‚µ‚Ü‚·',
+	\ 'description'   : 'èª¬æ˜ã‚’è¡¨ç¤ºã—ã¾ã™',
 	\ }
 function! s:kind_p4_template.action_table.a_info.func(candidates) "{{{
 
@@ -44,7 +44,7 @@ function! s:kind_p4_template.action_table.a_info.func(candidates) "{{{
 
 		let cmds = []
 
-		" ƒƒCƒ“
+		" ãƒ¡ã‚¤ãƒ³
 		let cmd = 'p4 '.port.' client -o '.clname
 		call add(cmds, cmd)
 		let outs = split(perforce#system(cmd), "\n")
@@ -56,7 +56,7 @@ function! s:kind_p4_template.action_table.a_info.func(candidates) "{{{
 		let outs = split(perforce#system(cmd), "\n")
 		call add(datas, outs)
 
-		" windows ‚Ì•\¦
+		" windows ã®è¡¨ç¤º
 		call perforce#util#open_lines(datas)
 
 		for num_ in range(len(cmds))
@@ -77,7 +77,7 @@ endfunction
 "}}}
 
 " === SUB ===
-" autoload ŠÖ”‰»
+" autoload é–¢æ•°åŒ–
 function! s:get_client(str)  "{{{
 
 	" clname

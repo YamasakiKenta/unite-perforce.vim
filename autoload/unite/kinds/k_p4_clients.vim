@@ -21,14 +21,14 @@ let s:kind_clients.action_table.a_p4_client_set = {
 			\ }
 function! s:kind_clients.action_table.a_p4_client_set.func(candidates) "{{{
 
-	" •Û‘¶‚·‚é–¼‘O‚Ìæ“¾
+	" ä¿å­˜ã™ã‚‹åå‰ã®å–å¾—
 	echom string(a:candidates.action__port)
 	echom string(a:candidates.action__clname)
 	let port   = matchstr(a:candidates.action__port, '-p\s*\zs\S*')
 	let clname = a:candidates.action__clname
 	
 
-	" ì¬‚·‚éƒtƒ@ƒCƒ‹‚Ì–¼‘O‚Ì•Û‘¶ ( Ø‚è‘Ö‚¦ ) 
+	" ä½œæˆã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®åå‰ã®ä¿å­˜ ( åˆ‡ã‚Šæ›¿ãˆ ) 
 	call perforce#set#PFCLIENTNAME(clname)
 	call perforce#set#PFPORT(port)
 	call s:Perforce.get_client_root(1)

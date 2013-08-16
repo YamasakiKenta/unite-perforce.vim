@@ -7,9 +7,9 @@ endfunction
 
 function! s:make_new_changes(candidate) "{{{
 " ********************************************************************************
-" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì”Ô†‚Ìæ“¾‚ğ‚·‚é ( new ‚Ìê‡‚ÍAV‹Kì¬ )
-" @param[in]	candidate	unite ‚Ì‚ ‚ê	
-" @retval       chnum		”Ô†
+" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç•ªå·ã®å–å¾—ã‚’ã™ã‚‹ ( new ã®å ´åˆã¯ã€æ–°è¦ä½œæˆ )
+" @param[in]	candidate	unite ã®ã‚ã‚Œ	
+" @retval       chnum		ç•ªå·
 " ********************************************************************************
 
 	let chnum       = a:candidate.action__chnum
@@ -18,7 +18,7 @@ function! s:make_new_changes(candidate) "{{{
 	if chnum == 'new'
 		let chname = a:candidate.action__chname
 
-		" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìì¬
+		" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ä½œæˆ
 		let chnum = pf_changes#make(chname, port_client)
 	endif
 
@@ -33,27 +33,27 @@ let s:kind_k_p4_change_reopen = {
 			\ 'parents'        : ['k_p4'],
 			\ }
 let s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen = {
-			\ 'description' : 'ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX ( reopen )' ,
+			\ 'description' : 'ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´ ( reopen )' ,
 			\ } 
 function! s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen.func(candidate) "{{{
 	" ********************************************************************************
-	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX
-	" action ‚©‚çÀs‚µ‚½ê‡‚ÍA‘I‘ğ‚µ‚½ƒtƒ@ƒCƒ‹‚ğ•ÏX‚·‚éB
-	" source ‚©‚çÀs‚µ‚½ê‡‚ÍAŠJ‚¢‚½ƒtƒ@ƒCƒ‹‚ğ•ÏX‚·‚éB
+	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´
+	" action ã‹ã‚‰å®Ÿè¡Œã—ãŸå ´åˆã¯ã€é¸æŠã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¤‰æ›´ã™ã‚‹ã€‚
+	" source ã‹ã‚‰å®Ÿè¡Œã—ãŸå ´åˆã¯ã€é–‹ã„ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¤‰æ›´ã™ã‚‹ã€‚
 	" ********************************************************************************
 
 	let reopen_depots = a:candidate.action__depots
 	let port_client   = pf_changes#get_port_client(a:candidate)
 
-	"ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì”Ô†‚Ìæ“¾
+	"ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç•ªå·ã®å–å¾—
 	let chnum = s:make_new_changes(a:candidate)
 
-	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX
+	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´
 	let cmd = 'p4  '.port_client.' reopen -c '.chnum.' "'.join(reopen_depots,'" "').'"'
 	call unite#print_message(cmd)
 	let outs = split(perforce#system(cmd), "\n")
 
-	" ƒƒO‚Ìo—Í
+	" ãƒ­ã‚°ã®å‡ºåŠ›
 	call perforce#log_file(outs)
 
 endfunction

@@ -21,7 +21,7 @@ function! s:get_candidates_from_pfhave(datas) "{{{
 endfunction
 "}}}
 function! s:get_datas_from_p4_have(str, reset_flg) "{{{
-	" ‹ó”’‚Ìê‡‚ÍAƒXƒy[ƒX‚ğg—p‚·‚é
+	" ç©ºç™½ã®å ´åˆã¯ã€ã‚¹ãƒšãƒ¼ã‚¹ã‚’ä½¿ç”¨ã™ã‚‹
 	let str = a:str
 	let candidates = []
 
@@ -49,11 +49,11 @@ endfunction
 
 let s:souce_p4have = {
 			\ 'name' : 'p4/have',
-			\ 'description' : 'Š—L‚·‚éƒtƒ@ƒCƒ‹',
+			\ 'description' : 'æ‰€æœ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«',
 			\ }
 function! s:souce_p4have.gather_candidates(args, context) "{{{
 	"********************************************************************************
-	"@param[in]	args		perforce‚©‚çŒŸõ‚·‚éƒtƒ@ƒCƒ‹–¼
+	"@param[in]	args		perforceã‹ã‚‰æ¤œç´¢ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«å
 	"********************************************************************************
 	return s:get_datas_from_p4_have(join(a:args), 0)
 endfunction
@@ -61,11 +61,11 @@ endfunction
 
 let s:souce_p4have_reset = {
 			\ 'name' : 'p4/have_reset',
-			\ 'description' : 'Š—L‚·‚éƒtƒ@ƒCƒ‹ ( ƒLƒƒƒbƒVƒ…‚ğíœ‚·‚é ) ',
+			\ 'description' : 'æ‰€æœ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ« ( ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’å‰Šé™¤ã™ã‚‹ ) ',
 			\ }
 function! s:souce_p4have_reset.gather_candidates(args, context) "{{{
 	"********************************************************************************
-	"@param[in]	args		perforce‚©‚çŒŸõ‚·‚éƒtƒ@ƒCƒ‹–¼
+	"@param[in]	args		perforceã‹ã‚‰æ¤œç´¢ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«å
 	"********************************************************************************
 	return s:get_datas_from_p4_have(join(a:args), 1)
 endfunction

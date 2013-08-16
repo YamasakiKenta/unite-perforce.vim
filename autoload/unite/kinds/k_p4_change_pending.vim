@@ -60,9 +60,9 @@ let s:kind_k_p4_change_pending = {
 			\ 'parents'        : ['k_p4'],
 			\ }
 
-" ‹¤’Ê
+" å…±é€š
 let s:kind_k_p4_change_pending.action_table.change_list_delete = {
-			\ 'description' : 'ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìíœ' ,
+			\ 'description' : 'ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å‰Šé™¤' ,
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.change_list_delete.func(candidates) "{{{
@@ -77,9 +77,9 @@ function! s:kind_k_p4_change_pending.action_table.change_list_delete.func(candid
 endfunction
 "}}}
 
-"•¡”‘I‘ğ‰Â”\
+"è¤‡æ•°é¸æŠå¯èƒ½
 let s:kind_k_p4_change_pending.action_table.a_p4_change_opened = { 
-			\ 'description' : 'ƒtƒ@ƒCƒ‹‚Ì•\¦',
+			\ 'description' : 'ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º',
 			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
@@ -87,7 +87,7 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_opened.func(candid
 
 	let data_ds = []
 	for candidate in a:candidates
-		" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì”Ô†‚Ìæ“¾‚ğ‚·‚é
+		" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç•ªå·ã®å–å¾—ã‚’ã™ã‚‹
 		let port_client = pf_changes#get_port_client(candidate)
 		let data_d= {
 					\ 'chnum'  : s:get_chnum(candidate),
@@ -96,12 +96,12 @@ function! s:kind_k_p4_change_pending.action_table.a_p4_change_opened.func(candid
 		call add(data_ds, data_d)
 	endfor
 
-	call unite#start_temporary([insert(data_ds, 'p4_opened')]) " # •Â‚¶‚È‚¢ ? 
+	call unite#start_temporary([insert(data_ds, 'p4_opened')]) " # é–‰ã˜ãªã„ ? 
 endfunction
 "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_change_info = { 
-			\ 'description' : 'ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìî•ñ' ,
+			\ 'description' : 'ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®æƒ…å ±' ,
 			\ 'is_selectable' : 1, 
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_info.func(candidates) "{{{
@@ -115,7 +115,7 @@ endfunction
 "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_change_submit = {
-			\ 'description' : 'ƒTƒuƒ~ƒbƒg' ,
+			\ 'description' : 'ã‚µãƒ–ãƒŸãƒƒãƒˆ' ,
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candidates) "{{{
@@ -146,7 +146,7 @@ let s:kind_k_p4_change_pending.action_table.delete = {
 function! s:kind_k_p4_change_pending.action_table.delete.func(candidates) "{{{
 	let data_ds = []
 	for candidate in a:candidates
-		" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì”Ô†‚Ìæ“¾‚ğ‚·‚é
+		" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç•ªå·ã®å–å¾—ã‚’ã™ã‚‹
 		let port_client = pf_changes#get_port_client(candidate)
 		let data_d= {
 					\ 'chnum'  : s:get_chnum(candidate),
@@ -159,7 +159,7 @@ endfunction
 "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff = { 
-			\ 'description' : '·•ª‚Ì‚Ü‚Æ‚ß‚ğ•\¦',
+			\ 'description' : 'å·®åˆ†ã®ã¾ã¨ã‚ã‚’è¡¨ç¤º',
 			\ 'is_selectable' : 1, 
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff.func(candidates) "{{{
@@ -171,7 +171,7 @@ endfunction
 "}}}
 
 let s:kind_k_p4_change_pending.action_table.edit = {
-			\  'description' : '–¼‘O‚Ì•ÏX' ,
+			\  'description' : 'åå‰ã®å¤‰æ›´' ,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.edit.func(candidate) "{{{
 	let chnum       = s:get_chnum(a:candidate)

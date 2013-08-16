@@ -79,7 +79,7 @@ function! perforce#data#setting()  "{{{
 endfunction
 "}}}
 "
-" ˆø” ‚Ég—p‚·‚éê‡‚Ì - ‚È‚Ç‚ğİ’è‚·‚é
+" å¼•æ•° ã«ä½¿ç”¨ã™ã‚‹å ´åˆã® - ãªã©ã‚’è¨­å®šã™ã‚‹
 function! perforce#data#get_users() "{{{
 	let users = perforce#data#get('g:unite_perforce_username')
 

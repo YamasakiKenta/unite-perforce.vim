@@ -18,7 +18,7 @@ let s:kind_help = {
 			\ }
 
 let s:kind_help.action_table.a_help = {
-			\ 'description' : 'Ú‚µ‚¢î•ñ‚ğ•\¦',
+			\ 'description' : 'è©³ã—ã„æƒ…å ±ã‚’è¡¨ç¤º',
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind_help.action_table.a_help.func(candidates) "{{{

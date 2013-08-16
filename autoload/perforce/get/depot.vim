@@ -9,7 +9,7 @@ endfunction
 
 function! perforce#get#depot#from_opened(str) 
 	" [2013-06-07 02:28]
-	return substitute(a:str,'#.*','','')   " # ƒŠƒrƒWƒ‡ƒ“”Ô†‚Ìíœ
+	return substitute(a:str,'#.*','','')   " # ãƒªãƒ“ã‚¸ãƒ§ãƒ³ç•ªå·ã®å‰Šé™¤
 endfunction 
 
 function! perforce#get#depot#from_path(str) 

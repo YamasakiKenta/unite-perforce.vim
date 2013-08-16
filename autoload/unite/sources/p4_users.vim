@@ -8,7 +8,7 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4/users',
-			\ 'description' : 'ƒ†[ƒU[‚ÌØ‚è‘Ö‚¦',
+			\ 'description' : 'ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®åˆ‡ã‚Šæ›¿ãˆ',
 			\ 'default_kind' : 'k_p4_users',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{

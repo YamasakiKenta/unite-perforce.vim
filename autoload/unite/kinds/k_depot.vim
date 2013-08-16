@@ -51,9 +51,9 @@ endfunction
 function! s:find_filepath_from_depot(candidate) "{{{
 	" ********************************************************************************
 	" [2013-06-09 01:27]
-	" ï“èWÇ∑ÇÈÉtÉ@ÉCÉãñºÇéÊìæÇ∑ÇÈ 
-	" @param[in]	candidate		unite action ÇÃà¯êî
-	" @retval       path			ï“èWÇ∑ÇÈÉtÉ@ÉCÉãñº
+	" Á∑®ÈõÜ„Åô„Çã„Éï„Ç°„Ç§„É´Âêç„ÇíÂèñÂæó„Åô„Çã 
+	" @param[in]	candidate		unite action „ÅÆÂºïÊï∞
+	" @retval       path			Á∑®ÈõÜ„Åô„Çã„Éï„Ç°„Ç§„É´Âêç
 	" ********************************************************************************
 	if exists('a:candidate.action__cmd')
 		if a:candidate.action__cmd == 'files'
@@ -112,7 +112,7 @@ function s:kind_depot.action_table.revert_a.func(candidates)
 endfunction
 
 let s:kind_depot.action_table.a_open = {
-			\ 'description' : 'äJÇ≠',
+			\ 'description' : 'Èñã„Åè',
 			\ }
 function! s:kind_depot.action_table.a_open.func(candidate) "{{{
 	exe 'edit '.s:find_filepath_from_depot(a:candidate)
@@ -145,10 +145,10 @@ endfunction
 
 let s:kind_depot.action_table.a_p4_files = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'ÉtÉ@ÉCÉãÇÃèÓïÒ',
+			\ 'description' : '„Éï„Ç°„Ç§„É´„ÅÆÊÉÖÂ†±',
 			\ }
 function! s:kind_depot.action_table.a_p4_files.func(candidates) "{{{
-	"TODO: source Ç…Ç∑ÇÈ
+	"TODO: source „Å´„Åô„Çã
 	let outs = s:sub_action(a:candidates, 'files')
 	call perforce#show(outs)
 endfunction
@@ -168,11 +168,11 @@ endfunction
 
 let s:kind_depot.action_table.a_p4_diff = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'ç∑ï™',
+			\ 'description' : 'Â∑ÆÂàÜ',
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind_depot.action_table.a_p4_diff.func(candidates) "{{{
-	"TODO: ÉNÉâÉCÉAÉìÉgëŒâû
+	"TODO: „ÇØ„É©„Ç§„Ç¢„É≥„ÉàÂØæÂøú
 	let args = map(copy(a:candidates),"v:val.action__depot")
 	call unite#start_temporary([insert(args,'p4_diff')]) 
 endfunction
@@ -180,7 +180,7 @@ endfunction
 
 let s:kind_depot.action_table.a_p4_diff_tool = {
 			\ 'is_selectable' : 1 ,  
-			\ 'description' : 'ç∑ï™ ( TOOL )' ,
+			\ 'description' : 'Â∑ÆÂàÜ ( TOOL )' ,
 			\ }
 function! s:kind_depot.action_table.a_p4_diff_tool.func(candidates) "{{{
 	for l:candidate in a:candidates
@@ -191,16 +191,16 @@ endfunction
 "}}}
 
 let s:kind_depot.action_table.a_p4_reopen = {
-			\ 'description' : 'É`ÉFÉìÉWÉäÉXÉgÇÃïœçX' ,
+			\ 'description' : '„ÉÅ„Çß„É≥„Ç∏„É™„Çπ„Éà„ÅÆÂ§âÊõ¥' ,
 			\ 'is_selectable' : 1 ,
 			\ }
 function! s:kind_depot.action_table.a_p4_reopen.func(candidates) "{{{
 	let client = a:candidates[0].action__client
 
-	let args = [client] " # èâä˙âª
+	let args = [client] " # ÂàùÊúüÂåñ
 
 	for candidate in a:candidates
-		call add(args , candidate.action__depot) " # ï€ë∂
+		call add(args , candidate.action__depot) " # ‰øùÂ≠ò
 
 		if client != candidate.action__client
 			echoe 'not "'.client. '" only...'
@@ -214,7 +214,7 @@ endfunction
 
 let s:kind_depot.action_table.a_p4_filelog = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'óöó',
+			\ 'description' : 'Â±•Ê≠¥',
 			\ }
 function! s:kind_depot.action_table.a_p4_filelog.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
@@ -229,40 +229,40 @@ function! s:copy_file(depot, client, root, type) "{{{
 	let port   = matchstr(a:client, '-p\s\+\zs\S*')
 	let port   = substitute(port, ':', '', 'g')
 
-	" ãÛîíÇ∆à¯êîÇ™Ç»Ç¢èÍçáÇÕÅAdefaultÇê›íËÇ∑ÇÈ
+	" Á©∫ÁôΩ„Å®ÂºïÊï∞„Åå„Å™„ÅÑÂ†¥Âêà„ÅØ„ÄÅdefault„ÇíË®≠ÂÆö„Åô„Çã
 	let root2 = perforce#data#get('g:perforce_merge_default_path')
 
-	" ññîˆÇÃ \ ÇçÌèúÇ∑ÇÈ
+	" Êú´Â∞æ„ÅÆ \ „ÇíÂâäÈô§„Åô„Çã
 	let root2 = substitute(root2,'/$','','')
 
 	if a:type == 'depot'
-		" êÊì™ÇÃ\\ÇçÌèúÇ∑ÇÈ
+		" ÂÖàÈ†≠„ÅÆ\\„ÇíÂâäÈô§„Åô„Çã
 		let depot = substitute(depot, '//','','')
 	else
-		" ClientPathÇçÌèúÇ∑ÇÈ
+		" ClientPath„ÇíÂâäÈô§„Åô„Çã
 		let root1  = a:root
 		let root1  = substitute(root1, '/', '\','g')
 
-		" íuä∑Ç∑ÇÈÇΩÇﬂÅAÉXÉyÅ[ÉXÇÕÉGÉXÉPÅ[ÉvÇ∑ÇÈ
+		" ÁΩÆÊèõ„Åô„Çã„Åü„ÇÅ„ÄÅ„Çπ„Éö„Éº„Çπ„ÅØ„Ç®„Çπ„Ç±„Éº„Éó„Åô„Çã
 		let root1 = escape(root1,'\')
 
-		" ÉãÅ[ÉgÇÃçÌèú
+		" „É´„Éº„Éà„ÅÆÂâäÈô§
 		let depot = substitute(file1, root1,'','')
 	endif
 
-	" ÉRÉsÅ[êÊ
+	" „Ç≥„Éî„ÉºÂÖà
 	let file2 = root2.'/new/'.port.'/'.depot 
 
-	" ïœä∑
+	" Â§âÊèõ
 	let file1 = substitute(file1, '/','\','g')
 	let file2 = substitute(file2, '/','\','g')
 
-	" ÉtÉHÉãÉ_ÇÃçÏê¨
+	" „Éï„Ç©„É´„ÉÄ„ÅÆ‰ΩúÊàê
 	let cmd = 'mkdir "'.fnamemodify(file2,':h').'"'
 	echom 's:copy_file ->' string(cmd)
 	call perforce#system(cmd)
 
-	" ÉRÉsÅ[Ç∑ÇÈ
+	" „Ç≥„Éî„Éº„Åô„Çã
 	let cmd = 'copy "'.file1.'" "'.file2.'"'
 	echom 's:copy_file ->' string(cmd)
 	call perforce#system(cmd)
@@ -270,7 +270,7 @@ function! s:copy_file(depot, client, root, type) "{{{
 endfunction
 "}}}
 let s:kind_depot.action_table.a_p4_dir_copy = {
-	\ 'description' : 'dirÇ≈ÉRÉsÅ[Ç∑ÇÈ',
+	\ 'description' : 'dir„Åß„Ç≥„Éî„Éº„Åô„Çã',
 	\ 'is_selectable' : 1,
 	\ }
 function! s:kind_depot.action_table.a_p4_dir_copy.func(candidates) "{{{
@@ -288,7 +288,7 @@ endfunction
 "}}}
 
 let s:kind_depot.action_table.a_p4_depot_copy = {
-	\ 'description' : 'depotÇ≈ÉRÉsÅ[Ç∑ÇÈ',
+	\ 'description' : 'depot„Åß„Ç≥„Éî„Éº„Åô„Çã',
 	\ 'is_selectable' : 1,
 	\ }
 function! s:kind_depot.action_table.a_p4_depot_copy.func(candidates) "{{{

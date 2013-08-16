@@ -7,7 +7,7 @@ endfunction
 
 let s:source__p4_annotate = {
 			\ 'name' : 'p4/annotate',
-			\ 'description' : '各行にリビジョン番号を表示',
+			\ 'description' : '蜷�陦後↓繝ｪ繝薙ず繝ｧ繝ｳ逡ｪ蜿ｷ繧定｡ｨ遉ｺ',
 			\ 'default_kind' : 'k_p4_filelog',
 			\ 'hooks' : {},
 			\ }

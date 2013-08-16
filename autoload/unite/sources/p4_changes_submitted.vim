@@ -7,7 +7,7 @@ endfunction
 
 let s:source_p4_changes_submitted = {
 			\ 'name' : 'p4/changes_submitted',
-			\ 'description' : 'submit Ï‚İƒ`ƒFƒ“ƒWƒŠƒXƒg',
+			\ 'description' : 'submit æ¸ˆã¿ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆ',
 			\ 'hooks' : {},
 			\ 'default_kind' : 'k_p4_change_submitted',
 			\ }

@@ -38,7 +38,7 @@ function! s:save(name, dict) "{{{
 endfunction
 "}}}
 function! s:load(name, default) "{{{
-	" ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+	" ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
 	if exists('g:tmp')
 		unlet g:tmp
 	endif
@@ -52,46 +52,46 @@ endfunction
 "}}}
 
 function! s:MyQuit() "{{{
-	" ƒtƒ@ƒCƒ‹“à‚Åg—p
+	" ãƒ•ã‚¡ã‚¤ãƒ«å†…ã§ä½¿ç”¨
 	map <buffer> q :q<CR>
 endfunction
 "}}}
 function! s:LogFile(name, deleteFlg, ...) "{{{
 	" ********************************************************************************
-	" V‚µ‚¢ƒtƒ@ƒCƒ‹‚ğŠJ‚¢‚Ä‘‚«‚İ‹Ö~‚É‚·‚é 
-	" @param[in]	name		‘‚«‚İ—ptmpFileName
-	" @param[in]	deleteFlg	‰Šú‰»‚·‚é
-	" @param[in]	[...]		‘‚«‚Şƒf[ƒ^
+	" æ–°ã—ã„ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã„ã¦æ›¸ãè¾¼ã¿ç¦æ­¢ã«ã™ã‚‹ 
+	" @param[in]	name		æ›¸ãè¾¼ã¿ç”¨tmpFileName
+	" @param[in]	deleteFlg	åˆæœŸåŒ–ã™ã‚‹
+	" @param[in]	[...]		æ›¸ãè¾¼ã‚€ãƒ‡ãƒ¼ã‚¿
 	" ********************************************************************************
 
-	let @t = expand("%:p") " # map‚ÅŒÄ‚Ño‚µ—p
+	let @t = expand("%:p") " # mapã§å‘¼ã³å‡ºã—ç”¨
 	let name = a:name
 
-	" ŠJ‚¢‚Ä‚¢‚é‚©’²‚×‚é
+	" é–‹ã„ã¦ã„ã‚‹ã‹èª¿ã¹ã‚‹
 	let bnum = bufwinnr(name) 
 
 	if bnum == -1
-		" ‰æ–Ê“à‚É‚È‚¯‚ê‚ÎV‹Kì¬
+		" ç”»é¢å†…ã«ãªã‘ã‚Œã°æ–°è¦ä½œæˆ
 		exe 'sp ~/'.name
-		%delete _          " # ƒtƒ@ƒCƒ‹Á‹
-		setl buftype=nofile " # •Û‘¶‹Ö~
+		%delete _          " # ãƒ•ã‚¡ã‚¤ãƒ«æ¶ˆå»
+		setl buftype=nofile " # ä¿å­˜ç¦æ­¢
 		setl fdm=manual
 		call s:MyQuit()
 	else
-		" •\¦‚µ‚Ä‚¢‚é‚È‚çØ‚è‘Ö‚¦‚é
+		" è¡¨ç¤ºã—ã¦ã„ã‚‹ãªã‚‰åˆ‡ã‚Šæ›¿ãˆã‚‹
 		exe bnum . 'wincmd w'
 	endif
 
-	" ‰Šú‰»‚·‚é
+	" åˆæœŸåŒ–ã™ã‚‹
 	if a:deleteFlg == 1
 		%delete _
 	endif
 
-	" ‘‚«‚İƒf[ƒ^‚ª‚ ‚é‚È‚ç‘‚«‚Ş
+	" æ›¸ãè¾¼ã¿ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚‹ãªã‚‰æ›¸ãè¾¼ã‚€
 	if exists("a:1") 
 		call append(0,a:1)
 	endif
-	cal cursor(1,1) " # ˆês–Ú‚ÉˆÚ“®‚·‚é
+	cal cursor(1,1) " # ä¸€è¡Œç›®ã«ç§»å‹•ã™ã‚‹
 
 	return bufnr("%")
 endfunction
@@ -102,26 +102,26 @@ endfunction
 "}}}
 function! s:is_different(path,path2) "{{{
 	" ********************************************************************************
-	" ·•ª‚ğ’²‚×‚é
-	" @param[in]	path				”äŠrƒtƒ@ƒCƒ‹1
-	" @param[in]	path2				”äŠrƒtƒ@ƒCƒ‹2
-	" @retval		flg			TRUE	·•ª‚ ‚è
-	" 							FALSE	·•ª‚È‚µ
+	" å·®åˆ†ã‚’èª¿ã¹ã‚‹
+	" @param[in]	path				æ¯”è¼ƒãƒ•ã‚¡ã‚¤ãƒ«1
+	" @param[in]	path2				æ¯”è¼ƒãƒ•ã‚¡ã‚¤ãƒ«2
+	" @retval		flg			TRUE	å·®åˆ†ã‚ã‚Š
+	" 							FALSE	å·®åˆ†ãªã—
 	" ********************************************************************************
 	let flg = 1
 	let outs = s:Get_cmds('fc '.s:get_kk(a:path).' '.s:Get_kk(a:path2))
-	if outs[1] =~ '^FC: ‘Šˆá“_‚ÍŒŸo‚³‚ê‚Ü‚¹‚ñ‚Å‚µ‚½'
+	if outs[1] =~ '^FC: ç›¸é•ç‚¹ã¯æ¤œå‡ºã•ã‚Œã¾ã›ã‚“ã§ã—ãŸ'
 		let flg = 0
 	endif
 	return flg
 endfunction
 "}}}
 function! s:get_pathEn(path) "{{{
-	return substitute(a:path,'/','\','g') " # / ƒ}[ƒN‚É“ˆê
+	return substitute(a:path,'/','\','g') " # / ãƒãƒ¼ã‚¯ã«çµ±ä¸€
 endfunction
 "}}}
 function! s:GetFileNameForUnite(args, context) "{{{
-	" ƒtƒ@ƒCƒ‹–¼‚Ìæ“¾
+	" ãƒ•ã‚¡ã‚¤ãƒ«åã®å–å¾—
 	let a:context.source__path = expand('%:p')
 	let a:context.source__linenr = line('.')
 	call unite#print_message('[line] Target: ' . a:context.source__path)
@@ -129,67 +129,67 @@ endfunction
 "}}}
 function! s:selectEdit_write(args) "{{{
 "********************************************************************************
-" Select Edit ‚Ì•Û‘¶
-" @param[in]	args.start	ŠJnˆÊ’u
-" @param[in]	args.end	I—¹ˆÊ’u
-" @param[in]	args.bufnr	”Ô†
+" Select Edit ã®ä¿å­˜
+" @param[in]	args.start	é–‹å§‹ä½ç½®
+" @param[in]	args.end	çµ‚äº†ä½ç½®
+" @param[in]	args.bufnr	ç•ªå·
 "********************************************************************************
 
 	let start    = a:args.start
 	let end      = a:args.end
 	let bufnr    = a:args.bufnr
 
-	" tmpfile‚Ì•Û‘¶
+	" tmpfileã®ä¿å­˜
 	set nomodified
 	let nowbufnr = bufnr('%')
 	let strs     = getline(0,'$')
 
-	" s‚Ì•ÏX
+	" è¡Œã®å¤‰æ›´
 	let a:args.end = start + line('$') - 1
 
-	" args‚ÌXV
+	" argsã®æ›´æ–°
 	call s:event_save_file_autocmd('s:selectEdit_write',a:args)
 
 
-	" •ÒW‚·‚éƒtƒ@ƒCƒ‹ ‚Ì•ÒW
+	" ç·¨é›†ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ« ã®ç·¨é›†
 	exe bufnr 'buffer'
 
-	" íœ
+	" å‰Šé™¤
 	exe start.','.end 'delete'
 
-	" ’Ç‰Á
+	" è¿½åŠ 
 	call append(start-1,strs)
 
-	" tmpfile‚É–ß‚·
+	" tmpfileã«æˆ»ã™
 	exe nowbufnr 'buffer'
 
 endfunction
 "}}}
 function! s:event_save_file(tmpfile,strs,func,args) "{{{
 " ********************************************************************************
-" ƒtƒ@ƒCƒ‹‚ğ•Û‘¶‚µ‚½‚Æ‚«‚ÉAŠÖ”‚ğÀs‚µ‚Ü‚·
-" @param[in]	tmpfile		•Û‘¶‚·‚éƒtƒ@ƒCƒ‹–¼ ( •ªŠ„‚·‚éƒtƒ@ƒCƒ‹–¼ ) 
-" @param[in]	strs		‰Šú‚Ì•¶Í
-" @param[in]	func		Às‚·‚éŠÖ”–¼
-" @param[in]	args		Às‚·‚éŠÖ”–¼‚É“n‚· ˆø”
+" ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä¿å­˜ã—ãŸã¨ãã«ã€é–¢æ•°ã‚’å®Ÿè¡Œã—ã¾ã™
+" @param[in]	tmpfile		ä¿å­˜ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«å ( åˆ†å‰²ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«å ) 
+" @param[in]	strs		åˆæœŸã®æ–‡ç« 
+" @param[in]	func		å®Ÿè¡Œã™ã‚‹é–¢æ•°å
+" @param[in]	args		å®Ÿè¡Œã™ã‚‹é–¢æ•°åã«æ¸¡ã™ å¼•æ•°
 " ********************************************************************************
 
-	"‰æ–Êİ’è
+	"ç”»é¢è¨­å®š
 	let bnum = bufwinnr(a:tmpfile) 
 
 	if bnum == -1
 		exe 'vnew' a:tmpfile
 		setlocal noswapfile bufhidden=hide buftype=acwrite
 	else
-		" •\¦‚µ‚Ä‚¢‚é‚È‚çØ‚è‘Ö‚¦‚é
+		" è¡¨ç¤ºã—ã¦ã„ã‚‹ãªã‚‰åˆ‡ã‚Šæ›¿ãˆã‚‹
 		exe bnum . 'wincmd w'
 	endif
 
-	"•¶‚Ì‘‚«‚İ
+	"æ–‡ã®æ›¸ãè¾¼ã¿
 	%delete _
 	call append(0,a:strs)
 
-	"ˆês–Ú‚ÉˆÚ“®
+	"ä¸€è¡Œç›®ã«ç§»å‹•
 	call cursor(1,1) 
 
 	call s:event_save_file_autocmd(a:func,a:args)
@@ -207,7 +207,7 @@ endfunction
 "}}}
 function! s:change_extension(exts) "{{{
 " ********************************************************************************
-" ƒtƒ@ƒCƒ‹‚ÌØ‚è‘Ö‚¦ ( C Œ¾Œê ) 
+" ãƒ•ã‚¡ã‚¤ãƒ«ã®åˆ‡ã‚Šæ›¿ãˆ ( C è¨€èª ) 
 " ********************************************************************************
 	let extension = expand("%:e")
 
@@ -219,7 +219,7 @@ endfunction
 "}}}
 function! s:change_unite() "{{{
 " ********************************************************************************
-" ƒtƒ@ƒCƒ‹‚ÌØ‚è‘Ö‚¦ ( unite ) 
+" ãƒ•ã‚¡ã‚¤ãƒ«ã®åˆ‡ã‚Šæ›¿ãˆ ( unite ) 
 " ********************************************************************************
 	let root = substitute(expand("%:h"), '[\\/][^\\/]*$', '', '')
 	let file = expand("%:t")
@@ -244,7 +244,7 @@ endfunction
 "}}}
 function! s:map_diff_tab() "{{{
 	"********************************************************************************
-	" ƒ^ƒuØ‚è‘Ö‚¦‚Éˆ—‚ğ’Ç‰Á‚·‚é‚½‚ßì¬‚µ‚½
+	" ã‚¿ãƒ–åˆ‡ã‚Šæ›¿ãˆæ™‚ã«å‡¦ç†ã‚’è¿½åŠ ã™ã‚‹ãŸã‚ä½œæˆã—ãŸ
 	"********************************************************************************
 	wincmd w
 endfunction
@@ -260,7 +260,7 @@ endfunction
 
 "=== new ===
 function! s:_get_dict_from_list(datas) "{{{
-	" ƒŠƒXƒgƒf[ƒ^‚ğƒL[‚Æ‚·‚é«‘Œ^‚ğì¬‚·‚é
+	" ãƒªã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã‚’ã‚­ãƒ¼ã¨ã™ã‚‹è¾æ›¸å‹ã‚’ä½œæˆã™ã‚‹
 	let datas  = a:datas
 	let dict_d = {}
 
@@ -271,7 +271,7 @@ function! s:_get_dict_from_list(datas) "{{{
 endfunction
 "}}}
 function! s:add_uniq(datas, val) "{{{
-	" «‘Œ^‚Ì’l‚É“¯‚¶’l‚ª‚È‚¢ê‡‚ÍAæ“ª‚É’Ç‰Á‚·‚é
+	" è¾æ›¸å‹ã®å€¤ã«åŒã˜å€¤ãŒãªã„å ´åˆã¯ã€å…ˆé ­ã«è¿½åŠ ã™ã‚‹
 	let dict_d = s:_get_dict_from_list
 
 	for val in s:get_list(a:val)

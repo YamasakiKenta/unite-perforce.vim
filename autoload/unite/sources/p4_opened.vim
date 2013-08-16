@@ -8,7 +8,7 @@ endfunction
 
 let s:source_p4_opened = {
 			\ 'name'         : 'p4/opened',
-			\ 'description'  : '•ÒW‚µ‚Ä‚¢‚éƒtƒ@ƒCƒ‹‚Ì•\¦ ( ƒ`ƒFƒ“ƒWƒŠƒXƒg”Ô† )',
+			\ 'description'  : 'ç·¨é›†ã—ã¦ã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º ( ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆç•ªå· )',
 			\ 'default_kind' : 'k_depot',
 			\ 'is_quit'      : 0,
 			\ }
@@ -19,7 +19,7 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 	"                           0,
 	"                           {'chnum' : 1, 'client' : '-p localhost:1818' }:
 	" ********************************************************************************
-	" ˆø”‚Ìİ’è
+	" å¼•æ•°ã®è¨­å®š
 
 	let data_ds = perforce#source#get_data_client('-c ', 'chnum', a:args)
 
@@ -30,7 +30,7 @@ function! s:source_p4_opened.gather_candidates(args, context) "{{{
 		call extend(tmps, perforce#cmd#clients(use_port_clients, 'p4 opened '.chnum))
 	endfor
 
-	" ’Ç‰Áƒtƒ@ƒCƒ‹‚¾‚Æ–â‘è‚ª”­¶‚·‚é
+	" è¿½åŠ ãƒ•ã‚¡ã‚¤ãƒ«ã ã¨å•é¡ŒãŒç™ºç”Ÿã™ã‚‹
 	let candidates = []
 	for tmp in tmps
 		let client = tmp.client

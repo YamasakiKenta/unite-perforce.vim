@@ -1,10 +1,10 @@
-unite-perforce.txt	perforce‚ğunite‚Åg‚¤
+unite-perforce.txt	perforceã‚’uniteã§ä½¿ã†
 
 Version: 0.5
 Author : YamasakiKenta
 
 
-–ÚŸ						*unite-perforce-contents*
+ç›®æ¬¡						*unite-perforce-contents*
 
 Commands   |unite-perforce-commands|
 Functions  |unite-perforce-functions|
@@ -16,30 +16,30 @@ Sources    |unite-perforce-sources|
 Commands					*unite-perforce-commands*
 
 :PfEdit {filename} *:PfEdit*
-	Œ»İ‚Ìƒtƒ@ƒCƒ‹A‚à‚µ‚­‚Í{filename}‚ğ•ÒWó‘Ô‚É‚µ‚Ü‚·B
+	ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã€ã‚‚ã—ãã¯{filename}ã‚’ç·¨é›†çŠ¶æ…‹ã«ã—ã¾ã™ã€‚
 
 :PfAdd {filename} *:PfAdd*
-	Œ»İ‚Ìƒtƒ@ƒCƒ‹A‚à‚µ‚­‚Í{filename}‚ğ’Ç‰Á‚à‚µ‚­‚ÍA•ÒWó‘Ô‚É‚µ‚Ü‚·B
+	ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã€ã‚‚ã—ãã¯{filename}ã‚’è¿½åŠ ã‚‚ã—ãã¯ã€ç·¨é›†çŠ¶æ…‹ã«ã—ã¾ã™ã€‚
 
 :PfDiff {filename} *:PfDiff*
-	Œ»İ‚Ìƒtƒ@ƒCƒ‹A‚à‚µ‚­‚Í{filename}‚Ì·•ª‚ğ•\¦‚µ‚Ü‚·B
+	ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã€ã‚‚ã—ãã¯{filename}ã®å·®åˆ†ã‚’è¡¨ç¤ºã—ã¾ã™ã€‚
 
 :PfRevert {filename} *:PfRevert*
-	Œ»İ‚Ìƒtƒ@ƒCƒ‹A‚à‚µ‚­‚Í{filename}‚Ì•ÒWó‘Ô‚ğ‰ğœ‚µ‚Ü‚·B
+	ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã€ã‚‚ã—ãã¯{filename}ã®ç·¨é›†çŠ¶æ…‹ã‚’è§£é™¤ã—ã¾ã™ã€‚
 
 :PfFind {filename} ... *:PfFind*
-	{filename}‚ğAƒNƒ‰ƒCƒAƒ“ƒg‚©‚çŒŸõ‚µ‚Ü‚·B
+	{filename}ã‚’ã€ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‹ã‚‰æ¤œç´¢ã—ã¾ã™ã€‚
 
 :PfSetting *:PfSetting*
-	İ’è‚ğ‚µ‚Ü‚·B|unite-setting.vim| ‚ª•K—v‚É‚È‚è‚Ü‚·
+	è¨­å®šã‚’ã—ã¾ã™ã€‚|unite-setting.vim| ãŒå¿…è¦ã«ãªã‚Šã¾ã™
 
 	git://github.com/YamasakiKenta/unite-setting.vim.git
 
 :PfAnnotate *:PfAnnotate*
-	annotate ‚ğ•ÒWƒtƒ@ƒCƒ‹‡‚í‚¹‚Ä•\¦‚µ‚Ü‚·B
+	annotate ã‚’ç·¨é›†ãƒ•ã‚¡ã‚¤ãƒ«åˆã‚ã›ã¦è¡¨ç¤ºã—ã¾ã™ã€‚
 
 :PfMatomeDiffs {chnum} ... *:PfMatomeDiffs*
-	ƒ`ƒFƒ“ƒWƒŠƒXƒg{chnum}‚ÌC³‚Ì‚Ü‚Æ‚ß‚ğ•\¦‚µ‚Ü‚·
+	ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆ{chnum}ã®ä¿®æ­£ã®ã¾ã¨ã‚ã‚’è¡¨ç¤ºã—ã¾ã™
 
 ------------------------------------------------------------------------------
 Variables						*unite-perforce-variables*
@@ -72,82 +72,82 @@ g:perforce_tmp_dir *g:perforce_tmp_dir*
 KEY MAPPING 	*unite-perforce-mappings*
 
 <Plug>(p4_echo_client_data) *<Plug>(p4_echo_client_data)*
-	Œ»İ‚Ì Client Name   Client Path ‚Ì•\¦‚ğs‚¢‚Ü‚·
+	ç¾åœ¨ã® Client Name   Client Path ã®è¡¨ç¤ºã‚’è¡Œã„ã¾ã™
 
 <PLUG>(p4_lcd_clentpath) *<PLUG>(p4_lcd_clentpath)*
-	client root‚ğlcd ‚É‚µ‚Ü‚·
+	client rootã‚’lcd ã«ã—ã¾ã™
 
 <PLUG>(p4_filelog) *<PLUG>(p4_filelog)*
-	Œ»İ‚Ìƒtƒ@ƒCƒ‹‚Ìƒtƒ@ƒCƒ‹ƒƒO‚Ìo—Í
+	ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ­ã‚°ã®å‡ºåŠ›
 
 <PLUG>(p4_diff) *<PLUG>(p4_diff)*
-	Œ»İ‚Ìƒtƒ@ƒCƒ‹‚Ì·•ª‚Ìo—Í
+	ç¾åœ¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®å·®åˆ†ã®å‡ºåŠ›
 
 <PLUG>(p4_find) *<PLUG>(p4_find)*
-	ƒtƒ@ƒCƒ‹‚ğƒT[ƒo[‚©‚çŒŸõ‚·‚é
+	ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰æ¤œç´¢ã™ã‚‹
 
 <PLUG>(p4_get_depot) *<PLUG>(p4_get_depot)*
-	depot‚ğ•\¦‚µ‚Ü‚·
+	depotã‚’è¡¨ç¤ºã—ã¾ã™
 
 ==============================================================================
 SOURCES						*unite-perforce-sources*
 
 p4_annotate
-	Šes‚ÉƒŠƒrƒWƒ‡ƒ“”Ô†‚ğ•\¦
+	å„è¡Œã«ãƒªãƒ“ã‚¸ãƒ§ãƒ³ç•ªå·ã‚’è¡¨ç¤º
 
 p4_annotate_ai
-	Šes‚Éƒ`ƒFƒ“ƒWƒŠƒXƒg”Ô†‚ğ•\¦ ( ‘S‚Ä )
+	å„è¡Œã«ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆç•ªå·ã‚’è¡¨ç¤º ( å…¨ã¦ )
 
 p4_changes_pending
-	ì¬’†‚Ìƒ`ƒFƒ“ƒWƒŠƒXƒg
+	ä½œæˆä¸­ã®ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆ
 
 p4_changes_pending_reopen
-	ƒ`ƒFƒ“ƒWƒŠƒXƒg‚ÌˆÚ“®
+	ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ç§»å‹•
 
 p4_changes_submitted
-	submit Ï‚İƒ`ƒFƒ“ƒWƒŠƒXƒg
+	submit æ¸ˆã¿ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆ
 
 p4_clients
-	ƒNƒ‰ƒCƒAƒ“ƒg‚ğ•\¦‚·‚é
+	ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚’è¡¨ç¤ºã™ã‚‹
 
 p4_describe
-	ƒTƒuƒ~ƒbƒgÏ‚İ‚Ìƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì·•ª‚ğ•\¦
+	ã‚µãƒ–ãƒŸãƒƒãƒˆæ¸ˆã¿ã®ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å·®åˆ†ã‚’è¡¨ç¤º
 
 p4_diff
-	·•ª‚ğ•\¦‚·‚é
+	å·®åˆ†ã‚’è¡¨ç¤ºã™ã‚‹
 
 p4_filelog
-	—š—ğ
+	å±¥æ­´
 
 p4_files
-	Š—L‚·‚éƒtƒ@ƒCƒ‹
+	æ‰€æœ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«
 
 p4_fixes
-	job ‚Æ change ƒŠƒXƒg‚Ì•R‚Ã‚¯‚ğ•\¦‚·‚é
+	job ã¨ change ãƒªã‚¹ãƒˆã®ç´ã¥ã‘ã‚’è¡¨ç¤ºã™ã‚‹
 
 p4_have
-	Š—L‚·‚éƒtƒ@ƒCƒ‹
+	æ‰€æœ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«
 
 p4_have_reset
-	Š—L‚·‚éƒtƒ@ƒCƒ‹ ( ƒLƒƒƒbƒVƒ…ƒŠƒZƒbƒg ) 
+	æ‰€æœ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ« ( ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒªã‚»ãƒƒãƒˆ ) 
 
 p4_help
-	ƒwƒ‹ƒv‚ğ•\¦
+	ãƒ˜ãƒ«ãƒ—ã‚’è¡¨ç¤º
 
 p4_info
-	İ’è‚ğ•\¦‚·‚é
+	è¨­å®šã‚’è¡¨ç¤ºã™ã‚‹
 
 p4_jobs
-	ƒWƒ‡ƒu‚Ì•\¦
+	ã‚¸ãƒ§ãƒ–ã®è¡¨ç¤º
 
 p4_opened
-	•ÒW‚µ‚Ä‚¢‚éƒtƒ@ƒCƒ‹‚Ì•\¦ ( ƒ`ƒFƒ“ƒWƒŠƒXƒg”Ô† )
+	ç·¨é›†ã—ã¦ã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º ( ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆç•ªå· )
 
 p4_template
-	ƒeƒ“ƒvƒŒ[ƒg‚ÅŠÇ—‚µ‚Ü‚·
+	ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã§ç®¡ç†ã—ã¾ã™
 
 p4_users
-	ƒ†[ƒU[‚ÌØ‚è‘Ö‚¦
+	ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®åˆ‡ã‚Šæ›¿ãˆ
 
 
 ==============================================================================

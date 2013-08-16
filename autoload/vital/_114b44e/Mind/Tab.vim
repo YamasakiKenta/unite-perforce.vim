@@ -20,7 +20,7 @@ endfunction
 function! s:open_files(files) "{{{
 	let files_ = a:files
 
-	" �����̃t�@�C����ʃ^�O�ŊJ��
+	" 複数のファイルを別タグで開く
 	exe 'tabe' files_[0]
 	
 	for file_ in files_[1:]
@@ -31,10 +31,10 @@ endfunction
 function! s:open_bufnrs(bufnrs) "{{{
 	let bufnrs = a:bufnrs
 	tabe
-	" �ŏ��̉�ʂ̍X�V
+	" 最初の画面の更新
 	exe 'b' bufnrs[0]
 
-	" 2��ʖڂ���́A��������
+	" 2画面目からは、分割する
 	for bufnr in bufnrs[1:]
 		exe 'sb' bufnr
 	endfor	
@@ -50,11 +50,11 @@ function! s:open_lines(datas) "{{{
 	let datas = a:datas
 	tabe
 
-	" �ŏ��̉�ʂ̍X�V
+	" 最初の画面の更新
 	call append(0, datas[0])
 	call cursor(1,1)
 
-	" 2��ʖڂ���́A��������
+	" 2画面目からは、分割する
 	for lines in datas[1:]
 		new
 		call append(0, lines)

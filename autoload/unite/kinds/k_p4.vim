@@ -17,7 +17,7 @@ let s:kind.action_table.a_add_fix = {
 			\ }
 function! s:kind.action_table.a_add_fix.func(candidates) "{{{
 
-	" ‰Šú‰»
+	" åˆæœŸåŒ–
 	cexpr ''	
 
 	for candidate in a:candidates

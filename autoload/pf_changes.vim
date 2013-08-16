@@ -7,7 +7,7 @@ endfunction
 
 function! pf_changes#get(context,data_ds)  "{{{
 	" ********************************************************************************
-	" @par          p4_changes Untie —p‚Ì •Ô‚è’l‚ğ•Ô‚·
+	" @par          p4_changes Untie ç”¨ã® è¿”ã‚Šå€¤ã‚’è¿”ã™
 	" @param[in]	context
 	" @param[in]	data_ds
 	" ********************************************************************************
@@ -30,12 +30,12 @@ endfunction
 "}}}
 function! pf_changes#gather_candidates(args, context, status)  "{{{
 	" ********************************************************************************
-	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•\¦ •\¦İ’èŠÖ”
-	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ì•ÏX‚Ìê‡AŠJ‚¢‚½‚¢‚éƒtƒ@ƒCƒ‹‚ğ•ÏX‚·‚é‚©Aaction‚Åw’è‚µ‚½ƒtƒ@ƒCƒ‹
+	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®è¡¨ç¤º è¡¨ç¤ºè¨­å®šé–¢æ•°
+	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®å¤‰æ›´ã®å ´åˆã€é–‹ã„ãŸã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¤‰æ›´ã™ã‚‹ã‹ã€actionã§æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«
 	" @param[in]	args				depot
 	" ********************************************************************************
 	"
-	" •\¦‚·‚éƒNƒ‰ƒCƒAƒ“ƒg–¼‚Ìæ“¾
+	" è¡¨ç¤ºã™ã‚‹ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆåã®å–å¾—
 	let datas = []
 	if a:context.source__client_flg == 1
 		let datas = a:context.source__client
@@ -48,7 +48,7 @@ function! pf_changes#gather_candidates(args, context, status)  "{{{
 
 	call s:get_port_clients(use_port_clients)
 
-	" default‚Ì•\¦
+	" defaultã®è¡¨ç¤º
 	let candidates = []
 
 	if a:status == 'pending'
@@ -76,15 +76,15 @@ endfunction
 "}}}
 function! pf_changes#change_candidates(args, context)  "{{{
 	" ********************************************************************************
-	" p4 change ƒ\[ƒX‚Ì •Ï‰»ŠÖ”
+	" p4 change ã‚½ãƒ¼ã‚¹ã® å¤‰åŒ–é–¢æ•°
 	" @param[in]	
 	" @retval       
 	" ********************************************************************************
-	" Unite ‚Å“ü—Í‚³‚ê‚½•¶š
+	" Unite ã§å…¥åŠ›ã•ã‚ŒãŸæ–‡å­—
 	let newfile = a:context.input
 	let candidates = []
 
-	" “ü—Í‚ª‚È‚¢ê‡‚ÍA•\¦‚µ‚È‚¢
+	" å…¥åŠ›ãŒãªã„å ´åˆã¯ã€è¡¨ç¤ºã—ãªã„
 	if newfile != ""
 		let clients = s:get_port_clients()
 		for client in clients
@@ -106,27 +106,27 @@ endfunction
 
 function! pf_changes#make(strs, port_client, ...) "{{{
 	"********************************************************************************
-	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìì¬
-	" @param[in]	str		ƒ`ƒFƒ“ƒWƒŠƒXƒg‚ÌƒRƒƒ“ƒg
-	" @param[in]	...		•ÒW‚·‚éƒ`ƒFƒ“ƒWƒŠƒXƒg”Ô†
-	" @param[out]	chnum	ì¬‚µ‚½ƒ`ƒFƒ“ƒWƒŠƒXƒg
+	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ä½œæˆ
+	" @param[in]	str		ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ã‚³ãƒ¡ãƒ³ãƒˆ
+	" @param[in]	...		ç·¨é›†ã™ã‚‹ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆç•ªå·
+	" @param[out]	chnum	ä½œæˆã—ãŸãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆ
 	"********************************************************************************
 	"
 	let strs = (type(a:strs)==type([])) ? a:strs : [a:strs]
 
-	"ƒ`ƒFƒ“ƒW”Ô†‚ÌƒZƒbƒg ( ˆø”‚ª‚ ‚é‚© )
+	"ãƒã‚§ãƒ³ã‚¸ç•ªå·ã®ã‚»ãƒƒãƒˆ ( å¼•æ•°ãŒã‚ã‚‹ã‹ )
 	let chnum     = get(a:,'1','')
 
-	"ChangeList‚Ìİ’èƒf[ƒ^‚ğˆê•Û‘¶‚·‚é
+	"ChangeListã®è¨­å®šãƒ‡ãƒ¼ã‚¿ã‚’ä¸€æ™‚ä¿å­˜ã™ã‚‹
 	let cmd = 'p4 change -o '.chnum
 	let tmp = perforce#system('p4 '.a:port_client. ' change -o '.chnum)
 
-	" V‹Kì¬‚Ìê‡‚ÍAƒtƒ@ƒCƒ‹‚ğŠÜ‚Ü‚È‚¢
+	" æ–°è¦ä½œæˆã®å ´åˆã¯ã€ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å«ã¾ãªã„
 	if chnum == "" 
 		let tmp = substitute(tmp,'\nFiles:\zs\_.*','','') 
 	endif
 
-	"ƒRƒƒ“ƒg‚Ì•ÒW
+	"ã‚³ãƒ¡ãƒ³ãƒˆã®ç·¨é›†
 	let tmp = substitute(tmp,'\nDescription:\zs\_.*\ze\(\n\w\+:\|$\)','','') 
 
 	let outs = split(tmp, "\n")
@@ -139,10 +139,10 @@ function! pf_changes#make(strs, port_client, ...) "{{{
 	call map(strs, "' '.v:val")
 	let outs = extend(outs, strs, i+1)
 
-	"ˆêƒtƒ@ƒCƒ‹‚Ì‘‚«o‚µ
+	"ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«ã®æ›¸ãå‡ºã—
 	call writefile(outs, perforce#get_tmp_file())
 
-	" ƒ`ƒFƒ“ƒWƒŠƒXƒg‚Ìì¬
+	" ãƒã‚§ãƒ³ã‚¸ãƒªã‚¹ãƒˆã®ä½œæˆ
 	let cmd   = 'more '.perforce#get_kk(perforce#get_tmp_file()).' | p4 '.a:port_client.' change -i'
 	let outs   = split(perforce#system(cmd), "\n")
 	let chnum = matchstr(outs[0], '\d\+')

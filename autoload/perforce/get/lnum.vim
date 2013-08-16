@@ -3,13 +3,13 @@ set cpo&vim
 
 function! perforce#get#lnum#from_diff_describe(str,lnum,snum) "{{{
 	" ********************************************************************************
-	" s”Ô†‚ğXV‚·‚é
-	" @param[in]	str		”Ô†‚ÌXV‚ğŒˆ‚ß‚é•¶š—ñ
-	" @param[in]	lnum	Œ»İ‚Ì”Ô†
-	" @param[in]	snum	‰Šú’l
+	" è¡Œç•ªå·ã‚’æ›´æ–°ã™ã‚‹
+	" @param[in]	str		ç•ªå·ã®æ›´æ–°ã‚’æ±ºã‚ã‚‹æ–‡å­—åˆ—
+	" @param[in]	lnum	ç¾åœ¨ã®ç•ªå·
+	" @param[in]	snum	åˆæœŸå€¤
 	"
-	" @retval       lnum	s”Ô†
-	" @retval       snum	‰Šú’l
+	" @retval       lnum	è¡Œç•ªå·
+	" @retval       snum	åˆæœŸå€¤
 	" ********************************************************************************
 	let str = a:str
 	let num = { 'lnum' : a:lnum , 'snum' : a:snum }
@@ -25,11 +25,11 @@ function! perforce#get#lnum#from_diff_describe(str,lnum,snum) "{{{
 		let tmpnum = tmp[2] - 1
 		let num.lnum = tmpnum
 		let num.snum = tmpnum
-		" Å‰‚Ì•\¦‚Å‚ÍAXV‚µ‚È‚¢
-	elseif str =~ '^[<>]' " # ”Ô†‚ÌXV 
+		" æœ€åˆã®è¡¨ç¤ºã§ã¯ã€æ›´æ–°ã—ãªã„
+	elseif str =~ '^[<>]' " # ç•ªå·ã®æ›´æ–° 
 		let num.lnum = a:lnum + 1
 	elseif str =~ '---'
-		" ”Ô†‚Ì‰Šú‰»
+		" ç•ªå·ã®åˆæœŸåŒ–
 		let num.lnum = a:snum
 	endif
 	return num

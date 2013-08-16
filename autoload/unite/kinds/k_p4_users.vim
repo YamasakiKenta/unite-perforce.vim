@@ -18,7 +18,7 @@ let s:kind_users = {
 			\ }
 
 let s:kind_users.action_table.a_p4_user_change = {
-			\ 'description' : 'ƒ†[ƒU[‚ÌØ‚è‘Ö‚¦',
+			\ 'description' : 'ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®åˆ‡ã‚Šæ›¿ãˆ',
 			\ }
 function! s:kind_users.action_table.a_p4_user_change.func(candidates) "{{{
 	let candidate = a:candidates
