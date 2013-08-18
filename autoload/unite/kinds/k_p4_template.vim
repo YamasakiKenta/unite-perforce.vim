@@ -8,7 +8,6 @@ endfunction
 let s:kind_p4_template = {
 	\ 'name'           : 'k_p4_template',
 	\ 'default_action' : 'a_info',
-	\ 'description'    : 'テンプレートから設定します',
 	\ 'action_table'   : {},
 	\ 'parents'        : ['common'],
 	\ }
@@ -30,7 +29,6 @@ endfunction
 "}}}
 let s:kind_p4_template.action_table.a_info = {
 	\ 'is_selectable' : 1,
-	\ 'description'   : '説明を表示します',
 	\ }
 function! s:kind_p4_template.action_table.a_info.func(candidates) "{{{
 

@@ -1,14 +1,13 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-
 function! unite#sources#p4_changes_pending#define()
 	return s:source_p4_changes_pending
 endfunction
 
 let s:source_p4_changes_pending = {
 			\ 'name'         : 'p4/changes_pending',
-			\ 'description'  : '作成中のチェンジリスト',
+			\ 'description'  : '',
 			\ 'default_kind' : 'k_p4_change_pending',
 			\ 'hooks'        : {},
 			\ 'is_quit'      : 0,

@@ -59,7 +59,6 @@ endfunction
 
 let s:source_diff = {
 			\ 'name' : 'p4/diff',
-			\ 'description' : 'ファイルの差分表示',
 			\ }
 function! s:source_diff.gather_candidates(args, context) "{{{
 

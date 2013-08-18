@@ -19,7 +19,7 @@ let s:k_p4_jobs = {
 
 let s:k_p4_jobs.action_table.a_p4_fixes = { 
 			\ 'is_selectable' : 1,
-			\ 'description'   : 'ジョブの情報',
+			\ 'description'   : 'job info',
 			\ 'is_quit'       : 0,
 			\ }
 function! s:k_p4_jobs.action_table.a_p4_fixes.func(candidates) "{{{

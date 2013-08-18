@@ -62,7 +62,7 @@ let s:kind_k_p4_change_pending = {
 
 " 共通
 let s:kind_k_p4_change_pending.action_table.change_list_delete = {
-			\ 'description' : 'チェンジリストの削除' ,
+			\ 'description' : 'delete changes', 
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.change_list_delete.func(candidates) "{{{
@@ -79,7 +79,7 @@ endfunction
 
 "複数選択可能
 let s:kind_k_p4_change_pending.action_table.a_p4_change_opened = { 
-			\ 'description' : 'ファイルの表示',
+			\ 'description' : 'open',
 			\ 'is_selectable' : 1, 
 			\ 'is_quit' : 0,
 			\ }
@@ -101,7 +101,7 @@ endfunction
 "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_change_info = { 
-			\ 'description' : 'チェンジリストの情報' ,
+			\ 'description' : 'changelist info',
 			\ 'is_selectable' : 1, 
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_info.func(candidates) "{{{
@@ -115,7 +115,7 @@ endfunction
 "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_change_submit = {
-			\ 'description' : 'サブミット' ,
+			\ 'description' : 'submit',
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_change_submit.func(candidates) "{{{
@@ -159,7 +159,7 @@ endfunction
 "}}}
 
 let s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff = { 
-			\ 'description' : '差分のまとめを表示',
+			\ 'description' : 'show matome',
 			\ 'is_selectable' : 1, 
 			\ }
 function! s:kind_k_p4_change_pending.action_table.a_p4_matomeDiff.func(candidates) "{{{
@@ -171,7 +171,7 @@ endfunction
 "}}}
 
 let s:kind_k_p4_change_pending.action_table.edit = {
-			\  'description' : '名前の変更' ,
+			\  'description' : 'rename',
 			\ }
 function! s:kind_k_p4_change_pending.action_table.edit.func(candidate) "{{{
 	let chnum       = s:get_chnum(a:candidate)

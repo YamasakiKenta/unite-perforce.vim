@@ -74,7 +74,7 @@ let s:kind_filelog = {
 			\ }
 
 let s:kind_filelog.action_table.a_p4_print = {
-			\ 'description' : 'ファイルの表示',
+			\ 'description' : 'print',
 			\ 'is_selectable' : 1, 
 			\ }
 function! s:kind_filelog.action_table.a_p4_print.func(candidates) "{{{

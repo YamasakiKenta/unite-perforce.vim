@@ -8,7 +8,6 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4/users',
-			\ 'description' : 'ユーザーの切り替え',
 			\ 'default_kind' : 'k_p4_users',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{

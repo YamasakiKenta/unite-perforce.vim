@@ -8,7 +8,6 @@ endfunction
 
 let s:source = { 
 			\ 'name' : 'p4/filelog',
-			\ 'description' : '履歴',
 			\ }
 function! s:source.gather_candidates(args, context) "{{{
 	" ********************************************************************************

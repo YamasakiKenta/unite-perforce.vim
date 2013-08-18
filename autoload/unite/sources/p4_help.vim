@@ -8,7 +8,6 @@ endfunction
 
 let s:source = {
 			\ 'name' : 'p4/help',
-			\ 'description' : 'ヘルプを表示',
 			\ 'default_kind' : 'k_p4_help',
 			\ }
 function! s:get_pfcmd_from_help(str) "{{{

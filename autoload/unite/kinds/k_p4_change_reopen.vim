@@ -33,7 +33,7 @@ let s:kind_k_p4_change_reopen = {
 			\ 'parents'        : ['k_p4'],
 			\ }
 let s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen = {
-			\ 'description' : 'チェンジリストの変更 ( reopen )' ,
+			\ 'description' : 'edit changelist',
 			\ } 
 function! s:kind_k_p4_change_reopen.action_table.a_p4_change_reopen.func(candidate) "{{{
 	" ********************************************************************************

@@ -12,7 +12,6 @@ endfunction
 
 let s:source_p4_clients = {
 			\ 'name'         : 'p4/clients',
-			\ 'description'  : 'クライアントの表示',
 			\ 'default_kind' : 'k_p4_clients',
 			\ }
 function! s:source_p4_clients.gather_candidates(args, context) 

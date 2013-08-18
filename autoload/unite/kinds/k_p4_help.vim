@@ -18,7 +18,7 @@ let s:kind_help = {
 			\ }
 
 let s:kind_help.action_table.a_help = {
-			\ 'description' : '詳しい情報を表示',
+			\ 'description' : 'help',
 			\ 'is_selectable' : 1,
 			\ }
 function! s:kind_help.action_table.a_help.func(candidates) "{{{

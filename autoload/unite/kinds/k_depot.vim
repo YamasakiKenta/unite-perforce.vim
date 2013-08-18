@@ -112,7 +112,7 @@ function s:kind_depot.action_table.revert_a.func(candidates)
 endfunction
 
 let s:kind_depot.action_table.a_open = {
-			\ 'description' : '開く',
+			\ 'description' : 'open',
 			\ }
 function! s:kind_depot.action_table.a_open.func(candidate) "{{{
 	exe 'edit '.s:find_filepath_from_depot(a:candidate)
@@ -145,7 +145,7 @@ endfunction
 
 let s:kind_depot.action_table.a_p4_files = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : 'ファイルの情報',
+			\ 'description' : 'file data',
 			\ }
 function! s:kind_depot.action_table.a_p4_files.func(candidates) "{{{
 	"TODO: source にする
@@ -168,7 +168,7 @@ endfunction
 
 let s:kind_depot.action_table.a_p4_diff = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : '差分',
+			\ 'description' : 'diff',
 			\ 'is_quit' : 0,
 			\ }
 function! s:kind_depot.action_table.a_p4_diff.func(candidates) "{{{
@@ -180,7 +180,7 @@ endfunction
 
 let s:kind_depot.action_table.a_p4_diff_tool = {
 			\ 'is_selectable' : 1 ,  
-			\ 'description' : '差分 ( TOOL )' ,
+			\ 'description' : 'diff ( tool )',
 			\ }
 function! s:kind_depot.action_table.a_p4_diff_tool.func(candidates) "{{{
 	for l:candidate in a:candidates
@@ -191,7 +191,7 @@ endfunction
 "}}}
 
 let s:kind_depot.action_table.a_p4_reopen = {
-			\ 'description' : 'チェンジリストの変更' ,
+			\ 'description' : 'edit change',
 			\ 'is_selectable' : 1 ,
 			\ }
 function! s:kind_depot.action_table.a_p4_reopen.func(candidates) "{{{
@@ -214,7 +214,7 @@ endfunction
 
 let s:kind_depot.action_table.a_p4_filelog = { 
 			\ 'is_selectable' : 1, 
-			\ 'description' : '履歴',
+			\ 'description' : 'history',
 			\ }
 function! s:kind_depot.action_table.a_p4_filelog.func(candidates) "{{{
 	let depots = map(copy(a:candidates),"v:val.action__depot")
@@ -270,7 +270,7 @@ function! s:copy_file(depot, client, root, type) "{{{
 endfunction
 "}}}
 let s:kind_depot.action_table.a_p4_dir_copy = {
-	\ 'description' : 'dirでコピーする',
+	\ 'description' : 'copy ( dir )',
 	\ 'is_selectable' : 1,
 	\ }
 function! s:kind_depot.action_table.a_p4_dir_copy.func(candidates) "{{{
@@ -288,7 +288,7 @@ endfunction
 "}}}
 
 let s:kind_depot.action_table.a_p4_depot_copy = {
-	\ 'description' : 'depotでコピーする',
+	\ 'description' : 'copy ( depot )',
 	\ 'is_selectable' : 1,
 	\ }
 function! s:kind_depot.action_table.a_p4_depot_copy.func(candidates) "{{{
