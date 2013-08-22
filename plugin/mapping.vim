@@ -8,10 +8,10 @@ nnoremap <PLUG>(p4_lcd_clentpath)
 			\ :<C-u>lcd <C-r>=perforce#get#PFCLIENTPATH()<CR><CR>|"
 
 nnoremap <PLUG>(p4_filelog)
-			\ :<C-u>call perforce#unite_args('p4_filelog')<CR>|"
+			\ :<C-u>call perforce#unite_args('p4/filelog')<CR>|"
 
 nnoremap <PLUG>(p4_diff)
-			\ :<C-u>call perforce#unite_args('p4_diff')<CR>|"
+			\ :<C-u>call perforce#unite_args('p4/diff')<CR>|"
 
 nnoremap <PLUG>(p4_find)
 			\ :<C-u>call perforce#pfFind()<CR>|"

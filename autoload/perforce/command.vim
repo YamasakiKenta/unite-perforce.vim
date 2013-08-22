@@ -91,12 +91,26 @@ function! s:get_annotate_sub_strs(rev_outs, diff_outs) "{{{
 				\ }
 endfunction
 "}}}
-function! s:set_annotate_sub_win(bufnr, lnum, ft) "{{{
+function! s:set_annotate_sub_win_new(bufnr, lnum, ft) "{{{
 	exe 'b '.a:bufnr
 	winc H
 	call cursor(a:lnum, 0)
 	norm zz
 	exe 'set ft='.a:ft
+	vertical res 20 
+	setl nowrap
+	wincmd p
+endfunction
+"}}}
+function! s:set_annotate_sub_win_old(bufnr, lnum, ft) "{{{
+	exe 'b '.a:bufnr
+	winc K
+	call cursor(a:lnum, 0)
+	norm zz
+	exe 'set ft='.a:ft
+	res 5 
+	setl nowrap
+	wincmd p
 endfunction
 "}}}
 function! s:get_annotate_sub_diffs(diff_outs) "{{{
@@ -149,16 +163,11 @@ function! perforce#command#annnotate(file) "{{{
 
 	let tmp_file = 'new'
 	call perforce#util#log_file(tmp_file, 1, new_outs)
-	call s:set_annotate_sub_win(bufnr("%"), lnum, ft)
+	call s:set_annotate_sub_win_new(bufnr("%"), lnum, ft)
 
 	let tmp_file = 'old'
 	call perforce#util#log_file(tmp_file, 1, old_outs)
-	call s:set_annotate_sub_win(bufnr("%"), lnum, ft)
-
-	for bufnr in range(2)
-		vertical res 20 
-		winc l
-	endfor
+	call s:set_annotate_sub_win_old(bufnr("%"), 0, ft)
 
 endfunction
 "}}}
