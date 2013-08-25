@@ -7,8 +7,7 @@ endfunction
 
 function! s:pf_diff_tool(file,file2) "{{{
 	let cmd = perforce#data#get('g:unite_perforce_diff_tool')
-	let tempname = tempname()
-	call system('copy "'.a:file2.'" "'.tempname.'"')
+
 	if cmd == 'vimdiff'
 		" タブで新しいファイルを開く
 		exe 'tabe' a:file2
@@ -20,10 +19,10 @@ function! s:pf_diff_tool(file,file2) "{{{
 		" キーマップの登録
 		call perforce#util#map_diff()
 	elseif cmd =~ 'kdiff3'
-		call s:start(cmd.' '.perforce#get_kk(tempname).' '.perforce#get_kk(a:file2).' -o '.perforce#Get_kk(a:file2))
+		call s:start(cmd.' '.perforce#get_kk(a:file).' '.perforce#get_kk(a:file2).' -o '.perforce#Get_kk(a:file2))
 	else
 		" winmergeu
-		call s:start(cmd.' '.perforce#get_kk(tempname).' '.perforce#get_kk(a:file2))
+		call s:start(cmd.' '.perforce#get_kk(a:file).' '.perforce#get_kk(a:file2))
 	endif
 
 endfunction
@@ -37,6 +36,8 @@ function! perforce#diff#main(path) "{{{
 
 	" ファイルの比較
 	let path = a:path
+
+	let tempname = tempname()
 
 	" ファイル名があるか
 	if len(path) == ''
@@ -59,10 +60,10 @@ function! perforce#diff#main(path) "{{{
 	endif
 
 	"tmpファイルの書き出し
-	call writefile(outs, perforce#get_tmp_file())
+	call writefile(outs, tempname)
 
 	" 改行が一致しないので保存し直す
-	exe 'sp' perforce#get_tmp_file()
+	exe 'sp' tempname
 	set ff=dos
 	wq
 
@@ -72,7 +73,7 @@ function! perforce#diff#main(path) "{{{
 	endif
 
 	" 実際に比較 
-	call s:pf_diff_tool(perforce#get_tmp_file(), path)
+	call s:pf_diff_tool(tempname, path)
 
 endfunction
 "}}}
