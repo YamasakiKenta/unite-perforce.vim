@@ -178,18 +178,6 @@ function! s:kind_depot.action_table.a_p4_diff.func(candidates) "{{{
 endfunction
 "}}}
 
-let s:kind_depot.action_table.a_p4_diff_tool = {
-			\ 'is_selectable' : 1 ,  
-			\ 'description' : 'diff ( tool )',
-			\ }
-function! s:kind_depot.action_table.a_p4_diff_tool.func(candidates) "{{{
-	for l:candidate in a:candidates
-		let depot = l:candidate.action__depot
-		call perforce#diff#main(depot)
-	endfor
-endfunction
-"}}}
-
 let s:kind_depot.action_table.a_p4_reopen = {
 			\ 'description' : 'edit change',
 			\ 'is_selectable' : 1 ,

@@ -28,7 +28,7 @@ function! s:pf_diff_tool(file,file2) "{{{
 endfunction
 "}}}
 
-function! perforce#diff#main(path) "{{{
+function! s:diff(path) "{{{
 	" ********************************************************************************
 	" ファイルをTOOLを使用して比較します
 	" @param[in]	path		比較するパス ( path or depot )
@@ -83,7 +83,7 @@ function! perforce#diff#file(...) "{{{
 	" @param[in] a:000 ファイル名
 	" ********************************************************************************
 	let file_ = call('perforce#util#get_files', a:000)[0]
-	call perforce#diff#main(file_)
+	call s:diff(file_)
 endfunction
 "}}}
 
