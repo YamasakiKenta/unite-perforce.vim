@@ -47,7 +47,8 @@ function! s:diff(path) "{{{
 
 
 	" 最新 REV のファイルの取得
-	let datas = perforce#cmd#use_port_clients('p4 print -q '.perforce#get_kk(path))
+	" let datas = perforce#cmd#use_port_clients('p4 print -q '.perforce#get_kk(path))
+	let datas = perforce#cmd#use_port_clients_files('p4 print -q', [path], 1)
 	let outs  = perforce#extend_dicts('outs', datas)
 
 	" ERROR

@@ -7,19 +7,6 @@ function! s:get_dd(str) "{{{
 endfunction
 "}}}
 
-function! perforce#get_tmp_file() "{{{
-	" [2013-06-07 00:35]
-	"g:perforce_tmp_dir
-	let tmp =  expand(perforce#data#get('g:perforce_tmp_dir'))
-	let fname = expand(tmp.'/tmpfile')
-
-	if !isdirectory(tmp)
-		call mkdir(tmp)
-	endif
-
-	return fname
-endfunction
-"}}}
 function! perforce#log_file(str) "{{{
 	" [2013-06-07 00:37]
 	" ********************************************************************************

@@ -140,10 +140,11 @@ function! pf_changes#make(strs, port_client, ...) "{{{
 	let outs = extend(outs, strs, i+1)
 
 	"一時ファイルの書き出し
-	call writefile(outs, perforce#get_tmp_file())
+	let temp_file = tempname()
+	call writefile(outs,temp_file) 
 
 	" チェンジリストの作成
-	let cmd   = 'more '.perforce#get_kk(perforce#get_tmp_file()).' | p4 '.a:port_client.' change -i'
+	let cmd   = 'more '.perforce#get_kk(temp_file()).' | p4 '.a:port_client.' change -i'
 	let outs   = split(perforce#system(cmd), "\n")
 	let chnum = matchstr(outs[0], '\d\+')
 
