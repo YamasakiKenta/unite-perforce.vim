@@ -29,7 +29,7 @@ function! s:source_p4_clients.gather_candidates(args, context)
 			let tmp_datas = perforce#system_dict(port, 'p4 '.port.' clients '.user.' '.max)
 			for data in tmp_datas
 				call add(candidates, {
-							\ 'word'           : '-h '.data.Host.' '.data.port.' -c '.data.client,
+							\ 'word'           : '-H '.data.Host.' '.data.port.' -c '.data.client,
 							\ 'action__clname' : data.client,
 							\ 'action__port'   : data.port,
 							\ })
