@@ -76,7 +76,9 @@ function! perforce#cmd#clients(clients, cmd) "{{{
 		let outs = split(perforce#system(cmd), "\n")
 
 		" filter
-		let outs = s:get_outs(outs)
+		if a:cmd !~ '\<print\>'
+			let outs = s:get_outs(outs)
+		endif
 
 		if !s:is_error(outs)
 			call add(rtn_ds, {
