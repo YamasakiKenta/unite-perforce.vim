@@ -123,7 +123,11 @@ function! s:get_unite_perforce_ports_clients() "{{{
 	let servers = []
 	for port in ports
 		for client in clients
-			call add(servers, port.' '.client)
+			if client  =~ '-p'
+				call add(servers, client)
+			else
+				call add(servers, port.' '.client)
+			endif
 		endfor
 	endfor
 
