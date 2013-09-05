@@ -105,7 +105,7 @@ function! perforce#pfFind(...) "{{{
 	endif 
 
 	if str !=# ""
-		call unite#start([insert(map(split(str),"s:get_dd(v:val)"),'p4_have')])
+		call unite#start([insert(map(split(str),"s:get_dd(v:val)"),'p4/have')])
 	endif
 endfunction
 "}}}
