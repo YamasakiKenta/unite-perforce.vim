@@ -92,61 +92,61 @@ KEY MAPPING 	*unite-perforce-mappings*
 ==============================================================================
 SOURCES						*unite-perforce-sources*
 
-p4_annotate
+p4/annotate
 	各行にリビジョン番号を表示
 
-p4_annotate_ai
+p4/annotate_ai
 	各行にチェンジリスト番号を表示 ( 全て )
 
-p4_changes_pending
+p4/changes_pending
 	作成中のチェンジリスト
 
-p4_changes_pending_reopen
+p4/changes_pending_reopen
 	チェンジリストの移動
 
-p4_changes_submitted
+p4/changes_submitted
 	submit 済みチェンジリスト
 
-p4_clients
+p4/clients
 	クライアントを表示する
 
-p4_describe
+p4/describe
 	サブミット済みのチェンジリストの差分を表示
 
-p4_diff
+p4/diff
 	差分を表示する
 
-p4_filelog
+p4/filelog
 	履歴
 
-p4_files
+p4/files
 	所有するファイル
 
-p4_fixes
+p4/fixes
 	job と change リストの紐づけを表示する
 
-p4_have
+p4/have
 	所有するファイル
 
-p4_have_reset
+p4/have_reset
 	所有するファイル ( キャッシュリセット ) 
 
-p4_help
+p4/help
 	ヘルプを表示
 
-p4_info
+p4/info
 	設定を表示する
 
-p4_jobs
+p4/jobs
 	ジョブの表示
 
-p4_opened
+p4/opened
 	編集しているファイルの表示 ( チェンジリスト番号 )
 
-p4_template
+p4/template
 	テンプレートで管理します
 
-p4_users
+p4/users
 	ユーザーの切り替え
 
 
