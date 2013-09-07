@@ -201,7 +201,7 @@ function! perforce#system_dict(port, cmd) "{{{
 
 	let str = '[{'.join(outputs).'"port":a:port}]'
 
-	let @+ = str
+	" let @+ = str
 	let rtns = eval(str)
 
 	return rtns
