@@ -154,7 +154,7 @@ function! s:kind_k_p4_change_pending.action_table.delete.func(candidates) "{{{
 					\ }
 		call add(data_ds, data_d)
 	endfor
- 	call unite#start_temporary([insert(data_ds,'p4_describe')])
+ 	call unite#start_temporary([insert(data_ds,'p4/describe')])
 endfunction
 "}}}
 
