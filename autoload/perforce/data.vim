@@ -74,7 +74,7 @@ function! perforce#data#setting()  "{{{
 		return
 	else
 		call s:init()
-		call unite#start([['settings_ex', 'g:unite_pf_data']])
+		call unite#start([['settings/ex', 'g:unite_pf_data']])
 	endif
 endfunction
 "}}}
