@@ -16,8 +16,6 @@ function! s:pf_diff_tool(file,file2) "{{{
 		" diffの開始
 		windo diffthis
 
-		" キーマップの登録
-		call perforce#util#map_diff()
 	elseif cmd =~ 'kdiff3'
 		call s:start(cmd.' '.perforce#get_kk(a:file).' '.perforce#get_kk(a:file2).' -o '.perforce#Get_kk(a:file2))
 	else
