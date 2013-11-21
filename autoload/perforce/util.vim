@@ -1,11 +1,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:V = vital#of('unite-perforce.vim')
-let s:Common   = s:V.import('Mind.Common')
-let s:Perforce = s:V.import('Mind.Perforce')
-let s:Tab      = s:V.import('Mind.Tab')
-
 function! perforce#util#get_files(...)
 	return get(a:, 1, "") == "" ? [expand("%:p")] : a:000
 endfunction
